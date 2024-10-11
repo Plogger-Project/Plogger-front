@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 
 const Plogger: React.FC = () => {
   const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null);
-  const [map, setMap] = useState<any>(null); // 지도 객체 상태 추가
-  const [marker, setMarker] = useState<any>(null); // 마커 상태 추가
+  const [address, setAddress] = useState<string | null>(null); // 주소 상태 추가
 
   useEffect(() => {
     // Kakao 지도 API를 불러오는 스크립트 생성
     const script = document.createElement('script');
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=204ef8922cea256c98e6160f452ab511&autoload=false`;
+    // services 라이브러리를 불러오기 위해 libraries=services 추가
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=204ef8922cea256c98e6160f452ab511&autoload=false&libraries=services`;
     script.async = true;
     document.head.appendChild(script);
 
@@ -26,11 +26,10 @@ const Plogger: React.FC = () => {
             };
 
             const mapInstance = new kakao.maps.Map(container, options); // 지도 생성
-            setMap(mapInstance); // 지도 객체를 상태에 저장
+            const geocoder = new kakao.maps.services.Geocoder(); // 주소 변환을 위한 geocoder 생성
 
-            // 마커를 초기에는 null로 설정
+            // 마커 초기화
             const markerInstance = new kakao.maps.Marker();
-            setMarker(markerInstance);
 
             // 지도를 클릭하면 마커를 그 위치에 표시하고, 위도/경도를 상태에 저장
             kakao.maps.event.addListener(mapInstance, 'click', (mouseEvent: any) => {
@@ -44,6 +43,17 @@ const Plogger: React.FC = () => {
               setPosition({
                 lat: latlng.getLat(),
                 lng: latlng.getLng(),
+              });
+
+              // 좌표를 주소로 변환
+              geocoder.coord2RegionCode(latlng.getLng(), latlng.getLat(), (result: any, status: any) => {
+                if (status === kakao.maps.services.Status.OK) {
+                  const address = result[0].address_name; // 변환된 주소 가져오기
+                  setAddress(address); // 주소 상태 업데이트
+                } else {
+                  console.error('주소 변환 실패');
+                  setAddress(null);
+                }
               });
 
               console.log(`Latitude: ${latlng.getLat()}, Longitude: ${latlng.getLng()}`);
@@ -76,6 +86,11 @@ const Plogger: React.FC = () => {
         <div>
           <p>위도: {position.lat}</p>
           <p>경도: {position.lng}</p>
+        </div>
+      )}
+      {address && (
+        <div>
+          <p>주소: {address}</p>
         </div>
       )}
     </div>
