@@ -1,0 +1,77 @@
+.main-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f7f7f7;
+}
+
+.form-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    font-size: 40px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.input-container {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.sign-up-button {
+    width: 400px;
+    padding: 10px 0px;
+    justify-content: center;
+    text-align: center;
+    border-radius: 10px;
+    background-color: #84A264;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.sign-up-button:hover {
+    background-color: #6b8f5c;
+}
+
+.sns-button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.sns-button {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    background-size: cover;
+    cursor: pointer;
+}
+
+.sns-button.kakao {
+    background-image: url(/public/images/kakao-button.png);
+}
+
+.sns-button.naver {
+    background-image: url(/public/images/naver-button.png);
+}
+
+.sns-button.google {
+    background-image: url(/public/images/google-button.png);
+}
