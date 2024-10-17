@@ -7,6 +7,7 @@ import NavigationBar from './views/NavigationBar';
 import SignUp from './views/Auth';
 import RecruitPost from './views/Recruit';
 import ActivePost from './views/Active';
+import QnaPost from './views/QNA';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -19,6 +20,7 @@ root.render(
         <Route path="/signup" element={<SignUp />} />
         <Route path="/recruit" element={<RecruitPost />} />
         <Route path="/active" element={<ActivePost />} />
+        <Route path="/qna" element={<QnaPost />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

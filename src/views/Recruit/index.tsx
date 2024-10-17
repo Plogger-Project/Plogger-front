@@ -6,16 +6,16 @@ export default function RecruitPost() {
   const [activeSection, setActiveSection] = useState(0); // 현재 섹션을 나타내는 상태
 
   const data = [
-    { id: 10, status: "모집중", title: "플로깅 같이 하실분 모집합니다.", writer: "qwer1234", recommend: 16, views: 342, members: "1/5", dDay: "D - 4", date: "10.08" },
-    { id: 9, status: "마감됨", title: "플로깅 같이 하실분 모집합니다 2222.", writer: "qwer1234", recommend: 31, views: 661, members: "4/4", dDay: "D - 6", date: "10.05" },
-    { id: 8, status: "모집중", title: "플로깅 같이 하실분 모집합니다.", writer: "qwer1234", recommend: 16, views: 342, members: "4/5", dDay: "D - 6", date: "10.08" },
-    { id: 7, status: "마감됨", title: "플로깅 같이 하실분 모집합니다 2222.", writer: "qwer1234", recommend: 31, views: 661, members: "3/3", dDay: "D - 6", date: "10.05" },
-    { id: 6, status: "모집중", title: "플로깅 같이 하실분 모집합니다.", writer: "qwer1234", recommend: 16, views: 342, members: "1/5", dDay: "D - 6", date: "10.08" },
-    { id: 5, status: "마감됨", title: "플로깅 같이 하실분 모집합니다 2222.", writer: "qwer1234", recommend: 31, views: 661, members: "3/3", dDay: "D - 6", date: "10.05" },
-    { id: 4, status: "모집중", title: "플로깅 같이 하실분 모집합니다.", writer: "qwer1234", recommend: 16, views: 342, members: "3/5", dDay: "D - 6", date: "10.08" },
-    { id: 3, status: "마감됨", title: "플로깅 같이 하실분 모집합니다 2222.", writer: "qwer1234", recommend: 31, views: 661, members: "3/3", dDay: "D - 6", date: "10.05" },
-    { id: 2, status: "모집중", title: "플로깅 같이 하실분 모집합니다.", writer: "qwer1234", recommend: 16, views: 342, members: "2/5", dDay: "D - 6", date: "10.08" },
-    { id: 1, status: "마감됨", title: "플로깅 같이 하실분 모집합니다 2222.", writer: "qwer1234", recommend: 31, views: 661, members: "3/3", dDay: "D - 6", date: "10.05" },
+    { recruitPostId: 10, isCompleted: "모집중", recruitPostTitle: "플로깅 같이 하실분 모집합니다.", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "1/5", dDay: "D - 4", recruitPostCreatedAt: "10.08" },
+    { recruitPostId: 9, isCompleted: "마감됨", recruitPostTitle: "플로깅 같이 하실분 모집합니다 2222.", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "4/4", dDay: "D - 6", recruitPostCreatedAt: "10.05" },
+    { recruitPostId: 8, isCompleted: "모집중", recruitPostTitle: "플로깅 같이 하실분 모집합니다.", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "4/5", dDay: "D - 6", recruitPostCreatedAt: "10.08" },
+    { recruitPostId: 7, isCompleted: "마감됨", recruitPostTitle: "플로깅 같이 하실분 모집합니다 2222.", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "3/3", dDay: "D - 6", recruitPostCreatedAt: "10.05" },
+    { recruitPostId: 6, isCompleted: "모집중", recruitPostTitle: "플로깅 같이 하실분 모집합니다.", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "1/5", dDay: "D - 6", recruitPostCreatedAt: "10.08" },
+    { recruitPostId: 5, isCompleted: "마감됨", recruitPostTitle: "플로깅 같이 하실분 모집합니다 2222.", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "3/3", dDay: "D - 6", recruitPostCreatedAt: "10.05" },
+    { recruitPostId: 4, isCompleted: "모집중", recruitPostTitle: "플로깅 같이 하실분 모집합니다.", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "3/5", dDay: "D - 6", recruitPostCreatedAt: "10.08" },
+    { recruitPostId: 3, isCompleted: "마감됨", recruitPostTitle: "플로깅 같이 하실분 모집합니다 2222.", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "3/3", dDay: "D - 6", recruitPostCreatedAt: "10.05" },
+    { recruitPostId: 2, isCompleted: "모집중", recruitPostTitle: "플로깅 같이 하실분 모집합니다.", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "2/5", dDay: "D - 6", recruitPostCreatedAt: "10.08" },
+    { recruitPostId: 1, isCompleted: "마감됨", recruitPostTitle: "플로깅 같이 하실분 모집합니다 2222.", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "3/3", dDay: "D - 6", recruitPostCreatedAt: "10.05" },
   ];
 
   const handleScroll = (event: WheelEvent) => {
@@ -38,7 +38,7 @@ export default function RecruitPost() {
   return (
     <div id="recruit-post-wrapper">
       <div className={`map ${activeSection === 0 ? "visible" : "hidden"}`}>
-        지도
+        
       </div>
       <div className={`middle ${activeSection === 1 ? "visible" : "hidden"}`}>
         <div className="main">
@@ -64,16 +64,16 @@ export default function RecruitPost() {
               <div className="td-recruit-create-date">날짜</div>
             </div>
             {data.map((item) => (
-              <div className="tr" key={item.id}>
-                <div className="td-recruit-number">{item.id}</div>
-                <div className="td-recruit-isCompleted">{item.status}</div>
-                <div className="td-recruit-title">{item.title}</div>
-                <div className="td-recruit-writer">{item.writer}</div>
-                <div className="td-recruit-like-count">{item.recommend}</div>
-                <div className="td-recruit-view-count">{item.views}</div>
+              <div className="tr" key={item.recruitPostId}>
+                <div className="td-recruit-number">{item.recruitPostId}</div>
+                <div className="td-recruit-isCompleted">{item.isCompleted}</div>
+                <div className="td-recruit-title">{item.recruitPostTitle}</div>
+                <div className="td-recruit-writer">{item.recruitPostWriter}</div>
+                <div className="td-recruit-like-count">{item.recruitLike}</div>
+                <div className="td-recruit-view-count">{item.recruitView}</div>
                 <div className="td-recruit-people">{item.members}</div>
                 <div className="td-recruit-end-date">{item.dDay}</div>
-                <div className="td-recruit-create-date">{item.date}</div>
+                <div className="td-recruit-create-date">{item.recruitPostCreatedAt}</div>
               </div>
             ))}
           </div>
