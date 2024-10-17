@@ -25,9 +25,40 @@ export default function NavigationBar() {
                 <div className='button sign-up'>회원가입</div>
             </div>
             {modalOpen &&
-                <div className='modal-sign-in'>
-
-                </div>}
+                <div className='modal'>
+                    <div className='modal-sign-in'>
+                        <div className='modal-top'>
+                            <div className='modal-top-title'>Plogger</div>
+                            <div className='button-close' onClick={onModelOpenHandler}>x</div>
+                        </div>
+                        <div className='modal-main'>
+                            <div className='sign-in-id'>
+                                <div className='name'>아이디</div>
+                                <input className='input' placeholder='아이디를 입력해주세요.' />
+                            </div>
+                            <div className='sign-in-password'>
+                                <div className='name' >비밀번호</div>
+                                <input className='input' placeholder='비밀번호를 입력해주세요.' />
+                            </div>
+                            <div className='button sign-in'>로그인</div>
+                            <div className='sign-text'>
+                                <div className='find-id'>아이디 찾기</div>
+                                <div className='line'>
+                                    <div className="find-password">비밀번호 찾기</div>
+                                </div>
+                                <div className='sign-up'>회원가입</div>
+                            </div>
+                        </div>
+                        <div className='modal-bottom'>
+                            <div className='sns-button-container'>
+                                <div className='sns-button kakao'></div>
+                                <div className='sns-button naver'></div>
+                                <div className='sns-button google'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
         </div>
     )
 }
