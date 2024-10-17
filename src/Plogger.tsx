@@ -2,10 +2,18 @@ import React from 'react';
 import './Plogger.css';
 import { Route, Routes } from 'react-router-dom';
 import SignUp from './views/Auth';
+import RecruitPost from './views/Recruit';
+import ActivePost from './views/Active';
 
 function Plogger() {
   return (
-    <Route path='/signup' element={<SignUp />} />
+    <>
+      <Routes>
+        <Route path='/signup' element={<SignUp />} />
+        <Route path='/recruit' element={<RecruitPost />} />
+        <Route path='/active' element={<ActivePost/>     } />
+      </Routes>
+    </>
   );
 }
 
