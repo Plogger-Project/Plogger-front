@@ -37,7 +37,6 @@ export default function RecruitPost() {
 
   return (
     <div id="recruit-post-wrapper">
-      <div className="top">네비게이션</div>
       <div className={`map ${activeSection === 0 ? "visible" : "hidden"}`}>
         지도
       </div>
