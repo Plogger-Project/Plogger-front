@@ -26,8 +26,8 @@ function Plogger() {
     <>
       {showNavigationBar && <NavigationBar />}
       <Routes>
-        <Route path='/main' element={<Main />} />
-        <Route path='/signup' element={<SignUp />} />
+        <Route index element={<Main />} />
+        <Route path='/sign-up' element={<SignUp />} />
         <Route path={RECRUIT_PATH} element={<RecruitPost />} />
         <Route path={RECRUIT_DETAIL_PATH} element={<RecruitView />} />
         <Route path='/active' element={<ActivePost />} />

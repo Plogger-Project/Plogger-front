@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './style.css'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function NavigationBar() {
 
@@ -10,9 +10,17 @@ export default function NavigationBar() {
     // function: 네비게이터 함수 //
     const navigator = useNavigate();
 
+    // function: local 함수 //
+    const location = useLocation();
+
     // event handler: 모달 오픈 이벤트 처리 //
     const onModelOpenHandler = () => {
         setModalOpen(!modalOpen);
+    };
+
+    // event handler: 로고 클릭 이벤트 처리 //
+    const onLogoClickHandler = () => {
+        navigator('/');
     };
 
     // event handler: 회원가입 클릭 이벤트 처리 //
@@ -29,16 +37,22 @@ export default function NavigationBar() {
     const onActiveClickHandler = () => {
         navigator('/active');
     };
+    // event handler: Q&A 클릭 이벤트 처리 //
+    const onQnaClickHandler = () => {
+        navigator('/qna');
+    };
 
     return (
         <div id='navigation-bar'>
-            <div className='logo'></div>
+            <div className='logo' onClick={onLogoClickHandler}></div>
             <div className='manu'>
                 <div className='manu-recruit' onClick={onRecruitClickHandler}>구인게시판</div>
                 <div className='manu-active' onClick={onActiveClickHandler}>활동게시판</div>
-                <div className='manu-qna'>Q&A</div>
+                <div className='manu-qna' onClick={onQnaClickHandler}>Q&A</div>
             </div>
+            {location.pathname !== '/' &&
             <input className='input-box' placeholder='검색어를 입력하세요.' />
+            }
             <div className='button-box'>
                 <div className='button sign-in' onClick={onModelOpenHandler}>로그인</div>
                 <div className='button sign-up' onClick={onSignupClickHandler}>회원가입</div>

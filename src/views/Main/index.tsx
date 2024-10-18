@@ -14,11 +14,14 @@ export default function Main() {
       {/* 이미지 및 버튼 섹션 */}
       <div className='image-section'>
         {/* 메인 타이틀 섹션 */}
-        <div className='title-section'>플로거</div>
+        <div className='title-box'>
+          <div className='title-section'>플로거</div>
+        
         {/* 버튼 섹션 */}
         <div className='button-section'>
-          <div className='button-left'>지역을 입력해주세요</div>
-          <div className='button-right'>검색</div>
+          <input className='main-input' placeholder='지역을 입력해주세요.' />
+          <div className='button-main'>검색</div>
+          </div>
         </div>
       </div>
       {/*컨텐츠 섹션 */}
