@@ -1,28 +1,47 @@
 import { useState } from 'react';
 import './style.css'
+import { useNavigate } from 'react-router-dom';
 
 export default function NavigationBar() {
 
     // state: 모달 팝업 상태 //
     const [modalOpen, setModalOpen] = useState<boolean>(false);
 
+    // function: 네비게이터 함수 //
+    const navigator = useNavigate();
+
     // event handler: 모달 오픈 이벤트 처리 //
     const onModelOpenHandler = () => {
         setModalOpen(!modalOpen);
+    };
+
+    // event handler: 회원가입 클릭 이벤트 처리 //
+    const onSignupClickHandler = () => {
+        navigator('/sign-up');
+    };
+
+    // event handler: 구인게시판 클릭 이벤트 처리 //
+    const onRecruitClickHandler = () => {
+        navigator('/recruit');
+    };
+
+    // event handler: 활동게시판 클릭 이벤트 처리 //
+    const onActiveClickHandler = () => {
+        navigator('/active');
     };
 
     return (
         <div id='navigation-bar'>
             <div className='logo'></div>
             <div className='manu'>
-                <div className='manu-recruit'>구인게시판</div>
-                <div className='manu-active'>활동게시판</div>
+                <div className='manu-recruit' onClick={onRecruitClickHandler}>구인게시판</div>
+                <div className='manu-active' onClick={onActiveClickHandler}>활동게시판</div>
                 <div className='manu-qna'>Q&A</div>
             </div>
             <input className='input-box' placeholder='검색어를 입력하세요.' />
             <div className='button-box'>
                 <div className='button sign-in' onClick={onModelOpenHandler}>로그인</div>
-                <div className='button sign-up'>회원가입</div>
+                <div className='button sign-up' onClick={onSignupClickHandler}>회원가입</div>
             </div>
             {modalOpen &&
                 <div className='modal'>
@@ -46,7 +65,7 @@ export default function NavigationBar() {
                                 <div className='line'>
                                     <div className="find-password">비밀번호 찾기</div>
                                 </div>
-                                <div className='sign-up'>회원가입</div>
+                                <div className='sign-up' onClick={onSignupClickHandler}>회원가입</div>
                             </div>
                         </div>
                         <div className='modal-bottom'>

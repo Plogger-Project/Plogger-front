@@ -11,23 +11,13 @@ import QnaPost from './views/QNA';
 import {  RECRUIT_DETAIL_PATH, RECRUIT_PATH } from './constants';
 import RecruitDetail from './views/Recruit/Detail';
 
-
-
-
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <NavigationBar />
-      <Routes>
-        <Route path="/signup" element={<SignUp />} />
-        <Route path={RECRUIT_PATH} element={<RecruitPost />} />
-        <Route path={RECRUIT_DETAIL_PATH} element={<RecruitDetail />} />
-        <Route path="/active" element={<ActivePost />} />
-        <Route path="/qna" element={<QnaPost />} />
-      </Routes>
+      <Plogger />
     </BrowserRouter>
   </React.StrictMode>
 );
