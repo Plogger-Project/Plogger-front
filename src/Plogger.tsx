@@ -12,7 +12,7 @@ import { RECRUIT_PATH, RECRUIT_DETAIL_PATH } from './constants';
 import RecruitView from './views/Recruit/Detail';
 
 import Mypage from './views/MyPage';
-
+import Mileage from './views/Mileage';
 
 // component: root path 컴포넌트 //
 function Plogger() {
@@ -31,6 +31,7 @@ function Plogger() {
         <Route path='/active' element={<ActivePost />} />
         <Route path="/qna" element={<QnaPost />} />
         <Route path='/mypage' element={<Mypage />} />
+        <Route path='/mileage' element={<Mileage/>} />
       </Routes>
     </>
   );
