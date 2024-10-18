@@ -3,9 +3,11 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    width: 1134px;
     height: 100vh;
     overflow: hidden;
+    margin: 0 auto;
+        /* 중앙 정렬 */
 }
 
 #recruit-post-wrapper .top {
@@ -30,7 +32,7 @@
     width: 800px;
     height: 100vh;
     margin: 50px 50px;
-    background-image: url(/public/images/sample_map.webp);
+    background-image: url(/public/images/sample_image.png);
     background-size: cover;
     background-position: 50% 50%;
     display: flex;
@@ -91,14 +93,12 @@
     text-align: right;
     border: 1px solid rgba(25, 25, 25, 1);
     background-color: rgba(132, 162, 100, 1);
-    line-height: 205%;
     text-align: center;
 }
 
 #recruit-post-wrapper .table {
     width: 100%;
     margin: 0 auto;
-    padding: 20px;
     font-family: 'Arial', sans-serif;
     border-collapse: collapse;
 
@@ -118,7 +118,7 @@
     display: flex;
     flex-direction: row;
     text-align: center;
-    border-bottom: 1px solid #ccc;
+    
 
 }
 

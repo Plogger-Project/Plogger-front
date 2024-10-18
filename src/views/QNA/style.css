@@ -1,0 +1,148 @@
+#qna-post-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 1134px;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0 auto;
+        /* 중앙 정렬 */
+}
+
+#qna-post-wrapper .top {
+    display: flex;
+    justify-content: center;
+    background-color: rgb(198, 223, 223);
+    width: 100%;
+    height: 60px;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+
+
+#qna-post-wrapper .middle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+    transition: opacity 0.5s ease;
+}
+
+#qna-post-wrapper .middle.hidden {
+    display: none;
+}
+
+#qna-post-wrapper .middle-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-size: 12px;
+
+}
+
+#qna-post-wrapper .middle-top .pages {
+    flex: 10;
+    text-align: left;
+}
+
+.emphasis {
+    font-weight: 600;
+
+}
+
+#qna-post-wrapper .middle-top .post-filter {
+    flex: 5;
+    text-align: center;
+}
+
+#qna-post-wrapper .middle-top .write {
+    flex: 1;
+    text-align: right;
+    border: 1px solid rgba(25, 25, 25, 1);
+    background-color: rgba(132, 162, 100, 1);
+    text-align: center;
+}
+
+#qna-post-wrapper .table {
+    width: 800px;
+    margin: 0 auto;
+    font-family: 'Arial', sans-serif;
+    border-collapse: collapse;
+
+    font-size: 12px;
+
+}
+
+#qna-post-wrapper .th {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    font-weight: 700;
+
+}
+
+#qna-post-wrapper .tr {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+
+}
+
+#qna-post-wrapper .td-qna-number,
+#qna-post-wrapper .td-qna-isCompleted,
+#qna-post-wrapper .td-qna-title,
+#qna-post-wrapper .td-qna-writer,
+#qna-post-wrapper .td-qna-like-count,
+#qna-post-wrapper .td-qna-view-count,
+#qna-post-wrapper .td-qna-people,
+#qna-post-wrapper .td-qna-end-date,
+#qna-post-wrapper .td-qna-create-date {
+    padding: 10px;
+
+}
+
+#qna-post-wrapper .td-qna-number {
+    width: 30px;
+}
+
+#qna-post-wrapper .td-qna-isCompleted {
+    width: 50px;
+}
+
+#qna-post-wrapper .td-qna-title {
+    flex: 1;
+
+}
+
+#qna-post-wrapper .td-qna-writer,
+#qna-post-wrapper .td-qna-like-count,
+#qna-post-wrapper .td-qna-view-count,
+#qna-post-wrapper .td-qna-people,
+#qna-post-wrapper .td-qna-end-date,
+#qna-post-wrapper .td-qna-create-date {
+    width: 50px;
+}
+
+#qna-post-wrapper .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+
+    gap: 15px;
+
+}
+
+#qna-post-wrapper .pagination .qna {
+    color: black;
+
+    font-weight: bold;
+
+}
