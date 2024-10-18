@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useState } from 'react';
 import InputBox from '../../components/InputBox';
 import './style.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignUp() {
 
@@ -11,6 +12,14 @@ export default function SignUp() {
     const [telNumber, setTelNumber] = useState<string>('');
     const [authNumber, setAuthNumber] = useState<string>('');
     const [address, setAddress] = useState<string>('');
+
+    // function: 네비게이터 함수 //
+    const navigator = useNavigate();
+
+    // event handler: 회원가입 클릭 이벤트 처리 //
+    const onCancleClickHandler = () => {
+        navigator('/');
+    };
 
     const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
@@ -50,7 +59,9 @@ export default function SignUp() {
     return (
         <div className='main-wrapper'>
             <div className='form-container'>
-                <div className='title'>Plogger</div>
+
+                    <div className='title'>Plogger</div>
+                    <div className='cancle' onClick={onCancleClickHandler}>x</div>
 
                 <div className='input-container'>
                     <InputBox label='이름' placeholder='이름을 입력해주세요.' value={name} type='text' onChange={onNameChangeHandler} />
@@ -61,9 +72,9 @@ export default function SignUp() {
                     <InputBox label='인증번호' placeholder='인증번호를 입력해주세요.' value={authNumber} type='text' buttonName='인증번호 확인' onChange={onAuthNumberChangeHandler} />
                     <InputBox label='주소' placeholder='주소를 입력해주세요' value={address} type='text' buttonName='우편번호 검색' onChange={onAddressChangeHandler} />
                 </div>
-
-                <div className='sign-up-button'>회원가입</div>
-
+                <div className='button-container'>
+                    <div className='sign-up-button'>회원가입</div>
+                </div>
                 <div className='sns-button-container'>
                     <div className='sns-button kakao'></div>
                     <div className='sns-button naver'></div>

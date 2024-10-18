@@ -17,6 +17,17 @@
     align-items: center;
 }
 
+
+.cancle {
+    position: absolute;
+    margin-top: -20px;
+    margin-left: 400px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+}
+
 .title {
     font-size: 40px;
     font-weight: bold;
@@ -29,6 +40,7 @@
     width: 100%;
     margin-bottom: 20px;
 }
+
 
 .sign-up-button {
     width: 400px;
@@ -54,6 +66,7 @@
     justify-content: center;
     gap: 10px;
     width: 100%;
+    margin: 20px 0px;
 }
 
 .sns-button {

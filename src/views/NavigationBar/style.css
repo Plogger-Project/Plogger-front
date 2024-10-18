@@ -1,0 +1,234 @@
+#navigation-bar {
+    position: fixed;
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(255, 255, 255, 1);
+
+    width: 100%;
+    height: 120px;
+
+    overflow: hidden;
+    min-width: 1800px;
+
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    
+    
+    
+}
+
+#navigation-bar .logo {
+    cursor: pointer;
+    
+    width: 100px;
+    height: 100px;
+
+    border-radius: 50%;
+
+    background-image: url(/public/images/ploggerMin.png);
+    background-size: 100% 100%;
+    margin: 5px 50px;
+    
+}
+
+#navigation-bar .manu {
+    display: flex;
+
+    font-size: 40px;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.8);
+    gap: 120px;
+    flex-grow: 0.5;
+}
+
+#navigation-bar .manu-recruit:hover,
+#navigation-bar .manu-active:hover,
+#navigation-bar .manu-qna:hover {
+    cursor: pointer;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 1);
+}
+
+#navigation-bar .input-box {
+    width: 400px;
+    height: 25px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    
+    font-size: 15px;
+}
+
+#navigation-bar .button-box {
+    display: flex;
+    height: 50px;
+    padding: 0px 50px;
+    gap: 30px;
+}
+
+#navigation-bar .button {
+    border-radius: 6px;
+    padding: 10px 30px;
+
+    font-weight: 400;
+    line-height: 100%;
+    text-align: center;
+
+    color: rgba(255, 255, 255, 1);
+}
+
+
+#navigation-bar .button:hover {
+    cursor: pointer;
+    background-color: #6b8f5c;
+}
+
+.button.sign-in,
+.button.sign-up {
+    background-color: #84A264;
+    font-size: 20px;
+    justify-content: center;
+    align-content: center;
+}
+
+#navigation-bar .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100vw;
+    height: 100vh;
+    
+
+    background-color: rgba(0, 0, 0, 0.3);
+}
+#navigation-bar .modal-sign-in {
+    position: relative;
+
+    box-sizing: border-box;
+    border: 1px solid rgba(238, 238, 238, 1);
+    border-radius: 8px;
+    padding: 24px;
+    width: 400px;
+    height: 400px;
+
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.modal-top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-top-title {
+    flex: 1;
+    font-size: 40px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    text-align: center;
+    
+    margin-top: -20px;
+}
+
+.button-close {
+    cursor: pointer;
+    margin-top: -20px;
+    margin-right: -10px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.modal-main {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.sign-in-id,
+.sign-in-password {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.input {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 10px;
+    width: 1;
+}
+
+.modal-main .sign-in {
+    margin-top: 20px;
+    font-size: 15px;
+}
+
+.sign-text {
+    display: flex;
+
+    justify-content: center;
+
+    font-size: 13px;
+    font-weight: 600;
+    gap: 20px;
+    padding-top: 10px;
+}
+
+.find-id,
+.find-password,
+.sign-up {
+    cursor: pointer;
+}
+
+.line {
+    border-right: 1px solid rgba(0, 0, 0, 1);
+    border-left: 1px solid rgba(0, 0, 0, 1);
+
+    padding: 0px 20px;
+}
+
+.modal-bottom {
+    margin: 40px;
+}
+
+.sns-button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 100%;
+}
+
+.sns-button {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    background-size: cover;
+    cursor: pointer;
+
+    margin: -20px 10px;
+}
+
+.sns-button.kakao {
+    background-image: url(/public/images/kakao-button.png);
+}
+
+.sns-button.naver {
+    background-image: url(/public/images/naver-button.png);
+}
+
+.sns-button.google {
+    background-image: url(/public/images/google-button.png);
+}
