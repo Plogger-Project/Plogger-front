@@ -1,0 +1,286 @@
+/* 전체 레이아웃 */
+#recruit-detail-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 1134px;
+    margin: 0 auto;
+    background-color: white;
+
+}
+
+#recruit-detail-wrapper .main {
+    margin-top: 90px;
+
+
+    width: 700px;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: #f9f9f9;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border: solid 1px rgba(25, 25, 25, 0.1);
+    border-radius: 16px;
+}
+
+/* 상단 사용자 정보 및 게시글 옵션 */
+#recruit-detail-wrapper .postTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid #000000;
+
+    padding: 10px;
+}
+
+#recruit-detail-wrapper .postTop .userInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#recruit-detail-wrapper .postTop .userInfo-left {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+#recruit-detail-wrapper .postTop .userInfo-right {
+    display: flex;
+    flex-direction: column;
+}
+
+
+#recruit-detail-wrapper .postTop .profileImage {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+
+    background-image: url(/public/images/img.png);
+    background-position: 50% 50%;
+    background-size: cover;
+
+}
+
+#recruit-detail-wrapper .optionBox {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-image: url(/public/images/3point.png);
+    background-position: 50% 50%;
+    background-size: cover;
+}
+
+#recruit-detail-wrapper .postTop .postBox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#recruit-detail-wrapper .postDetail {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+}
+
+#recruit-detail-wrapper .postTitle {
+    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+
+    padding: 15px;
+}
+
+#recruit-detail-wrapper .postContents {
+    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+
+    padding: 15px;
+}
+
+#recruit-detail-wrapper .postImage {
+    width: 100%;
+    height: 300px;
+    background-size: contain;
+    background-image: url(/public/images/plogging.jpg);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+
+}
+
+
+
+#recruit-detail-wrapper .postLocation {
+    width: 100%;
+    height: 300px;
+    background-size: contain;
+    background-image: url(/public/images/sample_image.png);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+
+#recruit-detail-wrapper .postInfo{
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+}
+
+#recruit-detail-wrapper .postInfo .left{
+    display: flex;
+    flex-direction: row;
+    gap:20px;
+    font-weight: 700;
+}
+#recruit-detail-wrapper .postInfo .left .isCompleted{
+    color: white;
+    width: 50px;
+    height: 25px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    
+}
+#recruit-detail-wrapper .postInfo .right {
+    display: flex;
+    flex-direction: row;
+    gap: 10px
+}
+#recruit-detail-wrapper .postInfo .right .like{
+    width: 25px;
+    height: 25px;
+    background-size: contain;
+    background-image: url(/public/images/empty-heart.png);
+    background-position: 50% 50%;
+    cursor: pointer;
+
+}
+
+#recruit-detail-wrapper .postInfo .right .scrap {
+    width: 25px;
+        height: 25px;
+        background-size: contain;
+        background-image: url(/public/images/empty-scrap.png);
+        background-position: 50% 50%;
+        cursor: pointer;
+
+}
+/* 하단 정보 및 댓글 섹션 */
+#recruit-detail-wrapper .postBottom {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#recruit-detail-wrapper .postBottom .line {
+    width: 100%;
+    text-align: center;
+}
+
+#recruit-detail-wrapper .postBottom .comments {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+#recruit-detail-wrapper .postBottom .comments input{
+    border: 0px;
+    flex-grow: 1;
+    width: 500px;
+    margin-right: 10px;
+    
+}
+
+#recruit-detail-wrapper .postBottom .comments .commentButton{
+    
+    width: 100px;
+    height: 30px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    text-align: center;
+}
+
+#recruit-detail-wrapper .postBottom .profileImage {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+
+    background-image: url(/public/images/img.png);
+    background-position: 50% 50%;
+    background-size: cover;
+
+}
+
+#recruit-detail-wrapper .commentUserInfo{
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+}
+#recruit-detail-wrapper .commentUserInfoWrite {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+    
+    align-items: center;
+    
+}
+
+
+
+#recruit-detail-wrapper .commentUserInfo-right {
+    display: flex;
+    flex-direction: column;
+}
+#recruit-detail-wrapper .recruitCommentWriter,
+#recruit-detail-wrapper .recruitCommentCreatedAt{
+    font-size: 12px;
+}
+
+
+#recruit-detail-wrapper .bottom {
+    padding: 15px;
+    width: 100%;
+}
+#recruit-detail-wrapper .options {
+    position: absolute;
+    top: 130px;
+    
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    gap: 10px;
+}
+
+#recruit-detail-wrapper .editButton,
+#recruit-detail-wrapper .deleteButton {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#recruit-detail-wrapper .editButton {
+    background-color: #4caf50;
+    color: white;
+}
+
+#recruit-detail-wrapper .deleteButton {
+    background-color: #f44336;
+    color: white;
+}
