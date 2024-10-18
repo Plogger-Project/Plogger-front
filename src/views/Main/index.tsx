@@ -6,11 +6,9 @@ export default function Main() {
 
   // render: 메인페이지 컴포넌트 렌더링 //
   return (
-    <div id="main-wrapper">
+    <div id='main-wrapper'>
       {/* 제거 */}
-      <div className='navigation'>
-        <h1>네비게이션</h1>
-      </div>
+      <div className='navigation'>네비게이션</div>
       {/* // 제거 (router 사용하여 빼기) */}
 
       {/* 이미지 및 버튼 섹션 */}

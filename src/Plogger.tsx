@@ -8,14 +8,12 @@ import Main from './views/Main';
 
 function Plogger() {
   return (
-    <Router>
       <Routes>
         <Route path='/main' element={<Main />} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/recruit' element={<RecruitPost />} />
         <Route path='/active' element={<ActivePost />} />
       </Routes>
-    </Router>
   );
 }
 
