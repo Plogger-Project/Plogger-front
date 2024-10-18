@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import "./style.css";
 
 export default function RecruitDetail() {
-
+  
   const [showOptions, setShowOptions] = useState(false);
 
   const toggleOptions = () => {
@@ -11,6 +11,7 @@ export default function RecruitDetail() {
 
   return (
     <div id="recruit-detail-wrapper">
+      <div className='navi'></div>
       <div className='main'>
         <div className='postTop'>
           <div className='userInfo'>
@@ -28,6 +29,12 @@ export default function RecruitDetail() {
           <div className='postBox'>
             <div className='detailCount'>조회수 : 100</div>
             <div className='optionBox' onClick={toggleOptions}></div>
+            {showOptions && (
+              <div className="options">
+                <button className="editButton">수정하기</button>
+                <button className="deleteButton">삭제하기</button>
+              </div>
+            )}
           </div>
         </div>
         <div className='postDetail'>
@@ -52,12 +59,7 @@ export default function RecruitDetail() {
 
 
           </div>
-          {showOptions && (
-            <div className="options">
-              <button className="editButton">수정하기</button>
-              <button className="deleteButton">삭제하기</button>
-            </div>
-          )}
+          
           <div className='postImage'></div>
           <div className='postLocation'></div>
         </div>

@@ -40,16 +40,22 @@ export default function RecruitPost() {
       <div className={`map ${activeSection === 0 ? "visible" : "hidden"}`}>
         
       </div>
+      <div className="downScroll"></div>
       <div className={`middle ${activeSection === 1 ? "visible" : "hidden"}`}>
+        
         <div className="main">
           <div className="middle-top">
             <div className="pages">
               전체 <span className="emphasis">10건</span> | 페이지 <span className="emphasis">1/10</span>
             </div>
             <div className="post-filter">
-              <span className="emphasis">전체</span> | 모집중 | 마감됨
+              <div className="all">전체</div>
+              |
+              <div className="Recruiting">모집중</div>
+              |
+              <div className="Recruited">마감됨</div>
             </div>
-            <div className="write button"><span className="emphasis">글쓰기</span></div>
+            <div className="write-button"><span className="emphasis">글쓰기</span></div>
           </div>
           <div className="table">
             <div className="th">
