@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './Plogger.css';
 
 const Plogger: React.FC = () => {
   const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null);
