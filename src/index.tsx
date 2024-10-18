@@ -8,6 +8,11 @@ import SignUp from './views/Auth';
 import RecruitPost from './views/Recruit';
 import ActivePost from './views/Active';
 import QnaPost from './views/QNA';
+import {  RECRUIT_DETAIL_PATH, RECRUIT_PATH } from './constants';
+import RecruitDetail from './views/Recruit/Detail';
+
+
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -18,7 +23,8 @@ root.render(
       <NavigationBar />
       <Routes>
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/recruit" element={<RecruitPost />} />
+        <Route path={RECRUIT_PATH} element={<RecruitPost />} />
+        <Route path={RECRUIT_DETAIL_PATH} element={<RecruitDetail />} />
         <Route path="/active" element={<ActivePost />} />
         <Route path="/qna" element={<QnaPost />} />
       </Routes>
