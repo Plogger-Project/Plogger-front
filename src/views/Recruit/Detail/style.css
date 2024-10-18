@@ -148,6 +148,7 @@
     border-radius: 10px;
     text-align: center;
     cursor: pointer;
+    line-height: 165%;
     
 }
 #recruit-detail-wrapper .postInfo .right {
@@ -162,7 +163,9 @@
     background-image: url(/public/images/empty-heart.png);
     background-position: 50% 50%;
     cursor: pointer;
-
+}
+#recruit-detail-wrapper .postInfo .right .like.liked{
+    background-image: url(/public/images/full-heart.png);
 }
 
 #recruit-detail-wrapper .postInfo .right .scrap {
@@ -172,8 +175,11 @@
         background-image: url(/public/images/empty-scrap.png);
         background-position: 50% 50%;
         cursor: pointer;
-
 }
+#recruit-detail-wrapper .postInfo .right .scrap.scraped {
+    background-image: url(/public/images/full-scrap.png);
+}
+
 /* 하단 정보 및 댓글 섹션 */
 #recruit-detail-wrapper .postBottom {
     display: flex;
@@ -194,14 +200,14 @@
 #recruit-detail-wrapper .postBottom .comments input{
     border: 0px;
     flex-grow: 1;
-    width: 500px;
+    width: 550px;
     margin-right: 10px;
     
 }
 
 #recruit-detail-wrapper .postBottom .comments .commentButton{
     
-    width: 100px;
+    width: 80px;
     height: 30px;
     background-color: #4CAF50;
     color: white;
@@ -262,9 +268,8 @@
 #recruit-detail-wrapper .options {
     position: absolute;
     z-index: 9000;
-    top: 190px;
-    right: 30px;
-    box-sizing: border-box;
+    width: 80px;
+    
     display: flex;
     flex-direction: column;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
