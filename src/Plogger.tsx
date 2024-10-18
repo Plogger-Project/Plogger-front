@@ -5,6 +5,7 @@ import SignUp from './views/Auth';
 import RecruitPost from './views/Recruit';
 import ActivePost from './views/Active';
 import NavigationBar from './views/NavigationBar';
+import Main from './views/Main';
 
 import QnaPost from './views/QNA';
 import { RECRUIT_PATH, RECRUIT_DETAIL_PATH } from './constants';
@@ -25,6 +26,7 @@ function Plogger() {
     <>
       {showNavigationBar && <NavigationBar />}
       <Routes>
+        <Route path='/main' element={<Main />} />
         <Route path='/signup' element={<SignUp />} />
         <Route path={RECRUIT_PATH} element={<RecruitPost />} />
         <Route path={RECRUIT_DETAIL_PATH} element={<RecruitView />} />
