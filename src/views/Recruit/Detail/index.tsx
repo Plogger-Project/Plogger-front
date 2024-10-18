@@ -21,9 +21,9 @@ export default function RecruitDetail() {
                 <div className='location'>장소 : 부산시 부산진구 부전동 어딘가</div>
                 <div className='date'>작성일 : 2024. 10. 17</div>
               </div>
-              
+
             </div>
-            
+
           </div>
           <div className='postBox'>
             <div className='detailCount'>조회수 : 100</div>
@@ -49,7 +49,7 @@ export default function RecruitDetail() {
             내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용
             내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용
             내용내용내용내용내용내용내용내용내용
-            
+
 
           </div>
           {showOptions && (
@@ -64,16 +64,25 @@ export default function RecruitDetail() {
         <div className='postBottom'>
           <div className='postInfo'>
             <div className='left'>
-            <div className='members'>1/5</div>
+              <div className='members'>1/5</div>
               <div className='isCompleted'>마감</div>
             </div>
             <div className='right'>
-            <div className='like'>좋아요</div>
-              <div className='scrap'>스크랩</div>
+              <div className='like'></div>
+              <div className='scrap'></div>
             </div>
           </div>
           <div className='line'></div>
           <div className='comments'>
+            <div className='commentUserInfoWrite'>
+              <div className='profileImage'></div>
+              <div className='commentUserInfo-right'>
+                <div className='recruitCommentWriter'>작성자</div>
+                <input placeholder='댓글을 입력해주세요.'></input>
+                <div className='recruitCommentCreatedAt'>2024. 10. 17</div>
+              </div>
+              <div className='commentButton'>등록</div>
+            </div>
             <div className='commentUserInfo'>
               <div className='profileImage'></div>
               <div className='commentUserInfo-right'>

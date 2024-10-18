@@ -6,6 +6,7 @@
     flex-direction: column;
     width: 1134px;
     margin: 0 auto;
+    background-color: white;
 
 }
 
@@ -151,7 +152,25 @@
     flex-direction: row;
     gap: 10px
 }
+#recruit-detail-wrapper .postInfo .right .like{
+    width: 25px;
+    height: 25px;
+    background-size: contain;
+    background-image: url(/public/images/empty-heart.png);
+    background-position: 50% 50%;
+    cursor: pointer;
 
+}
+
+#recruit-detail-wrapper .postInfo .right .scrap {
+    width: 25px;
+        height: 25px;
+        background-size: contain;
+        background-image: url(/public/images/empty-scrap.png);
+        background-position: 50% 50%;
+        cursor: pointer;
+
+}
 /* 하단 정보 및 댓글 섹션 */
 #recruit-detail-wrapper .postBottom {
     display: flex;
@@ -168,6 +187,28 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+#recruit-detail-wrapper .postBottom .comments input{
+    border: 0px;
+    flex-grow: 1;
+    width: 500px;
+    margin-right: 10px;
+    
+}
+
+#recruit-detail-wrapper .postBottom .comments .commentButton{
+    
+    width: 100px;
+    height: 30px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    text-align: center;
 }
 
 #recruit-detail-wrapper .postBottom .profileImage {
@@ -187,6 +228,16 @@
     gap: 15px;
     padding-bottom: 10px;
     border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+}
+#recruit-detail-wrapper .commentUserInfoWrite {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+    
+    align-items: center;
+    
 }
 
 
@@ -208,7 +259,7 @@
 #recruit-detail-wrapper .options {
     position: absolute;
     top: 130px;
-    right: -85px;
+    
     display: flex;
     flex-direction: column;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
