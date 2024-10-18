@@ -47,6 +47,44 @@ export default function SignUp() {
         setAddress(value);
     }
 
+    // 아이디 중복 확인 버튼 클릭 핸들러
+    const onIdCheckClickHandler = () => {
+        if (!id) return;
+
+        // 추가
+    }
+
+    // 인증번호 전송 버튼 클릭 핸들러
+    const onTelNumberSendClickHandler = () => {
+        if (!telNumber) return;
+
+        const pattern = /^[0-9]{11}$^/;
+        const isMatched = pattern.test(telNumber);
+        if (!isMatched) {
+            // 추가
+            return;
+        }
+    }
+
+    // 인증번호 확인 버튼 클릭 핸들러
+    const onAuthNumberCheckClickHandler = () => {
+        if (!authNumber) return;
+
+        // 추가
+    }
+
+    // 주소 검색 버튼 클릭 핸들러
+    const onAddressSearchClickHandler = () => {
+        if (!address) return;
+
+        // 추가
+    }
+
+    // 회원가입 버튼 클릭 핸들러
+    const onSignUpButtonClickHandler = () => {
+        // 추가
+    }
+
     return (
         <div className='main-wrapper'>
             <div className='form-container'>
@@ -54,15 +92,15 @@ export default function SignUp() {
 
                 <div className='input-container'>
                     <InputBox label='이름' placeholder='이름을 입력해주세요.' value={name} type='text' onChange={onNameChangeHandler} />
-                    <InputBox label='아이디' placeholder='아이디를 입력해주세요.' value={id} type='text' buttonName='중복확인' onChange={onIdChangeHandler} />
+                    <InputBox label='아이디' placeholder='아이디를 입력해주세요.' value={id} type='text' buttonName='중복확인' onChange={onIdChangeHandler} onButtonClick={onIdCheckClickHandler} />
                     <InputBox label='비밀번호' placeholder='비밀번호를 입력해주세요.' value={password} type='password' onChange={onPasswordChangeHandler} />
                     <InputBox label='비밀번호 확인' placeholder='비밀번호를 다시 입력해주세요.' value={chkpassword} type='text' onChange={onChkPasswordChangeHandler} />
-                    <InputBox label='전화번호' placeholder='-빼고 입력해주세요.' value={telNumber} type='text' buttonName='인증번호 전송' onChange={onTelNumberChangeHandler} />
-                    <InputBox label='인증번호' placeholder='인증번호를 입력해주세요.' value={authNumber} type='text' buttonName='인증번호 확인' onChange={onAuthNumberChangeHandler} />
-                    <InputBox label='주소' placeholder='주소를 입력해주세요' value={address} type='text' buttonName='우편번호 검색' onChange={onAddressChangeHandler} />
+                    <InputBox label='전화번호' placeholder='-빼고 입력해주세요.' value={telNumber} type='text' buttonName='인증번호 전송' onChange={onTelNumberChangeHandler} onButtonClick={onTelNumberSendClickHandler} />
+                    <InputBox label='인증번호' placeholder='인증번호를 입력해주세요.' value={authNumber} type='text' buttonName='인증번호 확인' onChange={onAuthNumberChangeHandler} onButtonClick={onAuthNumberCheckClickHandler}/>
+                    <InputBox label='주소' placeholder='주소를 입력해주세요' value={address} type='text' buttonName='우편번호 검색' onChange={onAddressChangeHandler} onButtonClick={onAddressSearchClickHandler} />
                 </div>
 
-                <div className='sign-up-button'>회원가입</div>
+                <div className='sign-up-button' onClick={onSignUpButtonClickHandler}>회원가입</div>
 
                 <div className='sns-button-container'>
                     <div className='sns-button kakao'></div>
