@@ -1,7 +1,10 @@
 import React, { useRef, useState } from 'react'
 import "./style.css";
+import { useNavigate } from 'react-router-dom';
+import { RECRUIT_ABSOLUTE_PATH } from '../../../constants';
 
 export default function RecruitDetail() {
+
 
 
   const [isLiked, setIsLiked] = useState(false);
@@ -9,6 +12,14 @@ export default function RecruitDetail() {
   const [showOptions, setShowOptions] = useState(false);  // 옵션 항목 표시 여부
   const [optionPosition, setOptionPosition] = useState({ top: 0, left: 0 });  // 옵션 항목 위치
   const optionBoxRef = useRef<HTMLDivElement | null>(null);  // optionBox 참조
+
+  // function: 네비게이터 함수 //
+  const navigator = useNavigate();
+  
+  // event handler: 목록 버튼 클릭 이벤트 처리 //
+  const onListButtonClickHandler = () => {
+    navigator(RECRUIT_ABSOLUTE_PATH);
+  };
 
   const toggleLikeHandler = () => {
     setIsLiked(!isLiked);
@@ -18,7 +29,7 @@ export default function RecruitDetail() {
   }
 
   // 클릭 시 옵션 항목을 보여주거나 숨기는 함수
-  const toggleOptionsHandleer = () => {
+  const toggleOptionsHandler = () => {
     if (optionBoxRef.current) {
       const rect = optionBoxRef.current.getBoundingClientRect();  // optionBox 위치 가져오기
       setOptionPosition({
@@ -47,8 +58,9 @@ export default function RecruitDetail() {
 
           </div>
           <div className='postBox'>
+            <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
             <div className='detailCount'>조회수 : 100</div>
-            <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandleer}></div>
+            <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}></div>
             {showOptions && (
               <div
                 className="options"
