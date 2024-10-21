@@ -1,6 +1,8 @@
 import React, { ChangeEvent, useRef, useState } from 'react'
 import './style.css'
 import Gifticon from '../../types/gifticon.interface'
+import useGifticonPagination from '../../hooks/gifticon.pagination.hook';
+import Pagination from '../../components/Pagination';
 
 // variable: 기본 프로필 이미지 URL //
 const defaultProfileImageUrl = '/images/defaultImage.png';
@@ -49,6 +51,12 @@ export default function Mileage() {
 
     // state: 프로필 미리보기 URL 상태 //
     const [previewUrl, setPreviewUrl] = useState<string>(defaultProfileImageUrl);
+
+    // state: 페이징 관련 상태 //
+    const {
+      currentPage, totalPage, totalCount, viewList,
+      setTotalList, initViewList, ...paginationProps
+    } = useGifticonPagination<Gifticon>();
   
     // event handler: 기프티콘 구매 모달 버튼 클릭 이벤트 처리 함수 //
     const onPurchaseOpenHandler = () => {
@@ -88,8 +96,7 @@ export default function Mileage() {
     };
 
   return (
-    <div className='container'>
-      <div id='mg-wrapper'>
+    <div id='mg-wrapper'>
       <div className='nav' style={{height: '120px', backgroundColor:'gray'}}></div>
       <div className='top'>
           <div className='top-text'>보유한 마일리지: <span className='emphasis'>9999 포인트</span></div>
@@ -119,6 +126,21 @@ export default function Mileage() {
         <div className='item'>
           <img className='item-image' src='https://www.biz-con.co.kr/upload/images/202401/400_20240110172829279_4.jpg'/>
           <div className='item-name'>뿌링클+콜라 1.5L</div>
+          <div className='item-mileage'>마일리지: 300</div>
+        </div>
+        <div className='item'>
+          <img className='item-image' src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQz7pe8s9qLfv0Qw2tGQH8jFOJ2HbJJdM2_kg&s'/>
+          <div className='item-name'>페퍼로니 피자+1.5L</div>
+          <div className='item-mileage'>마일리지: 300</div>
+        </div>
+        <div className='item'>
+          <img className='item-image' src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQz7pe8s9qLfv0Qw2tGQH8jFOJ2HbJJdM2_kg&s'/>
+          <div className='item-name'>페퍼로니 피자+1.5L</div>
+          <div className='item-mileage'>마일리지: 300</div>
+        </div>
+        <div className='item'>
+          <img className='item-image' src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQz7pe8s9qLfv0Qw2tGQH8jFOJ2HbJJdM2_kg&s'/>
+          <div className='item-name'>페퍼로니 피자+1.5L</div>
           <div className='item-mileage'>마일리지: 300</div>
         </div>
         <div className='item'>
@@ -190,10 +212,11 @@ export default function Mileage() {
         </div>
       </div>
       }
-      <div className='bottom'>
-
+    <div className='bottom'>
+      <div>
+          <Pagination currentPage={currentPage} {...paginationProps} />
       </div>
     </div>
-    </div>
+  </div>
   )
 }
