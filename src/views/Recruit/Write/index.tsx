@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from 'react-icons/fa'; // 캘린더 아이콘을 위한 라이브러리
-import { RECRUIT_ABSOLUTE_PATH, RECRUIT_MYPAGE_PATH } from "../../../constants";
-import { Map, MapMarker, useKakaoLoader } from "react-kakao-maps-sdk";
+import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { useKakaoLoader } from "src/hooks";
+import { RECRUIT_ABSOLUTE_PATH, RECRUIT_MYPAGE_PATH } from "src/constants";
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
@@ -17,9 +18,7 @@ declare global {
 // variable : 카카오 맵 키 //
 const appkey = process.env.REACT_APP_KAKAO_MAP_KEY;
 
-const [loading, error] = useKakaoLoader({
-  appkey: appkey,
-});
+
 
 // variable: 기본 프로필 이미지 URL //
 const defaultImageUrl = 'https://cdn.icon-icons.com/icons2/2348/PNG/512/add_icon_143118.png';
@@ -46,53 +45,15 @@ export default function RecruitWrite() {
   const [isMapLoaded, setIsMapLoaded] = useState(false); // 지도 로드 상태
 
   // state: 이미지 미리보기 url 상태 //
-  // const [previewUrl, setPreviewUrl] = useState<string>(defaultImageUrl);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   // state: 이미지 입력 참조 //
   const imageInputRef = useRef<HTMLInputElement | null>(null);
 
-
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
-  
-  // // event handler: Kakao Map API 로드 //
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appkey}&autoload=false`;
-    script.async = true;
-
-    script.onload = () => {
-      window.kakao.maps.load(() => {
-        setIsMapLoaded(true);
-      });
-    };
-
-    document.head.appendChild(script);
-
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []);
-
-
- 
-  // event handler: 지도 로드 상태에 따라 렌더링 처리
-  const renderMap = () => {
-    if (!isMapLoaded) return null;
-
-    return (
-      <Map
-        center={{ lat: 35.152170407376424, lng: 129.05979624585217 }}
-        style={{ width: "100%", height: "360px" }}
-      >
-        <MapMarker position={{ lat: 35.152170407376424, lng: 129.05979624585217 }}>
-          <div style={{ color: "#000" }}>학원 위치</div>
-        </MapMarker>
-      </Map>
-    );
-  };
+  useKakaoLoader();
 
   // event handler: 목록 버튼 클릭 이벤트 처리 //
   const onListButtonClickHandler = () => {
@@ -257,7 +218,14 @@ export default function RecruitWrite() {
         <div className='input-box'>
           <div className='input-label'>위치</div>
           <div className="kakaomap" ref={mapRef} >
-            {renderMap()}
+            <Map
+              center={{ lat: 35.152170407376424, lng: 129.05979624585217 }}
+              style={{ width: "100%", height: "360px" }}
+            >
+              <MapMarker position={{ lat: 35.152170407376424, lng: 129.05979624585217 }}>
+                <div style={{ color: "#000" }}>학원 위치</div>
+              </MapMarker>
+            </Map>
           </div>
         </div>
 
