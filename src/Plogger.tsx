@@ -17,6 +17,7 @@ import Mileage from './views/Mileage';
 
 import RecruitUpdate from './views/Recruit/Update';
 import RecruitWrite from './views/Recruit/Write';
+import MyPageUpdate from './views/MyPage/Update';
 
 
 // component: root path 컴포넌트 //
