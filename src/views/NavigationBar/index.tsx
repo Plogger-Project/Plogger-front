@@ -1,11 +1,26 @@
 import { useState } from 'react';
 import './style.css'
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ACTIVE_PATH, QNA_PATH, RECRUIT_PATH } from '../../constants';
 
 export default function NavigationBar() {
 
+    // state: path 상태 //
+    const { pathname } = useLocation();
+
     // state: 모달 팝업 상태 //
     const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+    // variable: 경로 이름 //
+    const path =
+        pathname.startsWith(RECRUIT_PATH) ? '구인게시판' :
+        pathname.startsWith(ACTIVE_PATH) ? '활동게시판' :
+        pathname.startsWith(QNA_PATH) ? 'Q&A' : '';
+
+    // variable : 특정 경로 여부 변수 //
+    const isReruit = pathname.startsWith(RECRUIT_PATH);
+    const isActive = pathname.startsWith(ACTIVE_PATH);
+    const isQnA = pathname.startsWith(QNA_PATH);
 
     // function: 네비게이터 함수 //
     const navigator = useNavigate();
@@ -46,9 +61,9 @@ export default function NavigationBar() {
         <div id='navigation-bar'>
             <div className='logo' onClick={onLogoClickHandler}></div>
             <div className='manu'>
-                <div className='manu-recruit' onClick={onRecruitClickHandler}>구인게시판</div>
-                <div className='manu-active' onClick={onActiveClickHandler}>활동게시판</div>
-                <div className='manu-qna' onClick={onQnaClickHandler}>Q&A</div>
+                <div className={`manu-recruit ${isReruit ? 'active' : ''}`} onClick={onRecruitClickHandler}>구인게시판</div>
+                <div className={`manu-active ${isActive ? 'active' : ''}`} onClick={onActiveClickHandler}>활동게시판</div>
+                <div className={`manu-qna ${isQnA ? 'active' : ''}`} onClick={onQnaClickHandler}>Q&A</div>
             </div>
             {location.pathname !== '/' &&
             <input className='input-box' placeholder='검색어를 입력하세요.' />

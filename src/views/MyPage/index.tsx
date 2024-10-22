@@ -1,25 +1,34 @@
-import React, { ChangeEvent, useRef, useState } from 'react'
+import React, { ChangeEvent, KeyboardEvent, useRef, useState } from 'react'
 import './style.css'
 import { useNavigate, useNavigation } from 'react-router-dom'
 import InputBox from '../../components/InputBox';
 
 export default function Mypage() {
+  // state 페이징 관련 상태 //
+ 
 
   // state: 모달 팝업 상태 //
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
+  // state: 프로필 상태 //
+  const [input, onInput] = useState<boolean>(false);
+  const [centerce, setCentence] = useState<string>('');
+
   // state: 회원가입 상태 //
   const [name, setName] = useState<string>('');
-  const [id, setId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [chkpassword, setChkPassword] = useState<string>('');
   const [telNumber, setTelNumber] = useState<string>('');
   const [authNumber, setAuthNumber] = useState<string>('');
   const [address, setAddress] = useState<string>('');
 
+
   // state: 이미지 상태 //
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [imageUrl, setImageUrl] = useState<string>('');
+
+  // state: 내 구인 게시판 목록 상태 //
+  const [recruitContents, setRecruitContents] = useState<string>('');
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -87,6 +96,31 @@ export default function Mypage() {
       current.click();
   };
 
+  // event handler: sentence 버튼 클릭 이벤트 처리 //
+  const onCentenceButtonClickHandler = () => {
+    onInput(!input);
+  }
+
+  // event handler: sentence 변경 이벤트 처리 //
+    const onCentenceChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+      const {value} = event.target;
+      const regex = /^.{0,30}$/;
+      const isMatched =  regex.test(value);
+      if (!isMatched) return;
+      setCentence(value);
+    }
+  
+  // event handler: sentece 키다운 이벤트 처리 //
+  const onCentenceKeydownHandler = (event:KeyboardEvent<HTMLInputElement>) => {
+    const { key } = event;
+    if (key === 'Enter') onCentenceButtonClickHandler();
+  }
+
+  // event handler: my recruit 클릭 이벤트 처리 // 
+  const onMyRecruitClickHandler = () => {
+
+  }
+
   return (
     <div id='mypage'>
       <div className='top'>
@@ -99,8 +133,12 @@ export default function Mypage() {
             </div>
             <div className='address'>주소</div>
             <div className='sentence-box'>
-              <div className='sentence'>플로깅 파이팅</div>
-              <div className='sentence-change'></div>
+              { input ? 
+              <input className='input' type='text' value={centerce} onChange={onCentenceChangeHandler} placeholder='30글자 내로 입력하세요.' onKeyDown={onCentenceKeydownHandler}
+              autoFocus />
+              : <div className='sentence'>{centerce || ''}</div>
+              }
+              <div className='sentence-change' onClick={onCentenceButtonClickHandler}></div>
             </div>
           </div>
         </div>
@@ -132,10 +170,14 @@ export default function Mypage() {
       </div>
       <div className='mypage-bottom'>
         <div className='table-contents'>
-          <div className='my-recruit'></div>
-          <div className='my-active'></div>
-          <div className='my-mileage'></div>
-          <div className='my-scrap'></div>
+          <div className='my-recruit'><span>구인 게시글</span></div>
+          <div className='line'>
+          <div className='my-active'><span>활동 게시글</span></div>
+          </div>
+          <div className='line-right'>
+          <div className='my-mileage'><span>마일리지 내역</span></div>
+          </div>
+          <div className='my-scrap'><span>스크랩 글</span></div>
         </div>
         <div className='table'></div>
       </div>

@@ -51,6 +51,13 @@
     color: rgba(0, 0, 0, 1);
 }
 
+#navigation-bar .manu-recruit.active,
+#navigation-bar .manu-active.active,
+#navigation-bar .manu-qna.active {
+    color: rgba(0, 95, 65, 1);
+    font-weight: 600;
+}
+
 #navigation-bar .input-box {
     width: 400px;
     height: 25px;
