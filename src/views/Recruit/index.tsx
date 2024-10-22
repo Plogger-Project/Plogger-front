@@ -49,7 +49,7 @@ export default function RecruitPost() {
             <div className="post-filter">
               <span className="emphasis">전체</span> | 모집중 | 마감됨
             </div>
-            <div className="write button"><span className="emphasis">글쓰기</span></div>
+            <div className="button write"><span className="emphasis">글쓰기</span></div>
           </div>
           <div className="table">
             <div className="th">
