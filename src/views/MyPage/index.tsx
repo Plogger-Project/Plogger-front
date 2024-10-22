@@ -191,12 +191,12 @@ export default function Mypage() {
               <div className='change' onClick={onImageButtonClickHandler}></div>
             </div>
             <div className='input-container'>
-              <InputBox label='이름' placeholder='이름을 입력해주세요.' value={name} type='text' onChange={onNameChangeHandler} />
-              <InputBox label='비밀번호' placeholder='비밀번호를 입력해주세요.' value={password} type='password' onChange={onPasswordChangeHandler} />
-              <InputBox label='비밀번호 확인' placeholder='비밀번호를 다시 입력해주세요.' value={chkpassword} type='text' onChange={onChkPasswordChangeHandler} />
-              <InputBox label='전화번호' placeholder='-빼고 입력해주세요.' value={telNumber} type='text' buttonName='인증번호 전송' onChange={onTelNumberChangeHandler} />
-              <InputBox label='인증번호' placeholder='인증번호를 입력해주세요.' value={authNumber} type='text' buttonName='인증번호 확인' onChange={onAuthNumberChangeHandler} />
-              <InputBox label='주소' placeholder='주소를 입력해주세요' value={address} type='text' buttonName='우편번호 검색' onChange={onAddressChangeHandler} />
+              <InputBox label='이름' placeholder='이름을 입력해주세요.' value={name} type='text' onChange={onNameChangeHandler} message={''} messageError={false} />
+              <InputBox label='비밀번호' placeholder='비밀번호를 입력해주세요.' value={password} type='password' onChange={onPasswordChangeHandler} message={''} messageError={false} />
+              <InputBox label='비밀번호 확인' placeholder='비밀번호를 다시 입력해주세요.' value={chkpassword} type='text' onChange={onChkPasswordChangeHandler} message={''} messageError={false} />
+              <InputBox label='전화번호' placeholder='-빼고 입력해주세요.' value={telNumber} type='text' buttonName='인증번호 전송' onChange={onTelNumberChangeHandler} message={''} messageError={false} />
+              <InputBox label='인증번호' placeholder='인증번호를 입력해주세요.' value={authNumber} type='text' buttonName='인증번호 확인' onChange={onAuthNumberChangeHandler} message={''} messageError={false} />
+              <InputBox label='주소' placeholder='주소를 입력해주세요' value={address} type='text' buttonName='우편번호 검색' onChange={onAddressChangeHandler} message={''} messageError={false} />
             </div>
             <div className='button-container'>
                     <div className='change-button'>정보수정</div>
