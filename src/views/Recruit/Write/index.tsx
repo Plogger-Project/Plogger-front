@@ -14,10 +14,12 @@ declare global {
     kakao: any;
   }
 }
-const script = document.createElement('script');
-script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=%REACT_APP_KAKAO_MAP_KEY%&autoload=false'; // YOUR_APP_KEY를 발급받은 API 키로 교체
-document.head.appendChild(script);
+// variable : 카카오 맵 키 //
+const appkey = process.env.REACT_APP_KAKAO_MAP_KEY;
 
+const [loading, error] = useKakaoLoader({
+  appkey: appkey,
+});
 
 // variable: 기본 프로필 이미지 URL //
 const defaultImageUrl = 'https://cdn.icon-icons.com/icons2/2348/PNG/512/add_icon_143118.png';
@@ -54,33 +56,28 @@ export default function RecruitWrite() {
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
-
-  // event handler: Kakao Map API 로드 //
+  
+  // // event handler: Kakao Map API 로드 //
   useEffect(() => {
     const script = document.createElement('script');
-    const appkey = process.env.REACT_APP_KAKAO_MAP_KEY;
-    script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appkey}&autoload=false';
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appkey}&autoload=false`;
     script.async = true;
 
     script.onload = () => {
       window.kakao.maps.load(() => {
-        setIsMapLoaded(true); // API가 로드되었음을 알림
+        setIsMapLoaded(true);
       });
     };
 
     document.head.appendChild(script);
 
-    // 클린업 함수로 script 제거
     return () => {
       document.head.removeChild(script);
     };
   }, []);
 
 
-  useKakaoLoader({
-    appkey: "%REACT_APP_KAKAO_MAP_KEY%" // 발급 받은 APPKEY
-
-  })
+ 
   // event handler: 지도 로드 상태에 따라 렌더링 처리
   const renderMap = () => {
     if (!isMapLoaded) return null;
@@ -175,8 +172,7 @@ export default function RecruitWrite() {
     setIsDatePickerOpen((prev) => !prev); // 달력 열기/닫기 상태 변경
   };
 
-
-
+ 
 
 
   // event handler: 등록 버튼 이벤트 처리 함수 //
