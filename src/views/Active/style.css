@@ -7,7 +7,7 @@
     height: 100vh;
     overflow: hidden;
     margin: 0 auto;
-        /* 중앙 정렬 */
+    /* 중앙 정렬 */
 }
 
 #active-post-wrapper .top {
@@ -15,20 +15,23 @@
     justify-content: center;
     background-color: rgb(198, 223, 223);
     width: 100%;
-    height: 60px;
+    height: 120px;
     align-items: center;
     position: sticky;
     top: 0;
     z-index: 10;
 }
 
-
+#active-post-wrapper .main{
+    min-width: 800px;
+}
 
 #active-post-wrapper .middle {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    
     height: 100vh;
 
     transition: opacity 0.5s ease;
@@ -61,19 +64,38 @@
 
 #active-post-wrapper .middle-top .post-filter {
     flex: 5;
-    text-align: center;
+    justify-content: right;
+    margin-right: 15px;
+    gap: 5px;
+    display: flex;
+    flex-direction: row;
 }
 
-#active-post-wrapper .middle-top .write {
-    flex: 1;
-    text-align: right;
+#active-post-wrapper .middle-top .post-filter .all {
+    font-weight: 600;
+
+}
+
+#active-post-wrapper .middle-top .post-filter .all,
+#active-post-wrapper .middle-top .post-filter .activeing,
+#active-post-wrapper .middle-top .post-filter .activeed {
+
+    cursor: pointer;
+}
+
+#active-post-wrapper .middle-top .write-button {
+
+    width: 60px;
+    height: 25px;
     border: 1px solid rgba(25, 25, 25, 1);
     background-color: rgba(132, 162, 100, 1);
     text-align: center;
+    cursor: pointer;
+    line-height: 175%;
 }
 
 #active-post-wrapper .table {
-    width: 800px;
+    width: 100%;
     margin: 0 auto;
     font-family: 'Arial', sans-serif;
     border-collapse: collapse;
@@ -121,7 +143,7 @@
 
 #active-post-wrapper .td-active-title {
     flex: 1;
-
+    cursor: pointer;
 }
 
 #active-post-wrapper .td-active-writer,

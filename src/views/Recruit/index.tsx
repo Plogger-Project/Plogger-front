@@ -1,9 +1,28 @@
 import React, { useEffect, useState } from "react";
 import "./style.css";
+import { useNavigate } from "react-router-dom";
+import { RECRUIT_ABSOLUTE_PATH, RECRUIT_DETAIL_ABSOLUTE_PATH, RECRUIT_WRITE_ABSOLUTE_PATH } from "../../constants";
 
 export default function RecruitPost() {
   
   const [activeSection, setActiveSection] = useState(0); // 현재 섹션을 나타내는 상태
+
+
+  // function: 네비게이터 함수 //
+  const navigator = useNavigate();
+
+  // event handler: 글쓰기 버튼 클릭 이벤트 처리 //
+  const onWriteButtonClickHandler = () => {
+    navigator(RECRUIT_WRITE_ABSOLUTE_PATH);
+  };
+
+  // event handler: 작성글 클릭 이벤트 처리 //
+  const onDetailButtonClickHandler = () => {
+    navigator(RECRUIT_DETAIL_ABSOLUTE_PATH);
+  };
+  
+  
+
 
   const data = [
     { recruitPostId: 10, isCompleted: "모집중", recruitPostTitle: "플로깅 같이 하실분 모집합니다.", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "1/5", dDay: "D - 4", recruitPostCreatedAt: "10.08" },
@@ -40,16 +59,24 @@ export default function RecruitPost() {
       <div className={`map ${activeSection === 0 ? "visible" : "hidden"}`}>
         
       </div>
+      <div className="downScroll"></div>
       <div className={`middle ${activeSection === 1 ? "visible" : "hidden"}`}>
+        
         <div className="main">
           <div className="middle-top">
             <div className="pages">
               전체 <span className="emphasis">10건</span> | 페이지 <span className="emphasis">1/10</span>
             </div>
             <div className="post-filter">
-              <span className="emphasis">전체</span> | 모집중 | 마감됨
+              <div className="all">전체</div>
+              |
+              <div className="Recruiting">모집중</div>
+              |
+              <div className="Recruited">마감됨</div>
             </div>
-            <div className="button write"><span className="emphasis">글쓰기</span></div>
+
+            <div className="write-button" onClick={onWriteButtonClickHandler}><span className="emphasis">글쓰기</span></div>
+
           </div>
           <div className="table">
             <div className="th">
@@ -67,7 +94,7 @@ export default function RecruitPost() {
               <div className="tr" key={item.recruitPostId}>
                 <div className="td-recruit-number">{item.recruitPostId}</div>
                 <div className="td-recruit-isCompleted">{item.isCompleted}</div>
-                <div className="td-recruit-title">{item.recruitPostTitle}</div>
+                <div className="td-recruit-title" onClick={onDetailButtonClickHandler}>{item.recruitPostTitle}</div>
                 <div className="td-recruit-writer">{item.recruitPostWriter}</div>
                 <div className="td-recruit-like-count">{item.recruitLike}</div>
                 <div className="td-recruit-view-count">{item.recruitView}</div>
