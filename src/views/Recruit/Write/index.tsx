@@ -58,7 +58,8 @@ export default function RecruitWrite() {
   // event handler: Kakao Map API 로드 //
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=REACT_APP_KAKAO_MAP_KEY&autoload=false';
+    const appkey = process.env.REACT_APP_KAKAO_MAP_KEY;
+    script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appkey}&autoload=false';
     script.async = true;
 
     script.onload = () => {
