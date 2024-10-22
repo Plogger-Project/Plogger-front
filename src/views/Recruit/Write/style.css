@@ -72,7 +72,12 @@
     background-image: url(/public/images/img.png);
     background-position: 50% 50%;
     background-size: cover;
+    cursor: pointer;
 
+}
+
+#recruit-write-wrapper .userInfo-right .name{
+    cursor: pointer;
 }
 
 #recruit-write-wrapper .input-box {
@@ -187,10 +192,7 @@
     background-position: 50% 50%;
     background-repeat: no-repeat;
 }
-#recruit-write-wrapper .kakaomaps{
-    width: 100%;
-    height: 300px;
-}
+
 
 #recruit-write-wrapper .bottom{
     display: flex;

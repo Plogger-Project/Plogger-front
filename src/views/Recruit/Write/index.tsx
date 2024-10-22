@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from 'react-icons/fa'; // 캘린더 아이콘을 위한 라이브러리
-import { RECRUIT_ABSOLUTE_PATH } from "../../../constants";
+import { RECRUIT_ABSOLUTE_PATH, RECRUIT_MYPAGE_PATH } from "../../../constants";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
@@ -55,37 +55,52 @@ export default function RecruitWrite() {
   const navigator = useNavigate();
 
 
-  // // effect : Kakao Map API 로드 //
-  // useEffect(() => {
-  //   // Kakao Map API 로드
-  //   const script = document.createElement('script');
-  //   script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=204ef8922cea256c98e6160f452ab511&autoload=false'; // YOUR_APP_KEY를 발급받은 API 키로 교체
-  //   document.head.appendChild(script);
+  // event handler: Kakao Map API 로드 //
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=204ef8922cea256c98e6160f452ab511&autoload=false';
+    script.async = true;
 
-  //   script.onload = () => {
-  //     window.kakao.maps.load(() => {
-  //       const mapContainer = document.getElementById('kakaomap'); // Kakao Map을 표시할 div
-  //       const mapOptions = {
-  //         center: new window.kakao.maps.LatLng(35.152170407376424, 129.05979624585217), // 초기 위치 (위도, 경도)
-  //         level: 3, // 확대 레벨
-  //       };
-  //       const map = new window.kakao.maps.Map(mapContainer, mapOptions);
+    script.onload = () => {
+      window.kakao.maps.load(() => {
+        setIsMapLoaded(true); // API가 로드되었음을 알림
+      });
+    };
 
-  //       // 마커 추가 예시 (선택사항)
-  //       const markerPosition = new window.kakao.maps.LatLng(35.152170407376424, 129.05979624585217);
-  //       const marker = new window.kakao.maps.Marker({
-  //         position: markerPosition,
-  //       });
-  //       marker.setMap(map);
-  //     });
-  //   };
-  // }, []);
+    document.head.appendChild(script);
+
+    // 클린업 함수로 script 제거
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
+  // 지도 로드 상태에 따라 렌더링 처리
+  const renderMap = () => {
+    if (!isMapLoaded) return null;
+
+    return (
+      <Map
+        center={{ lat: 35.152170407376424, lng: 129.05979624585217 }}
+        style={{ width: "100%", height: "360px" }}
+      >
+        <MapMarker position={{ lat: 35.152170407376424, lng: 129.05979624585217 }}>
+          <div style={{ color: "#000" }}>학원 위치</div>
+        </MapMarker>
+      </Map>
+    );
+  };
 
   // event handler: 목록 버튼 클릭 이벤트 처리 //
   const onListButtonClickHandler = () => {
     navigator(RECRUIT_ABSOLUTE_PATH);
   };
- 
+
+  // event handler: 마이페이지 이동 이벤트 처리 //
+  const onMypageButtonClickHandler = () => {
+    navigator(RECRUIT_MYPAGE_PATH);
+  };
+
 
   // event handler: 구인 작성 제목 변경 이벤트 처리 함수 //
   const onTitleChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -179,9 +194,9 @@ export default function RecruitWrite() {
       <div id='recruit-write-input-container'>
         <div className='userInfo'>
           <div className='userInfo-left'>
-            <div className='profileImage'></div>
+            <div className='profileImage' onClick={onMypageButtonClickHandler}></div>
             <div className='userInfo-right'>
-              <div className='name'>qwer1234</div>
+              <div className='name' onClick={onMypageButtonClickHandler}>qwer1234</div>
               <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
             </div>
           </div>
@@ -239,16 +254,8 @@ export default function RecruitWrite() {
         </div>
         <div className='input-box'>
           <div className='input-label'>위치</div>
-          {/* <div id='kakaomap' style={{ width: '100%', height: '300px' }}></div> */}
-          <div className="kakaomaps" ref={mapRef} >
-          <Map
-            center={{ lat: 35.152170407376424, lng: 129.05979624585217 }}
-            style={{ width: "100%", height: "360px" }}
-          >
-            <MapMarker position={{ lat: 35.152170407376424, lng: 129.05979624585217 }}>
-              <div style={{ color: "#000" }}>학원 위치</div>
-            </MapMarker>
-          </Map>
+          <div className="kakaomap" ref={mapRef} >
+            {renderMap() }
           </div>
         </div>
 

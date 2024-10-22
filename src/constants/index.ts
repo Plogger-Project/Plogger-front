@@ -9,6 +9,8 @@ export const RECRUIT_WRITE_PATH = `${RECRUIT_PATH}/write`;
 // export const RECRUIT_UPDATE_PATH = (recruitPostId: string | number) => `${recruitPostId}/update`;
 export const RECRUIT_UPDATE_PATH = `${RECRUIT_PATH}/update`;
 
+export const RECRUIT_MYPAGE_PATH = `${RECRUIT_PATH}/mypage`;
+
 
 // variable: 절대 경로 상수 //
 export const ROOT_ABSOLUTE_PATH = ROOT_PATH;
