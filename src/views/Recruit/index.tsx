@@ -74,7 +74,9 @@ export default function RecruitPost() {
               |
               <div className="Recruited">마감됨</div>
             </div>
+
             <div className="write-button" onClick={onWriteButtonClickHandler}><span className="emphasis">글쓰기</span></div>
+
           </div>
           <div className="table">
             <div className="th">
