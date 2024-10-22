@@ -6,13 +6,15 @@ interface Props {
     type: 'text' | 'password';
     placeholder: string;
     value: string;
+    message: string;
+    messageError: boolean;
     buttonName?: string;
 
     onChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onButtonClick?: () => void;
 }
 
-export default function InputBox({ label, type, placeholder, value, buttonName, onChange, onButtonClick }: Props) {
+export default function InputBox({ label, type, placeholder, value, message, messageError, buttonName, onChange, onButtonClick }: Props) {
     return (
         <div className='input-box'>
             <div className='label'>{label}</div>
@@ -20,6 +22,7 @@ export default function InputBox({ label, type, placeholder, value, buttonName, 
                 <input value={value} type={type} placeholder={placeholder} onChange={onChange} />
                 {buttonName && <button className='button' onClick={onButtonClick}>{buttonName}</button>}
             </div>
+            <div className='message'>{message}</div>
         </div>
     )
 }

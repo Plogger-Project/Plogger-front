@@ -22,14 +22,21 @@
     z-index: 10;
 }
 
+<<<<<<< HEAD
+=======
+#recruit-post-wrapper .main {
+    min-width: 800px;
+}
+
+>>>>>>> 9dc1e8cb990fb96a5ee360f9a490874644dabeec
 
 #recruit-post-wrapper .map {
-    width: 100%;
-    width: 800px;
-    height: 100vh;
-    margin: 50px 50px;
+    width: 80%;
+    height: 80%;
+    
+    background-size: contain;
     background-image: url(/public/images/sample_image.png);
-    background-size: cover;
+    background-repeat: no-repeat;
     background-position: 50% 50%;
     display: flex;
     justify-content: center;
@@ -40,6 +47,17 @@
 
 #recruit-post-wrapper .map.hidden {
     display: none;
+}
+
+#recruit-post-wrapper .downScroll {
+    padding-top: 20px;
+    width: 50px;
+    height: 50px;
+
+    background-size: contain;
+    background-image: url(/public/images/downScroll.png);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
 }
 
 
@@ -81,15 +99,37 @@
 
 #recruit-post-wrapper .middle-top .post-filter {
     flex: 5;
-    text-align: center;
+    justify-content: right;
+    margin-right: 15px;
+    gap: 5px;
+    display: flex;
+    flex-direction: row;
 }
 
-#recruit-post-wrapper .middle-top .write {
-    flex: 1;
+
+#recruit-post-wrapper .middle-top .post-filter .all{
+    font-weight: 600;
+    
+}
+#recruit-post-wrapper .middle-top .post-filter .all,
+#recruit-post-wrapper .middle-top .post-filter .Recruiting,
+#recruit-post-wrapper .middle-top .post-filter .Recruited {
+    
+    cursor: pointer;
+}
+
+#recruit-post-wrapper .middle-top .write-button {
+    
+    width: 60px;
+    height: 25px;
+  flex: 1;
     text-align: right;
+
     border: 1px solid rgba(25, 25, 25, 1);
     background-color: rgba(132, 162, 100, 1);
     text-align: center;
+    cursor: pointer;
+    line-height: 175%;
 }
 
 #recruit-post-wrapper .table {
@@ -114,7 +154,7 @@
     display: flex;
     flex-direction: row;
     text-align: center;
-    
+    border-bottom: 1px solid #ccc;
 
 }
 
@@ -141,6 +181,7 @@
 
 #recruit-post-wrapper .td-recruit-title {
     flex: 1;
+    cursor: pointer;
 
 }
 

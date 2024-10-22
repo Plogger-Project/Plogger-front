@@ -21,24 +21,20 @@ export default function ActivePost() {
         <div className="main">
           <div className="middle-top">
             <div className="pages">전체 <span className='emphasis'>10건</span> | 페이지 <span className='emphasis'>1/10</span></div>
-            
-            <div className="write button"><span className='emphasis'>글쓰기</span></div>
+            <div className="write-button"><span className="emphasis">글쓰기</span></div>
           </div>
           <div className="table">
             <div className="th">
               <div className="td-active-number">번호</div>
-              
               <div className="td-active-title">제목</div>
               <div className="td-active-writer">작성자</div>
               <div className="td-active-like-count">추천수</div>
               <div className="td-active-view-count">조회수</div>
-              
               <div className="td-active-create-date">날짜</div>
             </div>
             {data.map((item) => (
               <div className="tr" key={item.recruitPostId}>
                 <div className="td-active-number">{item.recruitPostId}</div>
-                
                 <div className="td-active-title">{item.recruitPostTitle}</div>
                 <div className="td-active-writer">{item.recruitPostWriter}</div>
                 <div className="td-active-like-count">{item.recruitLike}</div>
