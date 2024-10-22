@@ -13,6 +13,7 @@ export const ACTIVE_PATH = '/active';
 export const QNA_PATH = '/qna';
 
 
+
 // variable: 절대 경로 상수 //
 export const ROOT_ABSOLUTE_PATH = ROOT_PATH;
 export const AUTH_ABSOLUTE_PATH = AUTH_PATH;
