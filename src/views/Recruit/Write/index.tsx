@@ -6,7 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from 'react-icons/fa'; // 캘린더 아이콘을 위한 라이브러리
 import { RECRUIT_ABSOLUTE_PATH, RECRUIT_MYPAGE_PATH } from "../../../constants";
-import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { Map, MapMarker, useKakaoLoader } from "react-kakao-maps-sdk";
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
@@ -15,7 +15,7 @@ declare global {
   }
 }
 const script = document.createElement('script');
-script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=204ef8922cea256c98e6160f452ab511&autoload=false'; // YOUR_APP_KEY를 발급받은 API 키로 교체
+script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=%REACT_APP_KAKAO_MAP_KEY%&autoload=false'; // YOUR_APP_KEY를 발급받은 API 키로 교체
 document.head.appendChild(script);
 
 
@@ -58,7 +58,7 @@ export default function RecruitWrite() {
   // event handler: Kakao Map API 로드 //
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=204ef8922cea256c98e6160f452ab511&autoload=false';
+    script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=REACT_APP_KAKAO_MAP_KEY&autoload=false';
     script.async = true;
 
     script.onload = () => {
@@ -75,7 +75,12 @@ export default function RecruitWrite() {
     };
   }, []);
 
-  // 지도 로드 상태에 따라 렌더링 처리
+
+  useKakaoLoader({
+    appkey: "%REACT_APP_KAKAO_MAP_KEY%" // 발급 받은 APPKEY
+
+  })
+  // event handler: 지도 로드 상태에 따라 렌더링 처리
   const renderMap = () => {
     if (!isMapLoaded) return null;
 
@@ -169,7 +174,7 @@ export default function RecruitWrite() {
     setIsDatePickerOpen((prev) => !prev); // 달력 열기/닫기 상태 변경
   };
 
-  
+
 
 
 
@@ -207,7 +212,7 @@ export default function RecruitWrite() {
         </div>
         <div className='input-box'>
           <div className='input-label'>내용</div>
-          <textarea className='textarea' style={{height:'200px'}} value={contents} placeholder='내용을 입력해주세요.' onChange={onContentsChangeHandler} />
+          <textarea className='textarea' style={{ height: '200px' }} value={contents} placeholder='내용을 입력해주세요.' onChange={onContentsChangeHandler} />
         </div>
         <div className='input-box'>
           <div className='input-label'>최소 인원</div>
@@ -216,38 +221,38 @@ export default function RecruitWrite() {
         <div className='input-box'>
           <div className='input-label'>마감 일자</div>
           <div className="date-picker-wrapper">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <input
-              className='input date'
-              value={dday}
-              readOnly
-              placeholder="마감 일자를 선택해주세요."
-            />
-            <button onClick={toggleDatePicker} style={{ marginLeft: '10px', cursor: 'pointer' }}>
-              <FaCalendarAlt size={20} />
-            </button>
-            
-            {isDatePickerOpen && (
-              <DatePicker
-                selected={selectedDate}
-                onChange={onDateChangeHandler}
-                minDate={new Date()}
-                onClickOutside={() => setIsDatePickerOpen(false)} // 달력 밖을 클릭하면 닫힘
-                dateFormat={"yyyy-MM-dd"}
-                inline
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <input
+                className='input date'
+                value={dday}
+                readOnly
+                placeholder="마감 일자를 선택해주세요."
               />
+              <button onClick={toggleDatePicker} style={{ marginLeft: '10px', cursor: 'pointer' }}>
+                <FaCalendarAlt size={20} />
+              </button>
+
+              {isDatePickerOpen && (
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={onDateChangeHandler}
+                  minDate={new Date()}
+                  onClickOutside={() => setIsDatePickerOpen(false)} // 달력 밖을 클릭하면 닫힘
+                  dateFormat={"yyyy-MM-dd"}
+                  inline
+                />
               )}
             </div>
           </div>
         </div>
         <div className='input-box'>
           <div className='input-label'>이미지</div>
-          
+
           <div className={`image ${previewUrl ? 'uploaded' : 'preview'}`} onClick={onImageClickHandler}>
             {previewUrl ? (
               <img src={previewUrl} alt='미리보기 이미지' />
             ) : (
-              <div></div> 
+              <div></div>
             )}
             <input ref={imageInputRef} style={{ display: 'none' }} type='file' accept='image/*' onChange={onImageInputChangeHandler} />
           </div>
@@ -255,7 +260,7 @@ export default function RecruitWrite() {
         <div className='input-box'>
           <div className='input-label'>위치</div>
           <div className="kakaomap" ref={mapRef} >
-            {renderMap() }
+            {renderMap()}
           </div>
         </div>
 
@@ -264,7 +269,7 @@ export default function RecruitWrite() {
           <div className='button disable' >취소</div>
         </div>
       </div>
-      
+
     </div>
   )
 }
