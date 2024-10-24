@@ -2,27 +2,23 @@ import React, { useEffect, useState } from "react";
 import "./style.css";
 import { useNavigate } from "react-router-dom";
 import { RECRUIT_ABSOLUTE_PATH, RECRUIT_DETAIL_ABSOLUTE_PATH, RECRUIT_WRITE_ABSOLUTE_PATH } from "../../constants";
+import { url } from "inspector";
 
 export default function RecruitPost() {
-  
-  const [activeSection, setActiveSection] = useState(0); // 현재 섹션을 나타내는 상태
 
 
-  // function: 네비게이터 함수 //
+
+  const [scrollY, setScrollY] = useState(0); // 스크롤 위치
+  const [showPosts, setShowPosts] = useState(false); // 게시글 표시 상태
   const navigator = useNavigate();
 
-  // event handler: 글쓰기 버튼 클릭 이벤트 처리 //
   const onWriteButtonClickHandler = () => {
     navigator(RECRUIT_WRITE_ABSOLUTE_PATH);
   };
 
-  // event handler: 작성글 클릭 이벤트 처리 //
   const onDetailButtonClickHandler = () => {
     navigator(RECRUIT_DETAIL_ABSOLUTE_PATH);
   };
-  
-  
-
 
   const data = [
     { recruitPostId: 10, isCompleted: "모집중", recruitPostTitle: "플로깅 같이 하실분 모집합니다.", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "1/5", dDay: "D - 4", recruitPostCreatedAt: "10.08" },
@@ -38,30 +34,30 @@ export default function RecruitPost() {
   ];
 
   const handleScroll = (event: WheelEvent) => {
-    if (event.deltaY > 0) {
-      // 아래로 스크롤
-      setActiveSection((prev) => (prev < 1 ? prev + 1 : prev)); // 다음 섹션으로 이동
+    event.preventDefault();
+    if (scrollY < 100 && event.deltaY > 0) {
+      setScrollY(prev => Math.min(prev + event.deltaY, 100)); // 최대 100px까지
+    } else if (scrollY > 0 && event.deltaY < 0) {
+      setScrollY(prev => Math.max(prev + event.deltaY, 0)); // 최소 0px까지
+    }
+    if (scrollY >= 100) {
+      setShowPosts(true); // 게시글 표시
     } else {
-      // 위로 스크롤
-      setActiveSection((prev) => (prev > 0 ? prev - 1 : prev)); // 이전 섹션으로 이동
+      setShowPosts(false); // 게시글 숨김
     }
   };
 
   useEffect(() => {
-    window.addEventListener("wheel", handleScroll, { passive: false }); // 스크롤 이벤트 리스너 등록
+    window.addEventListener("wheel", handleScroll, { passive: false });
     return () => {
-      window.removeEventListener("wheel", handleScroll); // 언마운트 시 리스너 해제
+      window.removeEventListener("wheel", handleScroll);
     };
-  }, []);
+  }, [scrollY]);
 
   return (
     <div id="recruit-post-wrapper">
-      <div className={`map ${activeSection === 0 ? "visible" : "hidden"}`}>
-        
-      </div>
-      <div className="downScroll"></div>
-      <div className={`middle ${activeSection === 1 ? "visible" : "hidden"}`}>
-        
+      <div className="map" style={{ opacity: showPosts ? 0 : 1 }}></div>
+      <div className={`middle ${showPosts ? 'show' : ''}`}>
         <div className="main">
           <div className="middle-top">
             <div className="pages">
@@ -69,14 +65,9 @@ export default function RecruitPost() {
             </div>
             <div className="post-filter">
               <div className="all">전체</div>
-              |
-              <div className="Recruiting">모집중</div>
-              |
-              <div className="Recruited">마감됨</div>
+              | <div className="Recruiting">모집중</div> | <div className="Recruited">마감됨</div>
             </div>
-
-            <div className="write-button" onClick={onWriteButtonClickHandler}><span className="emphasis">글쓰기</span></div>
-
+            <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>
           </div>
           <div className="table">
             <div className="th">
@@ -90,7 +81,7 @@ export default function RecruitPost() {
               <div className="td-recruit-end-date">마감일자</div>
               <div className="td-recruit-create-date">날짜</div>
             </div>
-            {data.map((item) => (
+            {data.map(item => (
               <div className="tr" key={item.recruitPostId}>
                 <div className="td-recruit-number">{item.recruitPostId}</div>
                 <div className="td-recruit-isCompleted">{item.isCompleted}</div>
