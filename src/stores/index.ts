@@ -1,8 +1,5 @@
+import useSignInUserStore from './sign-in-user.store'
 
-
-
-export const d = () => {
-
-
-    return null;
+export {
+    useSignInUserStore
 }
