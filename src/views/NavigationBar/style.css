@@ -8,22 +8,20 @@
     background-color: rgba(255, 255, 255, 1);
 
     width: 100%;
-    height: 120px;
+    height: 90px;
 
     overflow: hidden;
     min-width: 1800px;
 
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    
-    
-    
+    z-index: 9999;
 }
 
 #navigation-bar .logo {
     cursor: pointer;
     
-    width: 100px;
-    height: 100px;
+    width: 70px;
+    height: 70px;
 
     border-radius: 50%;
 
@@ -36,10 +34,10 @@
 #navigation-bar .manu {
     display: flex;
 
-    font-size: 40px;
+    font-size: 30px;
     font-weight: 400;
     color: rgba(0, 0, 0, 0.8);
-    gap: 120px;
+    gap: 150px;
     flex-grow: 0.5;
 }
 
@@ -59,20 +57,20 @@
 }
 
 #navigation-bar .input-box {
-    width: 400px;
+    width: 300px;
     height: 25px;
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 10px;
-    
+    margin-left: 300px;
     font-size: 15px;
 }
 
 #navigation-bar .button-box {
     display: flex;
-    height: 50px;
+    height: 46px;
     padding: 0px 50px;
-    gap: 30px;
+    gap: 15px;
 }
 
 #navigation-bar .button {
@@ -80,7 +78,7 @@
     padding: 10px 30px;
 
     font-weight: 400;
-    line-height: 100%;
+    line-height: 15px;
     text-align: center;
 
     color: rgba(255, 255, 255, 1);
@@ -90,6 +88,23 @@
 #navigation-bar .button:hover {
     cursor: pointer;
     background-color: #6b8f5c;
+}
+
+.middle-box {
+    display: flex;
+    flex-direction: column;
+    height: 60px;
+    justify-content: space-between;
+}
+
+.error-message {
+    font-size: 14px;
+    height: 20px;
+    color: rgba(255, 0, 0, 1);
+}
+
+.middle-box .button.sign-in {
+    margin-top: auto;
 }
 
 .button.sign-in,
@@ -117,6 +132,13 @@
 
     z-index: 9999;
 }
+
+.modal-input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 #navigation-bar .modal-sign-in {
     position: relative;
 
@@ -125,7 +147,7 @@
     border-radius: 8px;
     padding: 24px;
     width: 400px;
-    height: 400px;
+    height: 430px;
 
     background-color: rgba(255, 255, 255, 1);
 }
@@ -138,12 +160,12 @@
 .modal-top-title {
     flex: 1;
     font-size: 40px;
-    font-weight: bold;
+    font-weight: bolder;
     letter-spacing: 2px;
     margin-bottom: 20px;
     text-align: center;
     
-    margin-top: -20px;
+    margin-top: 0px;
 }
 
 .button-close {

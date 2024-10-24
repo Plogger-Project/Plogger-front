@@ -7,35 +7,29 @@
     height: 100vh;
     overflow: hidden;
     margin: 0 auto;
-        /* 중앙 정렬 */
-}
-
-#recruit-post-wrapper .top {
-    display: flex;
-    justify-content: center;
-    background-color: rgb(198, 223, 223);
-    width: 100%;
-    height: 60px;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 10;
 }
 
 #recruit-post-wrapper .main {
     min-width: 800px;
+
 }
 
-
-#recruit-post-wrapper .kakaomap {
-    width: 100%;
-    height: 100%;
-    
-    
+#recruit-post-wrapper .map {
+    position: fixed;
+    top: 450px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1134px;
+    height: 700px;
+    background-size: contain;
+    background-image: url(/public/images/sample_image.png);
+    background-repeat: no-repeat;
+    background-position: center;
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: bold;
+    z-index: 1;
     transition: opacity 0.5s ease;
 }
 
@@ -62,8 +56,13 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
+    transform: translateY(100%);
+    transition: transform 0.5s ease;
+    z-index: 2;
+}
 
-    transition: opacity 0.5s ease;
+#recruit-post-wrapper .middle.show {
+    transform: translateY(0);
 }
 
 #recruit-post-wrapper .middle.hidden {
@@ -86,9 +85,19 @@
     text-align: left;
 }
 
-.emphasis {
-    font-weight: 600;
+#recruit-post-wrapper .button {
+    cursor: pointer;
+    width: 40px;
+    height: 25px;
+    
+    text-align: center;
 
+    border-radius: 7px;
+    background-color: #84A264;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 1);
+    justify-content: center;
+    align-content: center;
 }
 
 #recruit-post-wrapper .middle-top .post-filter {
@@ -116,7 +125,7 @@
     
     width: 60px;
     height: 25px;
-  flex: 1;
+    flex: 1;
     text-align: right;
 
     border: 1px solid rgba(25, 25, 25, 1);
