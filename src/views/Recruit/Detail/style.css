@@ -131,13 +131,9 @@
 
 
 
-#recruit-detail-wrapper .postLocation {
-    width: 100%;
-    height: 300px;
-    background-size: contain;
-    background-image: url(/public/images/sample_image.png);
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
+#recruit-detail-wrapper .kakaomap {
+   width: 100%;
+   height: 360px;
 }
 
 #recruit-detail-wrapper .postInfo {

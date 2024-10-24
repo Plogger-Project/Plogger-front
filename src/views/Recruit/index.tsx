@@ -1,17 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./style.css";
 import { useNavigate } from "react-router-dom";
 import { RECRUIT_ABSOLUTE_PATH, RECRUIT_DETAIL_ABSOLUTE_PATH, RECRUIT_WRITE_ABSOLUTE_PATH } from "../../constants";
+import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { useKakaoLoader } from "src/hooks";
 import { url } from "inspector";
 
+
+// variable : 카카오 맵 키 //
+const appkey = process.env.REACT_APP_KAKAO_MAP_KEY;
+
+
 export default function RecruitPost() {
-
-
-
+  
+  const [activeSection, setActiveSection] = useState(0); // 현재 섹션을 나타내는 상태
+  const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
   const [scrollY, setScrollY] = useState(0); // 스크롤 위치
   const [showPosts, setShowPosts] = useState(false); // 게시글 표시 상태
   const navigator = useNavigate();
 
+  // function: 카카오 맵스 함수 //
+  useKakaoLoader();
+
+  // event handler: 글쓰기 버튼 클릭 이벤트 처리 //
   const onWriteButtonClickHandler = () => {
     navigator(RECRUIT_WRITE_ABSOLUTE_PATH);
   };

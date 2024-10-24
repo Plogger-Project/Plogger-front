@@ -33,6 +33,23 @@
     transition: opacity 0.5s ease;
 }
 
+#recruit-post-wrapper .kakaomap.hidden {
+    display: none;
+}
+
+#recruit-post-wrapper .downScroll {
+    padding-top: 20px;
+    width: 50px;
+    height: 50px;
+
+    background-size: contain;
+    background-image: url(/public/images/downScroll.png);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+
+
+
 #recruit-post-wrapper .middle {
     display: flex;
     flex-direction: column;
