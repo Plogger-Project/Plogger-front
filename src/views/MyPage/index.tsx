@@ -5,7 +5,6 @@ import InputBox from '../../components/InputBox';
 
 export default function Mypage() {
   // state 페이징 관련 상태 //
- 
 
   // state: 모달 팝업 상태 //
   const [modalOpen, setModalOpen] = useState<boolean>(false);
