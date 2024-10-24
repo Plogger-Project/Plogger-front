@@ -6,9 +6,10 @@ import Pagination from '../../components/Pagination';
 import { useSignInUserStore } from 'src/stores';
 import { useCookies } from 'react-cookie';
 import { ACCESS_TOKEN } from 'src/constants';
-import { getGifticonListRequest, purchaseGifticonRequest } from 'src/apis';
+import { fileUploadRequest, getGifticonListRequest, postGifticonRequest, purchaseGifticonRequest } from 'src/apis';
 import { GetGifticonListResponseDto } from 'src/apis/dto/response/gifticon';
 import { ResponseDto } from 'src/apis/dto/response';
+import { PostGifticonRequestDto } from 'src/apis/dto/request/gifticon';
 
 // variable: 기본 이미지 URL //
 const defaultImageUrl = '/images/defaultImage.png';
@@ -69,13 +70,14 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
 
       // 구매 버튼 클릭 시 마일리지 감소
       const updatedMileage = signInUser.mileage - gifticon.mileageCost;
-        setSignInUser({
-          ...signInUser,
-          mileage: updatedMileage,
-        });
+      const newSignInUser = {
+        ...signInUser,
+        mileage: updatedMileage,
+      };
+      setSignInUser(newSignInUser);
 
       // 기프티콘 구매 요청
-      const response = await purchaseGifticonRequest(signInUser, gifticon.gifticonId, accessToken);
+      const response = await purchaseGifticonRequest(newSignInUser, gifticon.gifticonId, accessToken);
       
       // 구매 완료 후 모달 닫기
       setPurchaseModalOpen(!purchaseModalOpen);
@@ -87,6 +89,14 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
       
     }
   }
+
+  // effect: 모달 오픈 상태가 바뀔 시 스크롤 여부 함수 //
+  useEffect(() => {
+    document.body.style.overflow = (purchaseModalOpen || updateModalOpen) ? 'hidden' : 'auto';
+    return () => {
+      document.body.style.overflow = 'auto';
+    }
+  }, [purchaseModalOpen, updateModalOpen]);
 
   // variable: 해당 유저의 모달 오픈 핸들러 결정 (관리자면 수정, 비관리자면 구매)
   const modalHandler = isAdmin ? onUpdateOpenHandler : onPurchaseOpenHandler;
@@ -156,6 +166,9 @@ export default function Mileage() {
     const [gifticonImage, setGifticonImageFile] = useState<File | null>(null);
     const [mileageCost, setMileageCost] = useState<number>(0);
 
+    // state: 원본 리스트 상태 //
+    const [originalList, setOriginalList] = useState<Gifticon[]>([]);
+
     // state: 추가 모달 팝업 상태 //
     const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
 
@@ -170,9 +183,6 @@ export default function Mileage() {
       currentPage, totalPage, totalCount, viewList,
       setTotalList, initViewList, ...paginationProps
     } = useGifticonPagination<Gifticon>();
-
-    // state: 원본 리스트 상태 //
-    const [originalList, setOriginalList] = useState<Gifticon[]>([]);
 
     // variable: 담당자 여부 //
     const isAdmin = signInUser !== null && signInUser.isAdmin
@@ -202,12 +212,34 @@ export default function Mileage() {
       setOriginalList(gifticons);
     }
 
+    // function: post customer response 처리 함수 //
+    const postGifticonResponse = (responseBody: ResponseDto | null) => {
+      const message =
+        !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '모두 입력해주세요.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'NI' ? '존재하지 않는 요양사입니다.' :
+        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+      
+      const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+      if(!isSuccessed) {
+        alert(message);
+        return;
+      }
+
+      setCreateModalOpen(!createModalOpen);
+
+      getGifticonList();
+    };
+
+  
       // effect: 컴포넌트 로드 시 고객 리스트 불러오기 함수 //
       useEffect(getGifticonList, []);
 
     // event handler: 기프티콘 추가 모달 버튼 클릭 이벤트 처리 함수 //
     const onCreateOpenHandler = () => {
       setCreateModalOpen(!createModalOpen);
+      setPreviewUrl(defaultImageUrl);
     };
 
     // event handler: 기프티콘 이미지 클릭 이벤트 처리 //
@@ -232,9 +264,50 @@ export default function Mileage() {
       };
     };
 
+    // event handler: 이름 변경 이벤트 처리 함수 //
+    const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      setGifticonName(value);
+    };
+
+    // event handler: 가격 변경 이벤트 처리 함수 //
+    const onMileageCostChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      setMileageCost(Number(value));
+    };
+
+    // event handler: 등록 버튼 클릭 이벤트 처리 //
+    const onPostClickHandler = async () => {
+      if(!gifticonName || !mileageCost) return;
+
+      const accessToken = cookies[ACCESS_TOKEN];
+      if(!accessToken) return;
+
+      let url: string | null = null;
+      if(gifticonImage) {
+        const formData = new FormData();
+        formData.append('file', gifticonImage);
+        url = await fileUploadRequest(formData);
+      }
+      url = url ? url : defaultImageUrl;
+
+      const requestBody: PostGifticonRequestDto = {
+        image: url, name:gifticonName, mileageCost
+      };
+      postGifticonRequest(requestBody, accessToken).then(postGifticonResponse);
+    };
+
+    // effect: 모달 오픈 상태가 바뀔 시 스크롤 여부 함수 //
+    useEffect(() => {
+      document.body.style.overflow = createModalOpen ? 'hidden' : 'auto';
+      return () => {
+        document.body.style.overflow = 'auto';
+      }
+    }, [createModalOpen]);
+
   return (
     <div id='mg-wrapper'>
-      <div className='nav' style={{height: '120px', backgroundColor:'gray'}}></div>
+      <div className='nav' style={{height: '90px', backgroundColor:'gray'}}></div>
       <div className='top'>
           <div className='top-text'>보유한 마일리지: <span className='emphasis'>{signInUser?.mileage} 포인트</span></div>
           {isAdmin && <div className='button primary' onClick={onCreateOpenHandler}>등록</div>}
@@ -253,16 +326,16 @@ export default function Mileage() {
           <div className='modal-middle'>
             <div className='input-boxes'>
               <span className='input-text'>교환권: </span>
-              <input className='input-box' type='text' placeholder='이름'/>
+              <input className='input' type='text' placeholder='이름' onChange={onNameChangeHandler}/>
             </div>
             <div className='input-boxes'>
               <span className='input-text'>마일리지: </span>
-              <input className='input-box' type='number' placeholder='가격'/>
+              <input className='input' type='number' placeholder='가격' onChange={onMileageCostChangeHandler}/>
             </div>
             <div className='item-text'>기프티콘을 추가하시겠습니까?</div>
           </div>
           <div className='modal-bottom'>
-            <div className='button primary'>추가</div>
+            <div className='button primary' onClick={onPostClickHandler}>추가</div>
             <div className='button second' onClick={onCreateOpenHandler}>닫기</div>
           </div>
         </div>

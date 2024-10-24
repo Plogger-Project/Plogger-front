@@ -5,7 +5,7 @@ import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
 import { GetSignInResponseDto } from "./dto/response/auth";
-import { PurchaseGifticonRequestDto } from "./dto/request/gifticon";
+import { PostGifticonRequestDto, PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 
 // variable: API URL 상수 //
 const PLOGGER_API_DOMAIN = "http://localhost:4000"
@@ -100,13 +100,13 @@ export const getSignInRequest = async (accessToken: string) => {
     return responseBody;
 };
 
-// // function: post tool 요청 함수 //
-// export const postToolRequest = async (requestBody: PostToolRequestDto, accessToken: string) => {
-//     const responseBody = await axios.post(POST_TOOL_API_URL, requestBody, bearerAuthorization(accessToken))
-//         .then(responseDataHandler<ResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// };
+// function: post gifticon 요청 함수 //
+export const postGifticonRequest = async (requestBody: PostGifticonRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_GIFTICON_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 
 // function: get gifticon list 요청 함수 //
 export const getGifticonListRequest = async (accessToken: string) => {
