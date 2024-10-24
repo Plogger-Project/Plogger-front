@@ -53,6 +53,7 @@ export default function RecruitWrite() {
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
+  // function: 카카오 맵스 함수 //
   useKakaoLoader();
 
   // event handler: 목록 버튼 클릭 이벤트 처리 //

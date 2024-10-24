@@ -1,15 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./style.css";
 import { useNavigate } from "react-router-dom";
 import { RECRUIT_ABSOLUTE_PATH, RECRUIT_DETAIL_ABSOLUTE_PATH, RECRUIT_WRITE_ABSOLUTE_PATH } from "../../constants";
+import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { useKakaoLoader } from "src/hooks";
+
+
+
+// variable : 카카오 맵 키 //
+const appkey = process.env.REACT_APP_KAKAO_MAP_KEY;
+
 
 export default function RecruitPost() {
   
   const [activeSection, setActiveSection] = useState(0); // 현재 섹션을 나타내는 상태
-
+  const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
+
+  // function: 카카오 맵스 함수 //
+  useKakaoLoader();
 
   // event handler: 글쓰기 버튼 클릭 이벤트 처리 //
   const onWriteButtonClickHandler = () => {
@@ -56,9 +67,18 @@ export default function RecruitPost() {
 
   return (
     <div id="recruit-post-wrapper">
-      <div className={`map ${activeSection === 0 ? "visible" : "hidden"}`}>
-        
-      </div>
+      
+        <div className={`kakaomap ${activeSection === 0 ? "visible" : "hidden"}`} ref={mapRef} >
+          <Map
+            center={{ lat: 35.152170407376424, lng: 129.05979624585217 }}
+            style={{ width: "100%", height: "360px" }}
+          >
+            <MapMarker position={{ lat: 35.152170407376424, lng: 129.05979624585217 }}>
+              <div style={{ color: "#000" }}>학원 위치</div>
+            </MapMarker>
+          </Map>
+        </div>
+      
       <div className="downScroll"></div>
       <div className={`middle ${activeSection === 1 ? "visible" : "hidden"}`}>
         

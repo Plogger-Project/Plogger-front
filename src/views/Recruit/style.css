@@ -27,14 +27,11 @@
 }
 
 
-#recruit-post-wrapper .map {
-    width: 80%;
-    height: 80%;
+#recruit-post-wrapper .kakaomap {
+    width: 100%;
+    height: 100%;
     
-    background-size: contain;
-    background-image: url(/public/images/sample_image.png);
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
+    
     display: flex;
     justify-content: center;
     align-items: center;
@@ -42,7 +39,7 @@
     transition: opacity 0.5s ease;
 }
 
-#recruit-post-wrapper .map.hidden {
+#recruit-post-wrapper .kakaomap.hidden {
     display: none;
 }
 

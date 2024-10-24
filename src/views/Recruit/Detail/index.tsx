@@ -2,6 +2,13 @@ import React, { useRef, useState } from 'react'
 import "./style.css";
 import { useNavigate } from 'react-router-dom';
 import { RECRUIT_ABSOLUTE_PATH } from '../../../constants';
+import { useKakaoLoader } from 'src/hooks';
+import { Map, MapMarker } from 'react-kakao-maps-sdk';
+
+
+
+// variable : 카카오 맵 키 //
+const appkey = process.env.REACT_APP_KAKAO_MAP_KEY;
 
 export default function RecruitDetail() {
 
@@ -12,9 +19,13 @@ export default function RecruitDetail() {
   const [showOptions, setShowOptions] = useState(false);  // 옵션 항목 표시 여부
   const [optionPosition, setOptionPosition] = useState({ top: 0, left: 0 });  // 옵션 항목 위치
   const optionBoxRef = useRef<HTMLDivElement | null>(null);  // optionBox 참조
+  const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
+
+  // function: 카카오 맵스 함수 //
+  useKakaoLoader();
   
   // event handler: 목록 버튼 클릭 이벤트 처리 //
   const onListButtonClickHandler = () => {
@@ -100,7 +111,16 @@ export default function RecruitDetail() {
           </div>
           
           <div className='postImage'></div>
-          <div className='postLocation'></div>
+          <div className="kakaomap" ref={mapRef} >
+            <Map
+              center={{ lat: 35.152170407376424, lng: 129.05979624585217 }}
+              style={{ width: "100%", height: "360px" }}
+            >
+              <MapMarker position={{ lat: 35.152170407376424, lng: 129.05979624585217 }}>
+                <div style={{ color: "#000" }}>학원 위치</div>
+              </MapMarker>
+            </Map>
+          </div>
         </div>
         <div className='postBottom'>
           <div className='postInfo'>
