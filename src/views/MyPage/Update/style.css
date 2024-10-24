@@ -57,7 +57,21 @@
 .profile-image-wrapper {
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    align-items: center;
+    width: 500px;
+    margin-top: 15px;
+    margin-bottom: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.profile-image {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
 }
 
 .button-container {
@@ -109,7 +123,7 @@
     border-radius: 8px;
     padding: 24px;
     width: 400px;
-    height: auto; /* 모달의 높이를 콘텐츠에 맞게 조정 */
+    height: auto;
     background-color: rgba(255, 255, 255, 1);
     display: flex;
     flex-direction: column;
@@ -117,7 +131,7 @@
 }
 
 .modal-input-container {
-    margin-top: 40px; 
+    margin-top: 40px;
     display: flex;
     flex-direction: column;
     gap: 10px;

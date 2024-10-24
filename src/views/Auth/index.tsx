@@ -7,8 +7,6 @@ import { idCheckRequest, signUpRequest, telAuthCheckRequest, telAuthRequest } fr
 import { IdCheckRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from '../../apis/dto/request/auth';
 import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
 
-const defaultProfileImageUrl = '/images/defaultImage.png';
-
 export default function SignUp() {
 
     const [queryParam] = useSearchParams();
@@ -248,13 +246,8 @@ export default function SignUp() {
             telNumber,
             authNumber,
             address,
-            profileImage: defaultProfileImageUrl,
-            ecoScore: 0,
-            mileage: 0,
-            comment: '',
             joinPath: joinPath ? joinPath : 'home',
-            snsId,
-            isAdmin: false
+            snsId
         }
 
         signUpRequest(requestBody).then(signUpResponse);
