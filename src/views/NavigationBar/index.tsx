@@ -91,6 +91,8 @@ export default function NavigationBar() {
                 setMessage('서버 응답이 없습니다.');
                 return;
             }
+
+            console.log(response);
         
             handleSignInResponseHandler(response);
         } catch (error) {
@@ -116,7 +118,7 @@ export default function NavigationBar() {
 
         const { accessToken, expiration } = response as SignInResponseDto;
         const expires = new Date(Date.now() + expiration * 1000);
-        setCookie(ACCESS_TOKEN, accessToken, { path: ROOT_PATH, expires });
+        setCookie(ACCESS_TOKEN, accessToken, { path: '/', expires });
 
         setMessage('');
         onModelOpenHandler();  
