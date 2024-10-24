@@ -1,13 +1,14 @@
 import { ChangeEvent, useState, useEffect } from 'react';
 import './style.css';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
+
 import { SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
-import { ACCESS_TOKEN, ROOT_PATH } from '../../constants';
+import { ACCESS_TOKEN, FIND_ID, ROOT_PATH } from '../../constants';
 import SignInRequestDto from '../../apis/dto/request/auth/sign-in.request.dto';
 import { signInRequest } from '../../apis';
 import { ACTIVE_PATH, QNA_PATH, RECRUIT_PATH } from '../../constants';
+import { useCookies } from 'react-cookie';
 
 export default function NavigationBar() {
 
@@ -90,6 +91,8 @@ export default function NavigationBar() {
                 setMessage('서버 응답이 없습니다.');
                 return;
             }
+
+            console.log(response);
         
             handleSignInResponseHandler(response);
         } catch (error) {
@@ -115,7 +118,7 @@ export default function NavigationBar() {
 
         const { accessToken, expiration } = response as SignInResponseDto;
         const expires = new Date(Date.now() + expiration * 1000);
-        setCookie(ACCESS_TOKEN, accessToken, { path: ROOT_PATH, expires });
+        setCookie(ACCESS_TOKEN, accessToken, { path: '/', expires });
 
         setMessage('');
         onModelOpenHandler();  
@@ -131,6 +134,11 @@ export default function NavigationBar() {
     const onPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         setPassword(event.target.value);
     };
+
+    // event handler: 아이티 찾기 클릭 이벤트 처리 //
+    const onFindIdClickHandler = () => {
+        navigator(FIND_ID);
+    }
 
     return (
         <div id='navigation-bar'>
@@ -155,6 +163,7 @@ export default function NavigationBar() {
                             <div className='button-close' onClick={onModelOpenHandler}>x</div>
                         </div>
                         <div className='modal-main'>
+                            <div className='modal-input-box'>
                             <div className='sign-in-id'>
                                 <div className='name'>아이디</div>
                                 <input
@@ -174,10 +183,13 @@ export default function NavigationBar() {
                                     onChange={onPasswordChangeHandler}
                                 />
                             </div>
+                            </div>
+                            <div className='middle-box'>
                             {message && <div className='error-message'>{message}</div>}
                             <div className='button sign-in' onClick={onSignInButtonHandler}>로그인</div>
+                            </div>
                             <div className='sign-text'>
-                                <div className='find-id'>아이디 찾기</div>
+                                <div className='find-id' onClick={onFindIdClickHandler}>아이디 찾기</div>
                                 <div className='line'>
                                     <div className="find-password">비밀번호 찾기</div>
                                 </div>

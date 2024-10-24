@@ -21,7 +21,7 @@ export default function ActivePost() {
         <div className="main">
           <div className="middle-top">
             <div className="pages">전체 <span className='emphasis'>10건</span> | 페이지 <span className='emphasis'>1/10</span></div>
-            <div className="write-button"><span className="emphasis">글쓰기</span></div>
+            <div className="button">글쓰기</div>
           </div>
           <div className="table">
             <div className="th">

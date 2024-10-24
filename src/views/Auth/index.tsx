@@ -7,6 +7,7 @@ import { idCheckRequest, signUpRequest, telAuthCheckRequest, telAuthRequest } fr
 import { IdCheckRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from '../../apis/dto/request/auth';
 import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
 
+
 const defaultProfileImageUrl = '/images/defaultImage.png';
 
 type AuthPath = '회원가입';
@@ -32,6 +33,7 @@ function SnsContainer({ type }: SnsContainerProps) {
         </div>
     )
 }
+
 export default function SignUp() {
 
     const [queryParam] = useSearchParams();
@@ -111,14 +113,14 @@ export default function SignUp() {
     // 전화번호 중복 체크 Response
     const telAuthResponse = (responseBody: ResponseDto | null) => {
 
-        const message =
-            !responseBody ? '서버에 문제가 있습니다.' :
-                responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' :
-                    responseBody.code === 'DT' ? '중복된 전화번호입니다.' :
-                        responseBody.code === 'TF' ? '서버에 문제가 있습니다.' :
-                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-                                responseBody.code === 'SU' ? '사용한 가능한 전화번호입니다.' : '';
-
+        const message = 
+            !responseBody ? '서버에 문제가 있습니다.' : 
+            responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' : 
+            responseBody.code === 'DT' ? '중복된 전화번호입니다.' : 
+            responseBody.code === 'TF' ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : 
+            responseBody.code === 'SU' ? '사용 가능한 전화번호입니다.' : '';
+        
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         setTelNumberMessage(message);
         setTelNumberMessageError(!isSuccessed);
@@ -271,13 +273,8 @@ export default function SignUp() {
             telNumber,
             authNumber,
             address,
-            profileImage: defaultProfileImageUrl,
-            ecoScore: 0,
-            mileage: 0,
-            comment: '',
             joinPath: joinPath ? joinPath : 'home',
-            snsId,
-            isAdmin: false
+            snsId
         }
 
         signUpRequest(requestBody).then(signUpResponse);
@@ -311,7 +308,10 @@ export default function SignUp() {
                     <InputBox messageError={chkPasswordMessageError} message={chkPasswordMessage} label='비밀번호 확인' placeholder='비밀번호를 다시 입력해주세요.' value={chkPassword} type='password' onChange={onChkPasswordChangeHandler} />
                     <InputBox messageError={telNumberMessageError} message={telNumberMessage} label='전화번호' placeholder='-빼고 입력해주세요.' value={telNumber} type='text' buttonName='인증번호 전송' onChange={onTelNumberChangeHandler} onButtonClick={onTelNumberSendClickHandler} />
                     {isSend &&
-                        <InputBox messageError={authNumberMessageError} message={authNumberMessage} value={authNumber} label='인증번호' type='text' placeholder='인증번호 4자리를 입력해주세요.' buttonName='인증 확인' onChange={onAuthNumberChangeHandler} onButtonClick={onAuthNumberCheckClickHandler} />
+
+
+                    <InputBox messageError={authNumberMessageError} message={authNumberMessage} value={authNumber} label='인증번호' type='text' placeholder='인증번호 4자리를 입력해주세요.' buttonName='인증확인' onChange={onAuthNumberChangeHandler} onButtonClick={onAuthNumberCheckClickHandler} />
+
                     }
                     <InputBox messageError={addressMessageError} message={addressMessage} label='주소' placeholder='주소를 입력해주세요' value={address} type='text' buttonName='우편번호 검색' onChange={onAddressChangeHandler} onButtonClick={onAddressButtonClickHandler} />
                 </div>

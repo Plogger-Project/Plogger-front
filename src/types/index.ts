@@ -1,8 +1,7 @@
+import Gifticon from "./gifticon.interface";
+import SignInUser from "./sign-in-user.interface";
 
-
-
-export const e = () => {
-
-
-    return null;
+export type {
+    Gifticon,
+    SignInUser
 }

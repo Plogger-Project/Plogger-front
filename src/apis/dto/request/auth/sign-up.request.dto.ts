@@ -5,11 +5,6 @@ export default interface SignUpRequestDto {
     telNumber: string;
     authNumber: string;
     address: string;
-    profileImage: string;
-    ecoScore: number;
-    mileage: number;
-    comment: string;
     joinPath: string;
     snsId: string | null;
-    isAdmin: boolean;
 }

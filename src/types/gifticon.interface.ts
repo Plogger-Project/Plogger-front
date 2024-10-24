@@ -1,6 +1,6 @@
 export default interface Gifticon {
     gifticonId: number;
-    gifticonName: string;
-    gifticonImage: string;
+    name: string;
+    image: string;
     mileageCost : number;
 }
