@@ -7,7 +7,6 @@
     height: 100vh;
     overflow: hidden;
     margin: 0 auto;
-    /* 중앙 정렬 */
 }
 
 #active-post-wrapper .top {
@@ -83,15 +82,19 @@
     cursor: pointer;
 }
 
-#active-post-wrapper .middle-top .write-button {
-
-    width: 60px;
-    height: 25px;
-    border: 1px solid rgba(25, 25, 25, 1);
-    background-color: rgba(132, 162, 100, 1);
-    text-align: center;
+#active-post-wrapper .middle-top .button {
     cursor: pointer;
-    line-height: 175%;
+    width: 40px;
+    height: 25px;
+    
+    text-align: center;
+
+    border-radius: 7px;
+    background-color: #84A264;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 1);
+    justify-content: center;
+    align-content: center;
 }
 
 #active-post-wrapper .table {

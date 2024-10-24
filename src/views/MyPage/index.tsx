@@ -6,8 +6,6 @@ import InputBox from '../../components/InputBox';
 export default function Mypage() {
   // state 페이징 관련 상태 //
 
-  // state: 모달 팝업 상태 //
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   // state: 프로필 상태 //
   const [input, onInput] = useState<boolean>(false);
@@ -65,8 +63,8 @@ export default function Mypage() {
 
 
   // event handler: 모달 오픈 이벤트 처리 //
-  const onModelOpenHandler = () => {
-    setModalOpen(!modalOpen);
+  const onMypageUpdateOpenHandler = () => {
+    navigator('/mypage/update');
   };
 
   // event handler: 기프티콘 오픈 이벤트 처리 //
@@ -128,7 +126,7 @@ export default function Mypage() {
           <div className='profile-box'>
             <div className='name-box'>
               <div className='name'>이름</div>
-              <div className='change' onClick={onModelOpenHandler}></div>
+              <div className='change' onClick={onMypageUpdateOpenHandler}></div>
             </div>
             <div className='address'>주소</div>
             <div className='sentence-box'>
@@ -180,29 +178,6 @@ export default function Mypage() {
         </div>
         <div className='table'></div>
       </div>
-      {modalOpen &&
-        <div className='modal'>
-          <div className='change-profile'>
-          <div className='modal-close' onClick={onModelOpenHandler}>x</div>
-            <div className='change-profile-box'>
-              <img className='change-profile-image' src={imageUrl} onChange={onImageInputChangeHandler}/>
-              <input style={{ display: 'none' }} ref={imageInputRef} type='file' accept='image/*' onChange={onImageInputChangeHandler} />
-              <div className='change' onClick={onImageButtonClickHandler}></div>
-            </div>
-            <div className='input-container'>
-              <InputBox label='이름' placeholder='이름을 입력해주세요.' value={name} type='text' onChange={onNameChangeHandler} message={''} messageError={false} />
-              <InputBox label='비밀번호' placeholder='비밀번호를 입력해주세요.' value={password} type='password' onChange={onPasswordChangeHandler} message={''} messageError={false} />
-              <InputBox label='비밀번호 확인' placeholder='비밀번호를 다시 입력해주세요.' value={chkpassword} type='text' onChange={onChkPasswordChangeHandler} message={''} messageError={false} />
-              <InputBox label='전화번호' placeholder='-빼고 입력해주세요.' value={telNumber} type='text' buttonName='인증번호 전송' onChange={onTelNumberChangeHandler} message={''} messageError={false} />
-              <InputBox label='인증번호' placeholder='인증번호를 입력해주세요.' value={authNumber} type='text' buttonName='인증번호 확인' onChange={onAuthNumberChangeHandler} message={''} messageError={false} />
-              <InputBox label='주소' placeholder='주소를 입력해주세요' value={address} type='text' buttonName='우편번호 검색' onChange={onAddressChangeHandler} message={''} messageError={false} />
-            </div>
-            <div className='button-container'>
-                    <div className='change-button'>정보수정</div>
-                </div>
-          </div>
-        </div>
-      }
     </div>
   )
 }

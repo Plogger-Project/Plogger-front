@@ -128,6 +128,11 @@ export default function MyPageUpdate() {
     setAddressMessage('');
   }
 
+  // event handler: 마이페이지 업데이트 취소 처리 이벤트 //
+  const onMypageUpdateCancleClickHandler = () => {
+    navigator('/mypage');
+  }
+
   const onTelNumberSendClickHandler = () => {
     if (!telNumber) return;
 
@@ -160,7 +165,6 @@ export default function MyPageUpdate() {
     // }
 
     // patchUserRequest(requestBody, accessToken).then(patchUserResponse);
-
   }
 
   const onUpdateCancelButtonClickHandler = () => {
