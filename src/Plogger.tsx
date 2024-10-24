@@ -8,7 +8,7 @@ import NavigationBar from './views/NavigationBar';
 import Main from './views/Main';
 import QnaPost from './views/QNA';
 
-import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH } from './constants';
+import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, FIND_ID } from './constants';
 
 
 import RecruitView from './views/Recruit/Detail';
@@ -17,6 +17,8 @@ import Mileage from './views/Mileage';
 
 import RecruitUpdate from './views/Recruit/Update';
 import RecruitWrite from './views/Recruit/Write';
+import MyPageUpdate from './views/MyPage/Update';
+import FindId from './views/FindId';
 
 
 // component: root path 컴포넌트 //
@@ -24,7 +26,7 @@ function Plogger() {
   
   const location = useLocation();
   
-  const showNavigationBar = location.pathname !== '/sign-up';
+  const showNavigationBar = location.pathname !== '/sign-up' && location.pathname !== FIND_ID;
 
   return (
     <>
@@ -40,7 +42,9 @@ function Plogger() {
         <Route path="/qna" element={<QnaPost />} />
         {/* <Route path='/mypage' element={<Mypage />} /> */}
         <Route path='/mileage' element={<Mileage/>} />
-        <Route path='/mypage' element={<MyPageUpdate />} />
+        <Route path='/mypage' element={<Mypage />} />
+        <Route path='/mypage/update' element={<MyPageUpdate />} />
+        <Route path={FIND_ID} element={<FindId />} />
       </Routes>
     </>
   );

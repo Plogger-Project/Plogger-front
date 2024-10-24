@@ -91,6 +91,11 @@ export default function MyPageUpdate() {
     setAddressMessage('');
   }
 
+  // event handler: 마이페이지 업데이트 취소 처리 이벤트 //
+  const onMypageUpdateCancleClickHandler = () => {
+    navigator('/mypage');
+  }
+
   const onTelNumberSendClickHandler = () => {
     if (!telNumber) return;
 
@@ -101,7 +106,6 @@ export default function MyPageUpdate() {
       setTelNumberMessageError(true);
       return;
     }
-
   }
 
   const onAuthNumberCheckClickHandler = () => {
@@ -170,7 +174,7 @@ export default function MyPageUpdate() {
           }
           <div className='button-container'>
             <button className='update-button' onClick={onUpdateButtonClickHandler}>수정</button>
-            <button className='cancle-button' onClick={onUpdateButtonClickHandler}>취소</button>
+            <button className='cancle-button' onClick={onMypageUpdateCancleClickHandler}>취소</button>
           </div>
         </div>
       </div>

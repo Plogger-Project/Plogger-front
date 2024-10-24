@@ -15,10 +15,16 @@ const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
 
 const ID_CHECK_API_URL = `${AUTH_MODULE_URL}/id-check`;
 const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
+const SEND_AUTH_API_URL = `${AUTH_MODULE_URL}/send-auth`;
+const FIND_ID_API_URL = `${AUTH_MODULE_URL}/find-id`;
 
 const TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/tel-auth-check`;
+
 const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
+
+
+
 
 const responseDataHandler = <T>(response: AxiosResponse<T, any>) => {
     const { data } = response;
@@ -70,3 +76,9 @@ export const signUpRequest = async (requestBody: SignUpRequestDto) => {
         .catch(responseErrorHandler)
     return responseBody;
 }
+
+//function: 아이디 찾기 인증번호 요청 함수 //
+
+
+//function: 아이디 찾기 아이디 요청 함수 //
+
