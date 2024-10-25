@@ -1,13 +1,22 @@
 import axios, { AxiosResponse } from "axios";
 import ResponseDto from "./dto/response/response.dto";
-import { IdCheckRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
+import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
 import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
+
 import { GetSignInResponseDto } from "./dto/response/auth";
 import { PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 import { GetRecruitPostListResponseDto } from "./dto/response/recruit";
 import { GetQnaPostListResponseDto } from "./dto/response/qna";
+
+import { PatchUserRequestDto } from "./dto/request/user";
+import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
+import PatchTelAuthCheckRequestDto from "./dto/request/user/patch-tel-auth-check.request.dto";
+import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from "./dto/request/gifticon";
+import { FindPasswordResponseDto, GetSignInResponseDto } from "./dto/response/auth";
+import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
+
 
 // variable: API URL 상수 //
 const PLOGGER_API_DOMAIN = "http://192.168.1.10:4000"
@@ -19,16 +28,26 @@ const QNA_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/qna`
 const ID_CHECK_API_URL = `${AUTH_MODULE_URL}/id-check`;
 const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
 const SEND_AUTH_API_URL = `${AUTH_MODULE_URL}/send-auth`;
+const SEND_PASSWORD_AUTH_API_URL = `${AUTH_MODULE_URL}/password-send-auth`;
 const FIND_ID_API_URL = `${AUTH_MODULE_URL}/find-id`;
+const FIND_PASSWORD_API_URL = `${AUTH_MODULE_URL}/find-password`;
 const TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/tel-auth-check`;
 
 const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 
+
 const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
 
 const GET_QNA_POST_LIST_API_URL = `${QNA_MODULE_URL}`
+
+const MYPAGE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/mypage`;
+
+const PATCH_MYPAGE_API_URL = `${MYPAGE_MODULE_URL}`;
+const PATCH_MYPAGE_TEL_AUTH_API_URL = `${MYPAGE_MODULE_URL}/tel-auth`;
+const PATCH_MYPAGE_TEL_AUTH_CHECK_API_URL = `${MYPAGE_MODULE_URL}/tel-auth-check`;
+
 
 const GIFTICON_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/gifticon`;
 
@@ -88,9 +107,38 @@ export const signUpRequest = async (requestBody: SignUpRequestDto) => {
 }
 
 //function: 아이디 찾기 인증번호 요청 함수 //
-
+export const sendAuthRequest = async (requestBody: SendAuthRequestDto) => {
+    const responseBody = await axios.post(SEND_AUTH_API_URL, requestBody)
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler)
+    return responseBody;
+}
 
 //function: 아이디 찾기 아이디 요청 함수 //
+export const findIdRequest = async (requestBody: FindIdRequestDto) => {
+    const responseBody = await axios.post(FIND_ID_API_URL, requestBody)
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler)
+    return responseBody;
+}
+
+//function: 비밀번호 찾기 인증번호 요청 함수 //
+export const sendPasswordAuthRequest = async (requestBody: SendAuthRequestDto) => {
+    const responseBody = await axios.post(SEND_PASSWORD_AUTH_API_URL, requestBody)
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler)
+    return responseBody;
+}
+
+//function: 비밀번호 찾기 아이디 요청 함수 //
+export const findPasswordRequest = async (requestBody: FindPasswordRequestDto) => {
+    const responseBody = await axios.post(FIND_PASSWORD_API_URL, requestBody)
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler)
+    return responseBody;
+}
+
+
 
 // function: sign in 요청 함수 //
 export const signInRequest = async (requestBody: SignInRequestDto) => {
@@ -108,13 +156,13 @@ export const getSignInRequest = async (accessToken: string) => {
     return responseBody;
 };
 
-// // function: post tool 요청 함수 //
-// export const postToolRequest = async (requestBody: PostToolRequestDto, accessToken: string) => {
-//     const responseBody = await axios.post(POST_TOOL_API_URL, requestBody, bearerAuthorization(accessToken))
-//         .then(responseDataHandler<ResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// };
+// function: post gifticon 요청 함수 //
+export const postGifticonRequest = async (requestBody: PostGifticonRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_GIFTICON_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 
 // function: get gifticon list 요청 함수 //
 export const getGifticonListRequest = async (accessToken: string) => {
@@ -132,21 +180,23 @@ export const getGifticonRequest = async (gifticonId: number | string, accessToke
     return responseBody;
 };
 
-// // function: patch tool 요청 함수 //
-// export const patchToolRequest = async (requestBody: PatchToolRequestDto, toolNumber: number | string, accessToken: string) => {
-//     const responseBody = await axios.patch(PATCH_TOOL_API_URL(toolNumber), requestBody, bearerAuthorization(accessToken))
-//         .then(responseDataHandler<ResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// };
 
-// // function: delete tool 요청 함수 //
-// export const deleteToolRequest = async (toolNumber: number | string, accessToken: string) => {
-//     const responseBody = await axios.delete(DELETE_TOOL_API_URL(toolNumber), bearerAuthorization(accessToken))
-//         .then(responseDataHandler<ResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// };
+// function: patch gifticon 요청 함수 //
+export const patchGifticonRequest = async (requestBody: PatchGifticonRequestDto, gifticonId: number | string, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_GIFTICON_API_URL(gifticonId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: delete gifticon 요청 함수 //
+export const deleteGifticonRequest = async (gifticonId: number | string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_GIFTICON_API_URL(gifticonId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
 
 // function: purchase gifticon 요청 함수 //
 export const purchaseGifticonRequest = async (requestBody: PurchaseGifticonRequestDto, gifticonId: number | string, accessToken: string) => {
@@ -154,6 +204,32 @@ export const purchaseGifticonRequest = async (requestBody: PurchaseGifticonReque
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
+
+}
+
+// function: 유저 정보 수정 요청 함수 //
+export const patchUserRequest = async (requestBody: PatchUserRequestDto, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_MYPAGE_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 유저 전화번호 수정 요청 함수 //
+export const patchTelAuthRequest = async (requestBody: PatchTelAuthRequestDto, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_MYPAGE_TEL_AUTH_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 유저 인증번호 확인 요청 함수 //
+export const patchTelAuthCheckRequest = async (requestBody: PatchTelAuthCheckRequestDto, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_MYPAGE_TEL_AUTH_CHECK_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+
 }
 
 const FILE_UPLOAD_URL = `${PLOGGER_API_DOMAIN}/file/upload`;

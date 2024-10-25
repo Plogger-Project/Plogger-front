@@ -1,5 +1,5 @@
 // variable: path 상수 //
-export const ROOT_PATH = '/main';
+export const ROOT_PATH = '/';
 export const AUTH_PATH = '/auth';
 
 export const RECRUIT_PATH = '/recruit';
@@ -9,7 +9,7 @@ export const RECRUIT_WRITE_PATH = `${RECRUIT_PATH}/write`;
 // export const RECRUIT_UPDATE_PATH = (recruitPostId: string | number) => `${recruitPostId}/update`;
 export const RECRUIT_UPDATE_PATH = `${RECRUIT_PATH}/update`;
 
-export const RECRUIT_MYPAGE_PATH = `${RECRUIT_PATH}/mypage`;
+export const RECRUIT_MYPAGE_PATH = `/mypage`;
 
 export const SNS_SUCCESS_PATH = '/sns-success';
 export const ACTIVE_PATH = '/active';
@@ -18,8 +18,9 @@ export const QNA_PATH = '/qna';
 export const QNA_WRITE_PATH = `${QNA_PATH}/write`;
 
 export const FIND_ID = '/find-id';
+export const FIND_PASSWORD = '/find-password';
 
-
+export const MYPAGE = '/mypage';
 
 // variable: 절대 경로 상수 //
 export const ROOT_ABSOLUTE_PATH = ROOT_PATH;

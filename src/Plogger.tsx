@@ -11,7 +11,7 @@ import Main from './views/Main';
 import QnaPost from './views/QNA';
 
 
-import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID } from './constants';
+import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD } from './constants';
 
 import RecruitView from './views/Recruit/Detail';
 import Mypage from './views/MyPage';
@@ -26,8 +26,12 @@ import { useCookies } from 'react-cookie';
 import { GetSignInResponseDto } from './apis/dto/response/auth';
 import { ResponseDto } from './apis/dto/response';
 import { getSignInRequest } from './apis';
+
 import RecruitPost from './views/Recruit';
 import { RecruitPostList } from './types';
+
+import FindPassword from './views/FindPassword';
+
 
 
 // component: Sns Success 컴포넌트 //
@@ -105,8 +109,7 @@ function Plogger() {
   const location = useLocation();
 
 
-
-  const showNavigationBar = location.pathname !== '/sign-up' && location.pathname !== FIND_ID;
+  const showNavigationBar = location.pathname !== '/sign-up' && location.pathname !== FIND_ID && location.pathname !== '/mypage/update' && location.pathname !== FIND_PASSWORD;
  
   // render: Plogger 컴포넌트 렌더링 //
   return (
@@ -125,6 +128,7 @@ function Plogger() {
         <Route path='/mypage' element={<Mypage />} />
         <Route path='/mypage/update' element={<MyPageUpdate />} />
         <Route path={FIND_ID} element={<FindId />} />
+        <Route path={FIND_PASSWORD} element={<FindPassword />} />
         <Route path={SNS_SUCCESS_PATH} element={<SnsSuccess />} />
       </Routes>
     </>

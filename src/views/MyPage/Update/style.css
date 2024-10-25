@@ -1,8 +1,3 @@
-.navi {
-    width: 100%;
-    height: 120px;
-}
-
 .mypage-update-container {
     background-color: white;
     padding: 20px;
@@ -27,6 +22,10 @@
     box-sizing: border-box;
     font-size: 14px;
     line-height: 100%;
+}
+
+.change-password-button {
+    margin-left: 0px !important;
 }
 
 .label {
@@ -54,23 +53,37 @@
     flex-direction: column;
 }
 
-.profile-image-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+#profile-image-container {
     width: 500px;
-    margin-top: 15px;
-    margin-bottom: 50px;
-    border-radius: 50%;
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.profile-image {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+#profile-image-container .profile-image-wrapper {
+    position: relative;
     width: 130px;
     height: 130px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+#profile-image-container .profile-image-camera {
+    background-image: url(/public/images/camera-icon.png);
+    position: absolute;
+    margin-left: 100px;
+    margin-top: 80px;
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(238, 238, 238, 1);
+    background-color: rgba(245, 245, 245, 1);
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    z-index: 1;
     border-radius: 50%;
 }
 
@@ -93,6 +106,54 @@
     box-sizing: border-box;
 }
 
+.password-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.password-modal-box {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    width: 400px;
+    /* 너비 조정 가능 */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+/* 모달 닫기 버튼 스타일 */
+.password-modal-cancel-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+}
+
+.password-modal-input-container {
+    margin-top: 20px;
+}
+
+.password-update-button {
+    background-color: #84A264;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+}
+
 .modal {
     position: fixed;
     top: 0;
@@ -102,6 +163,7 @@
     align-items: center;
     width: 100vw;
     height: 100vh;
+    z-index: 5;
     background-color: rgba(0, 0, 0, 0.3);
 }
 
