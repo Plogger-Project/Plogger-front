@@ -7,48 +7,30 @@
     height: 100vh;
     overflow: hidden;
     margin: 0 auto;
-    /* 중앙 정렬 */
-}
-
-#qna-post-wrapper .top {
-    display: flex;
-    justify-content: center;
-    background-color: rgb(198, 223, 223);
-    width: 100%;
-    height: 120px;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 10;
 }
 
 #qna-post-wrapper .main {
-    min-width: 800px;
+    min-width: 1134px;
+
 }
+
 
 #qna-post-wrapper .middle {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
     height: 100vh;
-
-    transition: opacity 0.5s ease;
+    
 }
 
-#qna-post-wrapper .middle.hidden {
-    display: none;
-}
 
 #qna-post-wrapper .middle-top {
     display: flex;
-
     justify-content: space-between;
     align-items: center;
     width: 100%;
-
-    font-size: 12px;
+    font-size: 14px;
 
 }
 
@@ -57,9 +39,19 @@
     text-align: left;
 }
 
-.emphasis {
-    font-weight: 600;
+#qna-post-wrapper .button {
+    cursor: pointer;
+    width: 40px;
+    height: 25px;
 
+    text-align: center;
+
+    border-radius: 7px;
+    background-color: #84A264;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 1);
+    justify-content: center;
+    align-content: center;
 }
 
 #qna-post-wrapper .middle-top .post-filter {
@@ -71,31 +63,44 @@
     flex-direction: row;
 }
 
+
 #qna-post-wrapper .middle-top .post-filter .all {
     font-weight: 600;
+}
 
+#qna-post-wrapper .middle-top .post-filter .notice {
+    font-weight: 600;
+}
+
+#qna-post-wrapper .middle-top .post-filter .qna {
+    font-weight: 600;
 }
 
 #qna-post-wrapper .middle-top .post-filter .all,
-#qna-post-wrapper .middle-top .post-filter .qnaing,
-#qna-post-wrapper .middle-top .post-filter .qnaed {
-
+#qna-post-wrapper .middle-top .post-filter .notice,
+#qna-post-wrapper .middle-top .post-filter .qna {
     cursor: pointer;
 }
 
-#qna-post-wrapper .middle-top .button {
-    cursor: pointer;
-    width: 40px;
-    height: 25px;
-    
-    text-align: center;
+/* 비활성화된 버튼에 대한 스타일 */
+#qna-post-wrapper .middle-top .post-filter .all:not(.active),
+#qna-post-wrapper .middle-top .post-filter .notice:not(.active),
+#qna-post-wrapper .middle-top .post-filter .qna:not(.active) {
+    font-weight: normal;
+}
 
-    border-radius: 7px;
-    background-color: #84A264;
-    font-size: 15px;
-    color: rgba(255, 255, 255, 1);
-    justify-content: center;
-    align-content: center;
+#qna-post-wrapper .middle-top .write-button {
+
+    width: 60px;
+    height: 25px;
+    flex: 1;
+    text-align: right;
+
+    border: 1px solid rgba(25, 25, 25, 1);
+    background-color: rgba(132, 162, 100, 1);
+    text-align: center;
+    cursor: pointer;
+    line-height: 175%;
 }
 
 #qna-post-wrapper .table {
@@ -104,7 +109,7 @@
     font-family: 'Arial', sans-serif;
     border-collapse: collapse;
 
-    font-size: 12px;
+    font-size: 14px;
 
 }
 
@@ -141,8 +146,8 @@
     width: 30px;
 }
 
-#qna-post-wrapper .td-qna-isCompleted {
-    width: 50px;
+#qna-post-wrapper .td-qna-isPinned {
+    width: 60px;
 }
 
 #qna-post-wrapper .td-qna-title {
@@ -154,10 +159,13 @@
 #qna-post-wrapper .td-qna-writer,
 #qna-post-wrapper .td-qna-like-count,
 #qna-post-wrapper .td-qna-view-count,
-#qna-post-wrapper .td-qna-people,
+#qna-post-wrapper .td-qna-people {
+    width: 60px;
+}
+
 #qna-post-wrapper .td-qna-end-date,
 #qna-post-wrapper .td-qna-create-date {
-    width: 50px;
+    width: 80px;
 }
 
 #qna-post-wrapper .pagination {
@@ -169,9 +177,3 @@
 
 }
 
-#qna-post-wrapper .pagination .qna {
-    color: black;
-
-    font-weight: bold;
-
-}

@@ -7,12 +7,14 @@ import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/respon
 import { GetSignInResponseDto } from "./dto/response/auth";
 import { PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 import { GetRecruitPostListResponseDto } from "./dto/response/recruit";
+import { GetQnaPostListResponseDto } from "./dto/response/qna";
 
 // variable: API URL 상수 //
-const PLOGGER_API_DOMAIN = "http://localhost:4000"
+const PLOGGER_API_DOMAIN = "http://192.168.1.10:4000"
 
 const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
 const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`
+const QNA_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/qna`
 
 const ID_CHECK_API_URL = `${AUTH_MODULE_URL}/id-check`;
 const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
@@ -26,12 +28,14 @@ const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 
 const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
 
+const GET_QNA_POST_LIST_API_URL = `${QNA_MODULE_URL}`
+
 const GIFTICON_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/gifticon`;
 
 const POST_GIFTICON_API_URL = `${GIFTICON_MODULE_URL}`;
 const GET_GIFTICON_LIST_API_URL = `${GIFTICON_MODULE_URL}`;
 const GET_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`;
-const PATCH_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`; 
+const PATCH_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`;
 const DELETE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`;
 const PURCHASE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}/purchase`;
 
@@ -121,12 +125,12 @@ export const getGifticonListRequest = async (accessToken: string) => {
 };
 
 // function: get gifticon 요청 함수 //
- export const getGifticonRequest = async (gifticonId: number | string, accessToken: string) => {
-     const responseBody = await axios.get(GET_GIFTICON_API_URL(gifticonId), bearerAuthorization(accessToken))
-         .then(responseDataHandler<GetGifticonResponseDto>)
-         .catch(responseErrorHandler);
-     return responseBody;
- };
+export const getGifticonRequest = async (gifticonId: number | string, accessToken: string) => {
+    const responseBody = await axios.get(GET_GIFTICON_API_URL(gifticonId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetGifticonResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 
 // // function: patch tool 요청 함수 //
 // export const patchToolRequest = async (requestBody: PatchToolRequestDto, toolNumber: number | string, accessToken: string) => {
@@ -146,15 +150,15 @@ export const getGifticonListRequest = async (accessToken: string) => {
 
 // function: purchase gifticon 요청 함수 //
 export const purchaseGifticonRequest = async (requestBody: PurchaseGifticonRequestDto, gifticonId: number | string, accessToken: string) => {
-        const responseBody = await axios.patch(PURCHASE_GIFTICON_API_URL(gifticonId), requestBody, bearerAuthorization(accessToken))
-            .then(responseDataHandler<ResponseDto>)
-            .catch(responseErrorHandler);
-        return responseBody;
+    const responseBody = await axios.patch(PURCHASE_GIFTICON_API_URL(gifticonId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 }
 
 const FILE_UPLOAD_URL = `${PLOGGER_API_DOMAIN}/file/upload`;
 
-const multipart = { headers: {'Content-Type': 'multipart/form-data'} }
+const multipart = { headers: { 'Content-Type': 'multipart/form-data' } }
 
 export const fileUploadRequest = async (requestBody: FormData) => {
     const url = await axios.post(FILE_UPLOAD_URL, requestBody, multipart)
@@ -165,14 +169,16 @@ export const fileUploadRequest = async (requestBody: FormData) => {
 
 // function : get recruit post list 요청 함수 //
 export const getRecruitPostListRequest = async () => {
-   
-        const responseBody = await axios.get(GET_RECRUIT_POST_LIST_API_URL)
-            .then(responseDataHandler<GetRecruitPostListResponseDto>)
+    const responseBody = await axios.get(GET_RECRUIT_POST_LIST_API_URL)
+        .then(responseDataHandler<GetRecruitPostListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+    // function : get recruit post list 요청 함수 //
+    export const getQnaPostListRequest = async () => {
+        const responseBody = await axios.get(GET_QNA_POST_LIST_API_URL)
+            .then(responseDataHandler<GetQnaPostListResponseDto>)
             .catch(responseErrorHandler);
-        
         return responseBody;
-        
-   
-
-};
-
+    };
