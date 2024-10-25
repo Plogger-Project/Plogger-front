@@ -1,11 +1,12 @@
 import axios, { AxiosResponse } from "axios";
 import ResponseDto from "./dto/response/response.dto";
-import { IdCheckRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
+import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
 import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
-import { GetSignInResponseDto } from "./dto/response/auth";
 import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from "./dto/request/gifticon";
+import { FindPasswordResponseDto, GetSignInResponseDto } from "./dto/response/auth";
+import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
 
 // variable: API URL 상수 //
 const PLOGGER_API_DOMAIN = "http://localhost:4000"
@@ -15,7 +16,9 @@ const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
 const ID_CHECK_API_URL = `${AUTH_MODULE_URL}/id-check`;
 const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
 const SEND_AUTH_API_URL = `${AUTH_MODULE_URL}/send-auth`;
+const SEND_PASSWORD_AUTH_API_URL = `${AUTH_MODULE_URL}/password-send-auth`;
 const FIND_ID_API_URL = `${AUTH_MODULE_URL}/find-id`;
+const FIND_PASSWORD_API_URL = `${AUTH_MODULE_URL}/find-password`;
 const TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/tel-auth-check`;
 
 const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
@@ -80,9 +83,38 @@ export const signUpRequest = async (requestBody: SignUpRequestDto) => {
 }
 
 //function: 아이디 찾기 인증번호 요청 함수 //
-
+export const sendAuthRequest = async (requestBody: SendAuthRequestDto) => {
+    const responseBody = await axios.post(SEND_AUTH_API_URL, requestBody)
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler)
+    return responseBody;
+}
 
 //function: 아이디 찾기 아이디 요청 함수 //
+export const findIdRequest = async (requestBody: FindIdRequestDto) => {
+    const responseBody = await axios.post(FIND_ID_API_URL, requestBody)
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler)
+    return responseBody;
+}
+
+//function: 비밀번호 찾기 인증번호 요청 함수 //
+export const sendPasswordAuthRequest = async (requestBody: SendAuthRequestDto) => {
+    const responseBody = await axios.post(SEND_PASSWORD_AUTH_API_URL, requestBody)
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler)
+    return responseBody;
+}
+
+//function: 비밀번호 찾기 아이디 요청 함수 //
+export const findPasswordRequest = async (requestBody: FindPasswordRequestDto) => {
+    const responseBody = await axios.post(FIND_PASSWORD_API_URL, requestBody)
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler)
+    return responseBody;
+}
+
+
 
 // function: sign in 요청 함수 //
 export const signInRequest = async (requestBody: SignInRequestDto) => {
