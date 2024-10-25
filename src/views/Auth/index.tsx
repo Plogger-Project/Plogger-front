@@ -279,7 +279,7 @@ export default function SignUp() {
 
         signUpRequest(requestBody).then(signUpResponse);
 
-        navigator('/main');
+        navigator('/');
 
     }
 
