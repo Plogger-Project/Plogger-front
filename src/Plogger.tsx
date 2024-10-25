@@ -104,8 +104,7 @@ function Plogger() {
   const location = useLocation();
   
 
-
-  const showNavigationBar = location.pathname !== '/sign-up' && location.pathname !== FIND_ID && location.pathname !== FIND_PASSWORD;
+  const showNavigationBar = location.pathname !== '/sign-up' && location.pathname !== FIND_ID && location.pathname !== '/mypage/update' && location.pathname !== FIND_PASSWORD;
  
   // render: Plogger 컴포넌트 렌더링 //
   return (

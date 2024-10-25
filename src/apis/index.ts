@@ -4,6 +4,9 @@ import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SignUpRe
 import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
+import { PatchUserRequestDto } from "./dto/request/user";
+import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
+import PatchTelAuthCheckRequestDto from "./dto/request/user/patch-tel-auth-check.request.dto";
 import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 import { FindPasswordResponseDto, GetSignInResponseDto } from "./dto/response/auth";
 import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
@@ -25,12 +28,18 @@ const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 
+const MYPAGE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/mypage`;
+
+const PATCH_MYPAGE_API_URL = `${MYPAGE_MODULE_URL}`;
+const PATCH_MYPAGE_TEL_AUTH_API_URL = `${MYPAGE_MODULE_URL}/tel-auth`;
+const PATCH_MYPAGE_TEL_AUTH_CHECK_API_URL = `${MYPAGE_MODULE_URL}/tel-auth-check`;
+
 const GIFTICON_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/gifticon`;
 
 const POST_GIFTICON_API_URL = `${GIFTICON_MODULE_URL}`;
 const GET_GIFTICON_LIST_API_URL = `${GIFTICON_MODULE_URL}`;
 const GET_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`;
-const PATCH_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`; 
+const PATCH_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`;
 const DELETE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`;
 const PURCHASE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}/purchase`;
 
@@ -149,12 +158,12 @@ export const getGifticonListRequest = async (accessToken: string) => {
 };
 
 // function: get gifticon 요청 함수 //
- export const getGifticonRequest = async (gifticonId: number | string, accessToken: string) => {
-     const responseBody = await axios.get(GET_GIFTICON_API_URL(gifticonId), bearerAuthorization(accessToken))
-         .then(responseDataHandler<GetGifticonResponseDto>)
-         .catch(responseErrorHandler);
-     return responseBody;
- };
+export const getGifticonRequest = async (gifticonId: number | string, accessToken: string) => {
+    const responseBody = await axios.get(GET_GIFTICON_API_URL(gifticonId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetGifticonResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 
 // function: patch gifticon 요청 함수 //
 export const patchGifticonRequest = async (requestBody: PatchGifticonRequestDto, gifticonId: number | string, accessToken: string) => {
@@ -174,15 +183,39 @@ export const deleteGifticonRequest = async (gifticonId: number | string, accessT
 
 // function: purchase gifticon 요청 함수 //
 export const purchaseGifticonRequest = async (requestBody: PurchaseGifticonRequestDto, gifticonId: number | string, accessToken: string) => {
-        const responseBody = await axios.patch(PURCHASE_GIFTICON_API_URL(gifticonId), requestBody, bearerAuthorization(accessToken))
-            .then(responseDataHandler<ResponseDto>)
-            .catch(responseErrorHandler);
-        return responseBody;
+    const responseBody = await axios.patch(PURCHASE_GIFTICON_API_URL(gifticonId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 유저 정보 수정 요청 함수 //
+export const patchUserRequest = async (requestBody: PatchUserRequestDto, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_MYPAGE_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 유저 전화번호 수정 요청 함수 //
+export const patchTelAuthRequest = async (requestBody: PatchTelAuthRequestDto, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_MYPAGE_TEL_AUTH_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 유저 인증번호 확인 요청 함수 //
+export const patchTelAuthCheckRequest = async (requestBody: PatchTelAuthCheckRequestDto, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_MYPAGE_TEL_AUTH_CHECK_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 }
 
 const FILE_UPLOAD_URL = `${PLOGGER_API_DOMAIN}/file/upload`;
 
-const multipart = { headers: {'Content-Type': 'multipart/form-data'} }
+const multipart = { headers: { 'Content-Type': 'multipart/form-data' } }
 
 export const fileUploadRequest = async (requestBody: FormData) => {
     const url = await axios.post(FILE_UPLOAD_URL, requestBody, multipart)

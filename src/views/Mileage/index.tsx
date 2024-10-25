@@ -2,13 +2,13 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import './style.css'
 import Gifticon from '../../types/gifticon.interface'
 import useGifticonPagination from '../../hooks/gifticon.pagination.hook';
-import Pagination from '../../components/Pagination';
 import { useSignInUserStore } from 'src/stores';
 import { useCookies } from 'react-cookie';
 import { ACCESS_TOKEN } from 'src/constants';
 import { deleteGifticonRequest, fileUploadRequest, getGifticonListRequest, patchGifticonRequest, postGifticonRequest, purchaseGifticonRequest } from 'src/apis';
 import { GetGifticonListResponseDto } from 'src/apis/dto/response/gifticon';
 import { ResponseDto } from 'src/apis/dto/response';
+import Pagination from 'src/components/pagination';
 import { PatchGifticonRequestDto, PostGifticonRequestDto } from 'src/apis/dto/request/gifticon';
 
 // variable: 기본 이미지 URL //
