@@ -1,6 +1,6 @@
 import { ChangeEvent, useState, useEffect } from 'react';
 import './style.css';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
@@ -10,16 +10,48 @@ import { signInRequest } from '../../apis';
 import { ACTIVE_PATH, QNA_PATH, RECRUIT_PATH } from '../../constants';
 import { useCookies } from 'react-cookie';
 
+type AuthPath = '회원가입';
+
+interface SnsContainerProps {
+    type: AuthPath;
+}
+
+// component: SNS 로그인 회원가입 컴포넌트 //
+function SnsContainer({ type }: SnsContainerProps) {
+
+    // event handler: SNS 버튼 클릭 이벤트 처리 //
+    const onSnsButtonClickHandler = (sns: 'kakao' | 'naver' | 'google') => {
+        window.location.href = `http://localhost:4000/api/v1/auth/sns-sign-in/${sns}`;
+    };
+
+    // render: SNS 로그인 회원가입 컴포넌트 렌더링 //
+    return (
+        <div className="sns-container">
+            <div className="sns-button-container">
+                <div className={`sns-button ${type === '회원가입' ? 'md ' : ''}kakao`} onClick={() => onSnsButtonClickHandler('kakao')}></div>
+                <div className={`sns-button ${type === '회원가입' ? 'md ' : ''}naver`} onClick={() => onSnsButtonClickHandler('naver')}></div>
+                <div className={`sns-button ${type === '회원가입' ? 'md ' : ''}google`} onClick={() => onSnsButtonClickHandler('google')}></div>
+            </div>
+        </div>
+    );
+
+}
+
 export default function NavigationBar() {
 
     // state: path 상태 //
     const { pathname } = useLocation();
 
+    // state: SNS 회원가입 상태 //
+    const [queryParam] = useSearchParams();
+    const snsId = queryParam.get('snsId');
+    const joinPath = queryParam.get('joinPath');
+
     // state: 모달 팝업 상태 //
     const [modalOpen, setModalOpen] = useState<boolean>(false);
-    const [id, setId] = useState<string>('');  
-    const [password, setPassword] = useState<string>('');  
-    const [message, setMessage] = useState<string>('');  
+    const [id, setId] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [message, setMessage] = useState<string>('');
 
     // state: cookie 상태 관리
     const [cookies, setCookie] = useCookies([ACCESS_TOKEN]);
@@ -27,13 +59,16 @@ export default function NavigationBar() {
     // variable: 경로 이름 //
     const path =
         pathname.startsWith(RECRUIT_PATH) ? '구인게시판' :
-        pathname.startsWith(ACTIVE_PATH) ? '활동게시판' :
-        pathname.startsWith(QNA_PATH) ? 'Q&A' : '';
+            pathname.startsWith(ACTIVE_PATH) ? '활동게시판' :
+                pathname.startsWith(QNA_PATH) ? 'Q&A' : '';
 
     // variable: 특정 경로 여부 변수 //
     const isReruit = pathname.startsWith(RECRUIT_PATH);
     const isActive = pathname.startsWith(ACTIVE_PATH);
     const isQnA = pathname.startsWith(QNA_PATH);
+
+    // variable: SNS 회원가입 여부 //
+    const isSnsSignUp = snsId !== null && joinPath !== null;
 
     // function: 네비게이터 함수 //
     const navigator = useNavigate();
@@ -45,7 +80,7 @@ export default function NavigationBar() {
     // event handler: 모달 오픈 이벤트 처리 //
     const onModelOpenHandler = () => {
         setModalOpen(!modalOpen);
-        setMessage(''); 
+        setMessage('');
     };
 
     // event handler: 로고 클릭 이벤트 처리 //
@@ -86,14 +121,14 @@ export default function NavigationBar() {
 
         try {
             const response = await signInRequest(requestBody);
-            
+
             if (response === null) {
                 setMessage('서버 응답이 없습니다.');
                 return;
             }
 
             console.log(response);
-        
+
             handleSignInResponseHandler(response);
         } catch (error) {
             setMessage('로그인에 실패했습니다. 다시 시도해주세요.');
@@ -106,12 +141,12 @@ export default function NavigationBar() {
             setMessage('서버에 문제가 있습니다.');
             return;
         }
-    
+
         if (response.code !== 'SU') {
             const errorMessage =
                 response.code === 'VF' ? '아이디와 비밀번호를 모두 입력하세요.' :
-                response.code === 'SF' ? '로그인 정보가 일치하지 않습니다.' :
-                '로그인에 실패했습니다.';
+                    response.code === 'SF' ? '로그인 정보가 일치하지 않습니다.' :
+                        '로그인에 실패했습니다.';
             setMessage(errorMessage);
             return;
         }
@@ -121,8 +156,8 @@ export default function NavigationBar() {
         setCookie(ACCESS_TOKEN, accessToken, { path: '/', expires });
 
         setMessage('');
-        onModelOpenHandler();  
-        navigator(ROOT_PATH);  
+        onModelOpenHandler();
+        navigator(ROOT_PATH);
     };
 
     // event handler: 아이디 입력 시 처리 //
@@ -149,7 +184,7 @@ export default function NavigationBar() {
                 <div className={`manu-qna ${isQnA ? 'active' : ''}`} onClick={onQnaClickHandler}>Q&A</div>
             </div>
             {location.pathname !== '/' &&
-            <input className='input-box' placeholder='검색어를 입력하세요.' />
+                <input className='input-box' placeholder='검색어를 입력하세요.' />
             }
             <div className='button-box'>
                 <div className='button sign-in' onClick={onModelOpenHandler}>로그인</div>
@@ -164,29 +199,29 @@ export default function NavigationBar() {
                         </div>
                         <div className='modal-main'>
                             <div className='modal-input-box'>
-                            <div className='sign-in-id'>
-                                <div className='name'>아이디</div>
-                                <input
-                                    className='input'
-                                    placeholder='아이디를 입력해주세요.'
-                                    value={id}
-                                    onChange={onIdChangeHandler}
-                                />
-                            </div>
-                            <div className='sign-in-password'>
-                                <div className='name'>비밀번호</div>
-                                <input
-                                    type='password'
-                                    className='input'
-                                    placeholder='비밀번호를 입력해주세요.'
-                                    value={password}
-                                    onChange={onPasswordChangeHandler}
-                                />
-                            </div>
+                                <div className='sign-in-id'>
+                                    <div className='name'>아이디</div>
+                                    <input
+                                        className='input'
+                                        placeholder='아이디를 입력해주세요.'
+                                        value={id}
+                                        onChange={onIdChangeHandler}
+                                    />
+                                </div>
+                                <div className='sign-in-password'>
+                                    <div className='name'>비밀번호</div>
+                                    <input
+                                        type='password'
+                                        className='input'
+                                        placeholder='비밀번호를 입력해주세요.'
+                                        value={password}
+                                        onChange={onPasswordChangeHandler}
+                                    />
+                                </div>
                             </div>
                             <div className='middle-box'>
-                            {message && <div className='error-message'>{message}</div>}
-                            <div className='button sign-in' onClick={onSignInButtonHandler}>로그인</div>
+                                {message && <div className='error-message'>{message}</div>}
+                                <div className='button sign-in' onClick={onSignInButtonHandler}>로그인</div>
                             </div>
                             <div className='sign-text'>
                                 <div className='find-id' onClick={onFindIdClickHandler}>아이디 찾기</div>
@@ -197,11 +232,7 @@ export default function NavigationBar() {
                             </div>
                         </div>
                         <div className='modal-bottom'>
-                            <div className='sns-button-container'>
-                                <div className='sns-button kakao'></div>
-                                <div className='sns-button naver'></div>
-                                <div className='sns-button google'></div>
-                            </div>
+                            {!isSnsSignUp && <SnsContainer type='회원가입' />}
                         </div>
                     </div>
                 </div>
