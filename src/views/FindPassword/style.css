@@ -1,4 +1,4 @@
-#find-id-wrapper {
+#find-password-wrapper {
     user-select: none;
     display: flex;
     align-items: center;
@@ -9,7 +9,7 @@
     background-color: rgba(0, 0, 0, 0.3);
 }
 
-.find-id-main {
+.find-password-main {
     display: flex;
     flex-direction: column;
 
@@ -19,16 +19,16 @@
     align-content: center;
     justify-content: space-between;
 
-    gap: 20px;
+    /* gap: 20px; */
     padding: 15px;
 
-    border: 2px solid rgba(238, 238, 238, 1);
+    border: 2px solpassword rgba(238, 238, 238, 1);
     border-radius: 8px;
 
     background-color: rgba(255, 255, 255, 1);
 }
 
-.find-id-top {
+.find-password-top {
     display: flex;
     width: 1;
     height: 50px;
@@ -36,7 +36,7 @@
     justify-content: center;
 }
 
-.find-id-title {
+.find-password-title {
     flex: 1;
     font-size: 50px;
     font-weight: bolder;
@@ -48,31 +48,42 @@
     padding-left: 7px;
 }
 
-#find-id-wrapper .button-close {
+#find-password-wrapper .button-close {
     padding-top: 5px;
     padding-right: 7px;
 }
 
-.find-id-middle {
+.find-password-middle {
     display: flex;
     flex-direction: column;
     width: 1;
-    height: 300px;
+    height: 650px;
     align-content: center;
     justify-content: center;
 
 }
 
-.find-id-container {
+.find-password-container {
     display: flex;
     flex-direction: column;
-    gap: 30px;
-    height: 150px;
+    justify-content:center;
+    gap: 5px;
+    height: 300px;
+}
+
+.find-password-box {
+    width: 400px;
+    height: 80px;
+}
+
+.find-tel,
+.find-auth-tel {
+    margin-bottom: 5px;
 }
 
 .find-input-name,
 .find-input-tel {
-    border: 1px solid #ccc;
+    border: 1px solpassword #ccc;
     padding: 10px;
     border-radius: 10px;
     width: 100%;
@@ -87,7 +98,7 @@
     gap: 20px;
 }
 
-#find-id-wrapper .button-tel-auth {
+#find-password-wrapper .button-tel-auth {
     padding: 10px 0px;
     text-align: center;
     border-radius: 10px;
@@ -105,16 +116,16 @@
     gap: 20px;
 }
 
-#find-id-wrapper .button-container {
+.button-container-find {
     display: flex;
     flex-direction: column;
     text-align: center;
-    gap: 20px;
+    gap: 10px;
     width: 400px;
     height: 80px;
 }
 
-.button-find-id {
+.button-find-password {
     padding: 10px 0px;
     text-align: center;
     border-radius: 10px;
@@ -126,8 +137,8 @@
     width: 100%;
 }
 
-#find-id-wrapper .button-tel-auth:hover,
-.button-find-id:hover {
+#find-password-wrapper .button-tel-auth:hover,
+.button-find-password:hover {
     background-color: #6b8f5c;
 }
 

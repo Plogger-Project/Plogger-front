@@ -1,14 +1,15 @@
 import axios, { AxiosResponse } from "axios";
 import ResponseDto from "./dto/response/response.dto";
-import { IdCheckRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
+import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
 import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
-import { GetSignInResponseDto } from "./dto/response/auth";
-import { PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 import { PatchUserRequestDto } from "./dto/request/user";
 import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
 import PatchTelAuthCheckRequestDto from "./dto/request/user/patch-tel-auth-check.request.dto";
+import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from "./dto/request/gifticon";
+import { FindPasswordResponseDto, GetSignInResponseDto } from "./dto/response/auth";
+import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
 
 // variable: API URL 상수 //
 const PLOGGER_API_DOMAIN = "http://localhost:4000"
@@ -18,7 +19,9 @@ const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
 const ID_CHECK_API_URL = `${AUTH_MODULE_URL}/id-check`;
 const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
 const SEND_AUTH_API_URL = `${AUTH_MODULE_URL}/send-auth`;
+const SEND_PASSWORD_AUTH_API_URL = `${AUTH_MODULE_URL}/password-send-auth`;
 const FIND_ID_API_URL = `${AUTH_MODULE_URL}/find-id`;
+const FIND_PASSWORD_API_URL = `${AUTH_MODULE_URL}/find-password`;
 const TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/tel-auth-check`;
 
 const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
@@ -89,9 +92,38 @@ export const signUpRequest = async (requestBody: SignUpRequestDto) => {
 }
 
 //function: 아이디 찾기 인증번호 요청 함수 //
-
+export const sendAuthRequest = async (requestBody: SendAuthRequestDto) => {
+    const responseBody = await axios.post(SEND_AUTH_API_URL, requestBody)
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler)
+    return responseBody;
+}
 
 //function: 아이디 찾기 아이디 요청 함수 //
+export const findIdRequest = async (requestBody: FindIdRequestDto) => {
+    const responseBody = await axios.post(FIND_ID_API_URL, requestBody)
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler)
+    return responseBody;
+}
+
+//function: 비밀번호 찾기 인증번호 요청 함수 //
+export const sendPasswordAuthRequest = async (requestBody: SendAuthRequestDto) => {
+    const responseBody = await axios.post(SEND_PASSWORD_AUTH_API_URL, requestBody)
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler)
+    return responseBody;
+}
+
+//function: 비밀번호 찾기 아이디 요청 함수 //
+export const findPasswordRequest = async (requestBody: FindPasswordRequestDto) => {
+    const responseBody = await axios.post(FIND_PASSWORD_API_URL, requestBody)
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler)
+    return responseBody;
+}
+
+
 
 // function: sign in 요청 함수 //
 export const signInRequest = async (requestBody: SignInRequestDto) => {
@@ -109,6 +141,14 @@ export const getSignInRequest = async (accessToken: string) => {
     return responseBody;
 };
 
+// function: post gifticon 요청 함수 //
+export const postGifticonRequest = async (requestBody: PostGifticonRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_GIFTICON_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
 // function: get gifticon list 요청 함수 //
 export const getGifticonListRequest = async (accessToken: string) => {
     const responseBody = await axios.get(GET_GIFTICON_LIST_API_URL, bearerAuthorization(accessToken))
@@ -121,6 +161,22 @@ export const getGifticonListRequest = async (accessToken: string) => {
 export const getGifticonRequest = async (gifticonId: number | string, accessToken: string) => {
     const responseBody = await axios.get(GET_GIFTICON_API_URL(gifticonId), bearerAuthorization(accessToken))
         .then(responseDataHandler<GetGifticonResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: patch gifticon 요청 함수 //
+export const patchGifticonRequest = async (requestBody: PatchGifticonRequestDto, gifticonId: number | string, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_GIFTICON_API_URL(gifticonId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: delete gifticon 요청 함수 //
+export const deleteGifticonRequest = async (gifticonId: number | string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_GIFTICON_API_URL(gifticonId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 };
