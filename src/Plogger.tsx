@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Plogger.css';
 
 import { Routes, Route, useLocation, Navigate, Router, useSearchParams, useNavigate } from 'react-router-dom';
 
 import SignUp from './views/Auth';
-import RecruitPost from './views/Recruit';
+
 import ActivePost from './views/Active';
 import NavigationBar from './views/NavigationBar';
 import Main from './views/Main';
@@ -26,6 +26,8 @@ import { useCookies } from 'react-cookie';
 import { GetSignInResponseDto } from './apis/dto/response/auth';
 import { ResponseDto } from './apis/dto/response';
 import { getSignInRequest } from './apis';
+import RecruitPost from './views/Recruit';
+import { RecruitPostList } from './types';
 
 
 // component: Sns Success 컴포넌트 //
@@ -101,7 +103,7 @@ function Plogger() {
   }, [cookies[ACCESS_TOKEN]]);
   
   const location = useLocation();
-  
+
 
 
   const showNavigationBar = location.pathname !== '/sign-up' && location.pathname !== FIND_ID;
@@ -113,7 +115,7 @@ function Plogger() {
       <Routes>
         <Route index element={<Main />} />
         <Route path='/sign-up' element={<SignUp />} />
-        <Route path={RECRUIT_PATH} element={<RecruitPost />} />
+        <Route path={RECRUIT_PATH} element={<RecruitPost/> } />
         <Route path={RECRUIT_WRITE_PATH} element={<RecruitWrite />} />
         <Route path={RECRUIT_DETAIL_PATH} element={<RecruitView />} />
         <Route path={RECRUIT_UPDATE_PATH} element={<RecruitUpdate />} />

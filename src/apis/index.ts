@@ -6,11 +6,13 @@ import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
 import { GetSignInResponseDto } from "./dto/response/auth";
 import { PurchaseGifticonRequestDto } from "./dto/request/gifticon";
+import { GetRecruitPostListResponseDto } from "./dto/response/recruit";
 
 // variable: API URL 상수 //
 const PLOGGER_API_DOMAIN = "http://localhost:4000"
 
 const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
+const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`
 
 const ID_CHECK_API_URL = `${AUTH_MODULE_URL}/id-check`;
 const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
@@ -21,6 +23,8 @@ const TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/tel-auth-check`;
 const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
+
+const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
 
 const GIFTICON_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/gifticon`;
 
@@ -158,3 +162,17 @@ export const fileUploadRequest = async (requestBody: FormData) => {
         .catch(error => null)
     return url;
 }
+
+// function : get recruit post list 요청 함수 //
+export const getRecruitPostListRequest = async () => {
+   
+        const responseBody = await axios.get(GET_RECRUIT_POST_LIST_API_URL)
+            .then(responseDataHandler<GetRecruitPostListResponseDto>)
+            .catch(responseErrorHandler);
+        
+        return responseBody;
+        
+   
+
+};
+

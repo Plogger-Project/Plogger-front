@@ -1,48 +1,151 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./style.css";
 import { useNavigate } from "react-router-dom";
-import { RECRUIT_ABSOLUTE_PATH, RECRUIT_DETAIL_ABSOLUTE_PATH, RECRUIT_WRITE_ABSOLUTE_PATH } from "../../constants";
+import { RECRUIT_DETAIL_ABSOLUTE_PATH, RECRUIT_WRITE_ABSOLUTE_PATH } from "../../constants";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { useKakaoLoader } from "src/hooks";
 import { url } from "inspector";
+import { RecruitPostList } from "src/types";
+import { useSignInUserStore } from "src/stores";
+import { useCookies } from "react-cookie";
+import usePagination from "src/hooks/pagination.hook";
+import { ResponseDto } from "src/apis/dto/response";
+import { GetRecruitPostListResponseDto } from "src/apis/dto/response/recruit";
+import { getRecruitPostListRequest } from "src/apis";
 
 
 // variable : 카카오 맵 키 //
 const appkey = process.env.REACT_APP_KAKAO_MAP_KEY;
 
+// interface: 구인 게시글 리스트 컴포넌트 Properties //
+interface TableRowProps {
 
-export default function RecruitPost() {
   
-  const [activeSection, setActiveSection] = useState(0); // 현재 섹션을 나타내는 상태
+  recruitPostId: RecruitPostList;
+  getRecruitList: () => void;
+
+}
+// component: 구인 게시글 리스트 아이템 컴포넌트 //
+function TableRow({ recruitPostId, getRecruitList }: TableRowProps) {
+
+  
+
+
+  //function: 네비게이터 함수 //
+  const navigator = useNavigate();
+
+  // function : 날짜 포맷팅 함수
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 0부터 시작하므로 +1
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+
+  // event handler: 게시글 상세보기 클릭 이벤트 처리 //
+  const onDetailButtonClickHandler = () => {
+    navigator(RECRUIT_DETAIL_ABSOLUTE_PATH);
+  };
+
+  return (
+
+    <div className="tr" key={recruitPostId.recruitPostId}>
+      <div className="td-recruit-number">{recruitPostId.recruitPostId}</div>
+      <div className="td-recruit-isCompleted">{recruitPostId.isCompleted ? '마감됨' : '모집중'}</div>
+      <div className="td-recruit-title" onClick={onDetailButtonClickHandler}>{recruitPostId.recruitPostTitle}</div>
+      <div className="td-recruit-writer">{recruitPostId.recruitPostWriter}</div>
+      <div className="td-recruit-like-count">{recruitPostId.recruitPostLike}</div>
+      <div className="td-recruit-view-count">{recruitPostId.recruitView}</div>
+      <div className="td-recruit-people">{recruitPostId.currentPeople}/{recruitPostId.minPeople}</div>
+      <div className="td-recruit-end-date">{recruitPostId.recruitEndDate}</div>
+      <div className="td-recruit-create-date">{formatDate(recruitPostId.recruitPostCreatedAt)}</div>
+    </div>
+
+  )
+}
+
+
+
+
+// component: 구인 게시글 리스트 아이템 컴포넌트 //
+export default function RecruitPost() {
+
+
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
   const [scrollY, setScrollY] = useState(0); // 스크롤 위치
   const [showPosts, setShowPosts] = useState(false); // 게시글 표시 상태
+
+
+
+  // state: 원본 리스트 상태 //
+  const [originalList, setOriginalList] = useState<RecruitPostList[]>([]);
+
+
+  // state: 페이징 관련 상태 //
+  const { currentPage, totalPage, totalCount, viewList, setTotalList, initViewList, ...paginationProps } = usePagination<RecruitPostList>();
+
+  //function: 네비게이터 함수 //
   const navigator = useNavigate();
 
   // function: 카카오 맵스 함수 //
   useKakaoLoader();
+
+
+  // function: tool list 불러오기 함수 //
+  const getRecruitPostList =  () => {
+    
+    getRecruitPostListRequest().then(getRecruitPostListResponse);
+    
+  }
+
+
+
+
+  // function: get recruit post list response 처리 함수 //
+  const getRecruitPostListResponse = (responseBody: GetRecruitPostListResponseDto | ResponseDto | null) => {
+    console.log("Response Body:", responseBody); // 응답 데이터를 콘솔에 출력하여 확인
+
+    if (!responseBody) {
+      alert("responseBody에 문제가 있습니다.");
+      return;
+    }
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    const recruitPosts = (responseBody as GetRecruitPostListResponseDto).recruitPosts || [];
+    
+    setTotalList(recruitPosts);
+    setOriginalList(recruitPosts);
+
+  };
+
+  // effect: 컴포넌트 로드시 게시글 리스트 불러오기 함수 //
+  useEffect(() => {
+    getRecruitPostList();
+    
+  },[]);
+  
+ 
+
 
   // event handler: 글쓰기 버튼 클릭 이벤트 처리 //
   const onWriteButtonClickHandler = () => {
     navigator(RECRUIT_WRITE_ABSOLUTE_PATH);
   };
 
-  const onDetailButtonClickHandler = () => {
-    navigator(RECRUIT_DETAIL_ABSOLUTE_PATH);
-  };
 
-  const data = [
-    { recruitPostId: 10, isCompleted: "모집중", recruitPostTitle: "플로깅 같이 하실분 모집합니다.", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "1/5", dDay: "D - 4", recruitPostCreatedAt: "10.08" },
-    { recruitPostId: 9, isCompleted: "마감됨", recruitPostTitle: "플로깅 같이 하실분 모집합니다 2222.", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "4/4", dDay: "D - 6", recruitPostCreatedAt: "10.05" },
-    { recruitPostId: 8, isCompleted: "모집중", recruitPostTitle: "플로깅 같이 하실분 모집합니다.", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "4/5", dDay: "D - 6", recruitPostCreatedAt: "10.08" },
-    { recruitPostId: 7, isCompleted: "마감됨", recruitPostTitle: "플로깅 같이 하실분 모집합니다 2222.", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "3/3", dDay: "D - 6", recruitPostCreatedAt: "10.05" },
-    { recruitPostId: 6, isCompleted: "모집중", recruitPostTitle: "플로깅 같이 하실분 모집합니다.", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "1/5", dDay: "D - 6", recruitPostCreatedAt: "10.08" },
-    { recruitPostId: 5, isCompleted: "마감됨", recruitPostTitle: "플로깅 같이 하실분 모집합니다 2222.", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "3/3", dDay: "D - 6", recruitPostCreatedAt: "10.05" },
-    { recruitPostId: 4, isCompleted: "모집중", recruitPostTitle: "플로깅 같이 하실분 모집합니다.", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "3/5", dDay: "D - 6", recruitPostCreatedAt: "10.08" },
-    { recruitPostId: 3, isCompleted: "마감됨", recruitPostTitle: "플로깅 같이 하실분 모집합니다 2222.", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "3/3", dDay: "D - 6", recruitPostCreatedAt: "10.05" },
-    { recruitPostId: 2, isCompleted: "모집중", recruitPostTitle: "플로깅 같이 하실분 모집합니다.", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "2/5", dDay: "D - 6", recruitPostCreatedAt: "10.08" },
-    { recruitPostId: 1, isCompleted: "마감됨", recruitPostTitle: "플로깅 같이 하실분 모집합니다 2222.", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "3/3", dDay: "D - 6", recruitPostCreatedAt: "10.05" },
-  ];
+
+
 
   const handleScroll = (event: WheelEvent) => {
     event.preventDefault();
@@ -65,14 +168,26 @@ export default function RecruitPost() {
     };
   }, [scrollY]);
 
+
+
+  // render : 구인 게시판 컴포넌트 렌더링 //
   return (
     <div id="recruit-post-wrapper">
-      <div className="map" style={{ opacity: showPosts ? 0 : 1 }}></div>
+      <div className="kakaomap" style={{ opacity: showPosts ? 0 : 1 }} ref={mapRef}>
+        <Map
+          center={{ lat: 35.152170407376424, lng: 129.05979624585217 }}
+          style={{ width: "100%", height: "500px" }}
+        >
+          <MapMarker position={{ lat: 35.152170407376424, lng: 129.05979624585217 }}>
+            <div style={{ color: "#000" }}>학원 위치</div>
+          </MapMarker>
+        </Map>
+      </div>
       <div className={`middle ${showPosts ? 'show' : ''}`}>
         <div className="main">
           <div className="middle-top">
             <div className="pages">
-              전체 <span className="emphasis">10건</span> | 페이지 <span className="emphasis">1/10</span>
+              전체 <span className="emphasis">{totalCount}건</span> | 페이지 <span className="emphasis">{currentPage}/{totalPage}</span>
             </div>
             <div className="post-filter">
               <div className="all">전체</div>
@@ -92,20 +207,12 @@ export default function RecruitPost() {
               <div className="td-recruit-end-date">마감일자</div>
               <div className="td-recruit-create-date">날짜</div>
             </div>
-            {data.map(item => (
-              <div className="tr" key={item.recruitPostId}>
-                <div className="td-recruit-number">{item.recruitPostId}</div>
-                <div className="td-recruit-isCompleted">{item.isCompleted}</div>
-                <div className="td-recruit-title" onClick={onDetailButtonClickHandler}>{item.recruitPostTitle}</div>
-                <div className="td-recruit-writer">{item.recruitPostWriter}</div>
-                <div className="td-recruit-like-count">{item.recruitLike}</div>
-                <div className="td-recruit-view-count">{item.recruitView}</div>
-                <div className="td-recruit-people">{item.members}</div>
-                <div className="td-recruit-end-date">{item.dDay}</div>
-                <div className="td-recruit-create-date">{item.recruitPostCreatedAt}</div>
-              </div>
-            ))}
+            {
+              viewList.map((recruitPostId, index) => (
+                <TableRow key={index} recruitPostId={recruitPostId} getRecruitList={getRecruitPostList} />
+              ))}
           </div>
+          
           <div className="pagination">
             <div>이전</div>
             <div className="active">1</div>

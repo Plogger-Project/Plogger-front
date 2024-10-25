@@ -10,20 +10,17 @@
 }
 
 #recruit-post-wrapper .main {
-    min-width: 800px;
+    min-width: 1130px;
 
 }
 
-#recruit-post-wrapper .map {
+#recruit-post-wrapper .kakaomap {
     position: fixed;
     top: 450px;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 1134px;
     height: 700px;
-    background-size: contain;
-    background-image: url(/public/images/sample_image.png);
-    background-repeat: no-repeat;
     background-position: center;
     display: flex;
     justify-content: center;
@@ -191,10 +188,13 @@
 #recruit-post-wrapper .td-recruit-writer,
 #recruit-post-wrapper .td-recruit-like-count,
 #recruit-post-wrapper .td-recruit-view-count,
-#recruit-post-wrapper .td-recruit-people,
+#recruit-post-wrapper .td-recruit-people
+{
+    width: 60px;
+}
 #recruit-post-wrapper .td-recruit-end-date,
-#recruit-post-wrapper .td-recruit-create-date {
-    width: 50px;
+#recruit-post-wrapper .td-recruit-create-date{
+    width: 80px;
 }
 
 #recruit-post-wrapper .pagination {
