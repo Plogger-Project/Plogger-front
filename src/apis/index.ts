@@ -4,6 +4,12 @@ import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SignUpRe
 import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
+
+import { GetSignInResponseDto } from "./dto/response/auth";
+import { PurchaseGifticonRequestDto } from "./dto/request/gifticon";
+import { GetRecruitPostListResponseDto } from "./dto/response/recruit";
+import { GetQnaPostListResponseDto } from "./dto/response/qna";
+
 import { PatchUserRequestDto } from "./dto/request/user";
 import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
 import PatchTelAuthCheckRequestDto from "./dto/request/user/patch-tel-auth-check.request.dto";
@@ -11,10 +17,13 @@ import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonReques
 import { FindPasswordResponseDto, GetSignInResponseDto } from "./dto/response/auth";
 import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
 
+
 // variable: API URL 상수 //
-const PLOGGER_API_DOMAIN = "http://localhost:4000"
+const PLOGGER_API_DOMAIN = "http://192.168.1.10:4000"
 
 const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
+const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`
+const QNA_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/qna`
 
 const ID_CHECK_API_URL = `${AUTH_MODULE_URL}/id-check`;
 const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
@@ -28,11 +37,17 @@ const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 
+
+const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
+
+const GET_QNA_POST_LIST_API_URL = `${QNA_MODULE_URL}`
+
 const MYPAGE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/mypage`;
 
 const PATCH_MYPAGE_API_URL = `${MYPAGE_MODULE_URL}`;
 const PATCH_MYPAGE_TEL_AUTH_API_URL = `${MYPAGE_MODULE_URL}/tel-auth`;
 const PATCH_MYPAGE_TEL_AUTH_CHECK_API_URL = `${MYPAGE_MODULE_URL}/tel-auth-check`;
+
 
 const GIFTICON_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/gifticon`;
 
@@ -165,6 +180,7 @@ export const getGifticonRequest = async (gifticonId: number | string, accessToke
     return responseBody;
 };
 
+
 // function: patch gifticon 요청 함수 //
 export const patchGifticonRequest = async (requestBody: PatchGifticonRequestDto, gifticonId: number | string, accessToken: string) => {
     const responseBody = await axios.patch(PATCH_GIFTICON_API_URL(gifticonId), requestBody, bearerAuthorization(accessToken))
@@ -181,12 +197,14 @@ export const deleteGifticonRequest = async (gifticonId: number | string, accessT
     return responseBody;
 };
 
+
 // function: purchase gifticon 요청 함수 //
 export const purchaseGifticonRequest = async (requestBody: PurchaseGifticonRequestDto, gifticonId: number | string, accessToken: string) => {
     const responseBody = await axios.patch(PURCHASE_GIFTICON_API_URL(gifticonId), requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
+
 }
 
 // function: 유저 정보 수정 요청 함수 //
@@ -211,6 +229,7 @@ export const patchTelAuthCheckRequest = async (requestBody: PatchTelAuthCheckReq
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
+
 }
 
 const FILE_UPLOAD_URL = `${PLOGGER_API_DOMAIN}/file/upload`;
@@ -223,3 +242,19 @@ export const fileUploadRequest = async (requestBody: FormData) => {
         .catch(error => null)
     return url;
 }
+
+// function : get recruit post list 요청 함수 //
+export const getRecruitPostListRequest = async () => {
+    const responseBody = await axios.get(GET_RECRUIT_POST_LIST_API_URL)
+        .then(responseDataHandler<GetRecruitPostListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+    // function : get recruit post list 요청 함수 //
+    export const getQnaPostListRequest = async () => {
+        const responseBody = await axios.get(GET_QNA_POST_LIST_API_URL)
+            .then(responseDataHandler<GetQnaPostListResponseDto>)
+            .catch(responseErrorHandler);
+        return responseBody;
+    };

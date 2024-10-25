@@ -10,20 +10,17 @@
 }
 
 #recruit-post-wrapper .main {
-    min-width: 800px;
+    min-width: 1130px;
 
 }
 
-#recruit-post-wrapper .map {
+#recruit-post-wrapper .kakaomap {
     position: fixed;
     top: 450px;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 1134px;
     height: 700px;
-    background-size: contain;
-    background-image: url(/public/images/sample_image.png);
-    background-repeat: no-repeat;
     background-position: center;
     display: flex;
     justify-content: center;
@@ -110,15 +107,29 @@
 }
 
 
-#recruit-post-wrapper .middle-top .post-filter .all{
+#recruit-post-wrapper .middle-top .post-filter .all {
     font-weight: 600;
-    
 }
+
+#recruit-post-wrapper .middle-top .post-filter .Recruiting {
+    font-weight: 600;
+}
+
+#recruit-post-wrapper .middle-top .post-filter .Recruited {
+    font-weight: 600;
+}
+
 #recruit-post-wrapper .middle-top .post-filter .all,
 #recruit-post-wrapper .middle-top .post-filter .Recruiting,
 #recruit-post-wrapper .middle-top .post-filter .Recruited {
-    
     cursor: pointer;
+}
+
+/* 비활성화된 버튼에 대한 스타일 */
+#recruit-post-wrapper .middle-top .post-filter .all:not(.active),
+#recruit-post-wrapper .middle-top .post-filter .Recruiting:not(.active),
+#recruit-post-wrapper .middle-top .post-filter .Recruited:not(.active) {
+    font-weight: normal;
 }
 
 #recruit-post-wrapper .middle-top .write-button {
@@ -141,7 +152,7 @@
     font-family: 'Arial', sans-serif;
     border-collapse: collapse;
 
-    font-size: 12px;
+    font-size: 14px;
 
 }
 
@@ -179,7 +190,7 @@
 }
 
 #recruit-post-wrapper .td-recruit-isCompleted {
-    width: 50px;
+    width: 60px;
 }
 
 #recruit-post-wrapper .td-recruit-title {
@@ -191,10 +202,13 @@
 #recruit-post-wrapper .td-recruit-writer,
 #recruit-post-wrapper .td-recruit-like-count,
 #recruit-post-wrapper .td-recruit-view-count,
-#recruit-post-wrapper .td-recruit-people,
+#recruit-post-wrapper .td-recruit-people
+{
+    width: 60px;
+}
 #recruit-post-wrapper .td-recruit-end-date,
-#recruit-post-wrapper .td-recruit-create-date {
-    width: 50px;
+#recruit-post-wrapper .td-recruit-create-date{
+    width: 80px;
 }
 
 #recruit-post-wrapper .pagination {
