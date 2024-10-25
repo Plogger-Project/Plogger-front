@@ -4,8 +4,8 @@ import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SignUpRe
 import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
+import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 import { FindPasswordResponseDto, GetSignInResponseDto } from "./dto/response/auth";
-import { PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
 
 // variable: API URL 상수 //
@@ -132,13 +132,13 @@ export const getSignInRequest = async (accessToken: string) => {
     return responseBody;
 };
 
-// // function: post tool 요청 함수 //
-// export const postToolRequest = async (requestBody: PostToolRequestDto, accessToken: string) => {
-//     const responseBody = await axios.post(POST_TOOL_API_URL, requestBody, bearerAuthorization(accessToken))
-//         .then(responseDataHandler<ResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// };
+// function: post gifticon 요청 함수 //
+export const postGifticonRequest = async (requestBody: PostGifticonRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_GIFTICON_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 
 // function: get gifticon list 요청 함수 //
 export const getGifticonListRequest = async (accessToken: string) => {
@@ -156,21 +156,21 @@ export const getGifticonListRequest = async (accessToken: string) => {
      return responseBody;
  };
 
-// // function: patch tool 요청 함수 //
-// export const patchToolRequest = async (requestBody: PatchToolRequestDto, toolNumber: number | string, accessToken: string) => {
-//     const responseBody = await axios.patch(PATCH_TOOL_API_URL(toolNumber), requestBody, bearerAuthorization(accessToken))
-//         .then(responseDataHandler<ResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// };
+// function: patch gifticon 요청 함수 //
+export const patchGifticonRequest = async (requestBody: PatchGifticonRequestDto, gifticonId: number | string, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_GIFTICON_API_URL(gifticonId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 
-// // function: delete tool 요청 함수 //
-// export const deleteToolRequest = async (toolNumber: number | string, accessToken: string) => {
-//     const responseBody = await axios.delete(DELETE_TOOL_API_URL(toolNumber), bearerAuthorization(accessToken))
-//         .then(responseDataHandler<ResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// };
+// function: delete gifticon 요청 함수 //
+export const deleteGifticonRequest = async (gifticonId: number | string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_GIFTICON_API_URL(gifticonId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 
 // function: purchase gifticon 요청 함수 //
 export const purchaseGifticonRequest = async (requestBody: PurchaseGifticonRequestDto, gifticonId: number | string, accessToken: string) => {
