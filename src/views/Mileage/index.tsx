@@ -6,10 +6,10 @@ import Pagination from '../../components/Pagination';
 import { useSignInUserStore } from 'src/stores';
 import { useCookies } from 'react-cookie';
 import { ACCESS_TOKEN } from 'src/constants';
-import { fileUploadRequest, getGifticonListRequest, postGifticonRequest, purchaseGifticonRequest } from 'src/apis';
+import { deleteGifticonRequest, fileUploadRequest, getGifticonListRequest, patchGifticonRequest, postGifticonRequest, purchaseGifticonRequest } from 'src/apis';
 import { GetGifticonListResponseDto } from 'src/apis/dto/response/gifticon';
 import { ResponseDto } from 'src/apis/dto/response';
-import { PostGifticonRequestDto } from 'src/apis/dto/request/gifticon';
+import { PatchGifticonRequestDto, PostGifticonRequestDto } from 'src/apis/dto/request/gifticon';
 
 // variable: 기본 이미지 URL //
 const defaultImageUrl = '/images/defaultImage.png';
@@ -29,8 +29,12 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
   // state: 로그인 유저 정보 //
   const { signInUser, setSignInUser } = useSignInUserStore();
 
-  // state: 고객 정보 상태 //
-  const [ mileage, setMileage ] = useState<number>(0);
+  // state: 기프티콘 정보 상태 //
+  const [gifticonId, setGifticonId] = useState<number>(gifticon.gifticonId);
+  const [gifticonName, setGifticonName] = useState<string>(gifticon.name);
+  const [gifticonImageFile, setGifticonImageFile] = useState<File | null>(null);
+  const [gifticonImage, setGifticonImage] = useState<string>(gifticon.image);
+  const [mileageCost, setMileageCost] = useState<number>(gifticon.mileageCost);
 
   // state: 구매 모달 팝업 상태 //
   const [purchaseModalOpen, setPurchaseModalOpen] = useState<boolean>(false);
@@ -38,11 +42,120 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
   // state: 수정 모달 팝업 상태 //
   const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
 
+  // state: 원본 리스트 상태 //
+  const [originalList, setOriginalList] = useState<Gifticon[]>([]);
+
+  // state: 페이징 관련 상태 //
+  const {
+    currentPage, totalPage, totalCount, viewList,
+    setTotalList, initViewList, ...paginationProps
+  } = useGifticonPagination<Gifticon>();
+
+  // state: 이미지 입력 참조 //
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+
+  // state: 프로필 미리보기 URL 상태 //
+  const [previewUrl, setPreviewUrl] = useState<string>(defaultImageUrl);
+
   // variable: 담당자 여부 //
   const isAdmin = signInUser !== null && signInUser.isAdmin
 
   // variable: accessToken
   const accessToken = cookies[ACCESS_TOKEN];
+
+  // function: get gifticon list response 처리 함수 //
+  const getGifticonListResponse = (responseBody: GetGifticonListResponseDto | ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if(!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    const { gifticons } = responseBody as GetGifticonListResponseDto;
+    setTotalList(gifticons);
+    setOriginalList(gifticons);
+  }
+
+  // function: patch gifticon response 처리 함수 //
+  const patchGifticonResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '모두 입력해주세요.' :
+      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+      responseBody.code === 'NC' ? '존재하지 않는 고객입니다.' :
+      responseBody.code === 'NI' ? '존재하지 않는 요양사입니다.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+    
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if(!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    setUpdateModalOpen(!updateModalOpen);
+
+    getGifticonList();
+  };
+
+  // function: delete gifticon response 처리 함수 //
+  const deleteGifticonResponse = (responseBody: ResponseDto | null) => {
+    const message = 
+      !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+      responseBody.code === 'NC' ? '존재하지 않는 고객입니다.' : 
+      responseBody.code === 'NP' ? '권한이 없습니다.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if(!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    setUpdateModalOpen(!updateModalOpen);
+
+    getGifticonList();
+  };
+
+  // event handler: 기프티콘 이미지 클릭 이벤트 처리 //
+  const onGifticonImageClickHandler = () => {
+    const { current } = imageInputRef;
+    if(!current) return;
+    current.click();
+  };
+
+  // event handler: 기프티콘 이미지 변경 이벤트 처리 함수 //
+  const onImageInputChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { files } = event.target;
+    if(!files || !files.length) return;
+
+    const file = files[0];
+    setGifticonImageFile(file);
+
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onloadend = () => {
+      setPreviewUrl(fileReader.result as string);
+    };
+  };
+
+  // event handler: 이름 변경 이벤트 처리 함수 //
+  const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setGifticonName(value);
+  };
+
+  // event handler: 가격 변경 이벤트 처리 함수 //
+  const onMileageCostChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setMileageCost(Number(value));
+  };
 
   // event handler: 기프티콘 구매 모달 버튼 클릭 이벤트 처리 함수 //
   const onPurchaseOpenHandler = () => {
@@ -90,6 +203,53 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
     }
   }
 
+  // event handler: 수정 버튼 클릭 이벤트 처리 //
+  const onUpdateClickHandler = async (gifticonButtonId: number) => {
+
+    // const newRequestBody: PatchGifticonRequestDto = {name:gifticonName, image: defaultImageUrl, mileageCost}
+    // patchGifticonRequest(newRequestBody, gifticonId, accessToken).then(patchGifticonResponse);
+
+    if(!gifticonName && !mileageCost) return;
+
+    // if(gifticonName && !mileageCost) {
+    //   setMileageCost(gifticon.mileageCost);
+    // } 
+    
+    // if(!gifticonName && mileageCost) {
+    //   setGifticonName(gifticon.name);
+    // }
+
+    const accessToken = cookies[ACCESS_TOKEN];
+    if(!accessToken) return;
+
+    let url: string | null = null;
+    if(gifticonImageFile) {
+      const formData = new FormData();
+      formData.append('file', gifticonImage);
+      url = await fileUploadRequest(formData);
+    }
+    url = url ? url : gifticonImage;
+
+    const requestBody: PatchGifticonRequestDto = {
+      image: url, name:gifticonName, mileageCost
+    };
+    patchGifticonRequest(requestBody, gifticonButtonId, accessToken).then(patchGifticonResponse);
+  };
+
+  // event handler: 삭제 버튼 클릭 이벤트 처리 //
+  const onDeleteButtonClickHandler = (gifticonButtonId: number) => {
+
+    const isConfirm = window.confirm('정말로 삭제하시겠습니까?');
+    if(!isConfirm) return;
+    
+    if(!gifticonButtonId) return;
+
+    const accessToken = cookies[ACCESS_TOKEN];
+    if(!accessToken) return;
+
+    deleteGifticonRequest(gifticonButtonId, accessToken).then(deleteGifticonResponse);
+  };
+
   // effect: 모달 오픈 상태가 바뀔 시 스크롤 여부 함수 //
   useEffect(() => {
     document.body.style.overflow = (purchaseModalOpen || updateModalOpen) ? 'hidden' : 'auto';
@@ -104,51 +264,61 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
 
   // render: 고객 리스트 아이템 컴포넌트 렌더링 //
   return (
+    <>
     <div className='item' onClick={modalHandler}>
       <img className='item-image' src={gifticon.image}/>
       <div className='item-name'>{gifticon.name}</div>
       <div className='item-mileage'>마일리지: {gifticon.mileageCost}</div>
-      {/* 구매 모달 */}
-      {purchaseModalOpen &&
-        <div className='modal'>
-          <div className='modal-box'>
-            <div className='modal-top'>
-                <img className='item-image' src={gifticon.image}/>
-            </div>
-            <div className='modal-middle'>
-              <div className='item-name'>{gifticon.name}</div>
-              <div className='item-mileage'>마일리지: {gifticon.mileageCost}</div>
-              <div className='item-text'>{gifticon.name} 교환권으로 교환하시겠습니까?</div>
-            </div>
-            <div className='modal-bottom'>
-              <div className='button primary' onClick={onPurchaseGifticon}>구매</div>
-              <div className='button second' onClick={onPurchaseOpenHandler}>닫기</div>
-            </div>
-          </div>
+    </div>
+    {/* 구매 모달 */}
+    {purchaseModalOpen &&
+    <div className='modal'>
+      <div className='modal-box'>
+        <div className='modal-top'>
+            <img className='item-image' src={gifticon.image}/>
         </div>
-        }
-
-      {/* 수정 모달 */}
-      {updateModalOpen &&
-      <div className='modal'>
-        <div className='modal-box'>
-          <div className='modal-top'>
-              <img className='item-image' src={gifticon.image}/>
-          </div>
-          <div className='modal-middle'>
-            <div className='item-name'>{gifticon.name}</div>
-            <div className='item-mileage'>마일리지: {gifticon.mileageCost}</div>
-            <div className='item-text'>{gifticon.name} 교환권을 수정하시겠습니까?</div>
-          </div>
-          <div className='modify-modal-bottom'>
-            <div className='button error'>삭제</div>
-            <div className='button primary'>수정</div>
-            <div className='button second' onClick={onUpdateOpenHandler}>닫기</div>
-          </div>
+        <div className='modal-middle'>
+          <div className='item-name'>{gifticon.name}</div>
+          <div className='item-mileage'>마일리지: {gifticon.mileageCost}</div>
+          <div className='item-text'>{gifticon.name} 교환권으로 교환하시겠습니까?</div>
+        </div>
+        <div className='modal-bottom'>
+          <div className='button primary' onClick={onPurchaseGifticon}>구매</div>
+          <div className='button second' onClick={onPurchaseOpenHandler}>닫기</div>
         </div>
       </div>
-      }
     </div>
+    }
+
+    {/* 수정 모달 */}
+    {updateModalOpen &&
+    <div className='modal'>
+      <div className='modal-box'>
+        <div className='modal-top'>
+          <div className='item-image' style={{backgroundImage: `url(${gifticon.image})`}} onClick={onGifticonImageClickHandler}>
+            <input className='item-input' ref={imageInputRef} style={{display: 'none'}} type='file' accept='image/*' onChange={onImageInputChangeHandler}/>
+          </div>
+        </div>
+        <div className='modal-middle'>
+          <div className='input-boxes'>
+            <span className='input-text'>교환권: </span>
+            <input className='input' type='text' placeholder={gifticon.name} onChange={onNameChangeHandler}/>
+          </div>
+          <div className='input-boxes'>
+            <span className='input-text'>마일리지: </span>
+            <input className='input' type='number' placeholder={String(gifticon.mileageCost)} onChange={onMileageCostChangeHandler}/>
+          </div>
+          <div className='item-text'>{gifticon.name} 교환권을 수정하시겠습니까?</div>
+        </div>
+        <div className='modify-modal-bottom'>
+          <div className='button error' onClick={() => onDeleteButtonClickHandler(gifticon.gifticonId)}>삭제</div>
+          <div className='button primary' onClick={() => onUpdateClickHandler(gifticon.gifticonId)}>수정</div>
+          <div className='button second' onClick={onUpdateOpenHandler}>닫기</div>
+        </div>
+      </div>
+    </div>
+    }
+    </>
   )
 }
 
@@ -212,7 +382,7 @@ export default function Mileage() {
       setOriginalList(gifticons);
     }
 
-    // function: post customer response 처리 함수 //
+    // function: post gifticon response 처리 함수 //
     const postGifticonResponse = (responseBody: ResponseDto | null) => {
       const message =
         !responseBody ? '서버에 문제가 있습니다.' :
@@ -232,14 +402,12 @@ export default function Mileage() {
       getGifticonList();
     };
 
-  
-      // effect: 컴포넌트 로드 시 고객 리스트 불러오기 함수 //
-      useEffect(getGifticonList, []);
+    // effect: 컴포넌트 로드 시 고객 리스트 불러오기 함수 //
+    useEffect(getGifticonList, []);
 
     // event handler: 기프티콘 추가 모달 버튼 클릭 이벤트 처리 함수 //
     const onCreateOpenHandler = () => {
       setCreateModalOpen(!createModalOpen);
-      setPreviewUrl(defaultImageUrl);
     };
 
     // event handler: 기프티콘 이미지 클릭 이벤트 처리 //
@@ -295,6 +463,9 @@ export default function Mileage() {
         image: url, name:gifticonName, mileageCost
       };
       postGifticonRequest(requestBody, accessToken).then(postGifticonResponse);
+
+      setPreviewUrl(defaultImageUrl);
+      setGifticonImageFile(null);
     };
 
     // effect: 모달 오픈 상태가 바뀔 시 스크롤 여부 함수 //
