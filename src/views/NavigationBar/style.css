@@ -100,7 +100,14 @@
 .error-message {
     font-size: 14px;
     height: 20px;
+    margin-top: 5px;
     color: rgba(255, 0, 0, 1);
+}
+.primary-message {
+    font-size: 14px;
+    height: 20px;
+    margin-top: 5px;
+    color: rgba(0, 95, 65, 1);
 }
 
 .middle-box .button.sign-in {
@@ -113,6 +120,49 @@
     font-size: 20px;
     justify-content: center;
     align-content: center;
+}
+
+.mypage-button-container {
+    display: flex;
+    margin-right: -40px;
+}
+
+.mypage-button {
+    cursor: pointer;
+    width: 46px;
+    height: 46px;
+    align-content: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-right: 30px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mypage-alert-button {
+    cursor: pointer;
+    width: 46px;
+    height: 46px;
+    align-content: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-right: 70px;
+    background-image: url('/public/images/alert.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.button.logout {
+    background-color: #dd7272;
+    font-size: 20px;
+    justify-content: center;
+    align-content: center;
+}
+
+.button.logout:hover {
+    background-color: #da3e3e !important;
 }
 
 #navigation-bar .modal {
