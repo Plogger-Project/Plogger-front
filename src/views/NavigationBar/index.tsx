@@ -11,6 +11,33 @@ import { ACTIVE_PATH, QNA_PATH, RECRUIT_PATH } from '../../constants';
 import { useCookies } from 'react-cookie';
 import { useSignInUserStore } from 'src/stores';
 
+type AuthPath = '회원가입';
+
+interface SnsContainerProps {
+    type: AuthPath;
+}
+
+// component: SNS 로그인 회원가입 컴포넌트 //
+function SnsContainer({ type }: SnsContainerProps) {
+
+    // event handler: SNS 버튼 클릭 이벤트 처리 //
+    const onSnsButtonClickHandler = (sns: 'kakao' | 'naver' | 'google') => {
+        window.location.href = `http://localhost:4000/api/v1/auth/sns-sign-in/${sns}`;
+    };
+
+    // render: SNS 로그인 회원가입 컴포넌트 렌더링 //
+    return (
+        <div className="sns-container">
+            <div className="sns-button-container">
+                <div className={`sns-button ${type === '회원가입' ? 'md ' : ''}kakao`} onClick={() => onSnsButtonClickHandler('kakao')}></div>
+                <div className={`sns-button ${type === '회원가입' ? 'md ' : ''}naver`} onClick={() => onSnsButtonClickHandler('naver')}></div>
+                <div className={`sns-button ${type === '회원가입' ? 'md ' : ''}google`} onClick={() => onSnsButtonClickHandler('google')}></div>
+            </div>
+        </div>
+    );
+
+}
+
 export default function NavigationBar() {
 
     // state: 로그인 유저 정보 상태 //
@@ -25,6 +52,11 @@ export default function NavigationBar() {
 
     // state: path 상태 //
     const { pathname } = useLocation();
+
+    // state: SNS 회원가입 상태 //
+    const [queryParam] = useSearchParams();
+    const snsId = queryParam.get('snsId');
+    const joinPath = queryParam.get('joinPath');
 
     // state: 모달 팝업 상태 //
     const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -45,6 +77,9 @@ export default function NavigationBar() {
     const isReruit = pathname.startsWith(RECRUIT_PATH);
     const isActive = pathname.startsWith(ACTIVE_PATH);
     const isQnA = pathname.startsWith(QNA_PATH);
+
+    // variable: SNS 회원가입 여부 //
+    const isSnsSignUp = snsId !== null && joinPath !== null;
 
     // function: 네비게이터 함수 //
     const navigator = useNavigate();
@@ -277,11 +312,7 @@ export default function NavigationBar() {
                             </div>
                         </div>
                         <div className='modal-bottom'>
-                            <div className='sns-button-container'>
-                                <div className='sns-button kakao'></div>
-                                <div className='sns-button naver'></div>
-                                <div className='sns-button google'></div>
-                            </div>
+                            {!isSnsSignUp && <SnsContainer type='회원가입' />}
                         </div>
                     </div>
                 </div>
