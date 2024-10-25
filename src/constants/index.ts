@@ -18,7 +18,7 @@ export const QNA_PATH = '/qna';
 
 export const FIND_ID = '/find-id';
 
-
+export const MYPAGE = '/mypage';
 
 // variable: 절대 경로 상수 //
 export const ROOT_ABSOLUTE_PATH = ROOT_PATH;

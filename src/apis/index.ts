@@ -6,6 +6,9 @@ import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
 import { GetSignInResponseDto } from "./dto/response/auth";
 import { PurchaseGifticonRequestDto } from "./dto/request/gifticon";
+import { PatchUserRequestDto } from "./dto/request/user";
+import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
+import PatchTelAuthCheckRequestDto from "./dto/request/user/patch-tel-auth-check.request.dto";
 
 // variable: API URL 상수 //
 const PLOGGER_API_DOMAIN = "http://localhost:4000"
@@ -22,12 +25,18 @@ const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 
+const MYPAGE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/mypage`;
+
+const PATCH_MYPAGE_API_URL = `${MYPAGE_MODULE_URL}`;
+const PATCH_MYPAGE_TEL_AUTH_API_URL = `${MYPAGE_MODULE_URL}/tel-auth`;
+const PATCH_MYPAGE_TEL_AUTH_CHECK_API_URL = `${MYPAGE_MODULE_URL}/tel-auth-check`;
+
 const GIFTICON_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/gifticon`;
 
 const POST_GIFTICON_API_URL = `${GIFTICON_MODULE_URL}`;
 const GET_GIFTICON_LIST_API_URL = `${GIFTICON_MODULE_URL}`;
 const GET_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`;
-const PATCH_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`; 
+const PATCH_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`;
 const DELETE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`;
 const PURCHASE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}/purchase`;
 
@@ -100,14 +109,6 @@ export const getSignInRequest = async (accessToken: string) => {
     return responseBody;
 };
 
-// // function: post tool 요청 함수 //
-// export const postToolRequest = async (requestBody: PostToolRequestDto, accessToken: string) => {
-//     const responseBody = await axios.post(POST_TOOL_API_URL, requestBody, bearerAuthorization(accessToken))
-//         .then(responseDataHandler<ResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// };
-
 // function: get gifticon list 요청 함수 //
 export const getGifticonListRequest = async (accessToken: string) => {
     const responseBody = await axios.get(GET_GIFTICON_LIST_API_URL, bearerAuthorization(accessToken))
@@ -117,40 +118,48 @@ export const getGifticonListRequest = async (accessToken: string) => {
 };
 
 // function: get gifticon 요청 함수 //
- export const getGifticonRequest = async (gifticonId: number | string, accessToken: string) => {
-     const responseBody = await axios.get(GET_GIFTICON_API_URL(gifticonId), bearerAuthorization(accessToken))
-         .then(responseDataHandler<GetGifticonResponseDto>)
-         .catch(responseErrorHandler);
-     return responseBody;
- };
-
-// // function: patch tool 요청 함수 //
-// export const patchToolRequest = async (requestBody: PatchToolRequestDto, toolNumber: number | string, accessToken: string) => {
-//     const responseBody = await axios.patch(PATCH_TOOL_API_URL(toolNumber), requestBody, bearerAuthorization(accessToken))
-//         .then(responseDataHandler<ResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// };
-
-// // function: delete tool 요청 함수 //
-// export const deleteToolRequest = async (toolNumber: number | string, accessToken: string) => {
-//     const responseBody = await axios.delete(DELETE_TOOL_API_URL(toolNumber), bearerAuthorization(accessToken))
-//         .then(responseDataHandler<ResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// };
+export const getGifticonRequest = async (gifticonId: number | string, accessToken: string) => {
+    const responseBody = await axios.get(GET_GIFTICON_API_URL(gifticonId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetGifticonResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 
 // function: purchase gifticon 요청 함수 //
 export const purchaseGifticonRequest = async (requestBody: PurchaseGifticonRequestDto, gifticonId: number | string, accessToken: string) => {
-        const responseBody = await axios.patch(PURCHASE_GIFTICON_API_URL(gifticonId), requestBody, bearerAuthorization(accessToken))
-            .then(responseDataHandler<ResponseDto>)
-            .catch(responseErrorHandler);
-        return responseBody;
+    const responseBody = await axios.patch(PURCHASE_GIFTICON_API_URL(gifticonId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 유저 정보 수정 요청 함수 //
+export const patchUserRequest = async (requestBody: PatchUserRequestDto, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_MYPAGE_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 유저 전화번호 수정 요청 함수 //
+export const patchTelAuthRequest = async (requestBody: PatchTelAuthRequestDto, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_MYPAGE_TEL_AUTH_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 유저 인증번호 확인 요청 함수 //
+export const patchTelAuthCheckRequest = async (requestBody: PatchTelAuthCheckRequestDto, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_MYPAGE_TEL_AUTH_CHECK_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 }
 
 const FILE_UPLOAD_URL = `${PLOGGER_API_DOMAIN}/file/upload`;
 
-const multipart = { headers: {'Content-Type': 'multipart/form-data'} }
+const multipart = { headers: { 'Content-Type': 'multipart/form-data' } }
 
 export const fileUploadRequest = async (requestBody: FormData) => {
     const url = await axios.post(FILE_UPLOAD_URL, requestBody, multipart)
