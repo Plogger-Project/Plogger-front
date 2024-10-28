@@ -9,6 +9,7 @@ import { PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 import { PatchUserRequestDto } from "./dto/request/user";
 import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
 import PatchTelAuthCheckRequestDto from "./dto/request/user/patch-tel-auth-check.request.dto";
+import PatchPasswordRequestDto from "./dto/request/user/patch-password.request.dto";
 
 // variable: API URL 상수 //
 const PLOGGER_API_DOMAIN = "http://localhost:4000"
@@ -30,6 +31,7 @@ const MYPAGE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/mypage`;
 const PATCH_MYPAGE_API_URL = `${MYPAGE_MODULE_URL}`;
 const PATCH_MYPAGE_TEL_AUTH_API_URL = `${MYPAGE_MODULE_URL}/tel-auth`;
 const PATCH_MYPAGE_TEL_AUTH_CHECK_API_URL = `${MYPAGE_MODULE_URL}/tel-auth-check`;
+const PATCH_MYPAGE_PASSWORD = `${MYPAGE_MODULE_URL}/update-password`;
 
 const GIFTICON_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/gifticon`;
 
@@ -87,11 +89,6 @@ export const signUpRequest = async (requestBody: SignUpRequestDto) => {
         .catch(responseErrorHandler)
     return responseBody;
 }
-
-//function: 아이디 찾기 인증번호 요청 함수 //
-
-
-//function: 아이디 찾기 아이디 요청 함수 //
 
 // function: sign in 요청 함수 //
 export const signInRequest = async (requestBody: SignInRequestDto) => {
@@ -152,6 +149,14 @@ export const patchTelAuthRequest = async (requestBody: PatchTelAuthRequestDto, a
 // function: 유저 인증번호 확인 요청 함수 //
 export const patchTelAuthCheckRequest = async (requestBody: PatchTelAuthCheckRequestDto, accessToken: string) => {
     const responseBody = await axios.patch(PATCH_MYPAGE_TEL_AUTH_CHECK_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 유저 비밀번호 변경 요청 함수 //
+export const patchPassword = async (requestBody: PatchPasswordRequestDto, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_MYPAGE_PASSWORD, requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
