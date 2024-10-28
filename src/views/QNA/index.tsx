@@ -1,26 +1,141 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./style.css";
+import { QnaPostList } from "src/types";
+import { useNavigate } from "react-router-dom";
+import useQnaPagination from "src/hooks/qna.pagination.hook";
+import Pagination from "src/components/Pagination";
+import { GetQnaPostListResponseDto } from "src/apis/dto/response/qna";
+import { ResponseDto } from "src/apis/dto/response";
+import { QNA_WRITE_ABSOLUTE_PATH } from "src/constants";
+import { getQnaPostListRequest } from './../../apis/index';
+
+
+// interface: 구인 게시글 리스트 컴포넌트 Properties //
+interface TableRowProps {
+  qnaPostId: QnaPostList;
+  getQnaList: () => void;
+}
+
+// component: 구인 게시글 리스트 아이템 컴포넌트 //
+function TableRow({ qnaPostId, getQnaList }: TableRowProps) {
+
+  //function: 네비게이터 함수 //
+  const navigator = useNavigate();
+
+  // function : 날짜 포맷팅 함수
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 0부터 시작하므로 +1
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+
+  // event handler: 게시글 상세보기 클릭 이벤트 처리 //
+  const onDetailButtonClickHandler = () => {
+    // navigator(QNA_DETAIL_ABSOLUTE_PATH);
+  };
+
+  // render : 게시글 리스트 렌더링 //
+  return (
+    <div className="tr" key={qnaPostId.qnaPostId}>
+      <div className="td-qna-number">{qnaPostId.qnaPostId}</div>
+      <div className="td-qna-title" onClick={onDetailButtonClickHandler}>{qnaPostId.qnaPostTitle}</div>
+      <div className="td-qna-writer">{qnaPostId.qnaPostWriter}</div>
+      <div className="td-qna-create-date">{formatDate(qnaPostId.qnaPostCreatedAt)}</div>
+    </div>
+  )
+}
+
 
 export default function QnaPost() {
-  const data = [
-    { recruitPostId: 1, isCompleted: "모집중", recruitPostTitle: "[공지사항] 뻘글 쓰신분들 다 밴입니다.", recruitPostWriter: "admin", recruitLike: 16, recruitView: 342, members: "1/5", dDay: "D - 4", recruitPostCreatedAt: "10.08", isPinned: true },
-    { recruitPostId: 9, isCompleted: "마감됨", recruitPostTitle: "댓글 삭제 어떻게 하나요?", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "4/4", dDay: "D - 6", recruitPostCreatedAt: "10.05", isPinned: false },
-    { recruitPostId: 8, isCompleted: "모집중", recruitPostTitle: "어떻게 하면 칼퇴 할 수 있을까?", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "4/5", dDay: "D - 6", recruitPostCreatedAt: "10.08", isPinned: false },
-    { recruitPostId: 7, isCompleted: "마감됨", recruitPostTitle: "집에 보내줘", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "3/3", dDay: "D - 6", recruitPostCreatedAt: "10.05", isPinned: false },
-    { recruitPostId: 6, isCompleted: "모집중", recruitPostTitle: "쉬는 시간 10분을 보장하라!", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "1/5", dDay: "D - 6", recruitPostCreatedAt: "10.08", isPinned: false },
-    { recruitPostId: 5, isCompleted: "마감됨", recruitPostTitle: "위치 설정 어떻게 하나요?", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "3/3", dDay: "D - 6", recruitPostCreatedAt: "10.05", isPinned: false },
-    { recruitPostId: 4, isCompleted: "모집중", recruitPostTitle: "회원가입은 어떻게 하나요?", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "3/5", dDay: "D - 6", recruitPostCreatedAt: "10.08", isPinned: false },
-    { recruitPostId: 3, isCompleted: "마감됨", recruitPostTitle: "이 글은 언제까지 써야하나요?", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "3/3", dDay: "D - 6", recruitPostCreatedAt: "10.05", isPinned: false },
-    { recruitPostId: 1, isCompleted: "마감됨", recruitPostTitle: "플로깅 같이 하실분 모집합니다 2222.", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "3/3", dDay: "D - 6", recruitPostCreatedAt: "10.05", isPinned: false },
-  ];
 
+  const [showPosts, setShowPosts] = useState(false); // 게시글 표시 상태
+  const [originalList, setOriginalList] = useState<QnaPostList[]>([]);
+  const [filter, setFilter] = useState<'all' | 'qna' | 'notice' >('all');
+
+  // state: 페이징 관련 상태 //
+  const { currentPage, totalPage, totalCount, viewList, setTotalList, initViewList, ...paginationProps } = useQnaPagination<QnaPostList>();
+
+  //function: 네비게이터 함수 //
+  const navigator = useNavigate();
+
+  // function: tool list 불러오기 함수 //
+  const getQnaPostList = () => { getQnaPostListRequest().then(getQnaPostListResponse); };
+
+  // function: get qna post list response 처리 함수 //
+  const getQnaPostListResponse = (responseBody: GetQnaPostListResponseDto | ResponseDto | null) => {
+
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) { alert(message); return; }
+
+    const qnaPosts = (responseBody as GetQnaPostListResponseDto).qnaPosts || [];
+    setTotalList(qnaPosts);
+    setOriginalList(qnaPosts);
+
+  };
+
+  // function : filtering 및 페이징 처리 함수 //
+  const setFilteredAndPagedPosts = (posts: QnaPostList[]) => {
+    const filtered = posts.filter((post) => {
+      if (filter === "all") return true;
+      if (filter === "qna") return !post.isPinned;
+      if (filter === "notice") return post.isPinned;
+      return true;
+    });
+
+    // isPinned가 true인 글을 맨 위로 정렬
+    const sorted = filtered.sort((a, b) => {
+      return (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0);
+    });
+
+    setTotalList(sorted); // 필터링된 리스트를 설정
+  };
+
+  
+
+  // effect : 필터 변경 시 필터링 및 페이징 //
+  useEffect(() => {
+    setFilteredAndPagedPosts(originalList);
+  }, [filter, originalList]);
+
+  // effect: 컴포넌트 로드시 게시글 리스트 불러오기 함수 //
+  useEffect(() => {
+    getQnaPostList();
+
+  }, []);
+
+  // event handler: 글쓰기 버튼 클릭 이벤트 처리 //
+  const onWriteButtonClickHandler = () => {
+    navigator(QNA_WRITE_ABSOLUTE_PATH);
+  };
+  // event handler : 필터 버튼 클릭 핸들러 //
+  const handleFilterClick = (newFilter: 'all' | 'qna' | 'notice' ) => {
+    setFilter(newFilter);
+  };
+  
+  // render : 구인 게시판 컴포넌트 렌더링 //
   return (
     <div id="qna-post-wrapper">
       <div className="middle">
         <div className="main">
           <div className="middle-top">
-            <div className="pages">전체 <span className='emphasis'>10건</span> | 페이지 <span className='emphasis'>1/10</span></div>
-            <div className="button">글쓰기</div>
+            <div className="pages">
+              전체 <span className="emphasis">{totalCount}건</span> | 페이지 <span className="emphasis">{currentPage}/{totalPage}</span>
+            </div>
+            <div className="post-filter">
+              <div className={`all ${filter === 'all' ? 'active' : ''}`} onClick={() => handleFilterClick('all')}>전체</div>
+              | <div className={`notice ${filter === 'notice' ? 'active' : ''}`} onClick={() => handleFilterClick('notice')}>공지</div>
+              | <div className={`qna ${filter === 'qna' ? 'active' : ''}`} onClick={() => handleFilterClick('qna')}>Q&A</div>
+              
+            </div>
+            <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>
           </div>
           <div className="table">
             <div className="th">
@@ -29,24 +144,14 @@ export default function QnaPost() {
               <div className="td-qna-writer">작성자</div>
               <div className="td-qna-create-date">날짜</div>
             </div>
-            {data.map((item) => (
-              <div className="tr" key={item.recruitPostId}>
-                <div className="td-qna-number">{item.recruitPostId}</div>
-                <div className="td-qna-title">{item.recruitPostTitle}</div>
-                <div className="td-qna-writer">{item.recruitPostWriter}</div>
-                <div className="td-qna-create-date">{item.recruitPostCreatedAt}</div>
-              </div>
-            ))}
+            {
+              // isPinned 값에 따라 정렬
+              viewList.map((qnaPostId, index) => (
+                  <TableRow key={index} qnaPostId={qnaPostId} getQnaList={getQnaPostList} />
+                ))}
           </div>
-
           <div className="pagination">
-            <div>이전</div>
-            <div className="qna">1</div>
-            <div>2</div>
-            <div>3</div>
-            <span>...</span>
-            <div>9</div>
-            <div>다음</div>
+            <Pagination currentPage={currentPage} {...paginationProps} />
           </div>
         </div>
       </div>

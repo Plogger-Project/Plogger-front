@@ -64,9 +64,11 @@ background-color: var(--primary-color);
 
 #mg-wrapper .middle {
     display: flex;
-    justify-content: center;
-    gap: 50px; /* 요소 간 간격 추가 */
+    justify-content: flex-start;
+    gap: 50px; 
     flex-wrap: wrap;
+    max-width: 1134px;
+    margin-left: 130px;
 }
 
 .item { 
@@ -148,12 +150,17 @@ background-color: var(--primary-color);
     margin-top: 20px;
 }
 
+.modal-top .item-image{
+    margin-top: 35px;
+    width: 200px;
+    height: 200px;
+}
+
 .modal-middle .item-text {
     color: gray;
     font-size: 12px;
     text-align: center;
-    margin-top: 5px;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 .input-boxes {
@@ -164,9 +171,10 @@ background-color: var(--primary-color);
 
 .input-boxes .input-text {
     font-weight: 700;
+    margin-top: 8px;
 }
 
-.input-boxes .input-box {
+.input-boxes .input {
     margin-left: 10px;
 }
 

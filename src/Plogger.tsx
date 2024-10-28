@@ -1,17 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Plogger.css';
 
 import { Routes, Route, useLocation, Navigate, Router, useSearchParams, useNavigate } from 'react-router-dom';
 
 import SignUp from './views/Auth';
-import RecruitPost from './views/Recruit';
+
 import ActivePost from './views/Active';
 import NavigationBar from './views/NavigationBar';
 import Main from './views/Main';
 import QnaPost from './views/QNA';
 
 
-import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID } from './constants';
+import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD } from './constants';
 
 import RecruitView from './views/Recruit/Detail';
 import Mypage from './views/MyPage';
@@ -26,6 +26,12 @@ import { useCookies } from 'react-cookie';
 import { GetSignInResponseDto } from './apis/dto/response/auth';
 import { ResponseDto } from './apis/dto/response';
 import { getSignInRequest } from './apis';
+
+import RecruitPost from './views/Recruit';
+import { RecruitPostList } from './types';
+
+import FindPassword from './views/FindPassword';
+
 
 
 // component: Sns Success 컴포넌트 //
@@ -101,11 +107,10 @@ function Plogger() {
   }, [cookies[ACCESS_TOKEN]]);
   
   const location = useLocation();
-  
 
 
-  const showNavigationBar = location.pathname !== '/sign-up' && location.pathname !== FIND_ID && location.pathname !== '/mypage/update';
-
+  const showNavigationBar = location.pathname !== '/sign-up' && location.pathname !== FIND_ID && location.pathname !== '/mypage/update' && location.pathname !== FIND_PASSWORD;
+ 
   // render: Plogger 컴포넌트 렌더링 //
   return (
     <>
@@ -113,7 +118,7 @@ function Plogger() {
       <Routes>
         <Route index element={<Main />} />
         <Route path='/sign-up' element={<SignUp />} />
-        <Route path={RECRUIT_PATH} element={<RecruitPost />} />
+        <Route path={RECRUIT_PATH} element={<RecruitPost/> } />
         <Route path={RECRUIT_WRITE_PATH} element={<RecruitWrite />} />
         <Route path={RECRUIT_DETAIL_PATH} element={<RecruitView />} />
         <Route path={RECRUIT_UPDATE_PATH} element={<RecruitUpdate />} />
@@ -123,6 +128,7 @@ function Plogger() {
         <Route path='/mypage' element={<Mypage />} />
         <Route path='/mypage/update' element={<MyPageUpdate />} />
         <Route path={FIND_ID} element={<FindId />} />
+        <Route path={FIND_PASSWORD} element={<FindPassword />} />
         <Route path={SNS_SUCCESS_PATH} element={<SnsSuccess />} />
       </Routes>
     </>
