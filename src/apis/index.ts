@@ -5,12 +5,10 @@ import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
 
-import { GetSignInResponseDto } from "./dto/response/auth";
-import { PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 import { GetRecruitPostListResponseDto } from "./dto/response/recruit";
 import { GetQnaPostListResponseDto } from "./dto/response/qna";
 
-import { PatchUserRequestDto } from "./dto/request/user";
+import { PatchCommentRequestDto, PatchUserRequestDto } from "./dto/request/user";
 import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
 import PatchTelAuthCheckRequestDto from "./dto/request/user/patch-tel-auth-check.request.dto";
 import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from "./dto/request/gifticon";
@@ -19,7 +17,7 @@ import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
 
 
 // variable: API URL 상수 //
-const PLOGGER_API_DOMAIN = "http://192.168.1.10:4000"
+const PLOGGER_API_DOMAIN = "http://localhost:4000"
 
 const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
 const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`
@@ -45,6 +43,7 @@ const GET_QNA_POST_LIST_API_URL = `${QNA_MODULE_URL}`
 const MYPAGE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/mypage`;
 
 const PATCH_MYPAGE_API_URL = `${MYPAGE_MODULE_URL}`;
+const PATCH_MYPAGE_COMMENT_API_URL = `${MYPAGE_MODULE_URL}/comment`;
 const PATCH_MYPAGE_TEL_AUTH_API_URL = `${MYPAGE_MODULE_URL}/tel-auth`;
 const PATCH_MYPAGE_TEL_AUTH_CHECK_API_URL = `${MYPAGE_MODULE_URL}/tel-auth-check`;
 
@@ -232,6 +231,14 @@ export const patchTelAuthCheckRequest = async (requestBody: PatchTelAuthCheckReq
 
 }
 
+// function: 유저 정보 코멘트 수정 요청 함수 //
+export const patchCommentRequest = async (requestBody: PatchCommentRequestDto, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_MYPAGE_COMMENT_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
 const FILE_UPLOAD_URL = `${PLOGGER_API_DOMAIN}/file/upload`;
 
 const multipart = { headers: { 'Content-Type': 'multipart/form-data' } }
@@ -257,4 +264,5 @@ export const getRecruitPostListRequest = async () => {
             .then(responseDataHandler<GetQnaPostListResponseDto>)
             .catch(responseErrorHandler);
         return responseBody;
+        
     };
