@@ -8,8 +8,8 @@ import { ACCESS_TOKEN } from 'src/constants';
 import { deleteGifticonRequest, fileUploadRequest, getGifticonListRequest, patchGifticonRequest, postGifticonRequest, purchaseGifticonRequest } from 'src/apis';
 import { GetGifticonListResponseDto } from 'src/apis/dto/response/gifticon';
 import { ResponseDto } from 'src/apis/dto/response';
-import Pagination from 'src/components/pagination';
-import { PatchGifticonRequestDto, PostGifticonRequestDto } from 'src/apis/dto/request/gifticon';
+import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from 'src/apis/dto/request/gifticon';
+import Pagination from 'src/components/Pagination';
 
 // variable: 기본 이미지 URL //
 const defaultImageUrl = '/images/defaultImage.png';
@@ -181,16 +181,12 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
 
     try {
 
-      // 구매 버튼 클릭 시 마일리지 감소
-      const updatedMileage = signInUser.mileage - gifticon.mileageCost;
-      const newSignInUser = {
-        ...signInUser,
-        mileage: updatedMileage,
-      };
-      setSignInUser(newSignInUser);
+      const requestBody: PurchaseGifticonRequestDto = {};
+
+      console.log(accessToken);
 
       // 기프티콘 구매 요청
-      const response = await purchaseGifticonRequest(newSignInUser, gifticon.gifticonId, accessToken);
+      const response = await purchaseGifticonRequest(requestBody, gifticon.gifticonId, accessToken);
       
       // 구매 완료 후 모달 닫기
       setPurchaseModalOpen(!purchaseModalOpen);

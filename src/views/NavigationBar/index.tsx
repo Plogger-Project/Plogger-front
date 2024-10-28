@@ -54,7 +54,6 @@ export default function NavigationBar() {
     const { pathname } = useLocation();
 
     // state: SNS 회원가입 상태 //
-    const [queryParam] = useSearchParams();
     const snsId = queryParam.get('snsId');
     const joinPath = queryParam.get('joinPath');
 
