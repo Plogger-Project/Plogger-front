@@ -21,7 +21,7 @@ import GetRecruitPostResponseDto from "./dto/response/recruit/get-recruit.respon
 
 
 // variable: API URL 상수 //
-const PLOGGER_API_DOMAIN = "http://192.168.1.10:4000"
+const PLOGGER_API_DOMAIN = "http://localhost:4000"
 
 const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
 const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`
