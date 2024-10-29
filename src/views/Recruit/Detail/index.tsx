@@ -1,9 +1,16 @@
-import React, { useRef, useState } from 'react'
+import React, { ChangeEvent, useRef, useState } from 'react'
 import "./style.css";
-import { useNavigate } from 'react-router-dom';
-import { RECRUIT_ABSOLUTE_PATH } from '../../../constants';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH } from '../../../constants';
 import { useKakaoLoader } from 'src/hooks';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
+import { useSignInUserStore } from 'src/stores';
+import axios from 'axios';
+import { PostRecruitReportRequest } from 'src/apis';
+import { useCookies } from 'react-cookie';
+import { PostRecruitReportRequestDto } from 'src/apis/dto/request/recruit';
+import { request } from 'http';
+import { ResponseDto } from 'src/apis/dto/response';
 
 
 
@@ -12,21 +19,57 @@ const appkey = process.env.REACT_APP_KAKAO_MAP_KEY;
 
 export default function RecruitDetail() {
 
+  // state: 게시글 번호 상태 //
+  const { recruitId } = useParams<{ recruitId: string }>();
 
+  // state: cookie 상태 //
+  const [cookies] = useCookies();
 
+  // state: 로그인 사용자 상태 //
+  const { signInUser } = useSignInUserStore();
+
+  // state: 게시글 정보 상태 //
   const [isLiked, setIsLiked] = useState(false);
   const [isScraped, setIsScraped] = useState(false);
   const [showOptions, setShowOptions] = useState(false);  // 옵션 항목 표시 여부
   const [optionPosition, setOptionPosition] = useState({ top: 0, left: 0 });  // 옵션 항목 위치
+  const [Author, setAuthor] = useState<string>('');
   const optionBoxRef = useRef<HTMLDivElement | null>(null);  // optionBox 참조
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
+
+  // state: 신고 내역 작성창 오픈 여부 상태 //
+  const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
+
+  // state: 신고 내역 내용 상태 //
+  const [reportContent, setReportContent] = useState<string>("");
+
+  // variable: 작성자 여부 //
+  const isAuthor = Author === signInUser?.userId;
+
+  // variable: accessToken //
+  const accessToken = cookies[ACCESS_TOKEN];
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
   // function: 카카오 맵스 함수 //
   useKakaoLoader();
-  
+
+  // function: post recruitreport response 처리 함수 //
+  const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '내역을 입력해주세요.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+  };
+
   // event handler: 목록 버튼 클릭 이벤트 처리 //
   const onListButtonClickHandler = () => {
     navigator(RECRUIT_ABSOLUTE_PATH);
@@ -37,6 +80,11 @@ export default function RecruitDetail() {
   }
   const toggleScrapHandler = () => {
     setIsScraped(!isScraped);
+  }
+
+  // event handler: 신고 내역 입력 시 처리 //
+  const onreportContentHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    setReportContent(event.target.value);
   }
 
   // 클릭 시 옵션 항목을 보여주거나 숨기는 함수
@@ -51,6 +99,27 @@ export default function RecruitDetail() {
     setShowOptions(!showOptions);  // 옵션 항목 표시 상태 반전
   };
 
+  // event handler: 신고 작성 모달 오픈 이벤트 처리 //
+  const openReportModalHandler = () => {
+    setIsReportModalOpen(!isReportModalOpen);
+  };
+
+  // event handler: 신고 모달 작성 버튼 클릭 시 이벤트 처리 //
+  const onreportWriteButtonHandler = () => {
+    if (!signInUser?.userId) {
+      alert("로그인을 해주세요.");
+      return;
+    }
+
+    const requestBody: PostRecruitReportRequestDto = { content: reportContent };
+    PostRecruitReportRequest(requestBody, accessToken, recruitId!).then(postRecruitReportResponse);
+
+  }
+  // event handler: 신고 모달 취소 버튼 클릭 시 이벤트 처리 //
+  const onreportCancelButtonHandler = () => {
+    setIsReportModalOpen(!isReportModalOpen);
+  }
+
   return (
     <div id="recruit-detail-wrapper">
       <div className='navi'></div>
@@ -64,9 +133,7 @@ export default function RecruitDetail() {
                 <div className='location'>장소 : 부산시 부산진구 부전동 어딘가</div>
                 <div className='date'>작성일 : 2024. 10. 17</div>
               </div>
-
             </div>
-
           </div>
           <div className='postBox'>
             <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
@@ -83,9 +150,31 @@ export default function RecruitDetail() {
               >
                 <button className="editButton">수정하기</button>
                 <button className="deleteButton">삭제하기</button>
+                <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
               </div>
             )}
           </div>
+          {isReportModalOpen &&
+            <div className='report-modal'>
+              <div className='report-box'>
+                <div className='report-top'>
+                  <div className='report-top-title'>해당 게시글을 신고하시겠습니까?</div>
+                </div>
+                <div className='report-main'>
+                  <div className='report-content'>
+                    <input className='report-input' placeholder='내용을 입력하세요.' value={reportContent} onChange={onreportContentHandler} />
+                  </div>
+                </div>
+                <div className='report-bottom'>
+                  <div className='report-button'>
+                    <div className='report-button-container'>
+                      <div className='button report-write' onClick={onreportWriteButtonHandler}>제출</div>
+                      <div className='button report-cancel' onClick={onreportCancelButtonHandler}>취소</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>}
         </div>
         <div className='postDetail'>
           <div className='postTitle'>제목 : 플로깅 모집합니다.</div>
@@ -106,10 +195,7 @@ export default function RecruitDetail() {
             내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용
             내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용
             내용내용내용내용내용내용내용내용내용
-
-
           </div>
-          
           <div className='postImage'></div>
           <div className="kakaomap" ref={mapRef} >
             <Map

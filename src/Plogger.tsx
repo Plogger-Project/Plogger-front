@@ -31,6 +31,7 @@ import RecruitPost from './views/Recruit';
 import { RecruitPostList } from './types';
 
 import FindPassword from './views/FindPassword';
+import Admin from './views/Admin';
 
 
 
@@ -130,6 +131,7 @@ function Plogger() {
         <Route path={FIND_ID} element={<FindId />} />
         <Route path={FIND_PASSWORD} element={<FindPassword />} />
         <Route path={SNS_SUCCESS_PATH} element={<SnsSuccess />} />
+        <Route path='/admin' element={<Admin />} />
       </Routes>
     </>
   );
