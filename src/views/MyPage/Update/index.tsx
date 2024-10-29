@@ -4,7 +4,7 @@ import InputBox from '../../../components/InputBox';
 import { useNavigate } from 'react-router-dom';
 import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
 import { useCookies } from 'react-cookie';
-import { ACCESS_TOKEN, MYPAGE } from 'src/constants';
+import { ACCESS_TOKEN, MYPAGE_PATH } from 'src/constants';
 import { fileUploadRequest, patchPasswordRequest, patchTelAuthCheckRequest, patchTelAuthRequest, patchUserRequest } from 'src/apis';
 import { useSignInUserStore } from 'src/stores';
 import { PatchUserRequestDto } from 'src/apis/dto/request/user';
@@ -307,7 +307,7 @@ export default function MyPageUpdate() {
   }
 
   const onUpdateCancelButtonClickHandler = () => {
-    navigator(MYPAGE);
+    navigator(MYPAGE_PATH);
   }
 
   useEffect(() => {

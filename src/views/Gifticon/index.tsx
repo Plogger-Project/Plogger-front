@@ -4,12 +4,14 @@ import Gifticon from '../../types/gifticon.interface'
 import useGifticonPagination from '../../hooks/gifticon.pagination.hook';
 import { useSignInUserStore } from 'src/stores';
 import { useCookies } from 'react-cookie';
-import { ACCESS_TOKEN } from 'src/constants';
-import { deleteGifticonRequest, fileUploadRequest, getGifticonListRequest, patchGifticonRequest, postGifticonRequest, purchaseGifticonRequest } from 'src/apis';
+import { ACCESS_TOKEN, GIFTICON_PATH, ROOT_PATH } from 'src/constants';
+import { deleteGifticonRequest, fileUploadRequest, getGifticonListRequest, getSignInRequest, patchGifticonRequest, postGifticonRequest, purchaseGifticonRequest } from 'src/apis';
 import { GetGifticonListResponseDto } from 'src/apis/dto/response/gifticon';
 import { ResponseDto } from 'src/apis/dto/response';
-import { PatchGifticonRequestDto, PostGifticonRequestDto } from 'src/apis/dto/request/gifticon';
+import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from 'src/apis/dto/request/gifticon';
 import Pagination from 'src/components/pagination';
+import { SignInUser } from 'src/types';
+import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 
 // variable: 기본 이미지 URL //
 const defaultImageUrl = '/images/defaultImage.png';
@@ -54,9 +56,6 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
   // state: 이미지 입력 참조 //
   const imageInputRef = useRef<HTMLInputElement | null>(null);
 
-  // state: 프로필 미리보기 URL 상태 //
-  const [previewUrl, setPreviewUrl] = useState<string>(defaultImageUrl);
-
   // variable: 담당자 여부 //
   const isAdmin = signInUser !== null && signInUser.isAdmin
 
@@ -87,8 +86,9 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
       !responseBody ? '서버에 문제가 있습니다.' :
       responseBody.code === 'VF' ? '모두 입력해주세요.' :
       responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-      responseBody.code === 'NC' ? '존재하지 않는 고객입니다.' :
-      responseBody.code === 'NI' ? '존재하지 않는 요양사입니다.' :
+      responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+      responseBody.code === 'NG' ? '해당 기프티콘이 없습니다' :
+      responseBody.code === 'NP' ? '해당 권한이 없습니다.' :
       responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
     
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
@@ -102,14 +102,56 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
     getGifticonList();
   };
 
+  // function: purchase gifticon response 처리 함수 //
+  const purchaseGifticonResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '모두 입력해주세요.' :
+      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+      responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+      responseBody.code === 'NG' ? '해당 기프티콘이 없습니다' :
+      responseBody.code === 'NAP' ? '해당 활동 게시글이 없습니다.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+    
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if(!isSuccessed) {
+      alert(message);
+      return;
+    };
+
+    getSignInRequest(accessToken).then(getSignInResponse);
+  };
+
+  // function: get sign in Response 처리 함수 //
+  const getSignInResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
+
+    const message =
+      !responseBody ? '로그인 유저 정보를 불러오는데 문제가 발생했습니다.' : 
+      responseBody.code === 'NI' ? '로그인 유저 정보가 존재하지 않습니다.' :
+      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+      responseBody.code === 'DBE' ? '로그인 유저 정보를 불러오는데 문제가 발생했습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    
+    if(!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    const { userId, password, name, telNumber, address, profileImage, isAdmin, ecoScore, mileage, comment } = responseBody as GetSignInResponseDto;
+    setSignInUser({ userId, password, name, telNumber, address, profileImage, isAdmin, ecoScore, mileage, comment });
+
+  };
+
   // function: delete gifticon response 처리 함수 //
   const deleteGifticonResponse = (responseBody: ResponseDto | null) => {
     const message = 
       !responseBody ? '서버에 문제가 있습니다.' :
       responseBody.code === 'VF' ? '잘못된 접근입니다.' :
       responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-      responseBody.code === 'NC' ? '존재하지 않는 고객입니다.' : 
-      responseBody.code === 'NP' ? '권한이 없습니다.' :
+      responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+      responseBody.code === 'NG' ? '해당 기프티콘이 없습니다' :
+      responseBody.code === 'NP' ? '해당 권한이 없습니다.' :
       responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
@@ -141,7 +183,7 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
     const fileReader = new FileReader();
     fileReader.readAsDataURL(file);
     fileReader.onloadend = () => {
-      setPreviewUrl(fileReader.result as string);
+      setGifticonImage(fileReader.result as string);
     };
   };
 
@@ -181,16 +223,10 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
 
     try {
 
-      // 구매 버튼 클릭 시 마일리지 감소
-      const updatedMileage = signInUser.mileage - gifticon.mileageCost;
-      const newSignInUser = {
-        ...signInUser,
-        mileage: updatedMileage,
-      };
-      setSignInUser(newSignInUser);
+      const requestBody: PurchaseGifticonRequestDto = {};
 
       // 기프티콘 구매 요청
-      const response = await purchaseGifticonRequest(newSignInUser, gifticon.gifticonId, accessToken);
+      await purchaseGifticonRequest(requestBody, gifticon.gifticonId, accessToken).then(purchaseGifticonResponse);
       
       // 구매 완료 후 모달 닫기
       setPurchaseModalOpen(!purchaseModalOpen);
@@ -209,6 +245,7 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
     // const newRequestBody: PatchGifticonRequestDto = {name:gifticonName, image: defaultImageUrl, mileageCost}
     // patchGifticonRequest(newRequestBody, gifticonId, accessToken).then(patchGifticonResponse);
 
+
     if(!gifticonName && !mileageCost) return;
 
     // if(gifticonName && !mileageCost) {
@@ -219,16 +256,21 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
     //   setGifticonName(gifticon.name);
     // }
 
+    console.log(gifticonImageFile);
+
     const accessToken = cookies[ACCESS_TOKEN];
     if(!accessToken) return;
 
     let url: string | null = null;
     if(gifticonImageFile) {
       const formData = new FormData();
-      formData.append('file', gifticonImage);
+      formData.append('file', gifticonImageFile);
       url = await fileUploadRequest(formData);
     }
     url = url ? url : gifticonImage;
+
+    console.log(url)
+    console.log(gifticonButtonId);
 
     const requestBody: PatchGifticonRequestDto = {
       image: url, name:gifticonName, mileageCost
@@ -295,7 +337,7 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
     <div className='modal'>
       <div className='modal-box'>
         <div className='modal-top'>
-          <div className='item-image' style={{backgroundImage: `url(${gifticon.image})`}} onClick={onGifticonImageClickHandler}>
+          <div className='item-image' style={{backgroundImage: `url(${gifticonImage})`}} onClick={onGifticonImageClickHandler}>
             <input className='item-input' ref={imageInputRef} style={{display: 'none'}} type='file' accept='image/*' onChange={onImageInputChangeHandler}/>
           </div>
         </div>
@@ -328,8 +370,8 @@ export default function Mileage() {
     // state: cookie 상태 //
     const [ cookies ] = useCookies();
 
-    // state: 로그인 유저 정보 //
-    const { signInUser } = useSignInUserStore();
+    // state: 로그인 유저 정보 상태 //
+    const { signInUser, setSignInUser } = useSignInUserStore();
 
     // state: 기프티콘 정보 상태 //
     const [gifticonName, setGifticonName] = useState<string>('');
@@ -369,6 +411,7 @@ export default function Mileage() {
       const message =
         !responseBody ? '서버에 문제가 있습니다.' :
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'NG' ? '해당 기프티콘이 없습니다' :
         responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
       const isSuccessed = responseBody !== null && responseBody.code === 'SU';
@@ -388,7 +431,8 @@ export default function Mileage() {
         !responseBody ? '서버에 문제가 있습니다.' :
         responseBody.code === 'VF' ? '모두 입력해주세요.' :
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-        responseBody.code === 'NI' ? '존재하지 않는 요양사입니다.' :
+        responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+        responseBody.code === 'NP' ? '해당 권한이 없습니다.' :
         responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
       
       const isSuccessed = responseBody !== null && responseBody.code === 'SU';
