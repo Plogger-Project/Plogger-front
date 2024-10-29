@@ -8,8 +8,9 @@ import { ACCESS_TOKEN } from 'src/constants';
 import { deleteGifticonRequest, fileUploadRequest, getGifticonListRequest, patchGifticonRequest, postGifticonRequest, purchaseGifticonRequest } from 'src/apis';
 import { GetGifticonListResponseDto } from 'src/apis/dto/response/gifticon';
 import { ResponseDto } from 'src/apis/dto/response';
-import Pagination from 'src/components/pagination';
+
 import { PatchGifticonRequestDto, PostGifticonRequestDto } from 'src/apis/dto/request/gifticon';
+import Pagination from 'src/components/Pagination';
 
 // variable: 기본 이미지 URL //
 const defaultImageUrl = '/images/defaultImage.png';
@@ -328,8 +329,8 @@ export default function Mileage() {
     // state: cookie 상태 //
     const [ cookies ] = useCookies();
 
-    // state: 로그인 유저 정보 //
-    const { signInUser } = useSignInUserStore();
+    // state: 로그인 유저 정보 상태 //
+    const { signInUser, setSignInUser } = useSignInUserStore();
 
     // state: 기프티콘 정보 상태 //
     const [gifticonName, setGifticonName] = useState<string>('');

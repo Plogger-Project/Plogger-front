@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { GetSignInResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
-import { ACCESS_TOKEN, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD, RECRUIT_MYPAGE_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH } from '../../constants';
+import { ACCESS_TOKEN, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD, MYPAGE_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH } from '../../constants';
 import SignInRequestDto from '../../apis/dto/request/auth/sign-in.request.dto';
 import { getSignInRequest, signInRequest } from '../../apis';
 import { ACTIVE_PATH, QNA_PATH, RECRUIT_PATH } from '../../constants';
@@ -43,8 +43,6 @@ export default function NavigationBar() {
     // state: 로그인 유저 정보 상태 //
     const { signInUser, setSignInUser } = useSignInUserStore();
 
-    const [profileImage, setProfileImage] = useState<string>('');
-
     // state: Query Parameter 상태 //
     const [queryParam] = useSearchParams();
     const accessToken = queryParam.get('accessToken');
@@ -54,7 +52,6 @@ export default function NavigationBar() {
     const { pathname } = useLocation();
 
     // state: SNS 회원가입 상태 //
-    const [queryParam] = useSearchParams();
     const snsId = queryParam.get('snsId');
     const joinPath = queryParam.get('joinPath');
 
@@ -107,7 +104,6 @@ export default function NavigationBar() {
         }
 
         const { userId, password, name, telNumber, address, profileImage, isAdmin, ecoScore, mileage, comment } = responseBody as GetSignInResponseDto;
-        setProfileImage(profileImage);
         setSignInUser({ userId, password, name, telNumber, address, profileImage, isAdmin, ecoScore, mileage, comment });
     };
 
@@ -237,7 +233,7 @@ export default function NavigationBar() {
 
     // event handler: 마이페이지 버튼 클릭 이벤트 처리 //
     const onMyPageClickHandler = () => {
-        navigator(RECRUIT_MYPAGE_PATH);
+        navigator(MYPAGE_PATH);
     }
 
     // event handler: 로그아웃 버튼 클릭 이벤트 처리 //

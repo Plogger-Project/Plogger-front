@@ -11,9 +11,10 @@
 #mypage .top {
     display: flex;
     width: 1500px;
-    height: 400px;  
+    height: 380px;  
     justify-content: space-between;
-    margin-bottom: -60px;
+    margin-bottom: -80px;
+    margin-top: -120px;
 
 }
 
@@ -26,8 +27,8 @@
 }
 
 #mypage .image {
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
     background-repeat: no-repeat;
     background-size: contain;
@@ -41,8 +42,8 @@
     justify-items: center;
 
     width: 300px;
-    height: 220px;
-    margin-left: 50px;
+    height: 150px;
+    margin-left: 30px;
 }
 
 .name-box {
@@ -50,19 +51,19 @@
 }
 
 #mypage .name {
-    font-size: 50px;
+    font-size: 40px;
 
 }
 
 #mypage .address {
-    font-size: 30px;
+    font-size: 20px;
 }
 
 #mypage .change {
     cursor: pointer;
 
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     background-image: url(/public/images/cogwheel.png);
     background-repeat: no-repeat;
     background-size: contain;
@@ -71,13 +72,13 @@
 
 .sentence-box {
     display: flex;
-    margin-top: 80px;
+    margin-top: 40px;
 }
 
 .sentence {
     width: 270px;
     height: 100px;
-    font-size: 30px;
+    font-size: 20px;
     
     overflow-wrap: break-word;
 }
@@ -89,8 +90,8 @@
 .sentence-change {
     cursor: pointer;
 
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     background-image: url(/public/images/pen.png);
     background-repeat: no-repeat;
     background-size: contain;
@@ -105,12 +106,14 @@
     display: flex;
     flex-direction: column;
 
-    justify-content: space-around;
+    justify-content: center;
+    gap:60px;
+
 }
 
 .score-container {
     display: flex;
-    font-size: 40px;
+    font-size: 30px;
 
     justify-content: center;
 
@@ -130,8 +133,10 @@
     gap:20px
 }
 
+
+
 #mypage .score {
-    font-size: 30px;
+    font-size: 25px;
     font-weight: normal;
 }
 
@@ -159,12 +164,13 @@
 }
 
 .mileage-button {
+    margin-top: 5px;
     user-select: none;
     cursor: pointer;
-    font-size: 35px;
+    font-size: 25px;
     text-align: center;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border: 3px solid rgba(0, 0, 0, 1);
     border-radius: 50%;
 }
@@ -173,7 +179,7 @@
     align-content: center;
     height: auto;
     width: 100px;
-    font-size: 30px;
+    font-size: 25px;
 
     overflow: auto;
 }
@@ -293,19 +299,18 @@
     align-content: center;
     justify-content: center;
     width: 1500px;
-    height: 50px;
+    height: 40px;
     border-top: 2px solid rgba(0, 0, 0, 1);
     border-bottom: 2px solid rgba(0, 0, 0, 1);
 
     padding: 5px 0px;
 
-    font-size: 35px;
+    font-size: 30px;
 }
 
 
 .line-right {
     border-right: 2px solid rgba(0, 0, 0, 1);
-
 }
 
 .my-recruit,
@@ -344,4 +349,200 @@
 .my-mileage,
 .my-scrap {
     padding: 0px 90px;
+}
+
+#recruit-post-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 1134px;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+#recruit-post-wrapper .main {
+    min-width: 1130px;
+
+}
+
+/* #recruit-post-wrapper .middle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    transform: translateY(100%);
+    transition: transform 0.5s ease;
+    z-index: 2;
+}
+
+#recruit-post-wrapper .middle.show {
+    transform: translateY(0);
+}
+
+#recruit-post-wrapper .middle.hidden {
+    display: none;
+} */
+
+#mypage .middle-top {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    font-size: 12px;
+
+}
+
+#mypage .middle-top .pages {
+    flex: 10;
+    text-align: left;
+}
+
+#mypage .button {
+    cursor: pointer;
+    width: 40px;
+    height: 25px;
+    
+    text-align: center;
+
+    border-radius: 7px;
+    background-color: #84A264;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 1);
+    justify-content: center;
+    align-content: center;
+}
+
+#mypage .middle-top .post-filter {
+    flex: 5;
+    justify-content: right;
+    margin-right: 15px;
+    gap: 5px;
+    display: flex;
+    flex-direction: row;
+}
+
+
+#mypage .middle-top .post-filter .all {
+    font-weight: 600;
+}
+
+#mypage .middle-top .post-filter .Recruiting {
+    font-weight: 600;
+}
+
+#mypage .middle-top .post-filter .Recruited {
+    font-weight: 600;
+}
+
+#mypage .middle-top .post-filter .all,
+#mypage .middle-top .post-filter .Recruiting,
+#mypage .middle-top .post-filter .Recruited {
+    cursor: pointer;
+}
+
+/* 비활성화된 버튼에 대한 스타일 */
+#mypage .middle-top .post-filter .all:not(.active),
+#mypage .middle-top .post-filter .Recruiting:not(.active),
+#mypage .middle-top .post-filter .Recruited:not(.active) {
+    font-weight: normal;
+}
+
+#mypage .middle-top .write-button {
+    
+    width: 60px;
+    height: 25px;
+    flex: 1;
+    text-align: right;
+
+    border: 1px solid rgba(25, 25, 25, 1);
+    background-color: rgba(132, 162, 100, 1);
+    text-align: center;
+    cursor: pointer;
+    line-height: 175%;
+}
+
+#mypage .table {
+    width: 100%;
+    margin: 0 auto;
+    font-family: 'Arial', sans-serif;
+    border-collapse: collapse;
+
+    font-size: 14px;
+
+}
+
+#mypage .th {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    font-weight: 700;
+
+}
+
+#mypage .tr {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+
+}
+
+#mypage .td-recruit-number,
+#mypage .td-recruit-isCompleted,
+#mypage .td-recruit-title,
+#mypage .td-recruit-writer,
+#mypage .td-recruit-like-count,
+#mypage .td-recruit-view-count,
+#mypage .td-recruit-people,
+#mypage .td-recruit-end-date,
+#mypage .td-recruit-create-date {
+    padding: 10px;
+
+}
+
+#mypage .td-recruit-number {
+    width: 30px;
+}
+
+#mypage .td-recruit-isCompleted {
+    width: 60px;
+}
+
+#mypage .td-recruit-title {
+    flex: 1;
+    cursor: pointer;
+
+}
+
+#mypage .td-recruit-writer,
+#mypage .td-recruit-like-count,
+#mypage .td-recruit-view-count,
+#mypage .td-recruit-people
+{
+    width: 60px;
+}
+#mypage .td-recruit-end-date,
+#mypage .td-recruit-create-date{
+    width: 80px;
+}
+
+#mypage .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+
+    gap: 15px;
+
+}
+
+#mypage .pagination .active {
+    color: black;
+
+    font-weight: bold;
+
 }
