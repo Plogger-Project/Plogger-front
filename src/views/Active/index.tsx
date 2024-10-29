@@ -1,7 +1,14 @@
 import React from "react";
 import "./style.css";
+import { Active } from "src/types";
+
+interface TableRowProps {
+  active: Active;
+  getActiveList: () => void;
+}
 
 export default function ActivePost() {
+
   const data = [
     { recruitPostId: 10, isCompleted: "모집중", recruitPostTitle: "플로깅 같이 하실분 모집합니다.", recruitPostWriter: "qwer1234", recruitLike: 16, recruitView: 342, members: "1/5", dDay: "D - 4", recruitPostCreatedAt: "10.08" },
     { recruitPostId: 9, isCompleted: "마감됨", recruitPostTitle: "플로깅 같이 하실분 모집합니다 2222.", recruitPostWriter: "qwer1234", recruitLike: 31, recruitView: 661, members: "4/4", dDay: "D - 6", recruitPostCreatedAt: "10.05" },

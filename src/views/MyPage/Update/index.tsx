@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
 import { useCookies } from 'react-cookie';
 import { ACCESS_TOKEN, MYPAGE } from 'src/constants';
-import { fileUploadRequest, patchPassword, patchTelAuthCheckRequest, patchTelAuthRequest, patchUserRequest } from 'src/apis';
+import { fileUploadRequest, patchPasswordRequest, patchTelAuthCheckRequest, patchTelAuthRequest, patchUserRequest } from 'src/apis';
 import { useSignInUserStore } from 'src/stores';
 import { PatchUserRequestDto } from 'src/apis/dto/request/user';
 import { ResponseDto } from 'src/apis/dto/response';
@@ -85,7 +85,7 @@ export default function MyPageUpdate() {
       responseBody.code === 'SU' ? '수정이 완료되었습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    if (!isSuccessed) {
+    if (isSuccessed) {
       alert(message);
       return;
     }
@@ -124,11 +124,13 @@ export default function MyPageUpdate() {
       !responseBody ? '서버에 문제가 있습니다.' : 
       responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' :
       responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : 
+      responseBody.code === 'PM' ? '기존 비밀번호가 틀립니다.' : 
       responseBody.code === 'SU' ? '비밀번호가 변경되었습니다.' : '';
 
       const isSuccessed = responseBody !== null && responseBody.code === 'SU';
       setChkPasswordMessage(message);
       setChkPasswordMessageError(!isSuccessed);
+      alert(message);
   }
 
   // event handler: 프로필 이미지 클릭 이벤트 처리 //
@@ -221,7 +223,7 @@ export default function MyPageUpdate() {
 
     const requestBody: PatchPasswordRequestDto = { currentPassword: password, newPassword: changePassword }
 
-    patchPassword(requestBody, accessToken).then(patchPasswordResponse);
+    patchPasswordRequest(requestBody, accessToken).then(patchPasswordResponse);
   }
 
   const onTelNumberSendClickHandler = () => {

@@ -9,7 +9,7 @@ import { deleteGifticonRequest, fileUploadRequest, getGifticonListRequest, patch
 import { GetGifticonListResponseDto } from 'src/apis/dto/response/gifticon';
 import { ResponseDto } from 'src/apis/dto/response';
 import { PatchGifticonRequestDto, PostGifticonRequestDto } from 'src/apis/dto/request/gifticon';
-import Pagination from 'src/components/Pagination';
+import Pagination from 'src/components/pagination';
 
 // variable: 기본 이미지 URL //
 const defaultImageUrl = '/images/defaultImage.png';
