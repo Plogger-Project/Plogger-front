@@ -7,7 +7,7 @@ import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from 'react-icons/fa'; // 캘린더 아이콘을 위한 라이브러리
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { useKakaoLoader } from "src/hooks";
-import { RECRUIT_ABSOLUTE_PATH, RECRUIT_MYPAGE_PATH } from "src/constants";
+import { MYPAGE_PATH, RECRUIT_ABSOLUTE_PATH } from "src/constants";
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
@@ -63,7 +63,7 @@ export default function RecruitWrite() {
 
   // event handler: 마이페이지 이동 이벤트 처리 //
   const onMypageButtonClickHandler = () => {
-    navigator(RECRUIT_MYPAGE_PATH);
+    navigator(MYPAGE_PATH);
   };
 
 

@@ -17,7 +17,6 @@
     border-radius: 10px;
     cursor: pointer;
     padding: 14px 0px;
-    margin-left: 10px;
     min-width: 105px;
     box-sizing: border-box;
     font-size: 14px;
@@ -87,9 +86,11 @@
     border-radius: 50%;
 }
 
-.button-container {
+.input-container .button-container {
     display: flex;
+    flex-direction: row;
     justify-content: center;
+    gap: 5px;
     align-items: center;
 }
 
@@ -129,13 +130,12 @@
     position: relative;
 }
 
-/* 모달 닫기 버튼 스타일 */
 .password-modal-cancel-button {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 12px;
+    right: 12px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 24px;
     color: #666;
 }
 
@@ -167,48 +167,70 @@
     background-color: rgba(0, 0, 0, 0.3);
 }
 
-.modal-cancle-button {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: none;
-    border: none;
-    font-size: 25px;
-    cursor: pointer;
-    color: #999;
-}
-
 .modal-box {
     position: relative;
     box-sizing: border-box;
-    border: 1px solid rgba(238, 238, 238, 1);
-    border-radius: 8px;
-    padding: 24px;
     width: 400px;
-    height: auto;
-    background-color: rgba(255, 255, 255, 1);
+    padding: 24px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
+.modal-cancel-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
 .modal-input-container {
-    margin-top: 40px;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 16px; 
+    margin-top: 16px;
 }
 
 .modal-input-container label {
-    text-align: left;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #333;
 }
 
 .modal-input-container input {
     width: 100%;
-    margin-top: 5px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    outline: none;
 }
 
 .modal-input-container button {
-    margin-top: 5px;
+    padding: 13px 0;
+    font-size: 14px;
+    color: #fff;
+    background-color: #84A264;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.telNumber-update-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    width: 105px;
+    height: 40px;
+    color: #fff;
+    background-color: #84A264;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }

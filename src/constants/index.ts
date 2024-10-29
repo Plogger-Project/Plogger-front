@@ -20,7 +20,9 @@ export const QNA_WRITE_PATH = `${QNA_PATH}/write`;
 export const FIND_ID = '/find-id';
 export const FIND_PASSWORD = '/find-password';
 
-export const MYPAGE = '/mypage';
+export const MYPAGE_PATH = '/mypage';
+
+export const GIFTICON_PATH = '/mileage';
 
 export const ADMIN = '/admin';
 
