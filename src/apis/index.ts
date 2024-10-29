@@ -4,7 +4,6 @@ import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SignUpRe
 import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
-
 import { GetRecruitPostListResponseDto } from "./dto/response/recruit";
 import { GetQnaPostListResponseDto } from "./dto/response/qna";
 
@@ -15,6 +14,7 @@ import PatchPasswordRequestDto from "./dto/request/user/patch-password.request.d
 import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 import { FindPasswordResponseDto, GetSignInResponseDto } from "./dto/response/auth";
 import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
+import { PostRecruitReportRequestDto } from "./dto/request/recruit";
 import PostActivePostRequestDto from "./dto/request/active/post-active-post.request.dto";
 import { PatchActivePostRequestDto } from "./dto/request/active";
 
@@ -22,9 +22,10 @@ import { PatchActivePostRequestDto } from "./dto/request/active";
 // variable: API URL 상수 //
 const PLOGGER_API_DOMAIN = "http://localhost:4000"
 
-const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`;
-const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`;
-const QNA_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/qna`;
+const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
+const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`
+const QNA_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/qna`
+const REPORT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/report`
 
 const ID_CHECK_API_URL = `${AUTH_MODULE_URL}/id-check`;
 const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
@@ -33,6 +34,7 @@ const SEND_PASSWORD_AUTH_API_URL = `${AUTH_MODULE_URL}/password-send-auth`;
 const FIND_ID_API_URL = `${AUTH_MODULE_URL}/find-id`;
 const FIND_PASSWORD_API_URL = `${AUTH_MODULE_URL}/find-password`;
 const TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/tel-auth-check`;
+const RECRUIT_REPORT_API_URL = `${REPORT_MODULE_URL}/recruit`;
 
 const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
@@ -46,12 +48,15 @@ const GET_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_
 const PATCH_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 const DELETE_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 
+
 const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
 const POST_RECRUIT_LIKE_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/like/${recruitId}`;
 
 const GET_QNA_POST_LIST_API_URL = `${QNA_MODULE_URL}`
 
 const MYPAGE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/mypage`;
+
+
 
 const PATCH_MYPAGE_API_URL = `${MYPAGE_MODULE_URL}`;
 const PATCH_MYPAGE_COMMENT_API_URL = `${MYPAGE_MODULE_URL}/comment`;
@@ -67,6 +72,8 @@ const GET_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE
 const PATCH_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`;
 const DELETE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`;
 const PURCHASE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`;
+
+const POST_RECRUIT_REPORT_API_URL = (recruitId: number | string) => `${RECRUIT_REPORT_API_URL}/${recruitId}`;
 
 // function: Authorizarion Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({ headers: { 'Authorization': `Bearer ${accessToken}` } })
@@ -295,9 +302,17 @@ export const getRecruitPostListRequest = async () => {
     return responseBody;
 }
 
-// function : get qna post list 요청 함수 //
-export const getQnaPostListRequest = async () => {
-    const responseBody = await axios.get(GET_QNA_POST_LIST_API_URL)
+    // function : get recruit post list 요청 함수 //
+    export const getQnaPostListRequest = async () => {
+        const responseBody = await axios.get(GET_QNA_POST_LIST_API_URL)
+            .then(responseDataHandler<GetQnaPostListResponseDto>)
+            .catch(responseErrorHandler);
+        return responseBody;
+    };
+
+// function: post recruit report 요청 함수 //
+export const PostRecruitReportRequest = async (requestBody: PostRecruitReportRequestDto, accessToken: string, recruitId: number | string) => {
+    const responseBody = await axios.post(POST_RECRUIT_REPORT_API_URL(recruitId), requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<GetQnaPostListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
