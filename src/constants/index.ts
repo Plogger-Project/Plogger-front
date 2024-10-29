@@ -22,6 +22,8 @@ export const FIND_PASSWORD = '/find-password';
 
 export const MYPAGE_PATH = '/mypage';
 
+export const GIFTICON_PATH = '/mileage';
+
 // variable: 절대 경로 상수 //
 export const ROOT_ABSOLUTE_PATH = ROOT_PATH;
 export const AUTH_ABSOLUTE_PATH = AUTH_PATH;

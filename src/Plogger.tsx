@@ -15,7 +15,7 @@ import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_P
 
 import RecruitView from './views/Recruit/Detail';
 import Mypage from './views/MyPage';
-import Mileage from './views/Mileage';
+import Mileage from './views/Gifticon';
 
 import RecruitUpdate from './views/Recruit/Update';
 import RecruitWrite from './views/Recruit/Write';

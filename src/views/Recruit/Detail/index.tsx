@@ -1,18 +1,28 @@
 import React, { useRef, useState } from 'react'
 import "./style.css";
-import { useNavigate } from 'react-router-dom';
-import { RECRUIT_ABSOLUTE_PATH } from '../../../constants';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH } from '../../../constants';
 import { useKakaoLoader } from 'src/hooks';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
-
+import { useSignInUserStore } from 'src/stores';
+import { useCookies } from 'react-cookie';
+import { ResponseDto } from 'src/apis/dto/response';
 
 
 // variable : 카카오 맵 키 //
 const appkey = process.env.REACT_APP_KAKAO_MAP_KEY;
 
+// component: 구인 게시글 상세 보기 컴포넌트 //
 export default function RecruitDetail() {
 
+  // state: 고객 번호 경로 변수 상태 //
+  const { customerNumber } = useParams();
 
+  // state: 로그인 사용자 상태 //
+  const { signInUser } = useSignInUserStore();
+
+  // state: cookie 상태 //
+  const [cookies] = useCookies();
 
   const [isLiked, setIsLiked] = useState(false);
   const [isScraped, setIsScraped] = useState(false);
@@ -26,6 +36,28 @@ export default function RecruitDetail() {
 
   // function: 카카오 맵스 함수 //
   useKakaoLoader();
+
+  // function: post recruit like response 처리 함수 //
+  const postRecruitLikeResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+      responseBody.code === 'NP' ? '권한이 없습니다.' :
+      responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+      responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if(!isSuccessed) {
+      alert(message);
+      return;
+    }
+    
+    if(!customerNumber) return;
+    const accessToken = cookies[ACCESS_TOKEN];
+    if(!accessToken) return;
+  };
   
   // event handler: 목록 버튼 클릭 이벤트 처리 //
   const onListButtonClickHandler = () => {
@@ -39,7 +71,7 @@ export default function RecruitDetail() {
     setIsScraped(!isScraped);
   }
 
-  // 클릭 시 옵션 항목을 보여주거나 숨기는 함수
+  // event handler: 클릭 시 옵션 항목을 보여주거나 숨기는 함수 //
   const toggleOptionsHandler = () => {
     if (optionBoxRef.current) {
       const rect = optionBoxRef.current.getBoundingClientRect();  // optionBox 위치 가져오기
@@ -50,6 +82,11 @@ export default function RecruitDetail() {
     }
     setShowOptions(!showOptions);  // 옵션 항목 표시 상태 반전
   };
+
+  // event handler: 좋아요 버튼 클릭 이벤트 처리 //
+  const onLikeButtonClickHandler = () => {
+    
+  }
 
   return (
     <div id="recruit-detail-wrapper">
