@@ -5,8 +5,8 @@ import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
 
-import { GetSignInResponseDto } from "./dto/response/auth";
-import { PurchaseGifticonRequestDto } from "./dto/request/gifticon";
+
+
 import { GetRecruitPostListResponseDto } from "./dto/response/recruit";
 import { GetQnaPostListResponseDto } from "./dto/response/qna";
 
@@ -16,6 +16,8 @@ import PatchTelAuthCheckRequestDto from "./dto/request/user/patch-tel-auth-check
 import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 import { FindPasswordResponseDto, GetSignInResponseDto } from "./dto/response/auth";
 import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
+import { PostRecruitRequestDto } from "./dto/request/recruit";
+import GetRecruitPostResponseDto from "./dto/response/recruit/get-recruit.response.dto";
 
 
 // variable: API URL 상수 //
@@ -37,7 +39,8 @@ const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 
-
+const GET_RECRUIT_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}`;
+const POST_RECRUIT_POST_API_URL = `${RECRUIT_MODULE_URL}`
 const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
 
 const GET_QNA_POST_LIST_API_URL = `${QNA_MODULE_URL}`
@@ -156,6 +159,14 @@ export const getSignInRequest = async (accessToken: string) => {
     return responseBody;
 };
 
+// function: post recruit post 요청 함수 //
+export const postRecruitPostRequest = async (requestBody: PostRecruitRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_RECRUIT_POST_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
 // function: post gifticon 요청 함수 //
 export const postGifticonRequest = async (requestBody: PostGifticonRequestDto, accessToken: string) => {
     const responseBody = await axios.post(POST_GIFTICON_API_URL, requestBody, bearerAuthorization(accessToken))
@@ -242,6 +253,21 @@ export const fileUploadRequest = async (requestBody: FormData) => {
         .catch(error => null)
     return url;
 }
+// export const fileUploadRequest = async (requestBody: FormData) => {
+//     try {
+//         const response = await axios.post(FILE_UPLOAD_URL, requestBody, multipart);
+//         const url = responseDataHandler<string>(response); // 성공적으로 응답을 처리
+
+//         // 성공적으로 받은 URL을 콘솔에 로그
+//         console.log("Uploaded file URL:", url);
+
+//         return url; // URL 반환
+//     } catch (error) {
+//         // 오류 발생 시 콘솔에 로그
+//         console.error("File upload error:", error);
+//         return null; // 오류가 발생하면 null 반환
+//     }
+// };
 
 // function : get recruit post list 요청 함수 //
 export const getRecruitPostListRequest = async () => {
@@ -251,7 +277,15 @@ export const getRecruitPostListRequest = async () => {
     return responseBody;
 }
 
-    // function : get recruit post list 요청 함수 //
+// function : get recruit post 요청 함수 //
+export const getRecruitPostRequest = async (recruitPostId: number | string, accessToken: string) => {
+    const responseBody = await axios.get(GET_RECRUIT_POST_API_URL(recruitPostId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetRecruitPostResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+    // function : get qna post list 요청 함수 //
     export const getQnaPostListRequest = async () => {
         const responseBody = await axios.get(GET_QNA_POST_LIST_API_URL)
             .then(responseDataHandler<GetQnaPostListResponseDto>)

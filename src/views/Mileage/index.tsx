@@ -8,8 +8,9 @@ import { ACCESS_TOKEN } from 'src/constants';
 import { deleteGifticonRequest, fileUploadRequest, getGifticonListRequest, patchGifticonRequest, postGifticonRequest, purchaseGifticonRequest } from 'src/apis';
 import { GetGifticonListResponseDto } from 'src/apis/dto/response/gifticon';
 import { ResponseDto } from 'src/apis/dto/response';
-import Pagination from 'src/components/pagination';
+
 import { PatchGifticonRequestDto, PostGifticonRequestDto } from 'src/apis/dto/request/gifticon';
+import Pagination from 'src/components/Pagination';
 
 // variable: 기본 이미지 URL //
 const defaultImageUrl = '/images/defaultImage.png';

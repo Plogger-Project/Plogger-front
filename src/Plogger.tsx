@@ -11,9 +11,8 @@ import Main from './views/Main';
 import QnaPost from './views/QNA';
 
 
-import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD } from './constants';
+import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD, RECRUIT_DETAIL_ABSOLUTE_PATH } from './constants';
 
-import RecruitView from './views/Recruit/Detail';
 import Mypage from './views/MyPage';
 import Mileage from './views/Mileage';
 
@@ -28,9 +27,11 @@ import { ResponseDto } from './apis/dto/response';
 import { getSignInRequest } from './apis';
 
 import RecruitPost from './views/Recruit';
-import { RecruitPostList } from './types';
+
 
 import FindPassword from './views/FindPassword';
+import RecruitDetail from './views/Recruit/Detail';
+
 
 
 
@@ -99,6 +100,8 @@ function Plogger() {
 
   };
 
+ 
+
   // effect: cookie의 accessToken 값이 변경될 때마다 로그인 유저 정보를 요청하는 함수 //
   useEffect(()=>{
     const accessToken = cookies[ACCESS_TOKEN];
@@ -120,7 +123,7 @@ function Plogger() {
         <Route path='/sign-up' element={<SignUp />} />
         <Route path={RECRUIT_PATH} element={<RecruitPost/> } />
         <Route path={RECRUIT_WRITE_PATH} element={<RecruitWrite />} />
-        <Route path={RECRUIT_DETAIL_PATH} element={<RecruitView />} />
+        <Route path={RECRUIT_DETAIL_PATH(':recruitPostId')} element={<RecruitDetail />} />
         <Route path={RECRUIT_UPDATE_PATH} element={<RecruitUpdate />} />
         <Route path='/active' element={<ActivePost />} />
         <Route path="/qna" element={<QnaPost />} />

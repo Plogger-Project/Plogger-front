@@ -40,9 +40,9 @@ function TableRow({ recruitPostId, getRecruitList }: TableRowProps) {
   };
 
 
-  // event handler: 게시글 상세보기 클릭 이벤트 처리 //
+  // event handler: 상세 정보 보기 버튼 클릭 이벤트 처리 함수 //
   const onDetailButtonClickHandler = () => {
-    navigator(RECRUIT_DETAIL_ABSOLUTE_PATH);
+    navigator(RECRUIT_DETAIL_ABSOLUTE_PATH(recruitPostId.recruitPostId));
   };
 
   // render : 게시글 리스트 렌더링 //
