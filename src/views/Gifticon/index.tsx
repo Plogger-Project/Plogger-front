@@ -370,8 +370,8 @@ export default function Mileage() {
     // state: cookie 상태 //
     const [ cookies ] = useCookies();
 
-    // state: 로그인 유저 정보 //
-    const { signInUser } = useSignInUserStore();
+    // state: 로그인 유저 정보 상태 //
+    const { signInUser, setSignInUser } = useSignInUserStore();
 
     // state: 기프티콘 정보 상태 //
     const [gifticonName, setGifticonName] = useState<string>('');
