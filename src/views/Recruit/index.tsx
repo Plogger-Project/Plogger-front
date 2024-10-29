@@ -11,8 +11,9 @@ import { useCookies } from "react-cookie";
 import { ResponseDto } from "src/apis/dto/response";
 import { GetRecruitPostListResponseDto } from "src/apis/dto/response/recruit";
 import { getRecruitPostListRequest } from "src/apis";
-import Pagination from "src/components/Pagination";
+
 import useRecruitPagination from "src/hooks/recruit.pagination.hook";
+import Pagination from "src/components/pagination";
 
 
 // variable : 카카오 맵 키 //

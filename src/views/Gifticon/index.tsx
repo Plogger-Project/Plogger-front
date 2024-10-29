@@ -9,7 +9,7 @@ import { deleteGifticonRequest, fileUploadRequest, getGifticonListRequest, getSi
 import { GetGifticonListResponseDto } from 'src/apis/dto/response/gifticon';
 import { ResponseDto } from 'src/apis/dto/response';
 import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from 'src/apis/dto/request/gifticon';
-import Pagination from 'src/components/Pagination';
+import Pagination from 'src/components/pagination';
 import { SignInUser } from 'src/types';
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 

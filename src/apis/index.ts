@@ -5,24 +5,26 @@ import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
 
-import { PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 import { GetRecruitPostListResponseDto } from "./dto/response/recruit";
 import { GetQnaPostListResponseDto } from "./dto/response/qna";
 
 import { PatchCommentRequestDto, PatchUserRequestDto } from "./dto/request/user";
 import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
 import PatchTelAuthCheckRequestDto from "./dto/request/user/patch-tel-auth-check.request.dto";
-import { PatchGifticonRequestDto, PostGifticonRequestDto} from "./dto/request/gifticon";
+import PatchPasswordRequestDto from "./dto/request/user/patch-password.request.dto";
+import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 import { FindPasswordResponseDto, GetSignInResponseDto } from "./dto/response/auth";
 import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
+import PostActivePostRequestDto from "./dto/request/active/post-active-post.request.dto";
+import { PatchActivePostRequestDto } from "./dto/request/active";
 
 
 // variable: API URL 상수 //
 const PLOGGER_API_DOMAIN = "http://localhost:4000"
 
-const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
-const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`
-const QNA_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/qna`
+const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`;
+const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`;
+const QNA_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/qna`;
 
 const ID_CHECK_API_URL = `${AUTH_MODULE_URL}/id-check`;
 const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
@@ -36,6 +38,13 @@ const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 
+const ACTIVE_MODULE_URL = `${AUTH_MODULE_URL}/api/v1/active`;
+
+const POST_ACTIVE_POST_API_URL = `${ACTIVE_MODULE_URL}`;
+const GET_ACTIVE_POST_LIST_API_URL = `${ACTIVE_MODULE_URL}`;
+const GET_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
+const PATCH_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
+const DELETE_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 
 const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
 const POST_RECRUIT_LIKE_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/like/${recruitId}`;
@@ -48,7 +57,7 @@ const PATCH_MYPAGE_API_URL = `${MYPAGE_MODULE_URL}`;
 const PATCH_MYPAGE_COMMENT_API_URL = `${MYPAGE_MODULE_URL}/comment`;
 const PATCH_MYPAGE_TEL_AUTH_API_URL = `${MYPAGE_MODULE_URL}/tel-auth`;
 const PATCH_MYPAGE_TEL_AUTH_CHECK_API_URL = `${MYPAGE_MODULE_URL}/tel-auth-check`;
-
+const PATCH_MYPAGE_PASSWORD_API_URL = `${MYPAGE_MODULE_URL}/update-password`;
 
 const GIFTICON_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/gifticon`;
 
@@ -139,8 +148,6 @@ export const findPasswordRequest = async (requestBody: FindPasswordRequestDto) =
     return responseBody;
 }
 
-
-
 // function: sign in 요청 함수 //
 export const signInRequest = async (requestBody: SignInRequestDto) => {
     const responseBody = await axios.post(SIGN_IN_API_URL, requestBody)
@@ -181,7 +188,6 @@ export const getGifticonRequest = async (gifticonId: number | string, accessToke
     return responseBody;
 };
 
-
 // function: patch gifticon 요청 함수 //
 export const patchGifticonRequest = async (requestBody: PatchGifticonRequestDto, gifticonId: number | string, accessToken: string) => {
     const responseBody = await axios.patch(PATCH_GIFTICON_API_URL(gifticonId), requestBody, bearerAuthorization(accessToken))
@@ -198,14 +204,36 @@ export const deleteGifticonRequest = async (gifticonId: number | string, accessT
     return responseBody;
 };
 
-
 // function: purchase gifticon 요청 함수 //
 export const purchaseGifticonRequest = async (requestBody: PurchaseGifticonRequestDto, gifticonId: number | string, accessToken: string) => {
     const responseBody = await axios.post(PURCHASE_GIFTICON_API_URL(gifticonId), requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
+}
 
+// function: 활동 게시판 생성 요청 함수 //
+export const postActivePostRequest = async (requestBody: PostActivePostRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_ACTIVE_POST_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 활동 게시판 수정 요청 함수 //
+export const pathActivePostRequest = async (requestBody: PatchActivePostRequestDto, activeId: string | number, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_ACTIVE_POST_API_URL(activeId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 활동 게시판 삭제 요청 함수 //
+export const deleteActivePostRequest = async (activeId: string | number, accessToken: string) => {
+    const resopnseBody = await axios.delete(DELETE_ACTIVE_POST_API_URL(activeId), bearerAuthorization((accessToken)))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return resopnseBody;
 }
 
 // function: 유저 정보 수정 요청 함수 //
@@ -230,7 +258,14 @@ export const patchTelAuthCheckRequest = async (requestBody: PatchTelAuthCheckReq
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
+}
 
+// function: 유저 비밀번호 변경 요청 함수 //
+export const patchPasswordRequest = async (requestBody: PatchPasswordRequestDto, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_MYPAGE_PASSWORD_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 }
 
 // function: 유저 정보 코멘트 수정 요청 함수 //
