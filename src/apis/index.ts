@@ -38,6 +38,7 @@ const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 
 
 const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
+const POST_RECRUIT_LIKE_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/like/${recruitId}`;
 
 const GET_QNA_POST_LIST_API_URL = `${QNA_MODULE_URL}`
 
@@ -250,10 +251,18 @@ export const getRecruitPostListRequest = async () => {
     return responseBody;
 }
 
-    // function : get recruit post list 요청 함수 //
-    export const getQnaPostListRequest = async () => {
-        const responseBody = await axios.get(GET_QNA_POST_LIST_API_URL)
-            .then(responseDataHandler<GetQnaPostListResponseDto>)
-            .catch(responseErrorHandler);
-        return responseBody;
-    };
+// function : get qna post list 요청 함수 //
+export const getQnaPostListRequest = async () => {
+    const responseBody = await axios.get(GET_QNA_POST_LIST_API_URL)
+        .then(responseDataHandler<GetQnaPostListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: recruit like & unlike 요청 함수 //
+export const postRecruitLikeRequest = async ( recruitId: number | string ) => {
+    const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
