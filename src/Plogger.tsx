@@ -11,10 +11,10 @@ import Main from './views/Main';
 import QnaPost from './views/QNA';
 
 
-import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD, RECRUIT_DETAIL_ABSOLUTE_PATH } from './constants';
+import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD, RECRUIT_DETAIL_ABSOLUTE_PATH, MYPAGE_PATH } from './constants';
 
 import Mypage from './views/MyPage';
-import Mileage from './views/Mileage';
+import Mileage from './views/Gifticon';
 
 import RecruitUpdate from './views/Recruit/Update';
 import RecruitWrite from './views/Recruit/Write';
@@ -32,6 +32,7 @@ import RecruitPost from './views/Recruit';
 import FindPassword from './views/FindPassword';
 import RecruitDetail from './views/Recruit/Detail';
 
+import Admin from './views/Admin';
 
 
 
@@ -128,11 +129,12 @@ function Plogger() {
         <Route path='/active' element={<ActivePost />} />
         <Route path="/qna" element={<QnaPost />} />
         <Route path='/mileage' element={<Mileage/>} />
-        <Route path='/mypage' element={<Mypage />} />
+        <Route path={MYPAGE_PATH} element={<Mypage />} />
         <Route path='/mypage/update' element={<MyPageUpdate />} />
         <Route path={FIND_ID} element={<FindId />} />
         <Route path={FIND_PASSWORD} element={<FindPassword />} />
         <Route path={SNS_SUCCESS_PATH} element={<SnsSuccess />} />
+        <Route path='/admin' element={<Admin />} />
       </Routes>
     </>
   );

@@ -14,8 +14,7 @@ import { ResponseDto } from "src/apis/dto/response";
 import { PostRecruitRequestDto } from "src/apis/dto/request/recruit";
 import useGeolocation from "src/hooks/useGeolocation.hook";
 import DatePicker from "react-datepicker";
-
-
+import { MYPAGE_PATH } from "src/constants";
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
@@ -127,7 +126,7 @@ export default function RecruitWrite() {
 
   // event handler: 마이페이지 이동 이벤트 처리 //
   const onMypageButtonClickHandler = () => {
-    navigator(RECRUIT_MYPAGE_PATH);
+    navigator(MYPAGE_PATH);
   };
 
 

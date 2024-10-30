@@ -3,12 +3,11 @@ import "./style.css";
 import { QnaPostList } from "src/types";
 import { useNavigate } from "react-router-dom";
 import useQnaPagination from "src/hooks/qna.pagination.hook";
-import Pagination from "src/components/Pagination";
 import { GetQnaPostListResponseDto } from "src/apis/dto/response/qna";
 import { ResponseDto } from "src/apis/dto/response";
 import { QNA_WRITE_ABSOLUTE_PATH } from "src/constants";
 import { getQnaPostListRequest } from './../../apis/index';
-
+import Pagination from "src/components/pagination";
 
 // interface: 구인 게시글 리스트 컴포넌트 Properties //
 interface TableRowProps {

@@ -18,6 +18,11 @@
     font-weight: bold;
 }
 
+.message.error {
+    margin: 4px 0 0;
+    color: red;
+}
+
 .input-area button {
     background-color: #84A264;
     color: white;

@@ -4,14 +4,14 @@ import InputBox from '../../../components/InputBox';
 import { useNavigate } from 'react-router-dom';
 import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
 import { useCookies } from 'react-cookie';
-import { ACCESS_TOKEN, MYPAGE } from 'src/constants';
-import { fileUploadRequest, patchTelAuthCheckRequest, patchTelAuthRequest, patchUserRequest, telAuthCheckRequest } from 'src/apis';
+import { ACCESS_TOKEN, MYPAGE_PATH } from 'src/constants';
+import { fileUploadRequest, patchPasswordRequest, patchTelAuthCheckRequest, patchTelAuthRequest, patchUserRequest } from 'src/apis';
 import { useSignInUserStore } from 'src/stores';
 import { PatchUserRequestDto } from 'src/apis/dto/request/user';
 import { ResponseDto } from 'src/apis/dto/response';
 import PatchTelAuthRequestDto from 'src/apis/dto/request/user/patch-tel-auth.request.dto';
-import { SignInUser } from 'src/types';
 import PatchTelAuthCheckRequestDto from 'src/apis/dto/request/user/patch-tel-auth-check.request.dto';
+import PatchPasswordRequestDto from 'src/apis/dto/request/user/patch-password.request.dto';
 
 const defaultProfileImageUrl = 'https://blog.kakaocdn.net/dn/4CElL/btrQw18lZMc/Q0oOxqQNdL6kZp0iSKLbV1/img.png';
 
@@ -27,14 +27,14 @@ export default function MyPageUpdate() {
   // state: 이미지 입력 참조 //
   const imageInputRef = useRef<HTMLInputElement | null>(null);
 
+  // state: 로그인 유저 상태 //
   const { signInUser } = useSignInUserStore();
 
   // 프로필 미리보기 URL 상태 //
   const [previewUrl, setPreviewUrl] = useState<string>(defaultProfileImageUrl);
 
   // state: 고객 정보 상태 //
-  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
-  const [profileImage, setProfileImage] = useState<string | undefined>(signInUser?.profileImage);
+  const [profileImage, setProfileImage] = useState<File | null>(null);
   const [name, setName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [changePassword, setChangePassword] = useState<string>('');
@@ -47,7 +47,7 @@ export default function MyPageUpdate() {
   const [nameMessage, setNameMessage] = useState<string>('');
   const [passwordMessage, setPasswordMessage] = useState<string>('');
   const [changePasswordMessage, setChangePasswordMessage] = useState<string>('');
-  const [chkPasswordMessage, setChkPasswordCheckMessage] = useState<string>('');
+  const [chkPasswordMessage, setChkPasswordMessage] = useState<string>('');
   const [changeTelNumberMessage, setChangeTelNumberMessage] = useState<string>('');
   const [authNumberMessage, setAuthNumberMessage] = useState<string>('');
   const [addressMessage, setAddressMessage] = useState<string>('');
@@ -55,7 +55,7 @@ export default function MyPageUpdate() {
   const [nameMessageError, setNameMessageError] = useState<boolean>(false);
   const [passwordMessageError, setPasswordMessageError] = useState<boolean>(false);
   const [changePasswordMessageError, setChangePasswordMessageError] = useState<boolean>(false);
-  const [chkPasswordMessageError, setChkPasswordCheckMessageError] = useState<boolean>(false);
+  const [chkPasswordMessageError, setChkPasswordMessageError] = useState<boolean>(false);
   const [changeTelNumberMessageError, setChangeTelNumberMessageError] = useState<boolean>(false);
   const [authNumberMessageError, setAuthNumberMessageError] = useState<boolean>(false);
   const [addressMessageError, setAddressMessageError] = useState<boolean>(false);
@@ -85,7 +85,7 @@ export default function MyPageUpdate() {
       responseBody.code === 'SU' ? '수정이 완료되었습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    if (!isSuccessed) {
+    if (isSuccessed) {
       alert(message);
       return;
     }
@@ -102,12 +102,11 @@ export default function MyPageUpdate() {
 
       const isSuccessed = repsonseBody !== null && repsonseBody.code === 'SU';
       setChangeTelNumberMessage(message);
-      setChangePasswordMessageError(!isSuccessed);
+      setChangeTelNumberMessageError(!isSuccessed);
       setSend(isSuccessed);
   }
 
   const telAuthCheckResponse = (responseBody: ResponseDto | null) => {
-
     const message = 
       !responseBody ? '서버에 문제가 있습니다.' : 
       responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' : 
@@ -120,6 +119,19 @@ export default function MyPageUpdate() {
     setCheckedAuthNumber(isSuccessed);
   }
 
+  const patchPasswordResponse = (responseBody: ResponseDto | null) => {
+    const message = 
+      !responseBody ? '서버에 문제가 있습니다.' : 
+      responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : 
+      responseBody.code === 'PM' ? '기존 비밀번호가 틀립니다.' : 
+      responseBody.code === 'SU' ? '비밀번호가 변경되었습니다.' : '';
+
+      const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+      setChkPasswordMessage(message);
+      setChkPasswordMessageError(!isSuccessed);
+      alert(message);
+  }
 
   // event handler: 프로필 이미지 클릭 이벤트 처리 //
   const onProfileImageClickHandler = () => {
@@ -134,7 +146,7 @@ export default function MyPageUpdate() {
     if (!files || !files.length) return;
 
     const file = files[0];
-    setProfileImageFile(file);
+    setProfileImage(file);
 
     const fileReader = new FileReader();
     fileReader.readAsDataURL(file);
@@ -159,6 +171,14 @@ export default function MyPageUpdate() {
   const onChangePasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setChangePassword(value);
+
+    const pattern = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,13}$/;
+    const isMatched = pattern.test(value);
+
+    const message = (isMatched || !value) ? '' : '영문, 숫자를 혼용하여 8 ~ 13자 입력해주세요.';
+    setChangePasswordMessage(message);
+    setChangePasswordMessageError(!isMatched);
+    setMatchedPassword(isMatched);
   }
 
   // event handler: 변경 비밀번호 확인 이벤트 처리 함수 //
@@ -188,21 +208,23 @@ export default function MyPageUpdate() {
     setAddressMessage('');
   }
 
-  // event handler: 비밀번호 변경 모달 수정 버튼 클릭 이벤트 처리 함수
-  const onChangePasswordSubmit = () => {
-    if (!changePassword || !chkPassword) {
-      setChangePasswordMessage('비밀번호를 입력해주세요.');
-      return;
-    }
-
-    if (changePassword !== chkPassword) {
-      setChkPasswordCheckMessage('비밀번호가 일치하지 않습니다.');
-      return;
-    }
-
-    alert('전화번호가 수정되었습니다.');
+  // event handler: 비밀번호 수정 버튼 클릭 이벤트 처리 함수 //
+  const onUpdatePasswordButtonClickHandler = () => {
     setChangePasswordModalOpen(false);
-  };
+
+    if (!password || !changePassword || !chkPassword) return;
+
+    const accessToken = cookies[ACCESS_TOKEN];
+    if (!accessToken) return;
+
+    const passwordChkmessage = (signInUser?.password !== password) ? '' : '비밀번호가 틀립니다.';
+    setPasswordMessage(passwordChkmessage);
+    setPasswordMessageError(!passwordChkmessage)
+
+    const requestBody: PatchPasswordRequestDto = { currentPassword: password, newPassword: changePassword }
+
+    patchPasswordRequest(requestBody, accessToken).then(patchPasswordResponse);
+  }
 
   const onTelNumberSendClickHandler = () => {
     if (!changeTelNumber) return;
@@ -218,7 +240,6 @@ export default function MyPageUpdate() {
       return;
     }
 
-    console.log(changeTelNumber);
     const requestBody: PatchTelAuthRequestDto = { telNumber: changeTelNumber }
 
     patchTelAuthRequest(requestBody, accessToken).then(patchTelAuthResponse);
@@ -286,7 +307,7 @@ export default function MyPageUpdate() {
   }
 
   const onUpdateCancelButtonClickHandler = () => {
-    navigator(MYPAGE);
+    navigator(MYPAGE_PATH);
   }
 
   useEffect(() => {
@@ -294,8 +315,8 @@ export default function MyPageUpdate() {
 
     const isEqual = changePassword === chkPassword;
     const message = isEqual ? '' : '비밀번호가 일치하지 않습니다.';
-    setChkPasswordCheckMessage(message);
-    setChkPasswordCheckMessageError(!isEqual);
+    setChkPasswordMessage(message);
+    setChkPasswordMessageError(!isEqual);
     setCheckedPassword(isEqual);
   }, [changePassword, chkPassword]);
 
@@ -334,7 +355,7 @@ export default function MyPageUpdate() {
                   <InputBox message={passwordMessage} messageError={passwordMessageError} label='기존 비밀번호' type='password' placeholder='기존 비밀번호를 입력해주세요.' value={password} onChange={onPasswordChangeHandler} />
                   <InputBox message={changePasswordMessage} messageError={changePasswordMessageError} label='새 비밀번호' type='password' placeholder='새 비밀번호를 입력해주세요.' value={changePassword} onChange={onChangePasswordChangeHandler} />
                   <InputBox message={chkPasswordMessage} messageError={chkPasswordMessageError} label='비밀번호 확인' type='password' placeholder='비밀번호를 다시 입력해주세요.' value={chkPassword} onChange={onChkPasswordChangeHandler} />
-                  <button className='password-update-button' onClick={onChangePasswordSubmit}>수정</button>
+                  <button className='password-update-button' onClick={onUpdatePasswordButtonClickHandler}>수정</button>
                 </div>
               </div>
             </div>

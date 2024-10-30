@@ -1,4 +1,4 @@
-// interface: post Gifticon request Body dto //
+// interface: post gifticon request Body dto //
 export default interface PostGifticonRequestDto {
     name: string;
     image: string;
