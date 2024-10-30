@@ -8,7 +8,7 @@ import { RecruitPostList } from 'src/types';
 import { getRecruitPostListRequest, patchCommentRequest } from 'src/apis';
 import { GetRecruitPostListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
-import Pagination from 'src/components/Pagination';
+import Pagination from 'src/components/pagination';
 import { ACCESS_TOKEN, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';
 import { PatchCommentRequestDto } from 'src/apis/dto/request/user';
 import { useCookies } from 'react-cookie';
@@ -111,9 +111,9 @@ export default function Mypage() {
       return `${year}-${month}-${day}`;
     };
 
-    // event handler: 게시글 상세보기 클릭 이벤트 처리 //
+    // event handler: 상세 정보 보기 버튼 클릭 이벤트 처리 함수 //
     const onDetailButtonClickHandler = () => {
-      navigator(RECRUIT_DETAIL_ABSOLUTE_PATH);
+      navigator(RECRUIT_DETAIL_ABSOLUTE_PATH(recruitPostId.recruitPostId));
     };
 
     // render : 게시글 리스트 렌더링 //

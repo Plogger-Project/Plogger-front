@@ -1,11 +1,15 @@
-export default interface RecruitPostList{
+import ResponseDto from "../response.dto";
+
+
+// interface: get recruit post  response body dto //
+export default interface GetRecruitPostResponseDto extends ResponseDto {
     recruitPostId: number;
     recruitPostTitle: string;
     recruitPostContent: string;
-    recruitPostImage: string;
+    recruitPostImage: string | null;
     recruitPostWriter: string;
-    recruitPostCreatedAt: string;
     recruitLocation: string;
+    recruitPostCreatedAt: string;
     recruitEndDate: string;
     minPeople: number;
     currentPeople: number;
@@ -13,8 +17,5 @@ export default interface RecruitPostList{
     recruitPostLike: number;
     recruitReport: number;
     isCompleted: boolean;
-    
-    
-    
-    
+
 }
