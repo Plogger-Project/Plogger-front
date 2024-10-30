@@ -16,7 +16,7 @@ import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 // variable: 기본 이미지 URL //
 const defaultImageUrl = '/images/defaultImage.png';
 
-// interface: 고객 리스트 아이템 Properties //
+// interface: 기프티콘 리스트 아이템 Properties //
 interface TableRowProps {
   gifticon: Gifticon;
   getGifticonList: () => void;
@@ -446,7 +446,7 @@ export default function Mileage() {
       getGifticonList();
     };
 
-    // effect: 컴포넌트 로드 시 고객 리스트 불러오기 함수 //
+    // effect: 컴포넌트 로드 시 기프티콘 리스트 불러오기 함수 //
     useEffect(getGifticonList, []);
 
     // event handler: 기프티콘 추가 모달 버튼 클릭 이벤트 처리 함수 //

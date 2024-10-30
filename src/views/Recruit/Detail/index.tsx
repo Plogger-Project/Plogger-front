@@ -38,6 +38,9 @@ export default function RecruitDetail() {
 
   // state: cookie 상태 //
   const [cookies] = useCookies();
+
+  // variable: accessToken //
+  const accessToken = cookies[ACCESS_TOKEN];
    
   // state: 구인게시글 정보 상태 //
   const [postId, setPostId] = useState<number>(0);
@@ -79,8 +82,7 @@ export default function RecruitDetail() {
   // variable: 작성자 여부 //
   const isAuthor = Author === signInUser?.userId;
 
-  // variable: accessToken //
-  const accessToken = cookies[ACCESS_TOKEN];
+  
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -131,9 +133,6 @@ export default function RecruitDetail() {
     setView(recruitView);
     setReport(recruitReport);
     setIsCompleted(isCompleted);
-
-
-
   };
 
   const getRecruitPostUserResponse = (responseBody: GetUserResponseDto | ResponseDto | null) => {
@@ -141,7 +140,6 @@ export default function RecruitDetail() {
       responseBody.code === 'VF' ? '잘못된 접근입니다.' :
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
       alert(message);
@@ -161,7 +159,6 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
       responseBody.code === 'VF' ? '내역을 입력해주세요.' :
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-
   const isSuccessed = responseBody !== null && responseBody.code === 'SU';
   if (!isSuccessed) {
     alert(message);
@@ -180,7 +177,6 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
               responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
                 responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
                   responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
       alert(message);
@@ -306,25 +302,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
                     <div className='date'>작성일 : {createdAt}</div>
                   </div>
                 </div>
-                <div className='postBox'>
-                  <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
-                  <div className='detailCount'>조회수 : 100</div>
-                  <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}></div>
-                  {showOptions && (
-                    <div
-                      className="options"
-                      style={{
-                        position: 'absolute',
-                        top: optionPosition.top + 'px',
-                        left: optionPosition.left + 'px'
-                      }}
-                    >
-                      <button className="editButton">수정하기</button>
-                      <button className="deleteButton">삭제하기</button>
-                      <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
-                    </div>
-                  )}
-                </div>
+                
                 {isReportModalOpen &&
                   <div className='report-modal'>
                     <div className='report-box'>
@@ -348,26 +326,24 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
                   </div>}
               </div>
               <div className='postBox'>
-                <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
-                <div className='detailCount'>조회수 : {view}</div>
-                <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}></div>
-                {showOptions && (
-                  <div
-                    className="options"
-                    style={{
-                      position: 'absolute',
-                      top: optionPosition.top + 'px',
-                      left: optionPosition.left + 'px'
-                    }}
-                  >
-                
-                    <button className="editButton">수정하기</button>
-                    <button className="deleteButton">삭제하기</button>
-
-                    <button className="reportButton">신고하기</button>
-                  </div>
-                )}
-              </div>
+                  <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
+                  <div className='detailCount'>조회수 : 100</div>
+                  <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}></div>
+                  {showOptions && (
+                    <div
+                      className="options"
+                      style={{
+                        position: 'absolute',
+                        top: optionPosition.top + 'px',
+                        left: optionPosition.left + 'px'
+                      }}
+                    >
+                      <button className="editButton">수정하기</button>
+                      <button className="deleteButton">삭제하기</button>
+                      <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
+                    </div>
+                  )}
+                </div>
             </div>
             <div className='postDetail'>
               <div className='postTitle'>제목 : {title}</div>
@@ -400,20 +376,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
                   <div className={`scrap ${isScraped ? 'scraped' : ''}`} onClick={toggleScrapHandler}></div>
                 </div>
               </div>
-              <div className='postBottom'>
-                <div className='postInfo'>
-                  <div className='left'>
-                    <div className='members'>인원 : 1/5</div>
-                    <div className='isCompleted'>마감</div>
-                  </div>
-                  <div className='right'>
-                    <div
-                      className={`like ${isLiked ? 'liked' : ''}`}  // liked 클래스를 동적으로 추가
-                      onClick={toggleLikeHandler}
-                    ></div>
-                    <div className={`scrap ${isScraped ? 'scraped' : ''}`} onClick={toggleScrapHandler}></div>
-                  </div>
-                </div>
+              
                 <div className='line'></div>
                 <div className='comments'>
                   <div className='commentUserInfoWrite'>
@@ -450,7 +413,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
                     </div>
                   </div>
                 </div>
-              </div>
+              
             </div>
             <div className='bottom'></div>
           </div>
