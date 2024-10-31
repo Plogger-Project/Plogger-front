@@ -1,21 +1,17 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react'
 import "./style.css";
 import {  useNavigate, useParams } from 'react-router-dom';
-import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH, RECRUIT_DETAIL_ABSOLUTE_PATH } from '../../../constants';
+import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH,  RECRUIT_UPDATE_ABSOLUTE_PATH } from '../../../constants';
 import { useKakaoLoader } from 'src/hooks';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { useSignInUserStore } from 'src/stores';
 import { useCookies } from 'react-cookie';
 import {  ResponseDto } from 'src/apis/dto/response';
 import GetRecruitPostResponseDto from 'src/apis/dto/response/recruit/get-recruit.response.dto';
-import RecruitWrite from './../Write/index';
-import { RecruitPostList } from 'src/types';
-import { getRecruitPostRequest } from 'src/apis';
-import axios from 'axios';
+import { deleteRecruitPostRequest, getRecruitPostRequest, getRecruitUserInfoRequest } from 'src/apis';
 import { PostRecruitReportRequest } from 'src/apis';
-import { request } from 'http';
-import { GetUserResponseDto } from 'src/apis/dto/response/mypage';
 import PostRecruitReportRequestDto from 'src/apis/dto/request/recruit/post-recruit-report-request.dto';
+import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 
 
 // variable : 카카오 맵 키 //
@@ -40,7 +36,6 @@ export default function RecruitDetail() {
   const accessToken = cookies[ACCESS_TOKEN];
 
   // state: 구인게시글 정보 상태 //
-  const [postId, setPostId] = useState<number>(0);
   const [title, setTitle] = useState<string>('');
   const [contents, setContents] = useState<string>('');
   const [image, setImage] = useState<string | null>('');
@@ -65,14 +60,16 @@ export default function RecruitDetail() {
   const optionBoxRef = useRef<HTMLDivElement | null>(null);  // optionBox 참조
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
 
+
+  const [lng, setLng] = useState<number>(0);
+  const [lat, setLat] = useState<number>(0);
+  // variable: 작성자 여부 //
+  const isWriter = writer === signInUser?.userId;
   // state: 신고 내역 작성창 오픈 여부 상태 //
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
 
   // state: 신고 내역 내용 상태 //
   const [reportContent, setReportContent] = useState<string>("");
-
-  // variable: 작성자 여부 //
-  const isWriter = writer === signInUser?.userId;
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -87,8 +84,6 @@ export default function RecruitDetail() {
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'NRP' ? '존재하지 않는 글입니다.' :
             responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-    console.log(responseBody);
-    console.log("recruitpost");
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
@@ -117,7 +112,6 @@ export default function RecruitDetail() {
     setImage(recruitPostImage);
     setWriter(recruitPostWriter);
     setCreatedAt(recruitPostCreatedAt);
-    setLocation(recruitLocation);
     setEndDate(recruitEndDate);
     setPeople(minPeople);
     setCurrentPeople(currentPeople);
@@ -125,22 +119,31 @@ export default function RecruitDetail() {
     setView(recruitView);
     setReport(recruitReport);
     setIsCompleted(isCompleted);
+
+    const [postLat, postLng] = recruitLocation.split(',').map(coord => parseFloat(coord.trim()));
+    
+    setLat(postLat);
+    setLng(postLng);
+
+    getRecruitUserInfoRequest(recruitPostWriter).then(getRecruitPostUserResponse);
   };
 
-  const getRecruitPostUserResponse = (responseBody: GetUserResponseDto | ResponseDto | null) => {
+  // function : get recruit post user response 처리 함수 //
+  const getRecruitPostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
+    
     const message = !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+      responseBody.code === 'VF' ? '잘못된 vf접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 af접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-    console.log("recruitpostuser");
+    
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
       alert(message);
       navigator(RECRUIT_ABSOLUTE_PATH);
       return;
     }
-    const { profileImage } = responseBody as GetUserResponseDto;
-    console.log(profileImage);
+    
+    const { profileImage } = responseBody as GetSignInResponseDto;
     setWriterProfileImage(profileImage);
   };
 
@@ -152,7 +155,9 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
       responseBody.code === 'VF' ? '내역을 입력해주세요.' :
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
   alert("신고가 완료 되었습니다.");
+
   const isSuccessed = responseBody !== null && responseBody.code === 'SU';
   if (!isSuccessed) {
     alert(message);
@@ -171,7 +176,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
               responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
                 responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
                   responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-    console.log("recruitlike");
+
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
       alert(message);
@@ -183,13 +188,50 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
     if (!accessToken) return;
   };
 
+  // function : delete recruit post response 처리 함수 //
+  const deleteRecruitPostResponse = (responseBody: ResponseDto | null) => {
+    const message = !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'NRP' ? '게시글이 없습니다.':
+        responseBody.code === 'DBE'? '서버에 문제가 있습니다.' : '';
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+    navigator(RECRUIT_ABSOLUTE_PATH);
+  }
+
     
   
 
-      // event handler: 목록 버튼 클릭 이벤트 처리 //
-      const onListButtonClickHandler = () => {
-        navigator(RECRUIT_ABSOLUTE_PATH);
-      };
+  // event handler: 목록 버튼 클릭 이벤트 처리 //
+  const onListButtonClickHandler = () => {
+  navigator(RECRUIT_ABSOLUTE_PATH);
+  };
+
+  // event handler: 수정 버튼 클릭 이벤트 처리 //
+  const onEditButtonClickHandler = () => {
+  navigator(RECRUIT_UPDATE_ABSOLUTE_PATH);
+  }
+
+  // event handler: 삭제 버튼 클릭 이벤트 처리 //
+  const onDeleteButtonClickHandler = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    if (!recruitPostId) {
+      alert("유효한 recruitPostId가 필요합니다.");
+      return;
+    }
+
+    const isConfirm = window.confirm('정말로 삭제하시겠습니까?')
+    if (!isConfirm) return;
+
+    const accessToken = cookies[ACCESS_TOKEN];
+    if (!accessToken) return;
+    
+    deleteRecruitPostRequest(recruitPostId, accessToken).then(deleteRecruitPostResponse)
+  }
 
       const toggleLikeHandler = () => {
         setIsLiked(!isLiked);
@@ -247,24 +289,29 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
       }
 
 
-      // effect: 게시물 번호가 바뀔 때 고객 정보 요청 함수 //
+      // effect: 게시물 번호가 바뀔 때 글 정보 요청 함수 //
       useEffect(() => {
         if (!recruitPostId) return;
-        const accessToken = cookies[ACCESS_TOKEN];
-        if (!accessToken) return;
-        getRecruitPostRequest(recruitPostId, accessToken).then(response => {
-          getRecruitPostResponse(response)
-      
-        });
+          getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
+        
+      }, [recruitPostId, writer]);
+  
+  // // effect: 게시물 번화가 바뀔 때 작성자 프사 정보 요청 함수 //
+  // useEffect(() => {
+  //   if (!recruitPostId) return;
     
-      }, [recruitPostId, cookies]);
+
+  //    getRecruitUserInfoRequest(writer).then(getRecruitPostUserResponse)
+
+  //     },[])
 
       // location 을 lat lng로 분리 //
-      const [postLat, postLng] = location.split(',').map(coord => parseFloat(coord.trim()));
+
 
       // effect: 좌표로 주소 정보 요청 함수 //
       useEffect(() => {
         const { kakao } = window;
+        if (!kakao) return;
         const geocoder = new kakao.maps.services.Geocoder();
 
         // 지정된 좌표의 주소를 가져오는 함수
@@ -282,11 +329,10 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
         };
 
         // 좌표에 따른 주소 요청 함수 호출
-        displayAddressInfo(postLat, postLng);
-      }, [postLat, postLng]);
+        displayAddressInfo(lat, lng);
+      }, [lat, lng]);
 
 
-  
       // render: 게시글 정보 상세보기 컴포넌트 렌더링 //
 
       return (
@@ -326,36 +372,40 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
                   </div>}
               </div>
               <div className='postBox'>
-                  <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
-                  <div className='detailCount'>조회수 : 100</div>
-                  <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}></div>
-                  {showOptions && (
-                    <div
-                      className="options"
-                      style={{
-                        position: 'absolute',
-                        top: optionPosition.top + 'px',
-                        left: optionPosition.left + 'px'
-                      }}
-                    >
-                      {isWriter && <button className="editButton">수정하기</button>}
-                      {isWriter && <button className="deleteButton">삭제하기</button>}
-                      {!isWriter && <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>}
-                    </div>
-                  )}
-                </div>
+                <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
+                <div className='detailCount'>좋아요 : {like}</div>
+                |
+                <div className='detailCount'>조회수 : {view}</div>
+                <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}></div>
+                {showOptions && (
+                  <div
+                    className="options"
+                    style={{
+                      position: 'absolute',
+                      top: optionPosition.top + 'px',
+                      left: optionPosition.left + 'px'
+                    }}
+                  >
+                    <button className="editButton" onClick={onEditButtonClickHandler}>수정하기</button>
+                    <button className="deleteButton" onClick={onDeleteButtonClickHandler}>삭제하기</button>
+                    <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
+                  </div>
+                )}
+              </div>
             </div>
             <div className='postDetail'>
-              <div className='postTitle'>제목 : {title}</div>
-              <div className='postContents'>　{contents}</div>
-              <div className='postImage' style={{ backgroundImage: `url(${image})` }}></div>
-              {postLat && postLng ? (
+              <div className='postTitle'>{title}</div>
+              <div className='postContents'>{contents}</div>
+              {image === '' ?  
+              ''
+                : <div className='postImage' style={{ backgroundImage: `url(${image})` }}></div>}
+              {lat && lng ? (
                 <div className="kakaomap" ref={mapRef} >
                   <Map
-                    center={{ lat: postLat, lng: postLng }}
+                    center={{ lat, lng }}
                     style={{ width: "100%", height: "360px" }}
                   >
-                    <MapMarker position={{ lat: postLat, lng: postLng }}>
+                    <MapMarker position={{ lat, lng }}>
                       <div style={{ color: "#000" }}>장소</div>
                     </MapMarker>
                   </Map>

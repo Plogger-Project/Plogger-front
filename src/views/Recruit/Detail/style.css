@@ -109,14 +109,15 @@
 
 #recruit-detail-wrapper .postTitle {
     border-bottom: 1px solid rgba(25, 25, 25, 0.3);
-
+    font-size: 24px;
+    font-weight: 700;
     padding: 15px;
 }
 
 #recruit-detail-wrapper .postContents {
     border-bottom: 1px solid rgba(25, 25, 25, 0.3);
-
-    padding: 15px;
+    height: 300px;
+    padding: 0 15px 15px 15px;
 }
 
 #recruit-detail-wrapper .postImage {
