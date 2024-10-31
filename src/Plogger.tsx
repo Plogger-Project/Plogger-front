@@ -11,7 +11,7 @@ import Main from './views/Main';
 import QnaPost from './views/QNA';
 
 
-import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD, RECRUIT_DETAIL_ABSOLUTE_PATH, MYPAGE_PATH } from './constants';
+import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD, RECRUIT_DETAIL_ABSOLUTE_PATH, MYPAGE_PATH, ACTIVE_DETAIL_PATH, ACTIVE_UPDATE_PATH, ACTIVE_WRITE_PATH } from './constants';
 
 import Mypage from './views/MyPage';
 import Mileage from './views/Gifticon';
@@ -33,6 +33,9 @@ import FindPassword from './views/FindPassword';
 import RecruitDetail from './views/Recruit/Detail';
 
 import Admin from './views/Admin';
+import ActiveDetail from './views/Active/Detail';
+import ActiveUpdate from './views/Active/Update';
+import ActiveWrite from './views/Active/Write';
 
 
 
@@ -114,7 +117,7 @@ function Plogger() {
 
 
   const showNavigationBar = location.pathname !== '/sign-up' && location.pathname !== FIND_ID && location.pathname !== '/mypage/update' && location.pathname !== FIND_PASSWORD;
- 
+
   // render: Plogger 컴포넌트 렌더링 //
   return (
     <>
@@ -127,6 +130,9 @@ function Plogger() {
         <Route path={RECRUIT_DETAIL_PATH(':recruitPostId')} element={<RecruitDetail />} />
         <Route path={RECRUIT_UPDATE_PATH} element={<RecruitUpdate />} />
         <Route path='/active' element={<ActivePost />} />
+        <Route path={ACTIVE_WRITE_PATH} element={<ActiveWrite />} />
+        <Route path={ACTIVE_DETAIL_PATH(':activePostId')} element={<ActiveDetail />} />
+        <Route path={ACTIVE_UPDATE_PATH(':activePostId')} element={<ActiveUpdate />} />
         <Route path="/qna" element={<QnaPost />} />
         <Route path='/mileage' element={<Mileage/>} />
         <Route path={MYPAGE_PATH} element={<Mypage />} />

@@ -62,9 +62,6 @@ function TableRow({ recruitPostId, getRecruitList }: TableRowProps) {
   )
 }
 
-
-
-
 // component: 구인 게시글 리스트 아이템 컴포넌트 //
 export default function RecruitPost() {
 

@@ -4,7 +4,7 @@
     justify-content: center;
     align-items: center;
     width: 1134px;
-    height: 100vh;
+    height: 1060px;
     overflow: hidden;
     margin: 0 auto;
 }
@@ -22,7 +22,7 @@
 }
 
 #active-post-wrapper .main{
-    min-width: 800px;
+    min-width: 1134px;
 }
 
 #active-post-wrapper .middle {
@@ -30,9 +30,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    
-    height: 100vh;
-
+    height: 1060px;
     transition: opacity 0.5s ease;
 }
 
@@ -42,13 +40,10 @@
 
 #active-post-wrapper .middle-top {
     display: flex;
-
+    font-size: 12px;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-
-    font-size: 12px;
-
 }
 
 #active-post-wrapper .middle-top .pages {
@@ -58,7 +53,6 @@
 
 .emphasis {
     font-weight: 600;
-
 }
 
 #active-post-wrapper .middle-top .post-filter {
@@ -68,18 +62,6 @@
     gap: 5px;
     display: flex;
     flex-direction: row;
-}
-
-#active-post-wrapper .middle-top .post-filter .all {
-    font-weight: 600;
-
-}
-
-#active-post-wrapper .middle-top .post-filter .all,
-#active-post-wrapper .middle-top .post-filter .activeing,
-#active-post-wrapper .middle-top .post-filter .activeed {
-
-    cursor: pointer;
 }
 
 #active-post-wrapper .middle-top .button {
@@ -102,17 +84,15 @@
     margin: 0 auto;
     font-family: 'Arial', sans-serif;
     border-collapse: collapse;
-
-    font-size: 12px;
-
+    font-size: 14px;
 }
 
 #active-post-wrapper .th {
     display: flex;
+    font-size: 14px;
     flex-direction: row;
     text-align: center;
     font-weight: 700;
-
 }
 
 #active-post-wrapper .tr {
@@ -124,7 +104,6 @@
 }
 
 #active-post-wrapper .td-active-number,
-#active-post-wrapper .td-active-isCompleted,
 #active-post-wrapper .td-active-title,
 #active-post-wrapper .td-active-writer,
 #active-post-wrapper .td-active-like-count,
@@ -133,15 +112,10 @@
 #active-post-wrapper .td-active-end-date,
 #active-post-wrapper .td-active-create-date {
     padding: 10px;
-
 }
 
 #active-post-wrapper .td-active-number {
     width: 30px;
-}
-
-#active-post-wrapper .td-active-isCompleted {
-    width: 50px;
 }
 
 #active-post-wrapper .td-active-title {
@@ -152,10 +126,8 @@
 #active-post-wrapper .td-active-writer,
 #active-post-wrapper .td-active-like-count,
 #active-post-wrapper .td-active-view-count,
-#active-post-wrapper .td-active-people,
-#active-post-wrapper .td-active-end-date,
 #active-post-wrapper .td-active-create-date {
-    width: 50px;
+    width: 100px;
 }
 
 #active-post-wrapper .pagination {

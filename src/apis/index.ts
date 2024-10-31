@@ -18,6 +18,7 @@ import GetRecruitPostResponseDto from "./dto/response/recruit/get-recruit.respon
 import PostActivePostRequestDto from "./dto/request/active/post-active-post.request.dto";
 import { PatchActivePostRequestDto } from "./dto/request/active";
 import PostRecruitReportRequestDto from "./dto/request/recruit/post-recruit-report-request.dto";
+import { GetActivePostListResponseDto, GetActivePostResponseDto, GetMyRecruitReponseDto } from "./dto/response/active";
 
 
 // variable: API URL 상수 //
@@ -43,14 +44,15 @@ const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 
 const GET_RECRUIT_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}`;
 const POST_RECRUIT_POST_API_URL = `${RECRUIT_MODULE_URL}`
-const ACTIVE_MODULE_URL = `${AUTH_MODULE_URL}/api/v1/active`;
+
+const ACTIVE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/active`;
 
 const POST_ACTIVE_POST_API_URL = `${ACTIVE_MODULE_URL}`;
 const GET_ACTIVE_POST_LIST_API_URL = `${ACTIVE_MODULE_URL}`;
+const GET_MY_RECRUIT_POST_API_URL = `${ACTIVE_MODULE_URL}/my-recruits`;
 const GET_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 const PATCH_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 const DELETE_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
-
 
 const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
 const POST_RECRUIT_LIKE_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/like/${recruitId}`;
@@ -58,8 +60,6 @@ const POST_RECRUIT_LIKE_API_URL = (recruitId: number | string) => `${RECRUIT_MOD
 const GET_QNA_POST_LIST_API_URL = `${QNA_MODULE_URL}`
 
 const MYPAGE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/mypage`;
-
-
 
 const PATCH_MYPAGE_API_URL = `${MYPAGE_MODULE_URL}`;
 const PATCH_MYPAGE_COMMENT_API_URL = `${MYPAGE_MODULE_URL}/comment`;
@@ -252,6 +252,29 @@ export const deleteActivePostRequest = async (activeId: string | number, accessT
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return resopnseBody;
+}
+
+// function: 활동 게시판 리스트 요청 함수 //
+export const getActivePostListRequest = async () => {
+    const responseBody = await axios.get(GET_ACTIVE_POST_LIST_API_URL)
+        .then(responseDataHandler<GetActivePostListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 활동 게시글 요청 함수 //
+export const getActivePostRequest = async (activeId: string | number) => {
+    const responseBody = await axios.get(GET_ACTIVE_POST_API_URL(activeId))
+        .then(responseDataHandler<GetActivePostResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+export const getMyRecruitPostRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_MY_RECRUIT_POST_API_URL, bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetMyRecruitReponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 }
 
 // function: 유저 정보 수정 요청 함수 //
