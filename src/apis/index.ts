@@ -21,7 +21,7 @@ import PostRecruitReportRequestDto from "./dto/request/recruit/post-recruit-repo
 
 
 // variable: API URL 상수 //
-const PLOGGER_API_DOMAIN = "http://localhost:4000"
+const PLOGGER_API_DOMAIN = "http://192.168.1.10:4000"
 
 const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
 const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`
@@ -42,7 +42,13 @@ const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 
 const GET_RECRUIT_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}`;
+
+const DELETE_RECRUIT_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}`;
 const POST_RECRUIT_POST_API_URL = `${RECRUIT_MODULE_URL}`
+
+const GET_RECRUIT_USER_INFO_API_URL = (recruitPostWriter: string) => `${GET_SIGN_IN_API_URL}/${recruitPostWriter}`;
+
+
 const ACTIVE_MODULE_URL = `${AUTH_MODULE_URL}/api/v1/active`;
 
 const POST_ACTIVE_POST_API_URL = `${ACTIVE_MODULE_URL}`;
@@ -248,11 +254,19 @@ export const pathActivePostRequest = async (requestBody: PatchActivePostRequestD
 
 // function: 활동 게시판 삭제 요청 함수 //
 export const deleteActivePostRequest = async (activeId: string | number, accessToken: string) => {
-    const resopnseBody = await axios.delete(DELETE_ACTIVE_POST_API_URL(activeId), bearerAuthorization((accessToken)))
+    const responseBody = await axios.delete(DELETE_ACTIVE_POST_API_URL(activeId), bearerAuthorization((accessToken)))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
-    return resopnseBody;
+    return responseBody;
 }
+
+// // function: get 유저 정보 요청 함수 //
+// export const getRecruitPostUserRequest = async (requestBody: getUserReqeustDto, accessToken: string) => {
+//     const responseBody = await axios.get(GET_USER_API_URL, requestBody)
+//         .then(responseDataHandler<GetRecruitPostUserDto>)
+//         .catch(responseErrorHandler);
+//     return responseBody;
+// }
 
 // function: 유저 정보 수정 요청 함수 //
 export const patchUserRequest = async (requestBody: PatchUserRequestDto, accessToken: string) => {
@@ -304,21 +318,6 @@ export const fileUploadRequest = async (requestBody: FormData) => {
         .catch(error => null)
     return url;
 }
-// export const fileUploadRequest = async (requestBody: FormData) => {
-//     try {
-//         const response = await axios.post(FILE_UPLOAD_URL, requestBody, multipart);
-//         const url = responseDataHandler<string>(response); // 성공적으로 응답을 처리
-
-//         // 성공적으로 받은 URL을 콘솔에 로그
-//         console.log("Uploaded file URL:", url);
-
-//         return url; // URL 반환
-//     } catch (error) {
-//         // 오류 발생 시 콘솔에 로그
-//         console.error("File upload error:", error);
-//         return null; // 오류가 발생하면 null 반환
-//     }
-// };
 
 // function : get recruit post list 요청 함수 //
 export const getRecruitPostListRequest = async () => {
@@ -329,20 +328,29 @@ export const getRecruitPostListRequest = async () => {
 }
 
 // function : get recruit post 요청 함수 //
-export const getRecruitPostRequest = async (recruitPostId: number | string, accessToken: string) => {
-    const responseBody = await axios.get(GET_RECRUIT_POST_API_URL(recruitPostId), bearerAuthorization(accessToken))
+export const getRecruitPostRequest = async (recruitPostId: number | string) => {
+    const responseBody = await axios.get(GET_RECRUIT_POST_API_URL(recruitPostId))
         .then(responseDataHandler<GetRecruitPostResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }
 
-    // function : get qna post list 요청 함수 //
-    export const getQnaPostListRequest = async () => {
-        const responseBody = await axios.get(GET_QNA_POST_LIST_API_URL)
-            .then(responseDataHandler<GetQnaPostListResponseDto>)
-            .catch(responseErrorHandler);
-        return responseBody;
-    };
+// function : get qna post list 요청 함수 //
+export const getQnaPostListRequest = async () => {
+    const responseBody = await axios.get(GET_QNA_POST_LIST_API_URL)
+        .then(responseDataHandler<GetQnaPostListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function : delete recruit post 요청 함수 //
+export const deleteRecruitPostRequest = async (recruitPostId: number | string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_RECRUIT_POST_API_URL(recruitPostId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
 
 // function: post recruit report 요청 함수 //
 export const PostRecruitReportRequest = async (requestBody: PostRecruitReportRequestDto, accessToken: string, recruitId: number | string) => {
@@ -353,9 +361,17 @@ export const PostRecruitReportRequest = async (requestBody: PostRecruitReportReq
 };
 
 // function: recruit like & unlike 요청 함수 //
-export const postRecruitLikeRequest = async ( recruitId: number | string ) => {
+export const postRecruitLikeRequest = async (recruitId: number | string) => {
     const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 };
+
+// function : recruit post user Info 요청 함수 //
+export const getRecruitUserInfoRequest = async (recruitPostWriter: string) => {
+    const responseBody = await axios.get(GET_RECRUIT_USER_INFO_API_URL(recruitPostWriter))
+        .then(responseDataHandler<GetSignInResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}

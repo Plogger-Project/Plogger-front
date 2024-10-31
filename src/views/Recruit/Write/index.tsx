@@ -213,13 +213,13 @@ export default function RecruitWrite() {
     if (!accessToken) return;
 
 
-    let url: string | null = defaultImageUrl;
+    let url: string | null = null;
     if (imageFile) {
       const formData = new FormData();
       formData.append('file', imageFile);
       url = await fileUploadRequest(formData);
     }
-    url = url ? url : defaultImageUrl;
+    url = url ? url : '';
 
 
 
