@@ -29,6 +29,7 @@ const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
 const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`
 const QNA_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/qna`
 const REPORT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/report`
+const ALERT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/alert`;
 
 const ID_CHECK_API_URL = `${AUTH_MODULE_URL}/id-check`;
 const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
@@ -45,9 +46,13 @@ const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 
 const GET_RECRUIT_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}`;
 
+const GET_RECRUIT_COMMENT_LIST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}/comments`;
+
+
 const DELETE_RECRUIT_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}`;
 
 const GET_RECRUIT_USER_INFO_API_URL = (recruitPostWriter: string) => `${GET_SIGN_IN_API_URL}/${recruitPostWriter}`;
+
 const POST_RECRUIT_POST_API_URL = `${RECRUIT_MODULE_URL}`
 
 const ACTIVE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/active`;
@@ -59,7 +64,12 @@ const GET_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_
 const PATCH_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 const DELETE_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 
+
+const GET_ALERT_LIST_API_URL = `${ALERT_MODULE_URL}`;
+const DELETE_ALERT_LIST_API_URL = (id: number | string) => `${ALERT_MODULE_URL}/${id}`;
+
 const GET_RECRUIT_REPORT_LIST_API_URL = `${RECRUIT_REPORT_API_URL}`;
+
 
 const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
 const POST_RECRUIT_LIKE_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/like/${recruitId}`;
@@ -400,6 +410,33 @@ export const postRecruitLikeRequest = async (recruitId: number | string) => {
     return responseBody;
 };
 
+
+// function: get alert list 요청 함수 //
+export const getAlertListRequest = async (accesstoken: string) => {
+    const responseBody = await axios.get(GET_ALERT_LIST_API_URL, bearerAuthorization(accesstoken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+return responseBody;
+}
+
+// function: get alert list 삭제 요청 함수 //
+export const deleteAlertListRequest = async (id: string | number, accessToken: string) => {
+    const resopnseBody = await axios.delete(DELETE_ALERT_LIST_API_URL(id), bearerAuthorization((accessToken)))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return resopnseBody;
+}
+
+// function: get recruit comment list 요청 함수 //
+export const getRecruitCommentListRequest = async (recruitPostId: number | string, accesstoken: string) => {
+    const responseBody = await axios.get(GET_RECRUIT_COMMENT_LIST_API_URL(recruitPostId), bearerAuthorization(accesstoken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+return responseBody;
+}
+
+
+
 // function: post follow 요청 함수 //
 // export const postFollowRequest = async ( requestBody: PostGifticonRequestDto, accessToken: string ) => {
 //     const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId))
@@ -449,3 +486,4 @@ export const getRecruitUserInfoRequest = async (recruitPostWriter: string) => {
         .catch(responseErrorHandler);
     return responseBody;
 }
+

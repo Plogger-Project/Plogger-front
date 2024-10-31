@@ -6,10 +6,15 @@ import { GetSignInResponseDto, SignInResponseDto } from '../../apis/dto/response
 import { ResponseDto } from '../../apis/dto/response';
 import { ACCESS_TOKEN, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD, MYPAGE_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH } from '../../constants';
 import SignInRequestDto from '../../apis/dto/request/auth/sign-in.request.dto';
-import { getSignInRequest, signInRequest } from '../../apis';
+import { deleteAlertListRequest, getAlertListRequest, getSignInRequest, signInRequest } from '../../apis';
 import { ACTIVE_PATH, QNA_PATH, RECRUIT_PATH } from '../../constants';
 import { useCookies } from 'react-cookie';
 import { useSignInUserStore } from 'src/stores';
+import { AlertList } from 'src/types';
+
+import GetAlertListResponseDto from 'src/apis/dto/response/alert/get-alert-list.response.dto';
+import useAlertPagination from 'src/hooks/alert.pagination.hook';
+import { get } from 'http';
 
 type AuthPath = '회원가입';
 
@@ -17,31 +22,89 @@ interface SnsContainerProps {
     type: AuthPath;
 }
 
-// component: SNS 로그인 회원가입 컴포넌트 //
-function SnsContainer({ type }: SnsContainerProps) {
+// interface: 알람 리스트 컴포넌트 Properties //
+interface TableRowProps {
+    alerts: AlertList;
+    getAlertList: () => void;
+}
 
-    // event handler: SNS 버튼 클릭 이벤트 처리 //
-    const onSnsButtonClickHandler = (sns: 'kakao' | 'naver' | 'google') => {
-        window.location.href = `http://localhost:4000/api/v1/auth/sns-sign-in/${sns}`;
+// component: 알람 리스트 컴포넌트 //
+function TableRow({ alerts, getAlertList }: TableRowProps) {
+    // state: 로그인 유저 상태 //
+    const { signInUser } = useSignInUserStore();
+
+    // state: cookie 상태 //
+    const [cookies] = useCookies();
+
+    // state: alert 상태 //
+    const [alertMessage, setAlertMessage] = useState<String>('');
+    const [alertTime, setAlertTime] = useState<String>('');
+
+
+    // effect: 알람이 변경되면 state에 반영 // 
+    useEffect(() => {
+        if (alerts) {
+            setAlertMessage(alerts.message);
+            setAlertTime(alerts.createdAt);
+        }
+    }, [alerts]);
+
+        // function: delete alert response 처리 함수 //
+        const deleteAlertListResponse = (responseBody: ResponseDto | null) => {
+            const message =
+                !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+                responseBody.code === 'NG' ? '해당 기프티콘이 없습니다' :
+                responseBody.code === 'NP' ? '해당 권한이 없습니다.' :
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+    
+            const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+            if (!isSuccessed) {
+                alert(message);
+                return;
+            }
+    
+            getAlertList();
+        };
+
+    // effect: 컴포넌트 로드시 알람 리스트 불러오기 함수 //
+    useEffect(getAlertList, []);
+
+    // event handler: 삭제 버튼 클릭 이벤트 처리 //
+    const onDeleteAlertClickHandler = (id: string | number) => {
+
+        const isConfirm = window.confirm('정말로 삭제하시겠습니까?');
+        if (!isConfirm) return;
+
+        if (!id) return;
+
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) return;
+
+        deleteAlertListRequest(id, accessToken).then(deleteAlertListResponse);
     };
 
-    // render: SNS 로그인 회원가입 컴포넌트 렌더링 //
+    //render: 알람 리스트 컴포넌트 렌더링 //
     return (
-        <div className="sns-container">
-            <div className="sns-button-container">
-                <div className={`sns-button ${type === '회원가입' ? 'md ' : ''}kakao`} onClick={() => onSnsButtonClickHandler('kakao')}></div>
-                <div className={`sns-button ${type === '회원가입' ? 'md ' : ''}naver`} onClick={() => onSnsButtonClickHandler('naver')}></div>
-                <div className={`sns-button ${type === '회원가입' ? 'md ' : ''}google`} onClick={() => onSnsButtonClickHandler('google')}></div>
+        <div className='alert-box'>
+            <div className='alert-text'>
+                <div className='alert-message'>{alerts.message}</div>
+                <div className='alert-time'>{alerts.createdAt}</div>
             </div>
+            <div className='alert-close' onClick={() => onDeleteAlertClickHandler(alerts.id)}>x</div>
         </div>
-    );
-
+    )
 }
 
 export default function NavigationBar() {
 
     // state: 로그인 유저 정보 상태 //
     const { signInUser, setSignInUser } = useSignInUserStore();
+
+    // state: 페이징 관련 상태 //
+    const { currentPage, totalPage, totalCount, viewList, setTotalList, initViewList, ...paginationProps } = useAlertPagination<AlertList>();
 
     // state: Query Parameter 상태 //
     const [queryParam] = useSearchParams();
@@ -60,10 +123,84 @@ export default function NavigationBar() {
     const [id, setId] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [message, setMessage] = useState<string>('');
+    const [alertModalOpen, setAlertModalOpen] = useState<boolean>(false);
+    const [originalList, setOriginalList] = useState<AlertList[]>([]);
 
     // state: cookie 상태 관리
     const [cookies, setCookie, removeCookie] = useCookies([ACCESS_TOKEN]);
 
+    // // function: get recruit post list response 처리 함수 //
+    // const getAlertListResponse = (responseBody: GetAlertListResponseDto | ResponseDto | null) => {
+        
+    //     const message =
+    //         !responseBody ? '서버에 문제가 있습니다.' :
+    //         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+    //         responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    //     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    //     if (!isSuccessed) { alert(message); return; }
+
+    //     const Alerts = (responseBody as GetAlertListResponseDto).Alerts || [];
+    //     const myAlerts = Alerts.filter(get => get.userId === signInUser?.userId);
+    //     setTotalList(myAlerts);
+    //     setOriginalList(myAlerts);
+
+    // };
+
+
+    // function: alert list 불러오기 함수 //
+    const getAlertList = () => {
+        const accessToken = cookies[ACCESS_TOKEN];
+        if(!accessToken) return;
+        getAlertListRequest(accessToken).then(getAlertListResponse);
+    }
+
+    // function: get alert list response 처리 함수 //
+    const getAlertListResponse = (responseBody: GetAlertListResponseDto | ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code == 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code == 'DBE' ? '서버에 문제가 있습니다.' : '';
+        
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+
+        const { alerts } = responseBody as GetAlertListResponseDto;
+        setTotalList(alerts);
+        setOriginalList(alerts);
+    }
+    useEffect(() => {
+        if(signInUser) {
+        getAlertList();
+        const interval = setInterval(getAlertList, 10000);
+
+        return () => clearInterval(interval);
+        }
+    }, [signInUser]);
+
+    // component: SNS 로그인 회원가입 컴포넌트 //
+    function SnsContainer({ type }: SnsContainerProps) {
+
+        // event handler: SNS 버튼 클릭 이벤트 처리 //
+        const onSnsButtonClickHandler = (sns: 'kakao' | 'naver' | 'google') => {
+            window.location.href = `http://localhost:4000/api/v1/auth/sns-sign-in/${sns}`;
+        };
+
+        // render: SNS 로그인 회원가입 컴포넌트 렌더링 //
+        return (
+            <div className="sns-container">
+                <div className="sns-button-container">
+                    <div className={`sns-button ${type === '회원가입' ? 'md ' : ''}kakao`} onClick={() => onSnsButtonClickHandler('kakao')}></div>
+                    <div className={`sns-button ${type === '회원가입' ? 'md ' : ''}naver`} onClick={() => onSnsButtonClickHandler('naver')}></div>
+                    <div className={`sns-button ${type === '회원가입' ? 'md ' : ''}google`} onClick={() => onSnsButtonClickHandler('google')}></div>
+                </div>
+            </div>
+        );
+
+    }
     // variable: 경로 이름 //
     const path =
         pathname.startsWith(RECRUIT_PATH) ? '구인게시판' :
@@ -81,6 +218,10 @@ export default function NavigationBar() {
     // function: 네비게이터 함수 //
     const navigator = useNavigate();
 
+    // function: 로케이션 함수 //
+    const onLocationHref = () => {
+        window.location.href = ROOT_PATH;
+    }
 
     // function: local 함수 //
     const location = useLocation();
@@ -131,6 +272,11 @@ export default function NavigationBar() {
     const onModelOpenHandler = () => {
         setModalOpen(!modalOpen);
         setMessage('');
+    };
+
+    // event handler: 모달 오픈 이벤트 처리 //
+    const onAlertModelOpenHandler = () => {
+        setAlertModalOpen(!alertModalOpen);
     };
 
     // event handler: 로고 클릭 이벤트 처리 //
@@ -207,7 +353,7 @@ export default function NavigationBar() {
 
         setMessage('');
         onModelOpenHandler();
-        navigator(ROOT_PATH);
+        onLocationHref();
     };
 
     // event handler: 아이디 입력 시 처리 //
@@ -240,10 +386,12 @@ export default function NavigationBar() {
 
     }
 
+    
     // event handler: 로그아웃 버튼 클릭 이벤트 처리 //
     const onLogoutButtonClickHandler = () => {
         removeCookie('accessToken', { path: ROOT_PATH });
-        navigator(ROOT_PATH);
+
+        onLocationHref();
     }
 
     return (
@@ -254,7 +402,7 @@ export default function NavigationBar() {
                 <div className={`manu-active ${isActive ? 'active' : ''}`} onClick={onActiveClickHandler}>활동게시판</div>
                 <div className={`manu-qna ${isQnA ? 'active' : ''}`} onClick={onQnaClickHandler}>Q&A</div>
             </div>
-            {location.pathname !== '/' &&
+            {location.pathname !== '/' && location.pathname !== MYPAGE_PATH &&
                 <input className='input-box' placeholder='검색어를 입력하세요.' />
             }
             <div className='button-box'>
@@ -262,7 +410,7 @@ export default function NavigationBar() {
                     <div className='button sign-in' onClick={onModelOpenHandler}>로그인</div> :
                     <div className='mypage-button-container'>
                         <div className='mypage-button' style={{ backgroundImage: `url(${signInUser.profileImage})` }} onClick={onMyPageClickHandler}></div>
-                        <div className='mypage-alert-button'></div>
+                        <div className='mypage-alert-button' onClick={onAlertModelOpenHandler}></div>
                     </div>
                 }
                 {!signInUser ?
@@ -317,6 +465,17 @@ export default function NavigationBar() {
                     </div>
                 </div>
             }
+        {alertModalOpen && (
+            <div className="alert-modal">
+                {viewList.length > 0 ? (
+                    viewList.map((alerts, index) => (
+                        <TableRow key={index} alerts={alerts} getAlertList={getAlertList} />
+                    ))
+                ) : (
+                    <div>알림이 없습니다.</div>
+                )}
+            </div>
+        )}
         </div>
     );
 }

@@ -8,10 +8,65 @@ import { useSignInUserStore } from 'src/stores';
 import { useCookies } from 'react-cookie';
 import {  ResponseDto } from 'src/apis/dto/response';
 import GetRecruitPostResponseDto from 'src/apis/dto/response/recruit/get-recruit.response.dto';
+import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
+import RecruitWrite from './../Write/index';
+import { RecruitPostList } from 'src/types';
+import { getRecruitCommentListRequest, getRecruitPostRequest } from 'src/apis';
+import axios from 'axios';
 import { deleteRecruitPostRequest, getRecruitPostRequest, getRecruitUserInfoRequest } from 'src/apis';
+
 import { PostRecruitReportRequest } from 'src/apis';
 import PostRecruitReportRequestDto from 'src/apis/dto/request/recruit/post-recruit-report-request.dto';
-import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
+
+import RecruitComment from 'src/types/recruit-comment.interface';
+import { usePagination } from '@chakra-ui/react';
+import useRecruitCommentPagination from 'src/hooks/recruit-comment.pagination.hook';
+import { GetRecruitPostListResponseDto } from 'src/apis/dto/response/recruit';
+import GetRecruitCommentListResponseDto from 'src/apis/dto/response/recruit/get-recruit-comment-list.response.dto';
+
+// interface: recruit comment list 아이템 컴포넌트 Properties //
+interface TableRowProps {
+  recruitComment: RecruitComment;
+  getRecruitCommetList: () => void;
+}
+
+// component: recruit comment list 아이템 컴포넌트 //
+function TableRow({ recruitComment, getRecruitCommetList }: TableRowProps) {
+
+  // state: 로그인 유저 상태 //
+  const { signInUser } = useSignInUserStore();
+
+  // state: alert 상태 //
+  const [recruitCommentWriter, setRecruitCommentWriter] = useState<String>('');
+  const [recruitCommentContent, setRecruitCommentContent] = useState<String>('');
+  const [recruitCommentCreatedAt, setRecruitCommentCreatedAt] = useState<String>('');
+  
+  // effect: 알람이 변경되면 state에 반영 // 
+  useEffect(() => {
+      if (recruitComment) {
+        setRecruitCommentWriter(recruitComment.recruitCommentWriter);
+        setRecruitCommentContent(recruitComment.recruitCommentContent);
+        setRecruitCommentCreatedAt(recruitComment.recruitCommentCreatedAt);
+      }
+  }, [recruitComment]);
+
+  // effect: 컴포넌트 로드시 recruit comment list 불러오기 함수 //
+  useEffect(getRecruitCommetList, []);
+
+  // render: recruit comment list 아이템 컴포넌트 렌더링 //
+  return (
+    <div className='commentUserInfo'>
+    <div className='profileImage'></div>
+    <div className='commentUserInfo-right'>
+      <div className='recruitCommentWriter'>{recruitComment.recruitCommentWriter}</div>
+      <div className='recruitCommentContent'>{recruitComment.recruitCommentContent}</div>
+      <div className='recruitCommentCreatedAt'>{recruitComment.recruitCommentCreatedAt}</div>
+    </div>
+  </div>
+  )
+}
+
+
 
 
 // variable : 카카오 맵 키 //
@@ -31,6 +86,7 @@ export default function RecruitDetail() {
 
   // state: cookie 상태 //
   const [cookies] = useCookies();
+
 
   // variable: accessToken //
   const accessToken = cookies[ACCESS_TOKEN];
@@ -60,9 +116,16 @@ export default function RecruitDetail() {
   const optionBoxRef = useRef<HTMLDivElement | null>(null);  // optionBox 참조
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
 
+    // state: 페이징 관련 상태 //
+    const {
+      currentPage, totalPage, totalCount, viewList,
+      setTotalList, initViewList, ...paginationProps
+  } = useRecruitCommentPagination<RecruitComment>();
+  const [originalList, setOriginalList] = useState<RecruitComment[]>([]);
 
   const [lng, setLng] = useState<number>(0);
   const [lat, setLat] = useState<number>(0);
+
   // variable: 작성자 여부 //
   const isWriter = writer === signInUser?.userId;
   // state: 신고 내역 작성창 오픈 여부 상태 //
@@ -70,6 +133,9 @@ export default function RecruitDetail() {
 
   // state: 신고 내역 내용 상태 //
   const [reportContent, setReportContent] = useState<string>("");
+
+  // state: 사용 가능한 용품 리스트 상태 //
+  const [recruitCommentList, setRecruitCommentList] = useState<RecruitComment[]>([]);
 
   // variable: 작성자 여부 //
   const isAuthor = Author === signInUser?.userId;
@@ -150,10 +216,34 @@ export default function RecruitDetail() {
     setWriterProfileImage(profileImage);
   };
 
-      
-// function: post recruitreport response 처리 함수 //
-const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
-  const message =
+        // function: get tool list response 처리 함수 //
+        const getRecruitCommentListResponse = (responseBody: GetRecruitCommentListResponseDto | ResponseDto | null) => {
+          const message = 
+              !responseBody ? '서버에 문제가 있습니다.' :
+              responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+              responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+  
+          const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+          if (!isSuccessed) {
+              alert(message);
+              return;
+          }
+  
+          const { getRecruitComments } = responseBody as GetRecruitCommentListResponseDto;
+          setTotalList(getRecruitComments);
+          setOriginalList(getRecruitComments);
+      };
+
+  // function: recruit comment list 불러오기 함수 //
+  const getrecruitCommentList = () => {
+    if (!recruitPostId) return;
+    const accessToken = cookies[ACCESS_TOKEN];
+    if (!accessToken) return;
+    getRecruitCommentListRequest(recruitPostId, accessToken).then(getRecruitCommentListResponse);
+  }
+    // function: post recruit report response 처리 함수 //
+    const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
+      const message =
     !responseBody ? '서버에 문제가 있습니다.' :
       responseBody.code === 'VF' ? '내역을 입력해주세요.' :
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
@@ -205,9 +295,6 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
     }
     navigator(RECRUIT_ABSOLUTE_PATH);
   }
-
-    
-  
 
   // event handler: 목록 버튼 클릭 이벤트 처리 //
   const onListButtonClickHandler = () => {
@@ -442,30 +529,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
                     </div>
                     <div className='commentButton'>등록</div>
                   </div>
-                  <div className='commentUserInfo'>
-                    <div className='profileImage'></div>
-                    <div className='commentUserInfo-right'>
-                      <div className='recruitCommentWriter'>asdf1234</div>
-                      <div className='recruitCommentContent'>참가합니다.</div>
-                      <div className='recruitCommentCreatedAt'>2024. 10. 17</div>
-                    </div>
-                  </div>
-                  <div className='commentUserInfo'>
-                    <div className='profileImage'></div>
-                    <div className='commentUserInfo-right'>
-                      <div className='recruitCommentWriter'>asdf1234</div>
-                      <div className='recruitCommentContent'>전 안함.</div>
-                      <div className='recruitCommentCreatedAt'>2024. 10. 18</div>
-                    </div>
-                  </div>
-                  <div className='commentUserInfo'>
-                    <div className='profileImage'></div>
-                    <div className='commentUserInfo-right'>
-                      <div className='recruitCommentWriter'>asdf1234</div>
-                      <div className='recruitCommentContent'>뻘.</div>
-                      <div className='recruitCommentCreatedAt'>2024. 10. 18</div>
-                    </div>
-                  </div>
+                  {viewList.map((recruitComment, index) => <TableRow key={index} recruitComment={recruitComment} getRecruitCommetList={getrecruitCommentList} />)}
                 </div>
               
             </div>
@@ -474,4 +538,3 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
         </div>
       );
     }
-  

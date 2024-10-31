@@ -10,6 +10,7 @@ import ActivePost from './views/Active';
 import QnaPost from './views/QNA';
 import {  RECRUIT_DETAIL_PATH, RECRUIT_PATH } from './constants';
 import RecruitDetail from './views/Recruit/Detail';
+import { ChakraProvider } from '@chakra-ui/react';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
