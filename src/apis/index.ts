@@ -4,7 +4,7 @@ import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SignUpRe
 import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
-import { GetRecruitPostListResponseDto } from "./dto/response/recruit";
+import { GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from "./dto/response/recruit";
 import { GetQnaPostListResponseDto } from "./dto/response/qna";
 import { PatchCommentRequestDto, PatchUserRequestDto } from "./dto/request/user";
 import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
@@ -57,6 +57,7 @@ const GET_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_
 const PATCH_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 const DELETE_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 
+const GET_RECRUIT_REPORT_LIST_API_URL = `${RECRUIT_REPORT_API_URL}`;
 
 const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
 const POST_RECRUIT_LIKE_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/like/${recruitId}`;
@@ -353,12 +354,20 @@ export const deleteRecruitPostRequest = async (recruitPostId: number | string, a
 
 
 // function: post recruit report 요청 함수 //
-export const PostRecruitReportRequest = async (requestBody: PostRecruitReportRequestDto, accessToken: string, recruitId: number | string) => {
-    const responseBody = await axios.post(POST_RECRUIT_REPORT_API_URL(recruitId), requestBody, bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetQnaPostListResponseDto>)
+export const PostRecruitReportRequest = async (requestBody: PostRecruitReportRequestDto, accessToken: string, recruitPostId: number | string) => {
+    const responseBody = await axios.post(POST_RECRUIT_REPORT_API_URL(recruitPostId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetRecruitReportListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 };
+
+// function: get recruit report list 요청 함수 //
+export const GetRecruitReportListRequest = async () => {
+    const responseBody = await axios.get(GET_RECRUIT_REPORT_LIST_API_URL)
+    .then(responseDataHandler<GetRecruitReportListResponseDto>)
+    .catch(responseErrorHandler);
+return responseBody;
+}
 
 // function: recruit like & unlike 요청 함수 //
 export const postRecruitLikeRequest = async (recruitId: number | string) => {

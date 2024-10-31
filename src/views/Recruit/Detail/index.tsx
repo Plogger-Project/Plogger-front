@@ -20,11 +20,8 @@ const appkey = process.env.REACT_APP_KAKAO_MAP_KEY;
 // component: 구인 게시글 상세 보기 컴포넌트 //
 export default function RecruitDetail() {
 
-  // state: 게시글 번호 상태 //
-  const { recruitId } = useParams<{ recruitId: string }>();
-
   // state: 게시글 번호 경로 변수 상태 //
-  const { recruitPostId } = useParams();
+  const { recruitPostId } = useParams<{ recruitPostId: string }>();
 
   // state: 고객 번호 경로 변수 상태 //
   const { customerNumber } = useParams();
@@ -37,7 +34,7 @@ export default function RecruitDetail() {
 
   // variable: accessToken //
   const accessToken = cookies[ACCESS_TOKEN];
-   
+
   // state: 구인게시글 정보 상태 //
   const [title, setTitle] = useState<string>('');
   const [contents, setContents] = useState<string>('');
@@ -60,24 +57,19 @@ export default function RecruitDetail() {
   const [writerProfileImage, setWriterProfileImage] = useState<string>('');
   const [showOptions, setShowOptions] = useState(false);  // 옵션 항목 표시 여부
   const [optionPosition, setOptionPosition] = useState({ top: 0, left: 0 });  // 옵션 항목 위치
-  const [Author, setAuthor] = useState<string>('');
   const optionBoxRef = useRef<HTMLDivElement | null>(null);  // optionBox 참조
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
 
+
   const [lng, setLng] = useState<number>(0);
   const [lat, setLat] = useState<number>(0);
-
-
   // variable: 작성자 여부 //
   const isWriter = writer === signInUser?.userId;
-
   // state: 신고 내역 작성창 오픈 여부 상태 //
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
 
   // state: 신고 내역 내용 상태 //
   const [reportContent, setReportContent] = useState<string>("");
-
-  
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -88,11 +80,10 @@ export default function RecruitDetail() {
   // function: get recruit post response 처리 함수 //
   const getRecruitPostResponse = (responseBody: GetRecruitPostResponseDto | ResponseDto | null) => {
     const message = !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'VF' ? '잘못된 vf접근입니다.' :
-        responseBody.code === 'AF' ? '잘못된 af접근입니다.' :
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'NRP' ? '존재하지 않는 글입니다.' :
             responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-   
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
@@ -137,8 +128,6 @@ export default function RecruitDetail() {
     getRecruitUserInfoRequest(recruitPostWriter).then(getRecruitPostUserResponse);
   };
 
-  
-
   // function : get recruit post user response 처리 함수 //
   const getRecruitPostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
     
@@ -146,7 +135,7 @@ export default function RecruitDetail() {
       responseBody.code === 'VF' ? '잘못된 vf접근입니다.' :
         responseBody.code === 'AF' ? '잘못된 af접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-  
+    
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
       alert(message);
@@ -166,6 +155,9 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
       responseBody.code === 'VF' ? '내역을 입력해주세요.' :
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+  alert("신고가 완료 되었습니다.");
+
   const isSuccessed = responseBody !== null && responseBody.code === 'SU';
   if (!isSuccessed) {
     alert(message);
@@ -184,6 +176,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
               responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
                 responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
                   responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
       alert(message);
@@ -248,7 +241,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
       }
 
       // event handler: 신고 내역 입력 시 처리 //
-      const onreportContentHandler = (event: ChangeEvent<HTMLInputElement>) => {
+      const onreportContentHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setReportContent(event.target.value);
       }
 
@@ -267,6 +260,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
       // event handler: 신고 작성 모달 오픈 이벤트 처리 //
       const openReportModalHandler = () => {
         setIsReportModalOpen(!isReportModalOpen);
+        setReportContent("");
       };
 
       // event handler: 신고 모달 작성 버튼 클릭 시 이벤트 처리 //
@@ -276,8 +270,13 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
           return;
         }
 
+        if (!recruitPostId) {
+          alert("게시글 정보가 없습니다.");
+          return;
+        }
+
         const requestBody: PostRecruitReportRequestDto = { content: reportContent };
-        PostRecruitReportRequest(requestBody, accessToken, recruitId!).then(postRecruitReportResponse);
+        PostRecruitReportRequest(requestBody, accessToken, recruitPostId).then(postRecruitReportResponse);
 
       }
       // event handler: 신고 모달 취소 버튼 클릭 시 이벤트 처리 //
@@ -350,7 +349,6 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
                     <div className='date'>작성일 : {createdAt}</div>
                   </div>
                 </div>
-                
                 {isReportModalOpen &&
                   <div className='report-modal'>
                     <div className='report-box'>
@@ -359,7 +357,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
                       </div>
                       <div className='report-main'>
                         <div className='report-content'>
-                          <input className='report-input' placeholder='내용을 입력하세요.' value={reportContent} onChange={onreportContentHandler} />
+                          <textarea className='report-input' placeholder='내용을 입력하세요.' value={reportContent} onChange={onreportContentHandler} />
                         </div>
                       </div>
                       <div className='report-bottom'>
