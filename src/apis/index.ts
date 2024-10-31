@@ -18,6 +18,7 @@ import GetRecruitPostResponseDto from "./dto/response/recruit/get-recruit.respon
 import PostActivePostRequestDto from "./dto/request/active/post-active-post.request.dto";
 import { PatchActivePostRequestDto } from "./dto/request/active";
 import PostRecruitReportRequestDto from "./dto/request/recruit/post-recruit-report-request.dto";
+import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from "./dto/response/follow";
 import { GetActivePostListResponseDto, GetActivePostResponseDto, GetMyRecruitReponseDto } from "./dto/response/active";
 
 
@@ -83,6 +84,15 @@ const DELETE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MOD
 const PURCHASE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`;
 
 const POST_RECRUIT_REPORT_API_URL = (recruitId: number | string) => `${RECRUIT_REPORT_API_URL}/${recruitId}`;
+
+const FOLLOW_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/follow`;
+
+const POST_FOLLOW_API_URL = `${FOLLOW_MODULE_URL}`;
+const GET_SIGN_IN_FOLLOWER_LIST_API_URL = `${FOLLOW_MODULE_URL}/follower`;
+const GET_SIGN_IN_FOLLOWEE_LIST_API_URL = `${FOLLOW_MODULE_URL}/followee`;
+const GET_FOLLOWER_LIST_API_URL = (followeeId: string) => `${FOLLOW_MODULE_URL}/follower/${followeeId}`;
+const GET_FOLLOWEE_LIST_API_URL = (followerId: string) => `${FOLLOW_MODULE_URL}/followee/${followerId}`;
+const DELETE_FOLLOWEE_API_URL = (followeeId: string) => `${GIFTICON_MODULE_URL}/${followeeId}`;
 
 // function: Authorizarion Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({ headers: { 'Authorization': `Bearer ${accessToken}` } })
@@ -366,7 +376,6 @@ export const deleteRecruitPostRequest = async (recruitPostId: number | string, a
     return responseBody;
 }
 
-
 // function: post recruit report 요청 함수 //
 export const PostRecruitReportRequest = async (requestBody: PostRecruitReportRequestDto, accessToken: string, recruitPostId: number | string) => {
     const responseBody = await axios.post(POST_RECRUIT_REPORT_API_URL(recruitPostId), requestBody, bearerAuthorization(accessToken))
@@ -387,6 +396,48 @@ return responseBody;
 export const postRecruitLikeRequest = async (recruitId: number | string) => {
     const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId))
         .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: post follow 요청 함수 //
+// export const postFollowRequest = async ( requestBody: PostGifticonRequestDto, accessToken: string ) => {
+//     const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId))
+//         .then(responseDataHandler<ResponseDto>)
+//         .catch(responseErrorHandler);
+//     return responseBody;
+// };
+
+// function: get sign in follower list 요청 함수 //
+export const getSignInFollowerListRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_SIGN_IN_FOLLOWER_LIST_API_URL, bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetFollowerListResponseDto>)
+        .catch(responseErrorHandler);
+    console.log(responseBody);
+    return responseBody;
+};
+
+// function: get sign in followee list 요청 함수 //
+export const getSignInFolloweeListRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_SIGN_IN_FOLLOWEE_LIST_API_URL, bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetFolloweeListResponseDto>)
+        .catch(responseErrorHandler);
+    console.log(responseBody);
+    return responseBody;
+};
+
+// function: get follower list 요청 함수 //
+export const getFollowerListRequest = async (followeeId: string, accessToken: string) => {
+    const responseBody = await axios.get(GET_FOLLOWER_LIST_API_URL(followeeId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetFollowerListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: get followee list 요청 함수 //
+export const getFolloweeListRequest = async (followerId: string, accessToken: string) => {
+    const responseBody = await axios.get(GET_FOLLOWEE_LIST_API_URL(followerId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetFolloweeListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 };

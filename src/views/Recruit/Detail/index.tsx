@@ -71,6 +71,9 @@ export default function RecruitDetail() {
   // state: 신고 내역 내용 상태 //
   const [reportContent, setReportContent] = useState<string>("");
 
+  // variable: 작성자 여부 //
+  const isAuthor = Author === signInUser?.userId;
+
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
@@ -135,7 +138,7 @@ export default function RecruitDetail() {
       responseBody.code === 'VF' ? '잘못된 vf접근입니다.' :
         responseBody.code === 'AF' ? '잘못된 af접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-    
+
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
       alert(message);
@@ -158,6 +161,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
 
   alert("신고가 완료 되었습니다.");
 
+
   const isSuccessed = responseBody !== null && responseBody.code === 'SU';
   if (!isSuccessed) {
     alert(message);
@@ -176,7 +180,6 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
               responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
                 responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
                   responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
       alert(message);
@@ -349,6 +352,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
                     <div className='date'>작성일 : {createdAt}</div>
                   </div>
                 </div>
+
                 {isReportModalOpen &&
                   <div className='report-modal'>
                     <div className='report-box'>
