@@ -1,0 +1,450 @@
+/* 전체 레이아웃 */
+#active-detail-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 1134px;
+    margin: 0 auto;
+    background-color: white;
+}
+
+#active-detail-wrapper .navi {
+    height: 90px;
+}
+
+#active-detail-wrapper .main {
+    margin-top: 30px;
+    width: 700px;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: #f9f9f9;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border: solid 1px rgba(25, 25, 25, 0.1);
+    border-radius: 16px;
+}
+
+/* 상단 사용자 정보 및 게시글 옵션 */
+#active-detail-wrapper .postTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid #000000;
+
+    padding: 10px;
+}
+
+#active-detail-wrapper .postTop .userInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#active-detail-wrapper .postTop .userInfo-left {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+#active-detail-wrapper .postTop .userInfo-right {
+    display: flex;
+    flex-direction: column;
+}
+
+
+#active-detail-wrapper .postTop .profileImage {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+
+    background-image: url(/public/images/img.png);
+    background-position: 50% 50%;
+    background-size: cover;
+
+}
+
+#active-detail-wrapper .optionBox {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-image: url(/public/images/3point.png);
+    background-position: 50% 50%;
+    background-size: cover;
+}
+
+#active-detail-wrapper .postTop .postBox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#active-detail-wrapper .postTop .postBox .listButton {
+    width: 50px;
+    height: 30px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    text-align: center;
+
+}
+
+#active-detail-wrapper .postDetail {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+}
+
+#active-detail-wrapper .postTitle {
+    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+    padding: 15px;
+}
+
+#active-detail-wrapper .postContents {
+    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+    height: 300px;
+    padding: 15px;
+}
+
+#active-detail-wrapper .postImage {
+    width: 100%;
+    height: 300px;
+    background-size: contain;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+
+}
+
+#active-detail-wrapper .kakaomap {
+    width: 100%;
+    height: 360px;
+}
+
+#active-detail-wrapper .postInfo {
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+}
+
+#active-detail-wrapper .postInfo .left {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    font-weight: 700;
+}
+
+#active-detail-wrapper .tag {
+    display: flex;               
+    flex-wrap: wrap;            
+    margin: 10px 0;            
+    padding: 5px;               
+    background-color: #f2f2f2; 
+    border-radius: 8px;        
+    border: 1px solid #ccc;    
+}
+
+#active-detail-wrapper .tagUser {
+    background-color: #e0f7fa;  
+    color: #00796b;            
+    padding: 5px 10px;          
+    border-radius: 5px;         
+    margin-right: 5px;          
+    font-size: 14px;            
+    transition: background-color 0.3s; 
+}
+
+#active-detail-wrapper .postInfo .left .isCompleted {
+    color: white;
+    width: 50px;
+    height: 25px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    line-height: 165%;
+
+}
+
+#active-detail-wrapper .postInfo .right {
+    display: flex;
+    flex-direction: row;
+    gap: 10px
+}
+
+#active-detail-wrapper .postInfo .right .like {
+    width: 25px;
+    height: 25px;
+    background-size: contain;
+    background-image: url(/public/images/empty-heart.png);
+    background-position: 50% 50%;
+    cursor: pointer;
+}
+
+#active-detail-wrapper .postInfo .right .like.liked {
+    background-image: url(/public/images/full-heart.png);
+}
+
+#active-detail-wrapper .postInfo .right .scrap {
+    width: 25px;
+    height: 25px;
+    background-size: contain;
+    background-image: url(/public/images/empty-scrap.png);
+    background-position: 50% 50%;
+    cursor: pointer;
+}
+
+#active-detail-wrapper .postInfo .right .scrap.scraped {
+    background-image: url(/public/images/full-scrap.png);
+}
+
+/* 하단 정보 및 댓글 섹션 */
+#active-detail-wrapper .postBottom {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#active-detail-wrapper .postBottom .line {
+    width: 100%;
+    text-align: center;
+}
+
+#active-detail-wrapper .postBottom .comments {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#active-detail-wrapper .postBottom .comments input {
+    border: 0px;
+    flex-grow: 1;
+    width: 550px;
+    margin-right: 10px;
+
+}
+
+#active-detail-wrapper .postBottom .comments .commentButton {
+
+    width: 80px;
+    height: 30px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    text-align: center;
+}
+
+#active-detail-wrapper .postBottom .profileImage {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+
+    background-image: url(/public/images/img.png);
+    background-position: 50% 50%;
+    background-size: cover;
+
+}
+
+#active-detail-wrapper .commentUserInfo {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+}
+
+#active-detail-wrapper .commentUserInfoWrite {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+
+    align-items: center;
+
+}
+
+
+
+#active-detail-wrapper .commentUserInfo-right {
+    display: flex;
+    flex-direction: column;
+}
+
+#active-detail-wrapper .activeCommentWriter,
+#active-detail-wrapper .activeCommentCreatedAt {
+    font-size: 12px;
+}
+
+
+#active-detail-wrapper .bottom {
+    padding: 15px;
+    width: 100%;
+}
+
+#active-detail-wrapper .options {
+    position: absolute;
+    z-index: 9000;
+    width: 80px;
+
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    gap: 10px;
+
+    overflow-y: auto;
+}
+
+#active-detail-wrapper .editButton,
+#active-detail-wrapper .deleteButton,
+#active-detail-wrapper .reportButton {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#active-detail-wrapper .editButton {
+    background-color: #4caf50;
+    color: white;
+}
+
+#active-detail-wrapper .deleteButton {
+    background-color: #f44336;
+    color: white;
+}
+
+#active-detail-wrapper .reportButton {
+    background-color: #f44336;
+    color: white;
+}
+
+#active-detail-wrapper .report-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-color: rgba(0, 0, 0, 0.3);
+
+    z-index: 9999;
+}
+
+.report-content {
+    display: flex;
+}
+
+#active-detail-wrapper .report-box {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    box-sizing: border-box;
+    border: 1px solid rgba(238, 238, 238, 1);
+    border-radius: 8px;
+    padding: 24px;
+    width: 400px;
+    height: 390px;
+    gap: 20px;
+
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.report-top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.report-top-title {
+    flex: 1;
+    font-size: 20px;
+    font-weight: bolder;
+    letter-spacing: 2px;
+    margin-bottom: 9px;
+    text-align: left;
+    margin-top: 0px;
+}
+
+.report-main {
+    display: flex;
+    flex-direction: column;
+    margin-top: -20px;
+}
+
+.report-input {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+    height: 222px;
+}
+
+.report-input::placeholder {
+    text-align: left;
+    vertical-align: top;
+    color: #000000;
+}
+
+.report-bottom {
+    margin: 10px;
+}
+
+.report-button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    margin-top: 10px;
+    gap: 100px;
+}
+
+.report-button {
+    border-radius: 50%;
+    background-size: cover;
+    cursor: pointer;
+    margin: -20px 10px;
+}
+
+.report-write {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    background-color: #4caf50;
+    color: white;
+}
+
+.report-cancel {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    background-color: #000000;
+    color:white;
+}

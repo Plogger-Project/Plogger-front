@@ -8,11 +8,16 @@ export const RECRUIT_DETAIL_PATH = (recruitPostId: string | number) => `${RECRUI
 export const RECRUIT_WRITE_PATH = `${RECRUIT_PATH}/write`;
 // export const RECRUIT_UPDATE_PATH = (recruitPostId: string | number) => `${recruitPostId}/update`;
 export const RECRUIT_UPDATE_PATH = `${RECRUIT_PATH}/update`;
-
 export const RECRUIT_MYPAGE_PATH = `/mypage`;
 
-export const SNS_SUCCESS_PATH = '/sns-success';
+
+// 활동 게시판 관련 상수 //
 export const ACTIVE_PATH = '/active';
+export const ACTIVE_DETAIL_PATH = (activePostId: string | number) => `${ACTIVE_PATH}/${activePostId}`;
+export const ACTIVE_UPDATE_PATH = (activePostId: string | number) => `${ACTIVE_PATH}/${activePostId}/update`;
+export const ACTIVE_WRITE_PATH = `${ACTIVE_PATH}/write`;
+
+export const SNS_SUCCESS_PATH = '/sns-success';
 
 export const QNA_PATH = '/qna';
 export const QNA_WRITE_PATH = `${QNA_PATH}/write`;
