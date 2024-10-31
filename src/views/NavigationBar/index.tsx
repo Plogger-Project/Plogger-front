@@ -179,7 +179,7 @@ export default function NavigationBar() {
 
         return () => clearInterval(interval);
         }
-    }, []);
+    }, [signInUser]);
 
     // component: SNS 로그인 회원가입 컴포넌트 //
     function SnsContainer({ type }: SnsContainerProps) {

@@ -43,6 +43,7 @@ const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 
 const GET_RECRUIT_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}`;
+const GET_RECRUIT_COMMENT_LIST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}/comments`;
 const POST_RECRUIT_POST_API_URL = `${RECRUIT_MODULE_URL}`
 const ACTIVE_MODULE_URL = `${AUTH_MODULE_URL}/api/v1/active`;
 
@@ -377,6 +378,14 @@ export const deleteAlertListRequest = async (id: string | number, accessToken: s
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return resopnseBody;
+}
+
+// function: get recruit comment list 요청 함수 //
+export const getRecruitCommentListRequest = async (recruitPostId: number | string, accesstoken: string) => {
+    const responseBody = await axios.get(GET_RECRUIT_COMMENT_LIST_API_URL(recruitPostId), bearerAuthorization(accesstoken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+return responseBody;
 }
 
 
