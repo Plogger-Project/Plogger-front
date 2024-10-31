@@ -13,8 +13,4 @@ export default interface RecruitPostList{
     recruitPostLike: number;
     recruitReport: number;
     isCompleted: boolean;
-    
-    
-    
-    
 }

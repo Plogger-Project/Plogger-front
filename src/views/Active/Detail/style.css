@@ -1,5 +1,5 @@
 /* 전체 레이아웃 */
-#recruit-detail-wrapper {
+#active-detail-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -7,17 +7,14 @@
     width: 1134px;
     margin: 0 auto;
     background-color: white;
-
 }
 
-#recruit-detail-wrapper .navi {
+#active-detail-wrapper .navi {
     height: 90px;
 }
 
-#recruit-detail-wrapper .main {
+#active-detail-wrapper .main {
     margin-top: 30px;
-
-
     width: 700px;
 
     display: flex;
@@ -31,7 +28,7 @@
 }
 
 /* 상단 사용자 정보 및 게시글 옵션 */
-#recruit-detail-wrapper .postTop {
+#active-detail-wrapper .postTop {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -41,25 +38,25 @@
     padding: 10px;
 }
 
-#recruit-detail-wrapper .postTop .userInfo {
+#active-detail-wrapper .postTop .userInfo {
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
-#recruit-detail-wrapper .postTop .userInfo-left {
+#active-detail-wrapper .postTop .userInfo-left {
     display: flex;
     flex-direction: row;
     gap: 15px;
 }
 
-#recruit-detail-wrapper .postTop .userInfo-right {
+#active-detail-wrapper .postTop .userInfo-right {
     display: flex;
     flex-direction: column;
 }
 
 
-#recruit-detail-wrapper .postTop .profileImage {
+#active-detail-wrapper .postTop .profileImage {
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -70,7 +67,7 @@
 
 }
 
-#recruit-detail-wrapper .optionBox {
+#active-detail-wrapper .optionBox {
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -79,13 +76,13 @@
     background-size: cover;
 }
 
-#recruit-detail-wrapper .postTop .postBox {
+#active-detail-wrapper .postTop .postBox {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-#recruit-detail-wrapper .postTop .postBox .listButton {
+#active-detail-wrapper .postTop .postBox .listButton {
     width: 50px;
     height: 30px;
     background-color: #4CAF50;
@@ -100,27 +97,25 @@
 
 }
 
-#recruit-detail-wrapper .postDetail {
+#active-detail-wrapper .postDetail {
     display: flex;
     flex-direction: column;
     gap: 15px;
 
 }
 
-#recruit-detail-wrapper .postTitle {
+#active-detail-wrapper .postTitle {
     border-bottom: 1px solid rgba(25, 25, 25, 0.3);
-    font-size: 24px;
-    font-weight: 700;
     padding: 15px;
 }
 
-#recruit-detail-wrapper .postContents {
+#active-detail-wrapper .postContents {
     border-bottom: 1px solid rgba(25, 25, 25, 0.3);
     height: 300px;
-    padding: 0 15px 15px 15px;
+    padding: 15px;
 }
 
-#recruit-detail-wrapper .postImage {
+#active-detail-wrapper .postImage {
     width: 100%;
     height: 300px;
     background-size: contain;
@@ -129,14 +124,12 @@
 
 }
 
-
-
-#recruit-detail-wrapper .kakaomap {
+#active-detail-wrapper .kakaomap {
     width: 100%;
     height: 360px;
 }
 
-#recruit-detail-wrapper .postInfo {
+#active-detail-wrapper .postInfo {
     padding: 15px;
     display: flex;
     flex-direction: row;
@@ -146,14 +139,34 @@
     border-bottom: 1px solid rgba(25, 25, 25, 0.3);
 }
 
-#recruit-detail-wrapper .postInfo .left {
+#active-detail-wrapper .postInfo .left {
     display: flex;
     flex-direction: row;
     gap: 20px;
     font-weight: 700;
 }
 
-#recruit-detail-wrapper .postInfo .left .isCompleted {
+#active-detail-wrapper .tag {
+    display: flex;               
+    flex-wrap: wrap;            
+    margin: 10px 0;            
+    padding: 5px;               
+    background-color: #f2f2f2; 
+    border-radius: 8px;        
+    border: 1px solid #ccc;    
+}
+
+#active-detail-wrapper .tagUser {
+    background-color: #e0f7fa;  
+    color: #00796b;            
+    padding: 5px 10px;          
+    border-radius: 5px;         
+    margin-right: 5px;          
+    font-size: 14px;            
+    transition: background-color 0.3s; 
+}
+
+#active-detail-wrapper .postInfo .left .isCompleted {
     color: white;
     width: 50px;
     height: 25px;
@@ -165,13 +178,13 @@
 
 }
 
-#recruit-detail-wrapper .postInfo .right {
+#active-detail-wrapper .postInfo .right {
     display: flex;
     flex-direction: row;
     gap: 10px
 }
 
-#recruit-detail-wrapper .postInfo .right .like {
+#active-detail-wrapper .postInfo .right .like {
     width: 25px;
     height: 25px;
     background-size: contain;
@@ -180,11 +193,11 @@
     cursor: pointer;
 }
 
-#recruit-detail-wrapper .postInfo .right .like.liked {
+#active-detail-wrapper .postInfo .right .like.liked {
     background-image: url(/public/images/full-heart.png);
 }
 
-#recruit-detail-wrapper .postInfo .right .scrap {
+#active-detail-wrapper .postInfo .right .scrap {
     width: 25px;
     height: 25px;
     background-size: contain;
@@ -193,29 +206,29 @@
     cursor: pointer;
 }
 
-#recruit-detail-wrapper .postInfo .right .scrap.scraped {
+#active-detail-wrapper .postInfo .right .scrap.scraped {
     background-image: url(/public/images/full-scrap.png);
 }
 
 /* 하단 정보 및 댓글 섹션 */
-#recruit-detail-wrapper .postBottom {
+#active-detail-wrapper .postBottom {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-#recruit-detail-wrapper .postBottom .line {
+#active-detail-wrapper .postBottom .line {
     width: 100%;
     text-align: center;
 }
 
-#recruit-detail-wrapper .postBottom .comments {
+#active-detail-wrapper .postBottom .comments {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-#recruit-detail-wrapper .postBottom .comments input {
+#active-detail-wrapper .postBottom .comments input {
     border: 0px;
     flex-grow: 1;
     width: 550px;
@@ -223,7 +236,7 @@
 
 }
 
-#recruit-detail-wrapper .postBottom .comments .commentButton {
+#active-detail-wrapper .postBottom .comments .commentButton {
 
     width: 80px;
     height: 30px;
@@ -238,7 +251,7 @@
     text-align: center;
 }
 
-#recruit-detail-wrapper .postBottom .profileImage {
+#active-detail-wrapper .postBottom .profileImage {
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -249,7 +262,7 @@
 
 }
 
-#recruit-detail-wrapper .commentUserInfo {
+#active-detail-wrapper .commentUserInfo {
     display: flex;
     flex-direction: row;
     gap: 15px;
@@ -257,7 +270,7 @@
     border-bottom: 1px solid rgba(25, 25, 25, 0.3);
 }
 
-#recruit-detail-wrapper .commentUserInfoWrite {
+#active-detail-wrapper .commentUserInfoWrite {
     display: flex;
     flex-direction: row;
     gap: 15px;
@@ -270,23 +283,23 @@
 
 
 
-#recruit-detail-wrapper .commentUserInfo-right {
+#active-detail-wrapper .commentUserInfo-right {
     display: flex;
     flex-direction: column;
 }
 
-#recruit-detail-wrapper .recruitCommentWriter,
-#recruit-detail-wrapper .recruitCommentCreatedAt {
+#active-detail-wrapper .activeCommentWriter,
+#active-detail-wrapper .activeCommentCreatedAt {
     font-size: 12px;
 }
 
 
-#recruit-detail-wrapper .bottom {
+#active-detail-wrapper .bottom {
     padding: 15px;
     width: 100%;
 }
 
-#recruit-detail-wrapper .options {
+#active-detail-wrapper .options {
     position: absolute;
     z-index: 9000;
     width: 80px;
@@ -300,31 +313,31 @@
     overflow-y: auto;
 }
 
-#recruit-detail-wrapper .editButton,
-#recruit-detail-wrapper .deleteButton,
-#recruit-detail-wrapper .reportButton {
+#active-detail-wrapper .editButton,
+#active-detail-wrapper .deleteButton,
+#active-detail-wrapper .reportButton {
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
-#recruit-detail-wrapper .editButton {
+#active-detail-wrapper .editButton {
     background-color: #4caf50;
     color: white;
 }
 
-#recruit-detail-wrapper .deleteButton {
+#active-detail-wrapper .deleteButton {
     background-color: #f44336;
     color: white;
 }
 
-#recruit-detail-wrapper .reportButton {
+#active-detail-wrapper .reportButton {
     background-color: #f44336;
     color: white;
 }
 
-#recruit-detail-wrapper .report-modal {
+#active-detail-wrapper .report-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -345,7 +358,7 @@
     display: flex;
 }
 
-#recruit-detail-wrapper .report-box {
+#active-detail-wrapper .report-box {
     display: flex;
     flex-direction: column;
     position: relative;
@@ -373,7 +386,6 @@
     letter-spacing: 2px;
     margin-bottom: 9px;
     text-align: left;
-
     margin-top: 0px;
 }
 
@@ -389,7 +401,6 @@
     border-radius: 10px;
     width: 100%;
     height: 222px;
-    resize: none;
 }
 
 .report-input::placeholder {
@@ -408,7 +419,7 @@
     justify-content: center;
     flex-direction: row;
     margin-top: 10px;
-    gap: 30px;
+    gap: 100px;
 }
 
 .report-button {
@@ -419,7 +430,7 @@
 }
 
 .report-write {
-    padding: 5px 30px;
+    padding: 5px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -429,7 +440,7 @@
 }
 
 .report-cancel {
-    padding: 5px 30px;
+    padding: 5px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;

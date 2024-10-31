@@ -195,9 +195,6 @@ export default function RecruitWrite() {
     setIsDatePickerOpen((prev) => !prev); // 달력 열기/닫기 상태 변경
   };
 
-
-
-
   // event handler: 등록 버튼 이벤트 처리 함수 //
   const onPostButtonClickHandler = async () => {
     if (!title || !contents || !people || !endDate || !location) {
@@ -208,13 +205,13 @@ export default function RecruitWrite() {
     if (!accessToken) return;
 
 
-    let url: string | null = defaultImageUrl;
+    let url: string | null = null;
     if (imageFile) {
       const formData = new FormData();
       formData.append('file', imageFile);
       url = await fileUploadRequest(formData);
     }
-    url = url ? url : defaultImageUrl;
+    url = url ? url : '';
 
 
 

@@ -3,7 +3,6 @@ import ResponseDto from "../response.dto";
 
 // interface: get recruit post  response body dto //
 export default interface GetRecruitPostResponseDto extends ResponseDto {
-    recruitPostId: number;
     recruitPostTitle: string;
     recruitPostContent: string;
     recruitPostImage: string | null;
