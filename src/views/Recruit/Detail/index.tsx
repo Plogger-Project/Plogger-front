@@ -24,11 +24,8 @@ const appkey = process.env.REACT_APP_KAKAO_MAP_KEY;
 // component: 구인 게시글 상세 보기 컴포넌트 //
 export default function RecruitDetail() {
 
-  // state: 게시글 번호 상태 //
-  const { recruitId } = useParams<{ recruitId: string }>();
-
   // state: 게시글 번호 경로 변수 상태 //
-  const { recruitPostId } = useParams();
+  const { recruitPostId } = useParams<{ recruitPostId: string }>();
 
   // state: 고객 번호 경로 변수 상태 //
   const { customerNumber } = useParams();
@@ -38,7 +35,10 @@ export default function RecruitDetail() {
 
   // state: cookie 상태 //
   const [cookies] = useCookies();
-   
+
+  // variable: accessToken //
+  const accessToken = cookies[ACCESS_TOKEN];
+
   // state: 구인게시글 정보 상태 //
   const [postId, setPostId] = useState<number>(0);
   const [title, setTitle] = useState<string>('');
@@ -62,13 +62,8 @@ export default function RecruitDetail() {
   const [writerProfileImage, setWriterProfileImage] = useState<string>('');
   const [showOptions, setShowOptions] = useState(false);  // 옵션 항목 표시 여부
   const [optionPosition, setOptionPosition] = useState({ top: 0, left: 0 });  // 옵션 항목 위치
-  const [Author, setAuthor] = useState<string>('');
   const optionBoxRef = useRef<HTMLDivElement | null>(null);  // optionBox 참조
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
-
-
-  // variable: 작성자 여부 //
-  const isWriter = writer === signInUser?.userId;
 
   // state: 신고 내역 작성창 오픈 여부 상태 //
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
@@ -77,10 +72,7 @@ export default function RecruitDetail() {
   const [reportContent, setReportContent] = useState<string>("");
 
   // variable: 작성자 여부 //
-  const isAuthor = Author === signInUser?.userId;
-
-  // variable: accessToken //
-  const accessToken = cookies[ACCESS_TOKEN];
+  const isWriter = writer === signInUser?.userId;
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -95,6 +87,8 @@ export default function RecruitDetail() {
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'NRP' ? '존재하지 않는 글입니다.' :
             responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+    console.log(responseBody);
+    console.log("recruitpost");
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
@@ -131,9 +125,6 @@ export default function RecruitDetail() {
     setView(recruitView);
     setReport(recruitReport);
     setIsCompleted(isCompleted);
-
-
-
   };
 
   const getRecruitPostUserResponse = (responseBody: GetUserResponseDto | ResponseDto | null) => {
@@ -141,7 +132,7 @@ export default function RecruitDetail() {
       responseBody.code === 'VF' ? '잘못된 접근입니다.' :
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-
+    console.log("recruitpostuser");
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
       alert(message);
@@ -161,7 +152,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
       responseBody.code === 'VF' ? '내역을 입력해주세요.' :
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-
+  alert("신고가 완료 되었습니다.");
   const isSuccessed = responseBody !== null && responseBody.code === 'SU';
   if (!isSuccessed) {
     alert(message);
@@ -180,7 +171,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
               responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
                 responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
                   responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-
+    console.log("recruitlike");
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
       alert(message);
@@ -208,7 +199,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
       }
 
       // event handler: 신고 내역 입력 시 처리 //
-      const onreportContentHandler = (event: ChangeEvent<HTMLInputElement>) => {
+      const onreportContentHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setReportContent(event.target.value);
       }
 
@@ -227,6 +218,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
       // event handler: 신고 작성 모달 오픈 이벤트 처리 //
       const openReportModalHandler = () => {
         setIsReportModalOpen(!isReportModalOpen);
+        setReportContent("");
       };
 
       // event handler: 신고 모달 작성 버튼 클릭 시 이벤트 처리 //
@@ -236,8 +228,13 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
           return;
         }
 
+        if (!recruitPostId) {
+          alert("게시글 정보가 없습니다.");
+          return;
+        }
+
         const requestBody: PostRecruitReportRequestDto = { content: reportContent };
-        PostRecruitReportRequest(requestBody, accessToken, recruitId!).then(postRecruitReportResponse);
+        PostRecruitReportRequest(requestBody, accessToken, recruitPostId).then(postRecruitReportResponse);
 
       }
       // event handler: 신고 모달 취소 버튼 클릭 시 이벤트 처리 //
@@ -306,25 +303,6 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
                     <div className='date'>작성일 : {createdAt}</div>
                   </div>
                 </div>
-                <div className='postBox'>
-                  <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
-                  <div className='detailCount'>조회수 : 100</div>
-                  <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}></div>
-                  {showOptions && (
-                    <div
-                      className="options"
-                      style={{
-                        position: 'absolute',
-                        top: optionPosition.top + 'px',
-                        left: optionPosition.left + 'px'
-                      }}
-                    >
-                      <button className="editButton">수정하기</button>
-                      <button className="deleteButton">삭제하기</button>
-                      <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
-                    </div>
-                  )}
-                </div>
                 {isReportModalOpen &&
                   <div className='report-modal'>
                     <div className='report-box'>
@@ -333,7 +311,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
                       </div>
                       <div className='report-main'>
                         <div className='report-content'>
-                          <input className='report-input' placeholder='내용을 입력하세요.' value={reportContent} onChange={onreportContentHandler} />
+                          <textarea className='report-input' placeholder='내용을 입력하세요.' value={reportContent} onChange={onreportContentHandler} />
                         </div>
                       </div>
                       <div className='report-bottom'>
@@ -348,26 +326,24 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
                   </div>}
               </div>
               <div className='postBox'>
-                <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
-                <div className='detailCount'>조회수 : {view}</div>
-                <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}></div>
-                {showOptions && (
-                  <div
-                    className="options"
-                    style={{
-                      position: 'absolute',
-                      top: optionPosition.top + 'px',
-                      left: optionPosition.left + 'px'
-                    }}
-                  >
-                
-                    <button className="editButton">수정하기</button>
-                    <button className="deleteButton">삭제하기</button>
-
-                    <button className="reportButton">신고하기</button>
-                  </div>
-                )}
-              </div>
+                  <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
+                  <div className='detailCount'>조회수 : 100</div>
+                  <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}></div>
+                  {showOptions && (
+                    <div
+                      className="options"
+                      style={{
+                        position: 'absolute',
+                        top: optionPosition.top + 'px',
+                        left: optionPosition.left + 'px'
+                      }}
+                    >
+                      {isWriter && <button className="editButton">수정하기</button>}
+                      {isWriter && <button className="deleteButton">삭제하기</button>}
+                      {!isWriter && <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>}
+                    </div>
+                  )}
+                </div>
             </div>
             <div className='postDetail'>
               <div className='postTitle'>제목 : {title}</div>
@@ -400,20 +376,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
                   <div className={`scrap ${isScraped ? 'scraped' : ''}`} onClick={toggleScrapHandler}></div>
                 </div>
               </div>
-              <div className='postBottom'>
-                <div className='postInfo'>
-                  <div className='left'>
-                    <div className='members'>인원 : 1/5</div>
-                    <div className='isCompleted'>마감</div>
-                  </div>
-                  <div className='right'>
-                    <div
-                      className={`like ${isLiked ? 'liked' : ''}`}  // liked 클래스를 동적으로 추가
-                      onClick={toggleLikeHandler}
-                    ></div>
-                    <div className={`scrap ${isScraped ? 'scraped' : ''}`} onClick={toggleScrapHandler}></div>
-                  </div>
-                </div>
+              
                 <div className='line'></div>
                 <div className='comments'>
                   <div className='commentUserInfoWrite'>
@@ -450,7 +413,7 @@ const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
                     </div>
                   </div>
                 </div>
-              </div>
+              
             </div>
             <div className='bottom'></div>
           </div>
