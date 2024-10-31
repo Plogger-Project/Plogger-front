@@ -116,7 +116,7 @@ export default function NavigationBar() {
 
             navigator(ROOT_ABSOLUTE_PATH);
         }
-        else navigator(ROOT_ABSOLUTE_PATH);
+        
     }, []);
 
     // effect: cookie의 accessToken 값이 변경될 때마다 로그인 유저 정보를 요청하는 함수 //
@@ -233,7 +233,12 @@ export default function NavigationBar() {
 
     // event handler: 마이페이지 버튼 클릭 이벤트 처리 //
     const onMyPageClickHandler = () => {
-        navigator(MYPAGE_PATH);
+        if (signInUser?.isAdmin) {
+            navigator('/admin');
+        } else {
+            navigator(MYPAGE_PATH); // isAdmin이 true일때 관리자로 로그인
+        }
+
     }
 
     // event handler: 로그아웃 버튼 클릭 이벤트 처리 //

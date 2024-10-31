@@ -14,6 +14,7 @@ import { getRecruitPostListRequest } from "src/apis";
 
 import useRecruitPagination from "src/hooks/recruit.pagination.hook";
 import Pagination from "src/components/pagination";
+import SignInUser from './../../types/sign-in-user.interface';
 
 
 // variable : 카카오 맵 키 //
@@ -64,6 +65,9 @@ function TableRow({ recruitPostId, getRecruitList }: TableRowProps) {
 
 // component: 구인 게시글 리스트 아이템 컴포넌트 //
 export default function RecruitPost() {
+
+  // state: 로그인 유저 상태 //
+  const { signInUser } = useSignInUserStore();
 
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
   const [scrollY, setScrollY] = useState(0); // 스크롤 위치
@@ -225,7 +229,9 @@ export default function RecruitPost() {
               | <div className={`Recruiting ${filter === 'recruiting' ? 'active' : ''}`} onClick={() => handleFilterClick('recruiting')}>모집중</div>
               | <div className={`Recruited ${filter === 'closed' ? 'active' : ''}`} onClick={() => handleFilterClick('closed')}>마감됨</div>
             </div>
-            <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>
+            {signInUser == null ? 
+              ''
+              : <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>}
           </div>
           <div className="table">
             <div className="th">
