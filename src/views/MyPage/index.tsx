@@ -183,26 +183,26 @@ export default function Mypage() {
     navigator('/mileage');
   };
 
-  // event handler: 이미지 버튼 변환 이벤트 처리 //
-  const onImageInputChangeHandler = () => {
-    const { current } = imageInputRef;
-    if (!current) return;
-    if (!current.files) return;
+  // // event handler: 이미지 버튼 변환 이벤트 처리 //
+  // const onImageInputChangeHandler = () => {
+  //   const { current } = imageInputRef;
+  //   if (!current) return;
+  //   if (!current.files) return;
 
-    const file = current.files[0];
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file);
-    fileReader.onloadend = () => {
-      setImageUrl(fileReader.result as string);
-    };
-  };
+  //   const file = current.files[0];
+  //   const fileReader = new FileReader();
+  //   fileReader.readAsDataURL(file);
+  //   fileReader.onloadend = () => {
+  //     setImageUrl(fileReader.result as string);
+  //   };
+  // };
 
-  // event handler: 이미지 버튼 클릭 이벤트 처리 //
-  const onImageButtonClickHandler = () => {
-    const { current } = imageInputRef;
-    if (!current) return;
-    current.click();
-  };
+  // // event handler: 이미지 버튼 클릭 이벤트 처리 //
+  // const onImageButtonClickHandler = () => {
+  //   const { current } = imageInputRef;
+  //   if (!current) return;
+  //   current.click();
+  // };
 
   // event handler: sentence 버튼 클릭 이벤트 처리 //
   const onCommentButtonClickHandler = () => {

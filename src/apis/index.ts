@@ -27,6 +27,7 @@ const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
 const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`
 const QNA_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/qna`
 const REPORT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/report`
+const ALERT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/alert`;
 
 const ID_CHECK_API_URL = `${AUTH_MODULE_URL}/id-check`;
 const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
@@ -51,6 +52,8 @@ const GET_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_
 const PATCH_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 const DELETE_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 
+const GET_ALERT_LIST_API_URL = `${ALERT_MODULE_URL}`;
+const DELETE_ALERT_LIST_API_URL = (id: number | string) => `${ALERT_MODULE_URL}/${id}`;
 
 const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
 const POST_RECRUIT_LIKE_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/like/${recruitId}`;
@@ -359,3 +362,21 @@ export const postRecruitLikeRequest = async ( recruitId: number | string ) => {
         .catch(responseErrorHandler);
     return responseBody;
 };
+
+// function: get alert list 요청 함수 //
+export const getAlertListRequest = async (accesstoken: string) => {
+    const responseBody = await axios.get(GET_ALERT_LIST_API_URL, bearerAuthorization(accesstoken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+return responseBody;
+}
+
+// function: get alert list 삭제 요청 함수 //
+export const deleteAlertListRequest = async (id: string | number, accessToken: string) => {
+    const resopnseBody = await axios.delete(DELETE_ALERT_LIST_API_URL(id), bearerAuthorization((accessToken)))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return resopnseBody;
+}
+
+
