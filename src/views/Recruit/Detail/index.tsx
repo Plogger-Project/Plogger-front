@@ -11,7 +11,7 @@ import GetRecruitPostResponseDto from 'src/apis/dto/response/recruit/get-recruit
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import RecruitWrite from './../Write/index';
 import { RecruitPostList } from 'src/types';
-import { getRecruitCommentListRequest, getRecruitPostRequest } from 'src/apis';
+import { getRecruitCommentListRequest } from 'src/apis';
 import axios from 'axios';
 import { deleteRecruitPostRequest, getRecruitPostRequest, getRecruitUserInfoRequest } from 'src/apis';
 
@@ -112,6 +112,7 @@ export default function RecruitDetail() {
   const [isScraped, setIsScraped] = useState(false);
   const [writerProfileImage, setWriterProfileImage] = useState<string>('');
   const [showOptions, setShowOptions] = useState(false);  // 옵션 항목 표시 여부
+  const [Author, setAuthor] = useState<string>('');
   const [optionPosition, setOptionPosition] = useState({ top: 0, left: 0 });  // 옵션 항목 위치
   const optionBoxRef = useRef<HTMLDivElement | null>(null);  // optionBox 참조
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
