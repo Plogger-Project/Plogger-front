@@ -5,7 +5,7 @@ import InputBox from '../../components/InputBox';
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
 import { Follow, RecruitPostList } from 'src/types';
-import { getFolloweeListRequest, getFollowerListRequest, getRecruitPostListRequest, patchCommentRequest } from 'src/apis';
+import { getRecruitPostListRequest, getSignInFolloweeListRequest, getSignInFollowerListRequest, patchCommentRequest } from 'src/apis';
 import { GetRecruitPostListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
@@ -19,16 +19,18 @@ import useFollowPagination from 'src/hooks/follow.pagination.hook';
 interface FollowTableRowProps {
   follow: Follow;
   getFollowList: () => void;
+  mode: 'follower' | 'followee';
 }
 
 // component: 팔로워&팔로위 리스트 아이템 컴포넌트 //
-function FollowTableRow({ follow, getFollowList }: FollowTableRowProps) {
+function FollowTableRow({ follow, getFollowList, mode }: FollowTableRowProps) {
 
+  const displayedId = mode === 'follower' ? follow.followerId : follow.followeeId;
 
-  // render : 게시글 리스트 렌더링 //
+  // render : 팔로워&팔로위 게시글 리스트 렌더링 //
   return (
-    <div className="tr" key={follow.followId}>
-      <div className="">{follow.followeeId}</div>
+    <div className="follow-table" key={follow.followId}>
+      <div>{displayedId}</div>
     </div>
   )
   
@@ -44,7 +46,6 @@ export default function Mypage() {
 
   // state: 회원가입 상태 //
   const [name, setName] = useState<string>('');
-  const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [chkpassword, setChkPassword] = useState<string>('');
   const [telNumber, setTelNumber] = useState<string>('');
@@ -53,7 +54,6 @@ export default function Mypage() {
 
   // state: 로그인 유저 정보 //
   const { signInUser, setSignInUser } = useSignInUserStore();
-  if(signInUser) setUserId(signInUser.userId);
 
   // state: cookie 상태 //
   const [cookies] = useCookies();
@@ -71,17 +71,15 @@ export default function Mypage() {
   // state: 팔로위 모달 팝업 상태 //
   const [followeeModalOpen, setFolloweeModalOpen] = useState<boolean>(false);
 
-  // state: 페이징 관련 상태 //
-  const {
-    currentPage: currentPage2, totalPage: totalPage2, totalCount: totalCount2, viewList: viewList2,
-    setTotalList: setTotalList2, initViewList: initViewList2, ...paginationFollowProps
-  } = useFollowPagination<Follow>();
+  const [followerList, setFollowerList] = useState<Follow[]>([]);
+  const [followeeList, setFolloweeList] = useState<Follow[]>([]);
+
   
   // function: follower list 불러오기 함수 //
   const getFollowerList = () => {
     const accessToken = cookies[ACCESS_TOKEN];
     if(!accessToken) return;
-    getFollowerListRequest(userId, accessToken).then(getFollowerListResponse);
+    getSignInFollowerListRequest(accessToken).then(getFollowerListResponse);
   }
 
   // function: get follower list response 처리 함수 //
@@ -99,14 +97,14 @@ export default function Mypage() {
     }
 
     const { follows } = responseBody as GetFollowerListResponseDto;
-    setTotalList2(follows);
+    setFollowerList(follows);
   }
 
   // function: followee list 불러오기 함수 //
   const getFolloweeList = () => {
     const accessToken = cookies[ACCESS_TOKEN];
     if(!accessToken) return;
-    getFolloweeListRequest(userId, accessToken).then(getFolloweeListResponse);
+    getSignInFolloweeListRequest(accessToken).then(getFolloweeListResponse);
   }
 
   // function: get followee list response 처리 함수 //
@@ -114,7 +112,7 @@ export default function Mypage() {
     const message =
       !responseBody ? '서버에 문제가 있습니다.' :
       responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-      responseBody.code === 'NG' ? '해당 기프티콘이 없습니다' :
+      responseBody.code === 'NF' ? '팔로잉이 없습니다' :
       responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
@@ -124,7 +122,7 @@ export default function Mypage() {
     }
 
     const { follows } = responseBody as GetFolloweeListResponseDto;
-    setTotalList2(follows);
+    setFolloweeList(follows);
   }
 
   // effect: 유저 정보가 변경되면 state에 반영 // 
@@ -370,19 +368,15 @@ export default function Mypage() {
           </div>
           <div className='activity-container'>
             <div className='score-container'>
-              <div className='aco-box'>
-                <div className='aco-score'>에코스코어</div>
-                <div className='score'>50</div>
-              </div>
               <div className='line'>
                 <div className='follower-box' onClick={onFollowerOpenHandler}>
                   <div className='follower-score'>팔로우</div>
-                  <div className='score'>30</div>
+                  <div className='score'>{followerList.length}</div>
                 </div>
               </div>
               <div className='followee-box' onClick={onFolloweeOpenHandler}>
                 <div className='followee-score'>팔로잉</div>
-                <div className='score'>234</div>
+                <div className='score'>{followeeList.length}</div>
               </div>
             </div>
             <div className='mileage-container'>
@@ -442,8 +436,8 @@ export default function Mypage() {
       <div className='modal'>
         <div className='modal-box'>
             {
-              viewList2.map( (follow, index)=> (
-                <FollowTableRow key={index} follow={follow} getFollowList={getFollowerList}/>
+              followerList.map( (follow, index)=> (
+                <FollowTableRow key={index} follow={follow} getFollowList={() => getFollowerList} mode='follower'/>
               ))}
           <div className='modal-bottom'>
             <div className='button second' onClick={onFollowerOpenHandler}>닫기</div>
@@ -457,8 +451,8 @@ export default function Mypage() {
       <div className='modal'>
         <div className='modal-box'>
             {
-              viewList2.map( (follow, index)=> (
-                <FollowTableRow key={index} follow={follow} getFollowList={getFolloweeList}/>
+              followeeList.map( (follow, index)=> (
+                <FollowTableRow key={index} follow={follow} getFollowList={() => getFolloweeList} mode='followee'/>
               ))}
           <div className='modal-bottom'>
             <div className='button second' onClick={onFolloweeOpenHandler}>닫기</div>

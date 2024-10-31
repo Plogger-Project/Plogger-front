@@ -79,6 +79,8 @@ const POST_RECRUIT_REPORT_API_URL = (recruitId: number | string) => `${RECRUIT_R
 const FOLLOW_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/follow`;
 
 const POST_FOLLOW_API_URL = `${FOLLOW_MODULE_URL}`;
+const GET_SIGN_IN_FOLLOWER_LIST_API_URL = `${FOLLOW_MODULE_URL}/follower`;
+const GET_SIGN_IN_FOLLOWEE_LIST_API_URL = `${FOLLOW_MODULE_URL}/followee`;
 const GET_FOLLOWER_LIST_API_URL = (followeeId: string) => `${FOLLOW_MODULE_URL}/follower/${followeeId}`;
 const GET_FOLLOWEE_LIST_API_URL = (followerId: string) => `${FOLLOW_MODULE_URL}/followee/${followerId}`;
 const DELETE_FOLLOWEE_API_URL = (followeeId: string) => `${GIFTICON_MODULE_URL}/${followeeId}`;
@@ -372,6 +374,24 @@ export const postRecruitLikeRequest = async ( recruitId: number | string ) => {
 //         .catch(responseErrorHandler);
 //     return responseBody;
 // };
+
+// function: get sign in follower list 요청 함수 //
+export const getSignInFollowerListRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_SIGN_IN_FOLLOWER_LIST_API_URL, bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetFollowerListResponseDto>)
+        .catch(responseErrorHandler);
+    console.log(responseBody);
+    return responseBody;
+};
+
+// function: get sign in followee list 요청 함수 //
+export const getSignInFolloweeListRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_SIGN_IN_FOLLOWEE_LIST_API_URL, bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetFolloweeListResponseDto>)
+        .catch(responseErrorHandler);
+    console.log(responseBody);
+    return responseBody;
+};
 
 // function: get follower list 요청 함수 //
 export const getFollowerListRequest = async (followeeId: string, accessToken: string) => {
