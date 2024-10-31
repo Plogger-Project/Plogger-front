@@ -4,14 +4,37 @@ import { useNavigate, useNavigation } from 'react-router-dom'
 import InputBox from '../../components/InputBox';
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
-import { RecruitPostList } from 'src/types';
-import { getRecruitPostListRequest, patchCommentRequest } from 'src/apis';
+import { Follow, RecruitPostList } from 'src/types';
+import { getRecruitPostListRequest, getSignInFolloweeListRequest, getSignInFollowerListRequest, patchCommentRequest } from 'src/apis';
 import { GetRecruitPostListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
 import { ACCESS_TOKEN, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';
 import { PatchCommentRequestDto } from 'src/apis/dto/request/user';
 import { useCookies } from 'react-cookie';
+import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from 'src/apis/dto/response/follow';
+import useFollowPagination from 'src/hooks/follow.pagination.hook';
+
+// interface: 팔로워&팔로위 리스트 컴포넌트 Properties //
+interface FollowTableRowProps {
+  follow: Follow;
+  getFollowList: () => void;
+  mode: 'follower' | 'followee';
+}
+
+// component: 팔로워&팔로위 리스트 아이템 컴포넌트 //
+function FollowTableRow({ follow, getFollowList, mode }: FollowTableRowProps) {
+
+  const displayedId = mode === 'follower' ? follow.followerId : follow.followeeId;
+
+  // render : 팔로워&팔로위 게시글 리스트 렌더링 //
+  return (
+    <div className="follow-table" key={follow.followId}>
+      <div>{displayedId}</div>
+    </div>
+  )
+  
+}
 
 export default function Mypage() {
   // state: 페이징 관련 상태 //
@@ -41,6 +64,66 @@ export default function Mypage() {
 
   // state: 내 구인 게시판 목록 상태 //
   const [recruitContents, setRecruitContents] = useState<RecruitPostList[]>([]);
+
+  // state: 팔로워 모달 팝업 상태 //
+  const [followerModalOpen, setFollowerModalOpen] = useState<boolean>(false);
+
+  // state: 팔로위 모달 팝업 상태 //
+  const [followeeModalOpen, setFolloweeModalOpen] = useState<boolean>(false);
+
+  const [followerList, setFollowerList] = useState<Follow[]>([]);
+  const [followeeList, setFolloweeList] = useState<Follow[]>([]);
+
+  
+  // function: follower list 불러오기 함수 //
+  const getFollowerList = () => {
+    const accessToken = cookies[ACCESS_TOKEN];
+    if(!accessToken) return;
+    getSignInFollowerListRequest(accessToken).then(getFollowerListResponse);
+  }
+
+  // function: get follower list response 처리 함수 //
+  const getFollowerListResponse = (responseBody: GetFollowerListResponseDto | ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+      responseBody.code === 'NF' ? '팔로워가 없습니다' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if(!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    const { follows } = responseBody as GetFollowerListResponseDto;
+    setFollowerList(follows);
+  }
+
+  // function: followee list 불러오기 함수 //
+  const getFolloweeList = () => {
+    const accessToken = cookies[ACCESS_TOKEN];
+    if(!accessToken) return;
+    getSignInFolloweeListRequest(accessToken).then(getFolloweeListResponse);
+  }
+
+  // function: get followee list response 처리 함수 //
+  const getFolloweeListResponse = (responseBody: GetFolloweeListResponseDto | ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+      responseBody.code === 'NF' ? '팔로잉이 없습니다' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if(!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    const { follows } = responseBody as GetFolloweeListResponseDto;
+    setFolloweeList(follows);
+  }
 
   // effect: 유저 정보가 변경되면 state에 반영 // 
   useEffect(() => {
@@ -245,95 +328,138 @@ export default function Mypage() {
     getRecruitPostList();
   };
 
-  return (
-    <div id='mypage'>
-      <div className='top'>
-        <div className='profile-container'>
-          <div className='image' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
-          <div className='profile-box'>
-            <div className='name-box'>
-              <div className='name'>{signInUser?.name}</div>
-              <div className='change' onClick={onMypageUpdateOpenHandler}></div>
-            </div>
-            <div className='address'>{signInUser?.address}</div>
-            <div className='sentence-box'>
-              {input ?
-                <input className='input' type='text' value={comment} onChange={onCommentChangeHandler} placeholder='30글자 내로 입력하세요.' onKeyDown={onCommentKeydownHandler}
-                  autoFocus />
-                : <div className='sentence'>{comment}</div>
-              }
-              <div className='sentence-change' onClick={onCommentButtonClickHandler}></div>
-            </div>
-          </div>
-        </div>
-        <div className='activity-container'>
-          <div className='score-container'>
-            <div className='aco-box'>
-              <div className='aco-score'>에코스코어</div>
-              <div className='score'>50</div>
-            </div>
-            <div className='line'>
-              <div className='follower-box'>
-                <div className='follower-score'>팔로우</div>
-                <div className='score'>30</div>
-              </div>
-            </div>
-            <div className='followee-box'>
-              <div className='followee-score'>팔로잉</div>
-              <div className='score'>234</div>
-            </div>
-          </div>
-          <div className='mileage-container'>
-            <div className='mileage-box'>
-              <div className='mileage-button'>M</div>
-              <div className='mileage-score'>{signInUser?.mileage}</div>
-            </div>
-            <div className='button-mileage' onClick={onGiftClickHandler}>기프티콘 바로가기</div>
-          </div>
-        </div>
-      </div>
-      <div className='mypage-bottom'>
-        <div className='table-contents'>
-          <div className='my-recruit' onClick={onMyRecruitClickHandler}><span>구인 게시글</span></div>
-          <div className='line'>
-            <div className='my-active'><span>활동 게시글</span></div>
-          </div>
-          <div className='line-right'>
-            <div className='my-mileage'><span>마일리지 내역</span></div>
-          </div>
-          <div className='my-scrap'><span>스크랩 글</span></div>
-        </div>
-        <div className='table'>
-          {recruitContents.length > 0 &&
-            (
-              <div className="main">
-                <div className="middle-top">
-                </div>
-                <div className="table">
-                  <div className="th">
-                    <div className="td-recruit-number">번호</div>
-                    <div className="td-recruit-isCompleted">마감유무</div>
-                    <div className="td-recruit-title">제목</div>
-                    <div className="td-recruit-writer">작성자</div>
-                    <div className="td-recruit-like-count">추천수</div>
-                    <div className="td-recruit-view-count">조회수</div>
-                    <div className="td-recruit-people">모집인원</div>
-                    <div className="td-recruit-end-date">마감일자</div>
-                    <div className="td-recruit-create-date">날짜</div>
-                  </div>
-                  {
-                    viewList.map((recruitPostId, index) => (
-                      <TableRow key={index} recruitPostId={recruitPostId} getRecruitList={getRecruitPostList} />
-                    ))}
-                </div>
+  // event handler: 팔로워 모달 버튼 클릭 이벤트 처리 함수 //
+  const onFollowerOpenHandler = () => {
+    setFollowerModalOpen(!followerModalOpen);
+  }
 
-                <div className="pagination">
-                  <Pagination currentPage={currentPage} {...paginationProps} />
+  // event handler: 팔로위 모달 버튼 클릭 이벤트 처리 함수 //
+  const onFolloweeOpenHandler = () => {
+    setFolloweeModalOpen(!followeeModalOpen);
+  };
+
+  // effect: 컴포넌트 로드 시 팔로워 리스트 불러오기 함수 //
+  useEffect(getFollowerList, []);
+
+  // effect: 컴포넌트 로드 시 팔로위 리스트 불러오기 함수 //
+  useEffect(getFolloweeList, []);
+
+  return (
+    <>
+      <div id='mypage'>
+        <div className='top'>
+          <div className='profile-container'>
+            <div className='image' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
+            <div className='profile-box'>
+              <div className='name-box'>
+                <div className='name'>{signInUser?.name}</div>
+                <div className='change' onClick={onMypageUpdateOpenHandler}></div>
+              </div>
+              <div className='address'>{signInUser?.address}</div>
+              <div className='sentence-box'>
+                {input ?
+                  <input className='input' type='text' value={comment} onChange={onCommentChangeHandler} placeholder='30글자 내로 입력하세요.' onKeyDown={onCommentKeydownHandler}
+                    autoFocus />
+                  : <div className='sentence'>{comment}</div>
+                }
+                <div className='sentence-change' onClick={onCommentButtonClickHandler}></div>
+              </div>
+            </div>
+          </div>
+          <div className='activity-container'>
+            <div className='score-container'>
+              <div className='line'>
+                <div className='follower-box' onClick={onFollowerOpenHandler}>
+                  <div className='follower-score'>팔로우</div>
+                  <div className='score'>{followerList.length}</div>
                 </div>
               </div>
-            )}
+              <div className='followee-box' onClick={onFolloweeOpenHandler}>
+                <div className='followee-score'>팔로잉</div>
+                <div className='score'>{followeeList.length}</div>
+              </div>
+            </div>
+            <div className='mileage-container'>
+              <div className='mileage-box'>
+                <div className='mileage-button'>M</div>
+                <div className='mileage-score'>{signInUser?.mileage}</div>
+              </div>
+              <div className='button-mileage' onClick={onGiftClickHandler}>기프티콘 바로가기</div>
+            </div>
+          </div>
+        </div>
+        <div className='mypage-bottom'>
+          <div className='table-contents'>
+            <div className='my-recruit' onClick={onMyRecruitClickHandler}><span>구인 게시글</span></div>
+            <div className='line'>
+              <div className='my-active'><span>활동 게시글</span></div>
+            </div>
+            <div className='line-right'>
+              <div className='my-mileage'><span>마일리지 내역</span></div>
+            </div>
+            <div className='my-scrap'><span>스크랩 글</span></div>
+          </div>
+          <div className='table'>
+            {recruitContents.length > 0 &&
+              (
+                <div className="main">
+                  <div className="middle-top">
+                  </div>
+                  <div className="table">
+                    <div className="th">
+                      <div className="td-recruit-number">번호</div>
+                      <div className="td-recruit-isCompleted">마감유무</div>
+                      <div className="td-recruit-title">제목</div>
+                      <div className="td-recruit-writer">작성자</div>
+                      <div className="td-recruit-like-count">추천수</div>
+                      <div className="td-recruit-view-count">조회수</div>
+                      <div className="td-recruit-people">모집인원</div>
+                      <div className="td-recruit-end-date">마감일자</div>
+                      <div className="td-recruit-create-date">날짜</div>
+                    </div>
+                    {
+                      viewList.map((recruitPostId, index) => (
+                        <TableRow key={index} recruitPostId={recruitPostId} getRecruitList={getRecruitPostList} />
+                      ))}
+                  </div>
+
+                  <div className="pagination">
+                    <Pagination currentPage={currentPage} {...paginationProps} />
+                  </div>
+                </div>
+              )}
+          </div>
         </div>
       </div>
-    </div>
+      {/* 팔로워 모달 */}
+      {followerModalOpen &&
+      <div className='modal'>
+        <div className='modal-box'>
+            {
+              followerList.map( (follow, index)=> (
+                <FollowTableRow key={index} follow={follow} getFollowList={() => getFollowerList} mode='follower'/>
+              ))}
+          <div className='modal-bottom'>
+            <div className='button second' onClick={onFollowerOpenHandler}>닫기</div>
+          </div>
+        </div>
+      </div>
+      }
+
+      {/* 팔로위 모달 */}
+      {followeeModalOpen &&
+      <div className='modal'>
+        <div className='modal-box'>
+            {
+              followeeList.map( (follow, index)=> (
+                <FollowTableRow key={index} follow={follow} getFollowList={() => getFolloweeList} mode='followee'/>
+              ))}
+          <div className='modal-bottom'>
+            <div className='button second' onClick={onFolloweeOpenHandler}>닫기</div>
+          </div>
+        </div>
+      </div>
+     }
+    </>
   )
 }

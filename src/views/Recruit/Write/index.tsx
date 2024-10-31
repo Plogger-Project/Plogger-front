@@ -124,11 +124,6 @@ export default function RecruitWrite() {
     navigator(RECRUIT_ABSOLUTE_PATH);
   };
 
-  // event handler: 마이페이지 이동 이벤트 처리 //
-  const onMypageButtonClickHandler = () => {
-    navigator(MYPAGE_PATH);
-  };
-
 
   // event handler: 구인 작성 제목 변경 이벤트 처리 함수 //
   const onTitleChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -200,9 +195,6 @@ export default function RecruitWrite() {
     setIsDatePickerOpen((prev) => !prev); // 달력 열기/닫기 상태 변경
   };
 
-
-
-
   // event handler: 등록 버튼 이벤트 처리 함수 //
   const onPostButtonClickHandler = async () => {
     if (!title || !contents || !people || !endDate || !location) {
@@ -213,13 +205,13 @@ export default function RecruitWrite() {
     if (!accessToken) return;
 
 
-    let url: string | null = defaultImageUrl;
+    let url: string | null = null;
     if (imageFile) {
       const formData = new FormData();
       formData.append('file', imageFile);
       url = await fileUploadRequest(formData);
     }
-    url = url ? url : defaultImageUrl;
+    url = url ? url : '';
 
 
 
@@ -243,9 +235,9 @@ export default function RecruitWrite() {
       <div id='recruit-write-input-container'>
         <div className='userInfo'>
           <div className='userInfo-left'>
-            <div className='profileImage' onClick={onMypageButtonClickHandler}></div>
+            <div className='profileImage'></div>
             <div className='userInfo-right'>
-              <div className='name' onClick={onMypageButtonClickHandler}>{signInUser?.userId}</div>
+              <div className='name'>{signInUser?.userId}</div>
               <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
             </div>
           </div>

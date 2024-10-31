@@ -33,7 +33,7 @@ export default function MyPageUpdate() {
   // 프로필 미리보기 URL 상태 //
   const [previewUrl, setPreviewUrl] = useState<string>(defaultProfileImageUrl);
 
-  // state: 고객 정보 상태 //
+  // state: 유저 정보 상태 //
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [name, setName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
