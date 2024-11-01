@@ -9,6 +9,7 @@ import { useKakaoLoader } from 'src/hooks';
 import { useSignInUserStore } from 'src/stores';
 import './style.css';
 import { useCookies } from 'react-cookie';
+import { Avatar, AvatarGroup } from '../../../components/ui/avatar';
 
 export default function ActiveDetail() {
 
@@ -245,11 +246,14 @@ export default function ActiveDetail() {
                 <div className='postBottom'>
                     <div className='postInfo'>
                         <div className='tag'>
-                            {(activePeople.map((tagUser) => (
-                                <span className='tagUser'>
-                                    {tagUser}
-                                </span>))
+                        <AvatarGroup size="lg">
+                            {activePeople.slice(0, 3).map((tagUser, index) => (
+                                <Avatar key={index} src={tagUser} />
+                            ))}
+                            {activePeople.length > 3 && (
+                                <Avatar variant="solid" fallback={`+${activePeople.length - 3}`} />
                             )}
+                        </AvatarGroup>
                         </div>
                         <div className='right'>
                             <div
