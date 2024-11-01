@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import './Plogger.css';
-import { BrowserRouter } from 'react-router-dom';
 import { Routes, Route, useLocation, Navigate, Router, useSearchParams, useNavigate } from 'react-router-dom';
 
 
