@@ -1,8 +1,8 @@
 export default interface RecruitReportList{
-    recruitReport: number;
-    recruitUserId: string;
-    recruitreportPostId: number;
-    recruitReportcontent: string;
-    recruitReportCreatedAt: string;
+    recruitId: number;
+    userId: string;
+    reportId: number;
+    content: string;
+    createdAt: string;
     
 }

@@ -4,7 +4,6 @@ import { useCookies } from 'react-cookie';
 import { useSignInUserStore } from 'src/stores';
 import { useNavigate } from 'react-router-dom';
 import { useKakaoLoader } from 'src/hooks';
-import useGeolocation from 'src/hooks/useGeolocation.hook';
 import { ACCESS_TOKEN, ACTIVE_PATH } from 'src/constants';
 import { fileUploadRequest, getMyRecruitPostRequest, postActivePostRequest } from 'src/apis';
 import { PostActivePostRequestDto } from 'src/apis/dto/request/active';
@@ -41,14 +40,16 @@ export default function ActiveWrite() {
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const [location, setLocation] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
   const [selectedMyRecruit, setSelectedMyRecruit] = useState<MyRecruitPost[]>([]);
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(new Date());
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(new Date()); // 날짜 상태 추가
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false); // 달력 열기 상태 추가
-  const [position, setPosition] = useState<{
-    lat: number
-    lng: number
-  }>();
+  const [isStartDatePickerOpen, setStartIsDatePickerOpen] = useState(false); // 달력 열기 상태 추가
+  const [isEndDatePickerOpen, setEndIsDatePickerOpen] = useState(false); // 달력 열기 상태 추가
+  const [recruitId, setRecruitId] = useState<number>(0);
+
+  const [lng, setLng] = useState<number>(0);
+  const [lat, setLat] = useState<number>(0);
 
   const mapRef = useRef<HTMLDivElement | null>(null);
   const imageInputRef = useRef<HTMLInputElement | null>(null);
@@ -58,31 +59,13 @@ export default function ActiveWrite() {
 
   useKakaoLoader();
 
-  const geoLocation = useGeolocation();
-
-  const [lat, setLat] = useState<string | null>(null);
-  const [lng, setLng] = useState<string | null>(null);
-  const [center, setCenter] = useState<{ lat: number; lng: number }>({
-    lat: 35.152170407376424, // 기본 값 설정
-    lng: 129.05979624585217,
-  });
-
-  useEffect(() => {
-    if (geoLocation.loaded && geoLocation.coordinates) {
-      setCenter({
-        lat: geoLocation.coordinates.lat,
-        lng: geoLocation.coordinates.lng,
-      });
-    }
-  }, [geoLocation]);
-
   // function: 활동 게시판 글 작성 처리 함수 //
   const postActivePostResponse = (responseBody: ResponseDto | null) => {
     const message =
       !responseBody ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'VF' ? '모두 입력해주세요.' :
-          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+      responseBody.code === 'VF' ? '모두 입력해주세요.' :
+      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
@@ -97,10 +80,10 @@ export default function ActiveWrite() {
   const getMyRecruitPostResponse = (responseBody: GetMyRecruitReponseDto | ResponseDto | null) => {
     const message =
       !responseBody ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NRP' ? '존재하지 않는 게시글입니다.' :
-              responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+      responseBody.code === 'NRP' ? '존재하지 않는 게시글입니다.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
@@ -164,7 +147,7 @@ export default function ActiveWrite() {
   // event handler: 날짜 선택 변경 이벤트 핸들러 //
   const onStartDateChangeHandler = (date: Date | null) => {
     setSelectedStartDate(date);
-    setIsDatePickerOpen(false); // 날짜 선택 후 달력 닫기
+    setStartIsDatePickerOpen(false); // 날짜 선택 후 달력 닫기
     if (date) {
       // 한국 표준시(KST)로 변환
       const koreaDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
@@ -179,7 +162,7 @@ export default function ActiveWrite() {
   // event handler: 날짜 선택 변경 이벤트 핸들러 //
   const onEndDateChangeHandler = (date: Date | null) => {
     setSelectedEndDate(date);
-    setIsDatePickerOpen(false); // 날짜 선택 후 달력 닫기
+    setEndIsDatePickerOpen(false); // 날짜 선택 후 달력 닫기
     if (date) {
       // 한국 표준시(KST)로 변환
       const koreaDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
@@ -201,39 +184,44 @@ export default function ActiveWrite() {
   const onMyRecruitPostChangeHandler = (event: ChangeEvent<HTMLSelectElement>) => {
     const selectedPostId = parseInt(event.target.value);
     const myRecruitPost = selectedMyRecruit.find(post => post.recruitPostId === selectedPostId) || null;
-    if (myRecruitPost) {
-      setLocation(myRecruitPost.recruitLocation);
-      setActivePeople(myRecruitPost.recruitJoinPeople);
-  } else {
-      setLocation('');
-      setActivePeople([]);
-  }
 
     if (myRecruitPost) {
-        setLocation(myRecruitPost.recruitLocation);
-        setActivePeople(myRecruitPost.recruitJoinPeople);
+      const [postLat, postLng] = myRecruitPost.recruitLocation.split(', ').map(coord => (Math.floor(Number(coord.trim()) * 1000000) / 1000000));
+      setRecruitId(selectedPostId)
+      setLat(postLat);
+      setLng(postLng);
+      setLocation(myRecruitPost.recruitLocation);
+      setActivePeople(myRecruitPost.recruitJoinPeople);
+    } else {
+      setRecruitId(0)
+      setLat(0);
+      setLng(0);
+      setLocation('');
+      setActivePeople([]);
     }
 
   }
 
   // event handler: 달력 열기/닫기 버튼 클릭 핸들러 //
   const startToggleDatePicker = () => {
-    setIsDatePickerOpen((prev) => !prev); // 달력 열기/닫기 상태 변경
+    setStartIsDatePickerOpen((prev) => !prev); // 달력 열기/닫기 상태 변경
   };
 
   // event handler: 달력 열기/닫기 버튼 클릭 핸들러 //
   const endToggleDatePicker = () => {
-    setIsDatePickerOpen((prev) => !prev); // 달력 열기/닫기 상태 변경
+    setEndIsDatePickerOpen((prev) => !prev); // 달력 열기/닫기 상태 변경
   };
 
   // event handler: 등록 버튼 이벤트 처리 함수 //
   const onPostButtonClickHandler = async () => {
-    if (!title || !content || !activePeople || !endDate || !startDate || !activePeople || !location) {
+    if (!title || !content || !endDate || !startDate || !activePeople || !lng || !lat) {
       alert('모두 입력해주세요.'); return;
     }
 
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
+
+    if (!recruitId) return;
 
     let url: string | null = defaultImageUrl;
     if (imageFile) {
@@ -245,11 +233,12 @@ export default function ActiveWrite() {
     url = url ? url : defaultImageUrl;
 
     const requestBody: PostActivePostRequestDto = {
-      title, content, image: url, endDate, startDate,
-      location, activePeople
+      activePostTitle: title, activePostContent: content, activePostImage: url,
+      activeEndDate: endDate, activeStartDate: startDate,
+      activeLocation: location, activePeople
     };
 
-    postActivePostRequest(requestBody, accessToken).then(postActivePostResponse);
+    postActivePostRequest(requestBody, recruitId, accessToken).then(postActivePostResponse);
 
   };
 
@@ -259,6 +248,34 @@ export default function ActiveWrite() {
 
     navigator(ACTIVE_PATH);
   }
+
+  // event handler: 태그된 인원을 삭제하는 이벤트 핸들러 //
+  const onTagUserRemoveHandler = (tagId: string) => {
+    setActivePeople((prev) => prev.filter((tagUser) => tagUser !== tagId));
+  };
+
+  // effect: 좌표로 주소 정보 요청 함수 //
+  useEffect(() => {
+    const { kakao } = window;
+    if (!kakao) return;
+    const geocoder = new kakao.maps.services.Geocoder();
+
+    // 지정된 좌표의 주소를 가져오는 함수
+    const displayAddressInfo = (lat: number, lng: number) => {
+      geocoder.coord2RegionCode(lng, lat, (result: string | any[], status: any) => {
+        if (status === kakao.maps.services.Status.OK) {
+          for (let i = 0; i < result.length; i++) {
+            if (result[i].region_type === 'H') {
+              setAddress(result[i].address_name);  // address 주소 문자열 저장
+              break;
+            }
+          }
+        }
+      });
+    };
+    // 좌표에 따른 주소 요청 함수 호출
+    displayAddressInfo(lat, lng);
+  }, [lat, lng]);
 
   useEffect(() => {
     getMyRecruitPosts();
@@ -279,10 +296,6 @@ export default function ActiveWrite() {
           </div>
         </div>
         <div className='input-box'>
-          <div className='input-label'>제목</div>
-          <input className='input' value={title} placeholder='제목을 입력해주세요.(최대 32자)' onChange={onTitleChangeHandler} maxLength={32} />
-        </div>
-        <div className='input-box'>
           <div className='input-label'>내가 쓴 구인 글 불러오기</div>
           <select id="recruitmentPostSelect" onChange={onMyRecruitPostChangeHandler}>
             <option value="">선택하세요</option>
@@ -292,6 +305,21 @@ export default function ActiveWrite() {
               </option>
             ))}
           </select>
+        </div>
+        <div className='input-box'>
+          <div className='input-label'>제목</div>
+          <input className='input' value={title} placeholder='제목을 입력해주세요.(최대 32자)' onChange={onTitleChangeHandler} maxLength={32} />
+        </div>
+        <div className='input-box'>
+          <div className='input-label'>태그된 인원들</div>
+          <div className='tag'>
+            {(activePeople.map((tagUser) => (
+              <span className='tagUser'>
+                {tagUser}
+                <button onClick={() => onTagUserRemoveHandler(tagUser)}>X</button>
+              </span>))
+            )}
+          </div>
         </div>
         <div className='input-box'>
           <div className='input-label'>내용</div>
@@ -312,12 +340,39 @@ export default function ActiveWrite() {
                 <FaCalendarAlt size={20} />
               </button>
 
-              {isDatePickerOpen && (
+              {isStartDatePickerOpen && (
                 <DatePicker
                   selected={selectedStartDate}
                   onChange={onStartDateChangeHandler}
-                  // minDate={new Date()}
-                  onClickOutside={() => setIsDatePickerOpen(false)}
+                  onClickOutside={() => setStartIsDatePickerOpen(false)}
+                  dateFormat={"yyyy-MM-dd"}
+                  inline
+                />
+              )}
+            </div>
+          </div>
+        </div>
+        <div className='input-box'>
+          <div className='input-label'>활동 기간 종료일</div>
+          <div className="date-picker-wrapper">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <input
+                className='input date'
+                value={endDate}
+                readOnly
+                placeholder="활동 종료일"
+                onChange={onEndDateInputChangeHandler}
+              />
+              <button onClick={endToggleDatePicker} style={{ marginLeft: '10px', cursor: 'pointer' }}>
+                <FaCalendarAlt size={20} />
+              </button>
+
+              {isEndDatePickerOpen && (
+                <DatePicker
+                  selected={selectedEndDate}
+                  onChange={onEndDateChangeHandler}
+                  minDate={new Date(startDate)}
+                  onClickOutside={() => setEndIsDatePickerOpen(false)}
                   dateFormat={"yyyy-MM-dd"}
                   inline
                 />
@@ -338,29 +393,21 @@ export default function ActiveWrite() {
         </div>
         <div className='input-box'>
           <div className='input-label'>위치</div>
-          <div className="kakaomap" ref={mapRef} >
-            <Map
-              center={center}
-              style={{ width: "100%", height: "360px" }}
-              onClick={(_, MouseEvent) => {
-                const latlng = MouseEvent.latLng;
-                const lat = latlng.getLat();
-                const lng = latlng.getLng();
-
-                setPosition({ lat, lng });
-                setLocation(`${lat}, ${lng}`); // 문자열로 저장
-
-              }}
-
-            >
-              <MapMarker position={position ?? center}>
-                <div style={{ color: "#000" }}>선택한 위치</div>
-              </MapMarker>
-            </Map>
-          </div>
-          <div className="kakaomap">{location}</div>
+          {lat !== 0 && lng !== 0 &&
+            <div className="kakaomap" ref={mapRef} >
+              <Map
+                center={{ lat, lng }}
+                style={{ width: "100%", height: "360px" }}
+                level={3}
+              >
+                <MapMarker position={{ lat, lng }}>
+                  <div style={{ color: "#000" }}>장소</div>
+                </MapMarker>
+              </Map>
+            </div>
+          }
+          <div className="kakaomap">{address}</div>
         </div>
-
         <div className="bottom">
           <div className='button primary' onClick={onPostButtonClickHandler}>등록</div>
           <div className='button disable' onClick={onCancleButtonClickHandler}>취소</div>

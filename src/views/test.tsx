@@ -1,7 +1,11 @@
+import { Button, HStack } from '@chakra-ui/react'
 import React from 'react'
 
-export default function test() {
+export default function Test() {
   return (
-    <div>test</div>
+    <HStack>
+    <Button>Click me</Button>
+    <Button>Click me</Button>
+  </HStack>
   )
 }

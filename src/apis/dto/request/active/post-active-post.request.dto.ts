@@ -1,9 +1,9 @@
 export default interface PostActivePostRequestDto {
-    title: string;
-    image: string;
-    content: string;
-    startDate: string;
-    endDate: string;
-    location: string;
+    activePostTitle: string;
+    activePostImage: string;
+    activePostContent: string;
+    activeStartDate: string;
+    activeEndDate: string;
+    activeLocation: string;
     activePeople: string[];
 }

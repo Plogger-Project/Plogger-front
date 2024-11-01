@@ -3,6 +3,7 @@ import './Plogger.css';
 import { BrowserRouter } from 'react-router-dom';
 import { Routes, Route, useLocation, Navigate, Router, useSearchParams, useNavigate } from 'react-router-dom';
 
+
 import SignUp from './views/Auth';
 
 import ActivePost from './views/Active';
@@ -36,6 +37,8 @@ import Admin from './views/Admin';
 import ActiveDetail from './views/Active/Detail';
 import ActiveUpdate from './views/Active/Update';
 import ActiveWrite from './views/Active/Write';
+import { Provider } from './components/ui/provider';
+import Test from './views/test';
 
 
 
@@ -116,10 +119,11 @@ function Plogger() {
   const location = useLocation();
 
 
-  const showNavigationBar = location.pathname !== '/sign-up' && location.pathname !== FIND_ID && location.pathname !== '/mypage/update' && location.pathname !== FIND_PASSWORD;
+  const showNavigationBar = location.pathname !== '/sign-up' && location.pathname !== FIND_ID && location.pathname !== '/mypage/update' && location.pathname !== FIND_PASSWORD && location.pathname !== FIND_PASSWORD;
 
   // render: Plogger 컴포넌트 렌더링 //
   return (
+    <Provider>
     <>
       {showNavigationBar && <NavigationBar />}
       <Routes>
@@ -128,7 +132,7 @@ function Plogger() {
         <Route path={RECRUIT_PATH} element={<RecruitPost/> } />
         <Route path={RECRUIT_WRITE_PATH} element={<RecruitWrite />} />
         <Route path={RECRUIT_DETAIL_PATH(':recruitPostId')} element={<RecruitDetail />} />
-        <Route path={RECRUIT_UPDATE_PATH} element={<RecruitUpdate />} />
+        <Route path={RECRUIT_UPDATE_PATH(':recruitPostId')} element={<RecruitUpdate />} />
         <Route path='/active' element={<ActivePost />} />
         <Route path={ACTIVE_WRITE_PATH} element={<ActiveWrite />} />
         <Route path={ACTIVE_DETAIL_PATH(':activePostId')} element={<ActiveDetail />} />
@@ -141,8 +145,10 @@ function Plogger() {
         <Route path={FIND_PASSWORD} element={<FindPassword />} />
         <Route path={SNS_SUCCESS_PATH} element={<SnsSuccess />} />
         <Route path='/admin' element={<Admin />} />
+        <Route path='/test' element={<Test />} />
       </Routes>
     </>
+    </Provider>
   );
 }
 
