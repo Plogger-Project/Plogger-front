@@ -4,7 +4,7 @@ import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SignUpRe
 import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
-import { GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from "./dto/response/recruit";
+import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from "./dto/response/recruit";
 import { GetQnaPostListResponseDto } from "./dto/response/qna";
 import { PatchCommentRequestDto, PatchUserRequestDto } from "./dto/request/user";
 import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
@@ -46,7 +46,7 @@ const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 
 const GET_RECRUIT_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}`;
 
-const GET_RECRUIT_COMMENT_LIST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}/comments`;
+const GET_RECRUIT_COMMENT_LIST_API_URL = (recruitPostId: string | number) => `${RECRUIT_MODULE_URL}/${recruitPostId}/comments`;
 
 
 const DELETE_RECRUIT_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}`;
@@ -427,16 +427,6 @@ export const deleteAlertListRequest = async (id: string | number, accessToken: s
     return resopnseBody;
 }
 
-// function: get recruit comment list 요청 함수 //
-export const getRecruitCommentListRequest = async (recruitPostId: number | string, accesstoken: string) => {
-    const responseBody = await axios.get(GET_RECRUIT_COMMENT_LIST_API_URL(recruitPostId), bearerAuthorization(accesstoken))
-    .then(responseDataHandler<ResponseDto>)
-    .catch(responseErrorHandler);
-return responseBody;
-}
-
-
-
 // function: post follow 요청 함수 //
 // export const postFollowRequest = async ( requestBody: PostGifticonRequestDto, accessToken: string ) => {
 //     const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId))
@@ -486,4 +476,12 @@ export const getRecruitUserInfoRequest = async (recruitPostWriter: string) => {
         .catch(responseErrorHandler);
     return responseBody;
 }
+
+// function: get recruit comment list 요청 함수 //
+export const getRecruitCommentListRequest = async (recruitPostId: number | string, accessToken: string) => {
+    const responseBody = await axios.get(GET_RECRUIT_COMMENT_LIST_API_URL(recruitPostId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetRecruitCommentListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 
