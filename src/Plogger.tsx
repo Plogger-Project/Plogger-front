@@ -132,7 +132,7 @@ function Plogger() {
         <Route path={RECRUIT_PATH} element={<RecruitPost/> } />
         <Route path={RECRUIT_WRITE_PATH} element={<RecruitWrite />} />
         <Route path={RECRUIT_DETAIL_PATH(':recruitPostId')} element={<RecruitDetail />} />
-        <Route path={RECRUIT_UPDATE_PATH} element={<RecruitUpdate />} />
+        <Route path={RECRUIT_UPDATE_PATH(':recruitPostId')} element={<RecruitUpdate />} />
         <Route path='/active' element={<ActivePost />} />
         <Route path={ACTIVE_WRITE_PATH} element={<ActiveWrite />} />
         <Route path={ACTIVE_DETAIL_PATH(':activePostId')} element={<ActiveDetail />} />
