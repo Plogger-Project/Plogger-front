@@ -37,7 +37,6 @@ import Admin from './views/Admin';
 import ActiveDetail from './views/Active/Detail';
 import ActiveUpdate from './views/Active/Update';
 import ActiveWrite from './views/Active/Write';
-import { Provider } from './components/ui/provider';
 import Test from './views/test';
 
 
@@ -123,7 +122,6 @@ function Plogger() {
 
   // render: Plogger 컴포넌트 렌더링 //
   return (
-    <Provider>
     <>
       {showNavigationBar && <NavigationBar />}
       <Routes>
@@ -148,7 +146,6 @@ function Plogger() {
         <Route path='/test' element={<Test />} />
       </Routes>
     </>
-    </Provider>
   );
 }
 
