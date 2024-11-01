@@ -1,5 +1,5 @@
-export default interface RecruitReportList{
-    recruitId: number;
+export default interface ActiveReportList{
+    activeId: number;
     userId: string;
     reportId: number;
     content: string;

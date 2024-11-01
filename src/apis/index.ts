@@ -13,7 +13,7 @@ import PatchPasswordRequestDto from "./dto/request/user/patch-password.request.d
 import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 import { FindPasswordResponseDto, GetSignInResponseDto } from "./dto/response/auth";
 import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
-import { PostRecruitRequestDto } from "./dto/request/recruit";
+import {  PatchRecruitIsCompletedRequestDto, PostRecruitRequestDto } from "./dto/request/recruit";
 import GetRecruitPostResponseDto from "./dto/response/recruit/get-recruit.response.dto";
 import PostActivePostRequestDto from "./dto/request/active/post-active-post.request.dto";
 import { PatchActiveCommentRequestDto, PatchActivePostRequestDto, PostActiveCommentRequestDto } from "./dto/request/active";
@@ -40,6 +40,7 @@ const FIND_ID_API_URL = `${AUTH_MODULE_URL}/find-id`;
 const FIND_PASSWORD_API_URL = `${AUTH_MODULE_URL}/find-password`;
 const TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/tel-auth-check`;
 const RECRUIT_REPORT_API_URL = `${REPORT_MODULE_URL}/recruit`;
+const ACTIVE_REPORT_API_URL = `${REPORT_MODULE_URL}/active`;
 
 const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
@@ -51,7 +52,7 @@ const GET_RECRUIT_COMMENT_LIST_API_URL = (recruitPostId: number | string) => `${
 
 
 const DELETE_RECRUIT_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}`;
-
+const PATCH_RECRUIT_ISCOMPLETED_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/iscompleted/${recruitPostId}`;
 const GET_RECRUIT_USER_INFO_API_URL = (recruitPostWriter: string) => `${GET_SIGN_IN_API_URL}/${recruitPostWriter}`;
 
 const POST_RECRUIT_POST_API_URL = `${RECRUIT_MODULE_URL}`
@@ -76,7 +77,7 @@ const GET_ALERT_LIST_API_URL = `${ALERT_MODULE_URL}`;
 const DELETE_ALERT_LIST_API_URL = (id: number | string) => `${ALERT_MODULE_URL}/${id}`;
 
 const GET_RECRUIT_REPORT_LIST_API_URL = `${RECRUIT_REPORT_API_URL}`;
-
+const GET_ACTIVE_REPORT_LIST_API_URL = `${ACTIVE_REPORT_API_URL}`;
 
 const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
 const POST_RECRUIT_LIKE_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/like/${recruitId}`;
@@ -419,6 +420,15 @@ export const getRecruitPostRequest = async (recruitPostId: number | string) => {
     return responseBody;
 }
 
+// function: recruit post 수정 요청 함수 //
+export const patchRecruitRequest = async (requestBody: PatchRecruitIsCompletedRequestDto, recruitPostId: string | number, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_RECRUIT_ISCOMPLETED_POST_API_URL(recruitPostId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+
 // function : get qna post list 요청 함수 //
 export const getQnaPostListRequest = async () => {
     const responseBody = await axios.get(GET_QNA_POST_LIST_API_URL)
@@ -438,14 +448,14 @@ export const deleteRecruitPostRequest = async (recruitPostId: number | string, a
 // function: post recruit report 요청 함수 //
 export const PostRecruitReportRequest = async (requestBody: PostRecruitReportRequestDto, accessToken: string, recruitPostId: number | string) => {
     const responseBody = await axios.post(POST_RECRUIT_REPORT_API_URL(recruitPostId), requestBody, bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetRecruitReportListResponseDto>)
+        .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 };
 
 // function: get recruit report list 요청 함수 //
-export const GetRecruitReportListRequest = async () => {
-    const responseBody = await axios.get(GET_RECRUIT_REPORT_LIST_API_URL)
+export const GetRecruitReportListRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_RECRUIT_REPORT_LIST_API_URL, bearerAuthorization(accessToken))
     .then(responseDataHandler<GetRecruitReportListResponseDto>)
     .catch(responseErrorHandler);
 return responseBody;
