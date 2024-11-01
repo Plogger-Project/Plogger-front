@@ -104,12 +104,8 @@ export default function RecruitDetail() {
   const optionBoxRef = useRef<HTMLDivElement | null>(null);  // optionBox 참조
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
 
-  const [lat, setLat] = useState<number>(0);
   const [lng, setLng] = useState<number>(0);
-
-  // state: 구인게시글 댓글 정보 상태 //
-  const [originalList, setOriginalList] = useState<RecruitCommentList[]>([]);
-
+  const [lat, setLat] = useState<number>(0);
 
   // variable: 작성자 여부 //
   const isWriter = writer === signInUser?.userId;
@@ -133,9 +129,9 @@ export default function RecruitDetail() {
   const getRecruitPostResponse = (responseBody: GetRecruitPostResponseDto | ResponseDto | null) => {
     const message = !responseBody ? '서버에 문제가 있습니다.' :
       responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-      responseBody.code === 'NRP' ? '존재하지 않는 글입니다.' :
-      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'NRP' ? '존재하지 않는 글입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
@@ -261,6 +257,7 @@ export default function RecruitDetail() {
         responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' : 
         responseBody.code === 'AF' ? '잘못된 접근입니다.' : 
         responseBody.code === 'NP' ? '권한이 없습니다.' :
+        responseBody.code === 'TI' ? '용품의 개수가 부족합니다.' :
         responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
     
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
@@ -269,9 +266,11 @@ export default function RecruitDetail() {
         return;
     }
 
-    const {recruitComments } = responseBody as GetRecruitCommentListResponseDto;
-    setOriginalList(recruitComments);
-    setTotalList(recruitComments);
+    if (!recruitPostId) return;
+    const accessToken = cookies[ACCESS_TOKEN];
+    if (!accessToken) return;
+
+    getRecruitCommentListRequest(recruitPostId, accessToken).then(getRecruitCommentListResponse);
   };
 
   // function: recruit list 불러오기 함수 //
@@ -280,7 +279,7 @@ export default function RecruitDetail() {
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
     getRecruitCommentListRequest(recruitPostId, accessToken).then(getRecruitCommentListResponse);
-  };
+    };
 
   // event handler: 목록 버튼 클릭 이벤트 처리 //
   const onListButtonClickHandler = () => {
@@ -369,6 +368,7 @@ export default function RecruitDetail() {
   useEffect(() => {
     if (!recruitPostId) return;
     getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
+
   }, [recruitPostId, writer]);
 
   // // effect: 게시물 번화가 바뀔 때 작성자 프사 정보 요청 함수 //
@@ -412,6 +412,7 @@ export default function RecruitDetail() {
     if (!recruitPostId) return;
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
+    
     getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
     getRecruitCommentListRequest(recruitPostId, accessToken).then(getRecruitCommentListResponse);
 }, [recruitPostId]);
@@ -525,6 +526,11 @@ export default function RecruitDetail() {
             </div>
             <div className='commentUserInfo'>
               <div className='profileImage'></div>
+              <div className='commentUserInfo-right'>
+                <div className='recruitCommentWriter'>asd</div>
+                <div className='recruitCommentContent'>asd</div>
+                <div className='recruitCommentCreatedAt'>asd</div>
+              </div>
               {viewList.length > 0 ? (
                     viewList.map((recruitComment, index) => (
                         <TableRow key={index} recruitComment={recruitComment} getRecruitCommentList={() => getRecruitCommentList} />
