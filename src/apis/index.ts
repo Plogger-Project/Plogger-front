@@ -39,6 +39,7 @@ const FIND_ID_API_URL = `${AUTH_MODULE_URL}/find-id`;
 const FIND_PASSWORD_API_URL = `${AUTH_MODULE_URL}/find-password`;
 const TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/tel-auth-check`;
 const RECRUIT_REPORT_API_URL = `${REPORT_MODULE_URL}/recruit`;
+const ACTIVE_REPORT_API_URL = `${REPORT_MODULE_URL}/active`;
 
 const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
@@ -69,7 +70,7 @@ const GET_ALERT_LIST_API_URL = `${ALERT_MODULE_URL}`;
 const DELETE_ALERT_LIST_API_URL = (id: number | string) => `${ALERT_MODULE_URL}/${id}`;
 
 const GET_RECRUIT_REPORT_LIST_API_URL = `${RECRUIT_REPORT_API_URL}`;
-
+const GET_ACTIVE_REPORT_LIST_API_URL = `${ACTIVE_REPORT_API_URL}`;
 
 const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
 const POST_RECRUIT_LIKE_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/like/${recruitId}`;
@@ -389,14 +390,14 @@ export const deleteRecruitPostRequest = async (recruitPostId: number | string, a
 // function: post recruit report 요청 함수 //
 export const PostRecruitReportRequest = async (requestBody: PostRecruitReportRequestDto, accessToken: string, recruitPostId: number | string) => {
     const responseBody = await axios.post(POST_RECRUIT_REPORT_API_URL(recruitPostId), requestBody, bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetRecruitReportListResponseDto>)
+        .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 };
 
 // function: get recruit report list 요청 함수 //
-export const GetRecruitReportListRequest = async () => {
-    const responseBody = await axios.get(GET_RECRUIT_REPORT_LIST_API_URL)
+export const GetRecruitReportListRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_RECRUIT_REPORT_LIST_API_URL, bearerAuthorization(accessToken))
     .then(responseDataHandler<GetRecruitReportListResponseDto>)
     .catch(responseErrorHandler);
 return responseBody;

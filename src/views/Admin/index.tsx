@@ -4,8 +4,8 @@ import { useNavigate, useNavigation } from 'react-router-dom'
 import InputBox from '../../components/InputBox';
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
-import { RecruitPostList } from 'src/types';
-import { getRecruitPostListRequest, GetRecruitReportListRequest, patchCommentRequest } from 'src/apis';
+import { Follow, RecruitPostList } from 'src/types';
+import { getRecruitPostListRequest, GetRecruitReportListRequest, getSignInFolloweeListRequest, getSignInFollowerListRequest, patchCommentRequest } from 'src/apis';
 import { GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
@@ -13,6 +13,28 @@ import { ACCESS_TOKEN, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';
 import { PatchCommentRequestDto } from 'src/apis/dto/request/user';
 import { useCookies } from 'react-cookie';
 import RecruitReportList from 'src/types/recruitreport.interface';
+import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from 'src/apis/dto/response/follow';
+
+// interface: 팔로워&팔로위 리스트 컴포넌트 Properties //
+interface FollowTableRowProps {
+  follow: Follow;
+  getFollowList: () => void;
+  mode: 'follower' | 'followee';
+}
+
+// component: 팔로워&팔로위 리스트 아이템 컴포넌트 //
+function FollowTableRow({ follow, getFollowList, mode }: FollowTableRowProps) {
+
+  const displayedId = mode === 'follower' ? follow.followerId : follow.followeeId;
+
+  // render : 팔로워&팔로위 게시글 리스트 렌더링 //
+  return (
+    <div className="follow-table" key={follow.followId}>
+      <div>{displayedId}</div>
+    </div>
+  )
+
+}
 
 export default function Admin() {
   // state: 페이징 관련 상태 //
@@ -28,6 +50,7 @@ export default function Admin() {
   const [chkpassword, setChkPassword] = useState<string>('');
   const [telNumber, setTelNumber] = useState<string>('');
   const [authNumber, setAuthNumber] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
 
   // state: 로그인 유저 정보 //
   const { signInUser, setSignInUser } = useSignInUserStore();
@@ -39,8 +62,70 @@ export default function Admin() {
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [imageUrl, setImageUrl] = useState<string>('');
 
-  // state: 내 구인 게시판 목록 상태 //
-  const [recruitContents, setRecruitContents] = useState<RecruitReportList[]>([]);
+
+  // state: 팔로워 모달 팝업 상태 //
+  const [followerModalOpen, setFollowerModalOpen] = useState<boolean>(false);
+
+  // state: 팔로위 모달 팝업 상태 //
+  const [followeeModalOpen, setFolloweeModalOpen] = useState<boolean>(false);
+
+  const [followerList, setFollowerList] = useState<Follow[]>([]);
+  const [followeeList, setFolloweeList] = useState<Follow[]>([]);
+
+  // state: 구인 신고글 상태 //
+  const [showRecruitReports, setShowRecruitReports] = useState(false);
+
+  const accessToken = cookies[ACCESS_TOKEN];
+
+  // function: follower list 불러오기 함수 //
+  const getFollowerList = () => {
+    const accessToken = cookies[ACCESS_TOKEN];
+    if (!accessToken) return;
+    getSignInFollowerListRequest(accessToken).then(getFollowerListResponse);
+  }
+
+  // function: get follower list response 처리 함수 //
+  const getFollowerListResponse = (responseBody: GetFollowerListResponseDto | ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'NF' ? '팔로워가 없습니다' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    const { follows } = responseBody as GetFollowerListResponseDto;
+    setFollowerList(follows);
+  }
+
+  // function: followee list 불러오기 함수 //
+  const getFolloweeList = () => {
+    const accessToken = cookies[ACCESS_TOKEN];
+    if (!accessToken) return;
+    getSignInFolloweeListRequest(accessToken).then(getFolloweeListResponse);
+  }
+
+  // function: get followee list response 처리 함수 //
+  const getFolloweeListResponse = (responseBody: GetFolloweeListResponseDto | ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'NF' ? '팔로잉이 없습니다' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    const { follows } = responseBody as GetFolloweeListResponseDto;
+    setFolloweeList(follows);
+  }
 
   // effect: 유저 정보가 변경되면 state에 반영 // 
   useEffect(() => {
@@ -53,7 +138,7 @@ export default function Admin() {
   const navigator = useNavigate();
 
   // function: 구인 신고글 list 불러오기 함수 //
-  const getRecruitReportPostList = () => { GetRecruitReportListRequest().then(getRecruitReportListResponse); };
+  const getRecruitReportPostList = () => { GetRecruitReportListRequest(accessToken).then(getRecruitReportListResponse); };
 
   // function: get recruit report list response 처리 함수 //
   const getRecruitReportListResponse = (responseBody: GetRecruitReportListResponseDto | ResponseDto | null) => {
@@ -66,10 +151,9 @@ export default function Admin() {
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) { alert(message); return; }
 
-    const recruitReports = (responseBody as GetRecruitReportListResponseDto).recruitReports || [];
-    const reportPosts = recruitReports.filter(get => get.recruitPostWriter === signInUser?.userId);
-    // setTotalList(reportPosts);
-    // setRecruitContents(reportPosts);
+    const reports = (responseBody as GetRecruitReportListResponseDto).reports;
+    setTotalList(reports);
+    setShowRecruitReports(true);
 
   };
   // function: patch comment post list response 처리 함수 //
@@ -90,14 +174,14 @@ export default function Admin() {
     }
   }
 
-  // interface: 구인 게시글 리스트 컴포넌트 Properties //
+  // interface: 구인 신고글 리스트 컴포넌트 Properties //
   interface TableRowProps {
-    recruitPostId: RecruitReportList;
+    recruitreportPostId: RecruitReportList;
     getRecruitReportList: () => void;
   }
 
-  // component: 구인 게시글 리스트 아이템 컴포넌트 //
-  function TableRow({ recruitPostId, getRecruitReportList }: TableRowProps) {
+  // component: 구인 신고글 리스트 아이템 컴포넌트 //
+  function TableRow({ recruitreportPostId, getRecruitReportList }: TableRowProps) {
 
     //function: 네비게이터 함수 //
     const navigator = useNavigate();
@@ -113,17 +197,17 @@ export default function Admin() {
 
     // event handler: 상세 정보 보기 버튼 클릭 이벤트 처리 함수 //
     const onDetailButtonClickHandler = () => {
-      navigator(RECRUIT_DETAIL_ABSOLUTE_PATH(recruitPostId.recruitreportPostId));
+      navigator(RECRUIT_DETAIL_ABSOLUTE_PATH(recruitreportPostId.reportId));
     };
 
     // render: 게시글 리스트 렌더링 //
     return (
-      <div className="tr" key={recruitPostId.recruitreportPostId}>
-        <div className="td-recruit-number">{recruitPostId.recruitreportPostId}</div>
-        <div className="td-recruit-user">{recruitPostId.recruitUserId}</div>
-        <div className="td-recruit-writerId">{recruitPostId.recruitreportPostId}</div>
-        <div className="td-recruit-content">{recruitPostId.recruitReportcontent}</div>
-        <div className="td-recruit-create-date">{formatDate(recruitPostId.recruitReportCreatedAt)}</div>
+      <div className="tr" key={recruitreportPostId.reportId}>
+        <div className="td-report-reportid">{recruitreportPostId.recruitId}</div>
+        <div className="td-report-writer">{recruitreportPostId.userId}</div>
+        <div className="td-report-number">{recruitreportPostId.reportId}</div>
+        <div className="td-report-content">{recruitreportPostId.content}</div>
+        <div className="td-report-create-date">{formatDate(recruitreportPostId.createdAt)}</div>
       </div>
     )
   }
@@ -162,12 +246,6 @@ export default function Admin() {
     if (!isMatched) return;
     setComment(value);
   }
-
-
-  // event handler: 모달 오픈 이벤트 처리 //
-  const onMypageUpdateOpenHandler = () => {
-    navigator('/mypage/update');
-  };
 
   // event handler: 기프티콘 오픈 이벤트 처리 //
   const onGiftClickHandler = () => {
@@ -233,8 +311,25 @@ export default function Admin() {
 
   // event handler: recruit report 클릭 이벤트 처리 // 
   const onRecruitReportClickHandler = () => {
+    setShowRecruitReports(true);
     getRecruitReportPostList();
   };
+
+  // event handler: 팔로워 모달 버튼 클릭 이벤트 처리 함수 //
+  const onFollowerOpenHandler = () => {
+    setFollowerModalOpen(!followerModalOpen);
+  }
+
+  // event handler: 팔로위 모달 버튼 클릭 이벤트 처리 함수 //
+  const onFolloweeOpenHandler = () => {
+    setFolloweeModalOpen(!followeeModalOpen);
+  };
+
+  // effect: 컴포넌트 로드 시 팔로워 리스트 불러오기 함수 //
+  useEffect(getFollowerList, []);
+
+  // effect: 컴포넌트 로드 시 팔로위 리스트 불러오기 함수 //
+  useEffect(getFolloweeList, []);
   return (
     <div id='adminpage'>
       <div className='top'>
@@ -243,8 +338,8 @@ export default function Admin() {
           <div className='profile-box'>
             <div className='name-box'>
               <div className='name'>{signInUser?.name}</div>
-              <div className='change' onClick={onMypageUpdateOpenHandler}></div>
             </div>
+            <div className='address'>{signInUser?.address}</div>
             <div className='sentence-box'>
               {input ?
                 <input className='input' type='text' value={comment} onChange={onCommentChangeHandler} placeholder='30글자 내로 입력하세요.' onKeyDown={onCommentKeydownHandler}
@@ -257,19 +352,15 @@ export default function Admin() {
         </div>
         <div className='activity-container'>
           <div className='score-container'>
-            <div className='aco-box'>
-              <div className='aco-score'>에코스코어</div>
-              <div className='score'>50</div>
-            </div>
             <div className='line'>
-              <div className='follower-box'>
+              <div className='follower-box' onClick={onFollowerOpenHandler}>
                 <div className='follower-score'>팔로우</div>
-                <div className='score'>30</div>
+                <div className='score'>{followerList.length}</div>
               </div>
             </div>
-            <div className='followee-box'>
+            <div className='followee-box' onClick={onFolloweeOpenHandler}>
               <div className='followee-score'>팔로잉</div>
-              <div className='score'>234</div>
+              <div className='score'>{followeeList.length}</div>
             </div>
           </div>
           <div className='mileage-container'>
@@ -281,46 +372,40 @@ export default function Admin() {
           </div>
         </div>
       </div>
-      <div className='mypage-bottom'>
+      <div className='adminpage-bottom'>
         <div className='table-contents'>
-          <div className='my-recruit' onClick={onRecruitReportClickHandler}><span>구인 신고글</span></div>
+          <div className='recruit-report' onClick={onRecruitReportClickHandler}><span>구인 신고글</span></div>
           <div className='line'>
-            <div className='my-active'><span>활동 신고글</span></div>
+            <div className='active-report' ><span>활동 신고글</span></div>
           </div>
           <div className='line-right'>
-            <div className='my-mileage'><span>유저 리스트</span></div>
+            <div className='user-list'><span>유저 리스트</span></div>
           </div>
-          <div className='my-scrap'><span>스크랩 글</span></div>
+          <div className='admin-scrap'><span>스크랩 글</span></div>
         </div>
         <div className='table'>
-          {recruitContents.length > 0 &&
-            (
-              <div className="main">
-                <div className="middle-top">
-                </div>
-                <div className="table">
-                  <div className="th">
-                    <div className="td-recruit-number">번호</div>
-                    <div className="td-recruit-isCompleted">마감유무</div>
-                    <div className="td-recruit-title">제목</div>
-                    <div className="td-recruit-writer">작성자</div>
-                    <div className="td-recruit-like-count">추천수</div>
-                    <div className="td-recruit-view-count">조회수</div>
-                    <div className="td-recruit-people">모집인원</div>
-                    <div className="td-recruit-end-date">마감일자</div>
-                    <div className="td-recruit-create-date">날짜</div>
-                  </div>
-                  {
-                    viewList.map((recruitPostId, index) => (
-                      <TableRow key={index} recruitPostId={recruitPostId} getRecruitReportList={getRecruitReportPostList} />
-                    ))}
-                </div>
-
-                <div className="pagination">
-                  <Pagination currentPage={currentPage} {...paginationProps} />
-                </div>
+          {showRecruitReports && (
+            <div className="main">
+              <div className="middle-top">
               </div>
-            )}
+              <div className="table">
+                <div className="th">
+                  <div className="td-report-reportid">신고글 번호</div>
+                  <div className="td-report-writer">작성자</div>
+                  <div className="td-report-number">글 번호</div>
+                  <div className="td-report-content">신고내역</div>
+                  <div className="td-report-create-date">신고한 날짜</div>
+                </div>
+                {
+                  viewList.map((recruitPostId, index) => (
+                    <TableRow key={index} recruitreportPostId={recruitPostId} getRecruitReportList={getRecruitReportPostList} />
+                  ))}
+              </div>
+              <div className="pagination">
+                <Pagination currentPage={currentPage} {...paginationProps} />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
