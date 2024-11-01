@@ -9,10 +9,11 @@ import { useKakaoLoader } from 'src/hooks';
 import { useSignInUserStore } from 'src/stores';
 import './style.css';
 import { useCookies } from 'react-cookie';
-import { Avatar, AvatarGroup } from '../../../components/ui/avatar';
 import { ActiveComment } from 'src/types';
 import usePagination from 'src/hooks/pagination.hook';
 import { PatchActiveCommentRequestDto, PostActiveCommentRequestDto } from 'src/apis/dto/request/active';
+import Avatar from '@mui/material/Avatar';
+import AvatarGroup from '@mui/material/AvatarGroup';
 
 interface TableRowProps {
     activeComment: ActiveComment;
@@ -415,7 +416,7 @@ export default function ActiveDetail() {
 
     useEffect(() => {
         getActiveCommentList();
-    }, [originalList]);
+    }, [activePostId]);
 
     // render: 활동 게시판 디테일 컴포넌트 렌더링 //
     return (
@@ -476,14 +477,19 @@ export default function ActiveDetail() {
                 <div className='postBottom'>
                     <div className='postInfo'>
                         <div className='tag'>
-                        <AvatarGroup size="lg">
+                            <AvatarGroup max={4}>
+                                {activePeople.map((tagUser, index) =>
+                                <Avatar key={index} src={tagUser} />
+                                )}
+                            </AvatarGroup>
+                        {/* <AvatarGroup size="lg">
                             {activePeople.slice(0, 3).map((tagUser, index) => (
                                 <Avatar key={index} src={tagUser} />
                             ))}
                             {activePeople.length > 3 && (
                                 <Avatar variant="solid" fallback={`+${activePeople.length - 3}`} />
                             )}
-                        </AvatarGroup>
+                        </AvatarGroup> */}
                         </div>
                         <div className='right'>
                             <div

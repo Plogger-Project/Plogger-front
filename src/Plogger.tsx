@@ -36,7 +36,6 @@ import Admin from './views/Admin';
 import ActiveDetail from './views/Active/Detail';
 import ActiveUpdate from './views/Active/Update';
 import ActiveWrite from './views/Active/Write';
-import { Provider } from './components/ui/provider';
 import Test from './views/test';
 
 
