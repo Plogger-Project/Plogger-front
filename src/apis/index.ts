@@ -13,7 +13,7 @@ import PatchPasswordRequestDto from "./dto/request/user/patch-password.request.d
 import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 import { FindPasswordResponseDto, GetSignInResponseDto } from "./dto/response/auth";
 import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
-import { PostRecruitRequestDto } from "./dto/request/recruit";
+import {  PatchRecruitIsCompletedRequestDto, PostRecruitRequestDto } from "./dto/request/recruit";
 import GetRecruitPostResponseDto from "./dto/response/recruit/get-recruit.response.dto";
 import PostActivePostRequestDto from "./dto/request/active/post-active-post.request.dto";
 import { PatchActivePostRequestDto } from "./dto/request/active";
@@ -51,7 +51,7 @@ const GET_RECRUIT_COMMENT_LIST_API_URL = (recruitPostId: number | string) => `${
 
 
 const DELETE_RECRUIT_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}`;
-
+const PATCH_RECRUIT_ISCOMPLETED_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/iscompleted/${recruitPostId}`;
 const GET_RECRUIT_USER_INFO_API_URL = (recruitPostWriter: string) => `${GET_SIGN_IN_API_URL}/${recruitPostWriter}`;
 
 const POST_RECRUIT_POST_API_URL = `${RECRUIT_MODULE_URL}`
@@ -370,6 +370,15 @@ export const getRecruitPostRequest = async (recruitPostId: number | string) => {
         .catch(responseErrorHandler);
     return responseBody;
 }
+
+// function: recruit post 수정 요청 함수 //
+export const patchRecruitRequest = async (requestBody: PatchRecruitIsCompletedRequestDto, recruitPostId: string | number, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_RECRUIT_ISCOMPLETED_POST_API_URL(recruitPostId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
 
 // function : get qna post list 요청 함수 //
 export const getQnaPostListRequest = async () => {

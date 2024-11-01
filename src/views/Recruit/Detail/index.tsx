@@ -1,7 +1,7 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react'
 import "./style.css";
 import {  useNavigate, useParams } from 'react-router-dom';
-import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH,  RECRUIT_UPDATE_ABSOLUTE_PATH } from '../../../constants';
+import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH,  RECRUIT_DETAIL_ABSOLUTE_PATH,  RECRUIT_UPDATE_ABSOLUTE_PATH } from '../../../constants';
 import { useKakaoLoader } from 'src/hooks';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { useSignInUserStore } from 'src/stores';
@@ -11,7 +11,7 @@ import GetRecruitPostResponseDto from 'src/apis/dto/response/recruit/get-recruit
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import RecruitWrite from './../Write/index';
 import { RecruitPostList } from 'src/types';
-import { getRecruitCommentListRequest } from 'src/apis';
+import { getRecruitCommentListRequest, patchRecruitRequest } from 'src/apis';
 import axios from 'axios';
 import { deleteRecruitPostRequest, getRecruitPostRequest, getRecruitUserInfoRequest } from 'src/apis';
 
@@ -23,6 +23,7 @@ import { usePagination } from '@chakra-ui/react';
 import useRecruitCommentPagination from 'src/hooks/recruit-comment.pagination.hook';
 import { GetRecruitPostListResponseDto } from 'src/apis/dto/response/recruit';
 import GetRecruitCommentListResponseDto from 'src/apis/dto/response/recruit/get-recruit-comment-list.response.dto';
+import { PatchRecruitIsCompletedRequestDto } from 'src/apis/dto/request/recruit';
 
 // interface: recruit comment list 아이템 컴포넌트 Properties //
 interface TableRowProps {
@@ -294,6 +295,24 @@ export default function RecruitDetail() {
     navigator(RECRUIT_ABSOLUTE_PATH);
   }
 
+  // function : patch recruit post response 처리 함수 //
+  const PatchRecruitResponse = (responseBody: ResponseDto | null) => {
+    const message = !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '모두 입력해주세요.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다!' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'NRP' ? '존재하지 않는 글입니다.' : '';
+    
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+    if (!recruitPostId) return;
+    navigator(RECRUIT_DETAIL_ABSOLUTE_PATH(recruitPostId));
+
+  }
+
   // event handler: 목록 버튼 클릭 이벤트 처리 //
   const onListButtonClickHandler = () => {
   navigator(RECRUIT_ABSOLUTE_PATH);
@@ -301,12 +320,20 @@ export default function RecruitDetail() {
 
   // event handler: 수정 버튼 클릭 이벤트 처리 //
   const onEditButtonClickHandler = () => {
-  navigator(RECRUIT_UPDATE_ABSOLUTE_PATH);
+    if (!recruitPostId) return;
+    navigator(RECRUIT_UPDATE_ABSOLUTE_PATH(recruitPostId));
   }
 
   // event handler: 삭제 버튼 클릭 이벤트 처리 //
   const onDeleteButtonClickHandler = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
+
+    if (!(writer == signInUser?.userId))
+    {
+      alert("작성자만 삭제할 수 있습니다.");
+      return;
+    }
+
     if (!recruitPostId) {
       alert("유효한 recruitPostId가 필요합니다.");
       return;
@@ -374,7 +401,56 @@ export default function RecruitDetail() {
       // event handler: 좋아요 버튼 클릭 이벤트 처리 //
       const onLikeButtonClickHandler = () => {
 
-      }
+  }
+  
+  // event handler : 참여하기 버튼 클릭 이벤트 처리
+  const onAccessionButtonClickHandler = () => {
+    if (!signInUser?.userId) {
+      alert("로그인을 해주세요.");
+      return;
+    }
+    const isConfirm = window.confirm('정말로 참여 하시겠습니까?')
+    if (!isConfirm) return;
+  }
+  
+  // event handler : 모집종료 버튼 클릭 이벤트 처리
+  const onEndButtonClickHandler = () => {
+    if (!signInUser?.userId) {
+      alert("로그인을 해주세요.");
+      return;
+    }
+    if (!recruitPostId) {
+      alert("유효한 recruitPostId가 필요합니다.");
+      return;
+    }
+
+    
+    
+      
+    
+
+      const isConfirm = window.confirm(isCompleted ? '모집중으로 바꾸시겠습니까?' : '정말로 모집종료 하시겠습니까?')
+      if (!isConfirm) return;
+
+      setIsCompleted(!isCompleted);
+
+      
+    const requestBody: PatchRecruitIsCompletedRequestDto = {
+        isCompleted: !isCompleted
+      };
+
+      patchRecruitRequest(requestBody, recruitPostId, accessToken)
+        .then(PatchRecruitResponse)
+        .catch(error => {
+          alert("모집 상태 변경에 실패했습니다.");
+          console.error(error);
+          setIsCompleted(isCompleted); // 실패 시 상태를 원래대로 복구
+        });
+    
+  };
+    
+
+  
 
 
       // effect: 게시물 번호가 바뀔 때 글 정보 요청 함수 //
@@ -384,23 +460,16 @@ export default function RecruitDetail() {
         
       }, [recruitPostId, writer]);
   
-  // // effect: 게시물 번화가 바뀔 때 작성자 프사 정보 요청 함수 //
-  // useEffect(() => {
-  //   if (!recruitPostId) return;
-    
 
-  //    getRecruitUserInfoRequest(writer).then(getRecruitPostUserResponse)
-
-  //     },[])
-
-      // location 을 lat lng로 분리 //
 
 
       // effect: 좌표로 주소 정보 요청 함수 //
       useEffect(() => {
         const { kakao } = window;
         if (!kakao) return;
+        
         const geocoder = new kakao.maps.services.Geocoder();
+        if (!geocoder) return;
 
         // 지정된 좌표의 주소를 가져오는 함수
         const displayAddressInfo = (lat: number, lng: number) => {
@@ -419,8 +488,9 @@ export default function RecruitDetail() {
         // 좌표에 따른 주소 요청 함수 호출
         displayAddressInfo(lat, lng);
       }, [lat, lng]);
+  
 
-
+  
       // render: 게시글 정보 상세보기 컴포넌트 렌더링 //
 
       return (
@@ -475,9 +545,15 @@ export default function RecruitDetail() {
                       left: optionPosition.left + 'px'
                     }}
                   >
-                    {isWriter && <button className="editButton" onClick={onEditButtonClickHandler}>수정하기</button>}
-                    {isWriter && <button className="deleteButton" onClick={onDeleteButtonClickHandler}>삭제하기</button>}
-                    {!isWriter && <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>}
+                    {signInUser?.userId === writer ? 
+                      <>
+                    <button className="editButton" onClick={onEditButtonClickHandler}>수정하기</button>
+                        <button className="deleteButton" onClick={onDeleteButtonClickHandler}>삭제하기</button>
+                      </>
+                      : ''}
+                    {signInUser?.userId === writer ? '' :
+                      <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
+                    }
                   </div>
                 )}
               </div>
@@ -504,8 +580,17 @@ export default function RecruitDetail() {
             <div className='postBottom'>
               <div className='postInfo'>
                 <div className='left'>
-                  <div className='members'>인원 : {currentPeople}/{people}</div>
+                  <div className='endDate'>모집 종료일 : {endDate}</div>
+                  <div className='members'>모집 인원 : {currentPeople}/{people}</div>
                   <div className='isCompleted'>{isCompleted ? "마감됨" : "모집중"}</div>
+                  {signInUser?.userId === writer ? '' :
+                    
+                      <div className='accession' onClick={onAccessionButtonClickHandler}>참여</div>
+                      
+                  }
+                  {signInUser?.userId === writer ? 
+                    <div className='end' onClick={onEndButtonClickHandler}>{isCompleted ? "종료 취소" : "모집 종료"}</div>
+                    : ''}
                 </div>
                 <div className='right'>
                   <div
