@@ -532,7 +532,6 @@ export default function RecruitDetail() {
                   </div>
                   {viewList.map((recruitComment, index) => <TableRow key={index} recruitComment={recruitComment} getRecruitCommetList={getrecruitCommentList} />)}
                 </div>
-              
             </div>
             <div className='bottom'></div>
           </div>
