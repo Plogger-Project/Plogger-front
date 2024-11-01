@@ -7,6 +7,7 @@ import RecruitPostList from './recruitpost.interface';
 import AlertList from "./alert.interface";
 import RecruitComment from "./recruit-comment.interface"
 import MyRecruitPost from "./my-recruit-post.interface";
+import RecruitReportList from "./recruitreport.interface";
 
 
 export type {
@@ -19,4 +20,5 @@ export type {
     QnaPostList,
     MyRecruitPost,
     RecruitPostList,
+    RecruitReportList
 }

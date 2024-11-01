@@ -113,7 +113,6 @@ export default function RecruitDetail() {
   const [isScraped, setIsScraped] = useState(false);
   const [writerProfileImage, setWriterProfileImage] = useState<string>('');
   const [showOptions, setShowOptions] = useState(false);  // 옵션 항목 표시 여부
-  const [Author, setAuthor] = useState<string>('');
   const [optionPosition, setOptionPosition] = useState({ top: 0, left: 0 });  // 옵션 항목 위치
   const optionBoxRef = useRef<HTMLDivElement | null>(null);  // optionBox 참조
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
@@ -130,6 +129,7 @@ export default function RecruitDetail() {
 
   // variable: 작성자 여부 //
   const isWriter = writer === signInUser?.userId;
+
   // state: 신고 내역 작성창 오픈 여부 상태 //
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
 
@@ -138,9 +138,6 @@ export default function RecruitDetail() {
 
   // state: 사용 가능한 용품 리스트 상태 //
   const [recruitCommentList, setRecruitCommentList] = useState<RecruitComment[]>([]);
-
-  // variable: 작성자 여부 //
-  const isAuthor = Author === signInUser?.userId;
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();

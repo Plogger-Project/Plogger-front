@@ -1,0 +1,566 @@
+#adminpage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%; 
+    height: 700px;
+    margin-left: 70px;
+}
+
+#adminpage .top {
+    display: flex;
+    width: 1500px;
+    height: 380px;  
+    justify-content: space-between;
+    margin-bottom: -80px;
+    margin-top: -120px;
+
+}
+
+.profile-container {
+    user-select: none;
+    width: 800px;
+    height: 350px;
+    display: flex;
+    align-items: center;
+}
+
+#adminpage .image {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url(/public/images/ploggerMin.png);
+}
+
+.profile-box {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-items: center;
+
+    width: 300px;
+    height: 150px;
+    margin-left: 30px;
+}
+
+.name-box {
+    display: flex;
+}
+
+#adminpage .name {
+    font-size: 40px;
+
+}
+
+#adminpage .address {
+    font-size: 20px;
+}
+
+#adminpage .change {
+    cursor: pointer;
+
+    width: 25px;
+    height: 25px;
+    background-image: url(/public/images/cogwheel.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: inline-block;
+}
+
+.sentence-box {
+    display: flex;
+    margin-top: 40px;
+}
+
+.sentence {
+    width: 270px;
+    height: 100px;
+    font-size: 20px;
+    
+    overflow-wrap: break-word;
+}
+
+.sentence-box .input {
+    width: 230px;
+}
+
+.sentence-change {
+    cursor: pointer;
+
+    width: 25px;
+    height: 25px;
+    background-image: url(/public/images/pen.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: inline-block;
+}
+
+.activity-container {
+    height: 400px;
+    width: auto; 
+    min-width: 800px;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    gap:60px;
+
+}
+
+.score-container {
+    display: flex;
+    font-size: 30px;
+
+    justify-content: center;
+
+    font-weight: 600;
+    gap: 90px;
+
+}
+
+.follower-box,
+.followee-box {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    gap:20px
+}
+
+
+
+#adminpage .score {
+    font-size: 25px;
+    font-weight: normal;
+}
+
+#adminpage .line {
+    border-right: 2px solid rgba(0, 0, 0, 1);
+    border-left: 2px solid rgba(0, 0, 0, 1);
+
+    padding: 0px 90px;
+}
+
+.mileage-container {
+    display: flex;
+
+    justify-content: end;
+    gap: 100px;
+}
+
+.mileage-box {
+    width: 150px;
+    height: 45px;
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.mileage-button {
+    margin-top: 5px;
+    user-select: none;
+    cursor: pointer;
+    font-size: 25px;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(0, 0, 0, 1);
+    border-radius: 50%;
+}
+
+.mileage-score {
+    align-content: center;
+    height: auto;
+    width: 100px;
+    font-size: 25px;
+
+    overflow: auto;
+}
+
+.button-mileage {
+    user-select: none;
+    cursor: pointer;
+
+    width: 160px;
+    height: 40px;
+    
+    text-align: center;
+
+    border-radius: 8px;
+    background-color: #84A264;
+    font-size: 20px;
+    color: rgba(255, 255, 255, 1);
+    justify-content: center;
+    align-content: center;
+}
+.button-mileage:hover {
+    background-color: #6b8f5c;
+}
+
+#adminpage .modal {
+    position: fixed;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100vw;
+    height: 100vh;
+    
+
+    background-color: rgba(0, 0, 0, 0.3);
+
+    z-index: 9999;
+}
+
+.change-profile {
+    position: relative;
+
+    box-sizing: border-box;
+    border: 1px solid rgba(238, 238, 238, 1);
+    border-radius: 8px;
+    padding: 24px;
+    width: 500px;
+    height: 760px;
+
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.change-profile-box {
+    display: flex;
+    justify-content: center;
+}
+
+.change-profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url(/public/images/ploggerMin.png);
+}
+
+.modal .change {
+    margin-left: -20px;
+}
+
+.modal-close {
+    cursor: pointer;
+    margin-top: -20px;
+    margin-left: 450px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+#adminpage .input-area button {
+    cursor: pointer;
+
+    background-color: #84A264;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    padding: 4px 0px;
+
+}
+
+.change-button {
+    width: 1;
+    padding: 10px 0px;
+    text-align: center;
+    border-radius: 10px;
+    background-color: #84A264;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 50px;
+}
+
+#adminpage .input-area button:hover,
+.change-button:hover {
+    background-color: #6b8f5c;
+}
+
+.adminpage-bottom {
+    width:auto;
+    height: 100px; 
+    padding-right: 140px;
+}
+
+.table-contents {
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 1500px;
+    height: 40px;
+    border-top: 2px solid rgba(0, 0, 0, 1);
+    border-bottom: 2px solid rgba(0, 0, 0, 1);
+
+    padding: 5px 0px;
+
+    font-size: 30px;
+}
+
+.line-right {
+    border-right: 2px solid rgba(0, 0, 0, 1);
+}
+
+.recruit-report,
+.active-report,
+.user-list,
+.admin-scrap {
+    cursor: pointer;
+    width: 200px;
+    text-align: center;
+}
+
+.recruit-report span,
+.active-report span,
+.user-list span,
+.admin-scrap span {
+    cursor: pointer;
+}
+
+.recruit-report span:hover,
+.active-report span:hover,
+.user-list span:hover,
+.admin-scrap span:hover {
+    font-weight: 600;
+}
+
+.recruit-report span:active,
+.active-report span:active,
+.user-list span:active,
+.admin-scrap span:active {
+    font-weight: 600;
+}
+
+
+
+.recruit-report,
+.active-report,
+.user-list {
+    padding: 0px 90px;
+}
+
+#recruit-report-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 1134px;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+#recruit-report-wrapper .main {
+    min-width: 1130px;
+
+}
+
+/* #recruit-post-wrapper .middle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    transform: translateY(100%);
+    transition: transform 0.5s ease;
+    z-index: 2;
+}
+
+#recruit-post-wrapper .middle.show {
+    transform: translateY(0);
+}
+
+#recruit-post-wrapper .middle.hidden {
+    display: none;
+} */
+
+#adminpage .middle-top {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    font-size: 12px;
+
+}
+
+#adminpage .middle-top .pages {
+    flex: 10;
+    text-align: left;
+}
+
+#adminpage .button {
+    cursor: pointer;
+    width: 40px;
+    height: 25px;
+    
+    text-align: center;
+
+    border-radius: 7px;
+    background-color: #84A264;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 1);
+    justify-content: center;
+    align-content: center;
+}
+
+#adminpage .middle-top .post-filter {
+    flex: 5;
+    justify-content: right;
+    margin-right: 15px;
+    gap: 5px;
+    display: flex;
+    flex-direction: row;
+}
+
+
+#adminpage .middle-top .post-filter .all {
+    font-weight: 600;
+}
+
+#adminpage .middle-top .post-filter .Recruiting {
+    font-weight: 600;
+}
+
+#adminpage .middle-top .post-filter .Recruited {
+    font-weight: 600;
+}
+
+#adminpage .middle-top .post-filter .all,
+#adminpage .middle-top .post-filter .Recruiting,
+#adminpage .middle-top .post-filter .Recruited {
+    cursor: pointer;
+}
+
+/* 비활성화된 버튼에 대한 스타일 */
+#adminpage .middle-top .post-filter .all:not(.active),
+#adminpage .middle-top .post-filter .Recruiting:not(.active),
+#adminpage .middle-top .post-filter .Recruited:not(.active) {
+    font-weight: normal;
+}
+
+#adminpage .middle-top .write-button {
+    
+    width: 60px;
+    height: 25px;
+    flex: 1;
+    text-align: right;
+
+    border: 1px solid rgba(25, 25, 25, 1);
+    background-color: rgba(132, 162, 100, 1);
+    text-align: center;
+    cursor: pointer;
+    line-height: 175%;
+}
+
+#adminpage .table {
+    width: 100%;
+    margin: 0 auto;
+    font-family: 'Arial', sans-serif;
+    border-collapse: collapse;
+
+    font-size: 14px;
+
+}
+
+#adminpage .th {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    font-weight: 700;
+
+}
+
+#adminpage .tr {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+
+}
+
+.follow-table {
+    text-align: center;
+    margin: 5px 0px;
+}
+
+#adminpage .td-report-reportid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+}
+
+#adminpage .td-report-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+}
+
+#adminpage .td-report-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+}
+#adminpage .td-report-writer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+}
+
+#adminpage .td-report-create-date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    padding: 10px;
+
+}
+
+#adminpage .td-report-number {
+    width: 30px;
+}
+
+#adminpage .td-report-content {
+    flex: auto;
+    cursor: pointer;
+
+}
+
+#adminpage .td-report-writer,
+#adminpage .td-report-number,
+#adminpage .td-report-create-date {
+    width: 80px;
+}
+
+#adminpage .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+
+    gap: 15px;
+
+}
+
+#adminpage .pagination .active {
+    color: black;
+
+    font-weight: bold;
+
+}
