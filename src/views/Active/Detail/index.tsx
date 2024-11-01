@@ -9,10 +9,11 @@ import { useKakaoLoader } from 'src/hooks';
 import { useSignInUserStore } from 'src/stores';
 import './style.css';
 import { useCookies } from 'react-cookie';
-import { Avatar, AvatarGroup } from '../../../components/ui/avatar';
 import { ActiveComment } from 'src/types';
 import usePagination from 'src/hooks/pagination.hook';
 import { PatchActiveCommentRequestDto, PostActiveCommentRequestDto } from 'src/apis/dto/request/active';
+import Avatar from '@mui/material/Avatar';
+import AvatarGroup from '@mui/material/AvatarGroup';
 
 interface TableRowProps {
     activeComment: ActiveComment;
@@ -206,11 +207,11 @@ export default function ActiveDetail() {
     // function: 활동 게시글 가져오기 함수 //
     const getActivePostResponse = (responseBody: GetActivePostResponseDto | ResponseDto | null) => {
         const message =
-            !responseBody ? '서버에 문제가 있습니다.' :
-                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-                        responseBody.code === 'NAP' ? '존재하지 않는 글입니다.' :
-                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'NAP' ? '존재하지 않는 글입니다.' :
+        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -244,12 +245,12 @@ export default function ActiveDetail() {
     // function: 활동 게시글 삭제 함수 //
     const deleteActivePostResponse = (responseBody: ResponseDto | null) => {
         const message =
-            !responseBody ? '서버에 문제가 있습니다.' :
-                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-                        responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
-                            responseBody.code === 'NP' ? '권한이 없습니다.' :
-                                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+        responseBody.code === 'NP' ? '권한이 없습니다.' :
+        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -263,11 +264,11 @@ export default function ActiveDetail() {
     // function: 활동 게시판 댓글 목록 가져오기 함수 //
     const getActiveCommentListResponse = (responseBody: GetActiveCommentListResponseDto | ResponseDto | null) => {
         const message =
-            !responseBody ? '서버에 문제가 있습니다.' :
-                responseBody.code === 'VF' ? '서버에 문제가 있습니다.' :
-                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-                        responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
-                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
+        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -285,10 +286,10 @@ export default function ActiveDetail() {
         if (!activePostId) return;
 
         const message =
-            !responseBody ? '서버에 문제가 있습니다.' :
-                responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
-                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 작성!';
+        !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 작성!';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -415,7 +416,7 @@ export default function ActiveDetail() {
 
     useEffect(() => {
         getActiveCommentList();
-    }, [originalList]);
+    }, [activePostId]);
 
     // render: 활동 게시판 디테일 컴포넌트 렌더링 //
     return (
@@ -476,14 +477,19 @@ export default function ActiveDetail() {
                 <div className='postBottom'>
                     <div className='postInfo'>
                         <div className='tag'>
-                        <AvatarGroup size="lg">
+                            <AvatarGroup max={4}>
+                                {activePeople.map((tagUser, index) =>
+                                <Avatar key={index} src={tagUser} />
+                                )}
+                            </AvatarGroup>
+                        {/* <AvatarGroup size="lg">
                             {activePeople.slice(0, 3).map((tagUser, index) => (
                                 <Avatar key={index} src={tagUser} />
                             ))}
                             {activePeople.length > 3 && (
                                 <Avatar variant="solid" fallback={`+${activePeople.length - 3}`} />
                             )}
-                        </AvatarGroup>
+                        </AvatarGroup> */}
                         </div>
                         <div className='right'>
                             <div
