@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import './Plogger.css';
-import { BrowserRouter } from 'react-router-dom';
 import { Routes, Route, useLocation, Navigate, Router, useSearchParams, useNavigate } from 'react-router-dom';
 
 
@@ -37,7 +36,6 @@ import Admin from './views/Admin';
 import ActiveDetail from './views/Active/Detail';
 import ActiveUpdate from './views/Active/Update';
 import ActiveWrite from './views/Active/Write';
-import { Provider } from './components/ui/provider';
 import Test from './views/test';
 
 
@@ -134,7 +132,7 @@ function Plogger() {
         <Route path={RECRUIT_UPDATE_PATH(':recruitPostId')} element={<RecruitUpdate />} />
         <Route path='/active' element={<ActivePost />} />
         <Route path={ACTIVE_WRITE_PATH} element={<ActiveWrite />} />
-        <Route path={ACTIVE_DETAIL_PATH(':activePostId')} element={<Provider><ActiveDetail /></Provider>} />
+        <Route path={ACTIVE_DETAIL_PATH(':activePostId')} element={<ActiveDetail />} />
         <Route path={ACTIVE_UPDATE_PATH(':activePostId')} element={<ActiveUpdate />} />
         <Route path="/qna" element={<QnaPost />} />
         <Route path='/mileage' element={<Mileage/>} />
