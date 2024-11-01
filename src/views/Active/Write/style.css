@@ -63,8 +63,6 @@
         text-align: center;
 }
 
-
-
 #recruit-write-wrapper .profileImage {
     width: 50px;
     height: 50px;
@@ -87,6 +85,7 @@
     width: 100%;
     margin-bottom: 10px;
 }
+
 #recruit-write-wrapper .input-box .input {
     border: 1px solid #ccc;
     padding: 10px;
@@ -98,22 +97,19 @@
     width: auto;
     height: auto;
 }
+
 #recruit-write-wrapper .react-datepicker__day {
     width: 30px;
-    /* 각 날짜 셀의 너비 */
     height: 30px;
-    /* 각 날짜 셀의 높이 */
     font-size: 16px;
 }
 
 #recruit-write-wrapper .react-datepicker__header {
     font-size: 28px;
-    /* 달력 헤더(월, 년도) 폰트 크기 조정 */
 }
 
 #recruit-write-wrapper .react-datepicker__day-name {
     font-size: 16px;
-    /* 요일 헤더(월, 화 등) 폰트 크기 조정 */
 }
 
 
@@ -147,6 +143,14 @@
     resize: none;
 }
 
+.tagUser button {
+    margin-left: '8px';
+    color: 'red';
+    cursor: 'pointer';
+    border: 'none';
+    background: 'none';
+    font-weight: 'bold';
+}
 
 #recruit-write-wrapper .image.preview {
     width: 100px;

@@ -16,10 +16,11 @@ import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
 import {  PatchRecruitIsCompletedRequestDto, PostRecruitRequestDto } from "./dto/request/recruit";
 import GetRecruitPostResponseDto from "./dto/response/recruit/get-recruit.response.dto";
 import PostActivePostRequestDto from "./dto/request/active/post-active-post.request.dto";
-import { PatchActivePostRequestDto } from "./dto/request/active";
+import { PatchActiveCommentRequestDto, PatchActivePostRequestDto, PostActiveCommentRequestDto } from "./dto/request/active";
 import PostRecruitReportRequestDto from "./dto/request/recruit/post-recruit-report-request.dto";
 import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from "./dto/response/follow";
-import { GetActivePostListResponseDto, GetActivePostResponseDto, GetMyRecruitReponseDto } from "./dto/response/active";
+import { GetActiveCommentListResponseDto, GetActivePostListResponseDto, GetActivePostResponseDto, GetMyRecruitReponseDto } from "./dto/response/active";
+import { GetUserListResponseDto } from "./dto/response/mypage";
 
 
 // variable: API URL 상수 //
@@ -58,13 +59,19 @@ const POST_RECRUIT_POST_API_URL = `${RECRUIT_MODULE_URL}`
 
 const ACTIVE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/active`;
 
-const POST_ACTIVE_POST_API_URL = `${ACTIVE_MODULE_URL}`;
 const GET_ACTIVE_POST_LIST_API_URL = `${ACTIVE_MODULE_URL}`;
 const GET_MY_RECRUIT_POST_API_URL = `${ACTIVE_MODULE_URL}/my-recruits`;
 const GET_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
+const POST_ACTIVE_POST_API_URL = (recruitId: number | string) =>`${ACTIVE_MODULE_URL}/${recruitId}`;
 const PATCH_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 const DELETE_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 
+const ACTIVE_COMMENT_MODULE_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`
+
+const POST_ACTIVE_COMMENT_API_URL = (activeId: number | string) => `${ACTIVE_COMMENT_MODULE_URL(activeId)}/comments`;
+const GET_ACTIVE_COMMENT_LIST_API_URL = (activeId: number | string) => `${ACTIVE_COMMENT_MODULE_URL(activeId)}/comments`;
+const PATCH_ACTIVE_COMMENT_API_URL = (activeId: number | string, commentId: number | string) => `${ACTIVE_COMMENT_MODULE_URL(activeId)}/comments/${commentId}`;
+const DELETE_ACTIVE_COMMENT_API_URL = (activeId: number | string, commentId: number | string) => `${ACTIVE_COMMENT_MODULE_URL(activeId)}/comments/${commentId}`;
 
 const GET_ALERT_LIST_API_URL = `${ALERT_MODULE_URL}`;
 const DELETE_ALERT_LIST_API_URL = (id: number | string) => `${ALERT_MODULE_URL}/${id}`;
@@ -79,6 +86,7 @@ const GET_QNA_POST_LIST_API_URL = `${QNA_MODULE_URL}`
 
 const MYPAGE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/mypage`;
 
+const GET_USER_LIST_API_URL = `${MYPAGE_MODULE_URL}`;
 const PATCH_MYPAGE_API_URL = `${MYPAGE_MODULE_URL}`;
 const PATCH_MYPAGE_COMMENT_API_URL = `${MYPAGE_MODULE_URL}/comment`;
 const PATCH_MYPAGE_TEL_AUTH_API_URL = `${MYPAGE_MODULE_URL}/tel-auth`;
@@ -258,8 +266,8 @@ export const purchaseGifticonRequest = async (requestBody: PurchaseGifticonReque
 }
 
 // function: 활동 게시판 생성 요청 함수 //
-export const postActivePostRequest = async (requestBody: PostActivePostRequestDto, accessToken: string) => {
-    const responseBody = await axios.post(POST_ACTIVE_POST_API_URL, requestBody, bearerAuthorization(accessToken))
+export const postActivePostRequest = async (requestBody: PostActivePostRequestDto, recruitId: string | number, accessToken: string) => {
+    const responseBody = await axios.post(POST_ACTIVE_POST_API_URL(recruitId), requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
@@ -297,9 +305,42 @@ export const getActivePostRequest = async (activeId: string | number) => {
     return responseBody;
 }
 
+// function: 내가 쓴 구인 게시글 요청 함수 //
 export const getMyRecruitPostRequest = async (accessToken: string) => {
     const responseBody = await axios.get(GET_MY_RECRUIT_POST_API_URL, bearerAuthorization(accessToken))
         .then(responseDataHandler<GetMyRecruitReponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 활동 게시글 댓글 작성 요청 함수 //
+export const postActiveCommentRequest = async (requestBody: PostActiveCommentRequestDto, activeId: string | number, accessToken: string) => {
+    const responseBody = await axios.post(POST_ACTIVE_COMMENT_API_URL(activeId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 활동 게시글 댓글 수정 요청 함수 //
+export const patchActiveCommentRequest = async (requestBody: PatchActiveCommentRequestDto, activeId: string | number, commentId: string | number, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_ACTIVE_COMMENT_API_URL(activeId, commentId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 활동 게시글 댓글 가져오기 요청 함수 //
+export const getActiveCommentListRequest = async (activeId: string | number, accessToken: string) => {
+    const responseBody = await axios.get(GET_ACTIVE_COMMENT_LIST_API_URL(activeId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetActiveCommentListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 활동 게시글 댓글 삭제 요청 함수 //
+export const deleteActiveCommentRequest = async (activeId: string | number, commentId: string | number, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_ACTIVE_COMMENT_API_URL(activeId, commentId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }
@@ -340,6 +381,14 @@ export const patchPasswordRequest = async (requestBody: PatchPasswordRequestDto,
 export const patchCommentRequest = async (requestBody: PatchCommentRequestDto, accessToken: string) => {
     const responseBody = await axios.patch(PATCH_MYPAGE_COMMENT_API_URL, requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 유저 리스트 요청 함수 //
+export const getUserListRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_USER_LIST_API_URL, bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetUserListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }
@@ -444,16 +493,6 @@ export const getRecruitCommentListRequest = async (recruitPostId: number | strin
     .catch(responseErrorHandler);
 return responseBody;
 }
-
-
-
-// function: post follow 요청 함수 //
-// export const postFollowRequest = async ( requestBody: PostGifticonRequestDto, accessToken: string ) => {
-//     const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId))
-//         .then(responseDataHandler<ResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// };
 
 // function: get sign in follower list 요청 함수 //
 export const getSignInFollowerListRequest = async (accessToken: string) => {
