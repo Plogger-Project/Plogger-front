@@ -20,6 +20,7 @@ import { PatchActivePostRequestDto } from "./dto/request/active";
 import PostRecruitReportRequestDto from "./dto/request/recruit/post-recruit-report-request.dto";
 import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from "./dto/response/follow";
 import { GetActivePostListResponseDto, GetActivePostResponseDto, GetMyRecruitReponseDto } from "./dto/response/active";
+import { GetMileageListResponseDto } from "./dto/response/mileage";
 
 
 // variable: API URL 상수 //
@@ -103,6 +104,8 @@ const GET_SIGN_IN_FOLLOWEE_LIST_API_URL = `${FOLLOW_MODULE_URL}/followee`;
 const GET_FOLLOWER_LIST_API_URL = (followeeId: string) => `${FOLLOW_MODULE_URL}/follower/${followeeId}`;
 const GET_FOLLOWEE_LIST_API_URL = (followerId: string) => `${FOLLOW_MODULE_URL}/followee/${followerId}`;
 const DELETE_FOLLOWEE_API_URL = (followeeId: string) => `${GIFTICON_MODULE_URL}/${followeeId}`;
+
+const GET_MILEAGE_LIST_API_URL = `${PLOGGER_API_DOMAIN}/api/v1/mileage`;
 
 // function: Authorizarion Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({ headers: { 'Authorization': `Bearer ${accessToken}` } })
@@ -486,4 +489,13 @@ export const getRecruitUserInfoRequest = async (recruitPostWriter: string) => {
         .catch(responseErrorHandler);
     return responseBody;
 }
+
+
+// function: get mileage list 요청 함수 //
+export const getMileageListRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_MILEAGE_LIST_API_URL, bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetMileageListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 

@@ -7,7 +7,7 @@ import RecruitPostList from './recruitpost.interface';
 import AlertList from "./alert.interface";
 import RecruitComment from "./recruit-comment.interface"
 import MyRecruitPost from "./my-recruit-post.interface";
-
+import Mileage from "./mileage.interface";
 
 export type {
     Follow,
@@ -19,4 +19,5 @@ export type {
     QnaPostList,
     MyRecruitPost,
     RecruitPostList,
+    Mileage
 }
