@@ -4,16 +4,19 @@ import { useNavigate, useNavigation } from 'react-router-dom'
 import InputBox from '../../components/InputBox';
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
-import { Follow, RecruitPostList } from 'src/types';
-import { getRecruitPostListRequest, getSignInFolloweeListRequest, getSignInFollowerListRequest, patchCommentRequest } from 'src/apis';
+import { Follow, Mileage, RecruitPostList } from 'src/types';
+import { getGifticonRequest, getMileageListRequest, getRecruitPostListRequest, getRecruitUserInfoRequest, getSignInFolloweeListRequest, getSignInFollowerListRequest, patchCommentRequest } from 'src/apis';
 import { GetRecruitPostListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
-import { ACCESS_TOKEN, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';
+import { ACCESS_TOKEN, ACTIVE_DETAIL_ABSOLUTE_PATE, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';
 import { PatchCommentRequestDto } from 'src/apis/dto/request/user';
 import { useCookies } from 'react-cookie';
 import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from 'src/apis/dto/response/follow';
 import useFollowPagination from 'src/hooks/follow.pagination.hook';
+import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
+import { GetMileageListResponseDto } from 'src/apis/dto/response/mileage';
+import { GetGifticonResponseDto } from 'src/apis/dto/response/gifticon';
 
 // interface: 팔로워&팔로위 리스트 컴포넌트 Properties //
 interface FollowTableRowProps {
@@ -25,20 +28,47 @@ interface FollowTableRowProps {
 // component: 팔로워&팔로위 리스트 아이템 컴포넌트 //
 function FollowTableRow({ follow, getFollowList, mode }: FollowTableRowProps) {
 
+  // state: 팔로워&팔로위 정보 상태 //
+  const [profileImage, setprofileImage] = useState<string | null>('');
+
+  // function : get recruit post user response 처리 함수 //
+  const getRecruitPostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
+    
+    const message = !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '잘못된 vf접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 af접근입니다.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+    
+    const { profileImage } = responseBody as GetSignInResponseDto;
+    setprofileImage(profileImage);
+  };
+
   const displayedId = mode === 'follower' ? follow.followerId : follow.followeeId;
+  getRecruitUserInfoRequest(displayedId).then(getRecruitPostUserResponse);
 
   // render : 팔로워&팔로위 게시글 리스트 렌더링 //
   return (
     <div className="follow-table" key={follow.followId}>
-      <div>{displayedId}</div>
+      <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }} ></div>
+      <div className='follow-text'>{displayedId}</div>
     </div>
   )
   
 }
 
+// component: 마이페이지 컴포넌트 //
 export default function Mypage() {
   // state: 페이징 관련 상태 //
   const { currentPage, totalPage, totalCount, viewList, setTotalList, initViewList, ...paginationProps } = useRecruitPagination<RecruitPostList>();
+
+  // state: 페이징 관련 상태 //
+  const { currentPage: currentPage2, totalPage: totalPage2, totalCount: totalCount2, viewList: viewList2, setTotalList: setTotalList2, initViewList: initViewList2, ...mileagePaginationProps } = useRecruitPagination<Mileage>();
 
   // state: 프로필 상태 //
   const [input, onInput] = useState<boolean>(false);
@@ -65,6 +95,9 @@ export default function Mypage() {
   // state: 내 구인 게시판 목록 상태 //
   const [recruitContents, setRecruitContents] = useState<RecruitPostList[]>([]);
 
+  // state: 내 마일리지 목록 상태 //
+  const [mileageContents, setMileageContents] = useState<Mileage[]>([]);
+
   // state: 팔로워 모달 팝업 상태 //
   const [followerModalOpen, setFollowerModalOpen] = useState<boolean>(false);
 
@@ -74,10 +107,12 @@ export default function Mypage() {
   const [followerList, setFollowerList] = useState<Follow[]>([]);
   const [followeeList, setFolloweeList] = useState<Follow[]>([]);
 
+  // variable: accessToken
+  const accessToken = cookies[ACCESS_TOKEN];
+
   
   // function: follower list 불러오기 함수 //
   const getFollowerList = () => {
-    const accessToken = cookies[ACCESS_TOKEN];
     if(!accessToken) return;
     getSignInFollowerListRequest(accessToken).then(getFollowerListResponse);
   }
@@ -102,7 +137,6 @@ export default function Mypage() {
 
   // function: followee list 불러오기 함수 //
   const getFolloweeList = () => {
-    const accessToken = cookies[ACCESS_TOKEN];
     if(!accessToken) return;
     getSignInFolloweeListRequest(accessToken).then(getFolloweeListResponse);
   }
@@ -138,6 +172,8 @@ export default function Mypage() {
   // function: tool list 불러오기 함수 //
   const getRecruitPostList = () => { getRecruitPostListRequest().then(getRecruitPostListResponse); };
 
+  const getMileagePostList = () => { getMileageListRequest(accessToken).then(getMileagePostListResponse) };
+
   // function: get recruit post list response 처리 함수 //
   const getRecruitPostListResponse = (responseBody: GetRecruitPostListResponseDto | ResponseDto | null) => {
 
@@ -155,6 +191,26 @@ export default function Mypage() {
     setRecruitContents(myPosts);
 
   };
+
+  // function: get mileage post list response 처리 함수 //
+  const getMileagePostListResponse = (responseBody: GetMileageListResponseDto | ResponseDto | null) => {
+
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) { alert(message); return; }
+
+    const mileagePosts = (responseBody as GetMileageListResponseDto).mileages || [];
+    const myPosts = mileagePosts.filter(post => post.userId === signInUser?.userId);
+    setTotalList2(myPosts);
+    setMileageContents(myPosts);
+
+  };
+
+
   // function: patch comment post list response 처리 함수 //
   const patchCommentResponse = (responseBody: ResponseDto | null) => {
     const message =
@@ -194,7 +250,7 @@ export default function Mypage() {
       return `${year}-${month}-${day}`;
     };
 
-    // event handler: 상세 정보 보기 버튼 클릭 이벤트 처리 함수 //
+    // event handler: 구인 게시글 상세 정보 보기 버튼 클릭 이벤트 처리 함수 //
     const onDetailButtonClickHandler = () => {
       navigator(RECRUIT_DETAIL_ABSOLUTE_PATH(recruitPostId.recruitPostId));
     };
@@ -211,6 +267,73 @@ export default function Mypage() {
         <div className="td-recruit-people">{recruitPostId.currentPeople}/{recruitPostId.minPeople}</div>
         <div className="td-recruit-end-date">{recruitPostId.recruitEndDate}</div>
         <div className="td-recruit-create-date">{formatDate(recruitPostId.recruitPostCreatedAt)}</div>
+      </div>
+    )
+  }
+
+  // interface: 마일리지 내역 리스트 컴포넌트 Properties //
+  interface MileageTableRowProps {
+    mileageId: Mileage;
+    getMileageList: () => void;
+  }
+
+  // component: 마일리지 내역 게시글 리스트 아이템 컴포넌트 //
+  function TableMileageRow({ mileageId, getMileageList }: MileageTableRowProps) {
+
+    // state: 기프티콘 이름 정보 상태 //
+    const [gifticonName, setGifticonName ] = useState<string | null>('');
+
+    // function : 날짜 포맷팅 함수
+    const formatDate = (dateString: string) => {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // 0부터 시작하므로 +1
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    // function: get gifticon response 처리 함수 //
+    const getGifticonResponse = (responseBody: GetGifticonResponseDto | ResponseDto | null) => {
+      console.log("Response Body:", responseBody);
+      const message = !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+      const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+      if (!isSuccessed) {
+        alert(message);
+        return;
+      }
+      
+      const { name } = responseBody as GetGifticonResponseDto;
+      setGifticonName(name);
+    }
+
+    // effect: 기프티콘 아이디가 있을 시 정보 받아오기 함수 //
+    useEffect(() => {
+      if (mileageId.gifticonId) {
+        getGifticonRequest(mileageId.gifticonId, accessToken)
+          .then(getGifticonResponse);
+      }
+    }, []);
+
+    // event handler: 마일리지 상세 정보 보기 버튼 클릭 이벤트 처리 함수 //
+    const onMileageButtonClickHandler = () => {
+      navigator(ACTIVE_DETAIL_ABSOLUTE_PATE(mileageId.activeId));
+    };
+
+    console.log(gifticonName);
+
+    // render : 게시글 리스트 렌더링 //
+    return (
+      <div className="tr" key={mileageId.mileageId}>
+        <div className='td-mileage-id'>{mileageId.mileageId}</div>
+        <div className='td-mileage-change'>{mileageId.mileageChange}</div>
+        {mileageId.activeId && <div className='td-mileage-description' onClick={onMileageButtonClickHandler}>{mileageId.activeId + '번 ' + mileageId.description}</div>}
+        {mileageId.gifticonId && <div className='td-mileage-description'> {gifticonName} {mileageId.description}</div>}
+        <div className='td-mileage-date'>{formatDate(mileageId.createdAt)}</div>
+        <div className='td-mileage-final'>{mileageId.mileageResult}</div>
       </div>
     )
   }
@@ -266,27 +389,6 @@ export default function Mypage() {
     navigator('/mileage');
   };
 
-  // // event handler: 이미지 버튼 변환 이벤트 처리 //
-  // const onImageInputChangeHandler = () => {
-  //   const { current } = imageInputRef;
-  //   if (!current) return;
-  //   if (!current.files) return;
-
-  //   const file = current.files[0];
-  //   const fileReader = new FileReader();
-  //   fileReader.readAsDataURL(file);
-  //   fileReader.onloadend = () => {
-  //     setImageUrl(fileReader.result as string);
-  //   };
-  // };
-
-  // // event handler: 이미지 버튼 클릭 이벤트 처리 //
-  // const onImageButtonClickHandler = () => {
-  //   const { current } = imageInputRef;
-  //   if (!current) return;
-  //   current.click();
-  // };
-
   // event handler: sentence 버튼 클릭 이벤트 처리 //
   const onCommentButtonClickHandler = () => {
 
@@ -325,7 +427,14 @@ export default function Mypage() {
 
   // event handler: my recruit 클릭 이벤트 처리 // 
   const onMyRecruitClickHandler = () => {
+    setMileageContents([]);
     getRecruitPostList();
+  };
+
+  // event handler: my mileage 클릭 이벤트 처리 // 
+  const onMyMileageClickHandler = () => {
+    setRecruitContents([]);
+    getMileagePostList();
   };
 
   // event handler: 팔로워 모달 버튼 클릭 이벤트 처리 함수 //
@@ -395,7 +504,7 @@ export default function Mypage() {
               <div className='my-active'><span>활동 게시글</span></div>
             </div>
             <div className='line-right'>
-              <div className='my-mileage'><span>마일리지 내역</span></div>
+              <div className='my-mileage' onClick={onMyMileageClickHandler}><span>마일리지 내역</span></div>
             </div>
             <div className='my-scrap'><span>스크랩 글</span></div>
           </div>
@@ -403,8 +512,6 @@ export default function Mypage() {
             {recruitContents.length > 0 &&
               (
                 <div className="main">
-                  <div className="middle-top">
-                  </div>
                   <div className="table">
                     <div className="th">
                       <div className="td-recruit-number">번호</div>
@@ -428,6 +535,32 @@ export default function Mypage() {
                   </div>
                 </div>
               )}
+
+            <div>
+              {mileageContents.length > 0 &&
+                (
+                <div className="main">
+                  <div className="table">
+                    <div className="th">
+                      <div className="td-mileage-id">번호</div>
+                      <div className="td-mileage-change">변동 마일리지</div>
+                      <div className="td-mileage-description">사유</div>
+                      <div className="td-mileage-date">날짜</div>
+                      <div className="td-mileage-final">최종 마일리지</div>
+                    </div>
+                    {
+                      viewList2.map((mileageId, index) => (
+                        <TableMileageRow key={index} mileageId={mileageId} getMileageList={getMileagePostList} />
+                      ))}
+                  </div>
+
+                  <div className="pagination">
+                    <Pagination currentPage={currentPage2} {...mileagePaginationProps} />
+                  </div>
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
       </div>
@@ -435,12 +568,14 @@ export default function Mypage() {
       {followerModalOpen &&
       <div className='modal'>
         <div className='modal-box'>
+          <div style={{marginTop:"30px"}}>
             {
               followerList.map( (follow, index)=> (
                 <FollowTableRow key={index} follow={follow} getFollowList={() => getFollowerList} mode='follower'/>
               ))}
+          </div>
           <div className='modal-bottom'>
-            <div className='button second' onClick={onFollowerOpenHandler}>닫기</div>
+            <div className='button second' style={{marginTop:"10px"}} onClick={onFollowerOpenHandler}>닫기</div>
           </div>
         </div>
       </div>
@@ -450,12 +585,14 @@ export default function Mypage() {
       {followeeModalOpen &&
       <div className='modal'>
         <div className='modal-box'>
+          <div style={{marginTop:"30px"}}>
             {
               followeeList.map( (follow, index)=> (
                 <FollowTableRow key={index} follow={follow} getFollowList={() => getFolloweeList} mode='followee'/>
               ))}
+          </div>
           <div className='modal-bottom'>
-            <div className='button second' onClick={onFolloweeOpenHandler}>닫기</div>
+            <div className='button second' style={{marginTop:"10px"}} onClick={onFolloweeOpenHandler}>닫기</div>
           </div>
         </div>
       </div>

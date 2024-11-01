@@ -123,7 +123,6 @@ function Plogger() {
 
   // render: Plogger 컴포넌트 렌더링 //
   return (
-    <Provider>
     <>
       {showNavigationBar && <NavigationBar />}
       <Routes>
@@ -132,10 +131,10 @@ function Plogger() {
         <Route path={RECRUIT_PATH} element={<RecruitPost/> } />
         <Route path={RECRUIT_WRITE_PATH} element={<RecruitWrite />} />
         <Route path={RECRUIT_DETAIL_PATH(':recruitPostId')} element={<RecruitDetail />} />
-        <Route path={RECRUIT_UPDATE_PATH} element={<RecruitUpdate />} />
+        <Route path={RECRUIT_UPDATE_PATH(':recruitPostId')} element={<RecruitUpdate />} />
         <Route path='/active' element={<ActivePost />} />
         <Route path={ACTIVE_WRITE_PATH} element={<ActiveWrite />} />
-        <Route path={ACTIVE_DETAIL_PATH(':activePostId')} element={<ActiveDetail />} />
+        <Route path={ACTIVE_DETAIL_PATH(':activePostId')} element={<Provider><ActiveDetail /></Provider>} />
         <Route path={ACTIVE_UPDATE_PATH(':activePostId')} element={<ActiveUpdate />} />
         <Route path="/qna" element={<QnaPost />} />
         <Route path='/mileage' element={<Mileage/>} />
@@ -148,7 +147,6 @@ function Plogger() {
         <Route path='/test' element={<Test />} />
       </Routes>
     </>
-    </Provider>
   );
 }
 

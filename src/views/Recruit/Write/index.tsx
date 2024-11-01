@@ -52,6 +52,7 @@ export default function RecruitWrite() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date()); // 날짜 상태 추가
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false); // 달력 열기 상태 추가
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
+  const [writerProfileImage, setWriterProfileImage] = useState<string | null>(null);
 
   const [position, setPosition] = useState<{
     lat: number
@@ -92,7 +93,7 @@ export default function RecruitWrite() {
         lng: geoLocation.coordinates.lng,
       });
 
-
+      setWriterProfileImage(signInUser?.profileImage || null);
     }
   }, [geoLocation]);
 
@@ -235,7 +236,7 @@ export default function RecruitWrite() {
       <div id='recruit-write-input-container'>
         <div className='userInfo'>
           <div className='userInfo-left'>
-            <div className='profileImage'></div>
+            <div className='profileImage' style={{ backgroundImage: `url(${writerProfileImage})` }} ></div>
             <div className='userInfo-right'>
               <div className='name'>{signInUser?.userId}</div>
               <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
