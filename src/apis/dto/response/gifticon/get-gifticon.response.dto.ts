@@ -1,9 +1,9 @@
 import ResponseDto from "../response.dto";
 
 // interface: get gifticon response body dto //
-export default interface GetToolResponseDto extends ResponseDto {
+export default interface GetGifticonResponseDto extends ResponseDto {
     gifticonId: number;
-    gifticonName: string;
-    gifticonImage: string;
+    name: string;
+    image: string;
     mileageCost : number;
 }

@@ -481,7 +481,6 @@
     flex-direction: row;
     text-align: center;
     font-weight: 700;
-
 }
 
 #mypage .tr {
@@ -505,35 +504,76 @@
 #mypage .td-recruit-view-count,
 #mypage .td-recruit-people,
 #mypage .td-recruit-end-date,
-#mypage .td-recruit-create-date {
+#mypage .td-recruit-create-date,
+#mypage .td-mileage-id,
+#mypage .td-mileage-change,
+#mypage .td-mileage-description,
+#mypage .td-mileage-date,
+#mypage .td-mileage-final {
     padding: 10px;
-
+    font-size: 18px;
 }
 
 #mypage .td-recruit-number {
-    width: 30px;
+    width: 40px;
 }
 
-#mypage .td-recruit-isCompleted {
-    width: 60px;
+#mypage .td-mileage-id {
+    width: 50px;
+}
+
+#mypage .td-mileage-change,
+#mypage .td-mileage-final,
+#mypage .td-mileage-date {
+    width: 120px;
 }
 
 #mypage .td-recruit-title {
     flex: 1;
     cursor: pointer;
+}
 
+#mypage .td-mileage-description {
+    flex: 1;
+    cursor: pointer;
+}
+
+.follow-table {
+    display: flex;
+    gap: 30px;
+    margin-top: 15px;
+}
+
+.follow-table .follow-text {
+    margin-top: 10px;
+}
+
+.follow-table .profileImage {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+
+    background-image: url(/public/images/img.png);
+    background-position: 50% 50%;
+    background-size: cover;
+
+}
+
+#mypage .td-recruit-like-count,
+#mypage .td-recruit-view-count {
+    width: 60px;
 }
 
 #mypage .td-recruit-writer,
-#mypage .td-recruit-like-count,
-#mypage .td-recruit-view-count,
-#mypage .td-recruit-people
+#mypage .td-recruit-people,
+#mypage .td-recruit-isCompleted
 {
-    width: 60px;
+    width: 75px;
 }
+
 #mypage .td-recruit-end-date,
 #mypage .td-recruit-create-date{
-    width: 80px;
+    width: 95px;
 }
 
 #mypage .pagination {

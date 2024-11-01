@@ -7,6 +7,7 @@ import SignInUser from "./sign-in-user.interface";
 import RecruitPostList from './recruitpost.interface';
 import AlertList from "./alert.interface";
 import MyRecruitPost from "./my-recruit-post.interface";
+import Mileage from "./mileage.interface";
 import ActiveComment from "./active-comment.interface";
 import RecruitReportList from "./recruitreport.interface";
 
@@ -22,5 +23,6 @@ export type {
     QnaPostList,
     MyRecruitPost,
     RecruitPostList,
+    Mileage,
     RecruitReportList
 }
