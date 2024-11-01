@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import './Plogger.css';
-import { BrowserRouter } from 'react-router-dom';
 import { Routes, Route, useLocation, Navigate, Router, useSearchParams, useNavigate } from 'react-router-dom';
 
 
@@ -123,7 +122,6 @@ function Plogger() {
 
   // render: Plogger 컴포넌트 렌더링 //
   return (
-    <Provider>
     <>
       {showNavigationBar && <NavigationBar />}
       <Routes>
@@ -148,7 +146,6 @@ function Plogger() {
         <Route path='/test' element={<Test />} />
       </Routes>
     </>
-    </Provider>
   );
 }
 

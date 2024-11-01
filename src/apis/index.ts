@@ -500,12 +500,12 @@ export const deleteAlertListRequest = async (id: string | number, accessToken: s
 // };
 
 // function: get recruit comment list 요청 함수 //
-export const getRecruitCommentListRequest = async (recruitPostId: number | string, accesstoken: string) => {
-    const responseBody = await axios.get(GET_RECRUIT_COMMENT_LIST_API_URL(recruitPostId), bearerAuthorization(accesstoken))
-    .then(responseDataHandler<ResponseDto>)
-    .catch(responseErrorHandler);
-return responseBody;
-}
+export const getRecruitCommentListRequest = async (recruitPostId: number | string, accessToken: string) => {
+    const responseBody = await axios.get(GET_RECRUIT_COMMENT_LIST_API_URL(recruitPostId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetRecruitCommentListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 
 // function: get sign in follower list 요청 함수 //
 export const getSignInFollowerListRequest = async (accessToken: string) => {
@@ -555,14 +555,6 @@ export const getRecruitUserInfoRequest = async (recruitPostWriter: string) => {
 export const getMileageListRequest = async (accessToken: string) => {
     const responseBody = await axios.get(GET_MILEAGE_LIST_API_URL, bearerAuthorization(accessToken))
         .then(responseDataHandler<GetMileageListResponseDto>)
-        .catch(responseErrorHandler);
-    return responseBody;
-};
-
-// function: get recruit comment list 요청 함수 //
-export const getRecruitCommentListRequest = async (recruitPostId: number | string, accessToken: string) => {
-    const responseBody = await axios.get(GET_RECRUIT_COMMENT_LIST_API_URL(recruitPostId), bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetRecruitCommentListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 };
