@@ -23,6 +23,7 @@ import { usePagination } from '@chakra-ui/react';
 import useRecruitCommentPagination from 'src/hooks/recruit-comment.pagination.hook';
 import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto } from 'src/apis/dto/response/recruit';
 import { PatchRecruitIsCompletedRequestDto } from 'src/apis/dto/request/recruit';
+import { differenceInDays, parseISO } from 'date-fns';
 
 // interface: recruit comment list 아이템 컴포넌트 Properties //
 interface TableRowProps {
@@ -95,6 +96,7 @@ export default function RecruitDetail() {
   const [location, setLocation] = useState<string>('');
   const [like, setLike] = useState<number>(0);
   const [view, setView] = useState<number>(0);
+  const [dday, setDday] = useState<string>('');
   const [people, setPeople] = useState<number>(0);
   const [currentPeople, setCurrentPeople] = useState<number>(0);
   const [report, setReport] = useState<number>(0);
@@ -201,6 +203,7 @@ export default function RecruitDetail() {
     const { profileImage } = responseBody as GetSignInResponseDto;
     setWriterProfileImage(profileImage);
   };
+  
     // function: post recruit report response 처리 함수 //
     const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
       const message =
@@ -301,6 +304,35 @@ export default function RecruitDetail() {
     if (!accessToken) return;
     getRecruitCommentListRequest(recruitPostId, accessToken).then(getRecruitCommentListResponse);
   };
+
+
+  // function : 한국 시간 //
+  function getKoreanDate() {
+    const now = new Date();
+    // 한국 시간 (UTC+9)을 적용한 Date 객체 생성
+    const koreanDate = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+    return koreanDate;
+  }
+
+  // function: 날짜 d-day 함수 //
+  function calculateDday(endDate: string) {
+    // 문자열을 Date 객체로 변환
+    const start = getKoreanDate();
+    const end = parseISO(endDate);
+
+    // D-day 계산
+    const daysBetween = differenceInDays(end, start)+1;
+
+    if (daysBetween > 0) {
+      return `D-${daysBetween}`;
+    } else if (daysBetween < 0) {
+      return `D+${Math.abs(daysBetween)}`;
+    } else {
+      return 'D-day';
+    }
+
+  }
+  
 
   // event handler: 목록 버튼 클릭 이벤트 처리 //
   const onListButtonClickHandler = () => {
@@ -485,7 +517,15 @@ export default function RecruitDetail() {
         if (!accessToken) return;
         getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
         getRecruitCommentListRequest(recruitPostId, accessToken).then(getRecruitCommentListResponse);
-    }, [recruitPostId]);
+      }, [recruitPostId]);
+  
+  // effect: dday //
+  useEffect(() => {
+    setDday(calculateDday(endDate));
+  }, [endDate]);
+
+ 
+
   
 
   

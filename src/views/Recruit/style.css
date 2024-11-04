@@ -181,7 +181,7 @@
 #recruit-post-wrapper .td-recruit-people,
 #recruit-post-wrapper .td-recruit-end-date,
 #recruit-post-wrapper .td-recruit-create-date {
-    padding: 10px;
+    padding: 10px 5px;
 
 }
 
@@ -200,12 +200,16 @@
 }
 
 #recruit-post-wrapper .td-recruit-writer,
-#recruit-post-wrapper .td-recruit-like-count,
-#recruit-post-wrapper .td-recruit-view-count,
+
 #recruit-post-wrapper .td-recruit-people
 {
     width: 60px;
 }
+#recruit-post-wrapper .td-recruit-like-count,
+#recruit-post-wrapper .td-recruit-view-count{
+    width: 50px;
+}
+
 #recruit-post-wrapper .td-recruit-end-date,
 #recruit-post-wrapper .td-recruit-create-date{
     width: 80px;
