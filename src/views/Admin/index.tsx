@@ -4,42 +4,22 @@ import { useNavigate, useNavigation } from 'react-router-dom'
 import InputBox from '../../components/InputBox';
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
-import { Follow, RecruitPostList } from 'src/types';
-import { getRecruitPostListRequest, GetRecruitReportListRequest, getSignInFolloweeListRequest, getSignInFollowerListRequest, patchCommentRequest } from 'src/apis';
+import { ActiveReportList, Follow, RecruitPostList } from 'src/types';
+import { GetActiveReportListRequest, getRecruitPostListRequest, GetRecruitReportListRequest, getSignInFolloweeListRequest, getSignInFollowerListRequest, patchCommentRequest } from 'src/apis';
 import { GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
 import { ACCESS_TOKEN, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';
 import { PatchCommentRequestDto } from 'src/apis/dto/request/user';
-import { useCookies } from 'react-cookie';
+import { Cookies, useCookies } from 'react-cookie';
 import RecruitReportList from 'src/types/recruitreport.interface';
 import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from 'src/apis/dto/response/follow';
-
-// interface: 팔로워&팔로위 리스트 컴포넌트 Properties //
-interface FollowTableRowProps {
-  follow: Follow;
-  getFollowList: () => void;
-  mode: 'follower' | 'followee';
-}
-
-// component: 팔로워&팔로위 리스트 아이템 컴포넌트 //
-function FollowTableRow({ follow, getFollowList, mode }: FollowTableRowProps) {
-
-  const displayedId = mode === 'follower' ? follow.followerId : follow.followeeId;
-
-  // render : 팔로워&팔로위 게시글 리스트 렌더링 //
-  return (
-    <div className="follow-table" key={follow.followId}>
-      <div>{displayedId}</div>
-    </div>
-  )
-
-}
+import { GetActiveReportListResponseDto } from 'src/apis/dto/response/active';
+import useActivePagination from 'src/hooks/active.pagination.hook';
 
 export default function Admin() {
   // state: 페이징 관련 상태 //
   const { currentPage, totalPage, totalCount, viewList, setTotalList, initViewList, ...paginationProps } = useRecruitPagination<RecruitReportList>();
-
   // state: 프로필 상태 //
   const [input, onInput] = useState<boolean>(false);
   const [comment, setComment] = useState<string>('');
@@ -62,70 +42,13 @@ export default function Admin() {
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [imageUrl, setImageUrl] = useState<string>('');
 
-
-  // state: 팔로워 모달 팝업 상태 //
-  const [followerModalOpen, setFollowerModalOpen] = useState<boolean>(false);
-
-  // state: 팔로위 모달 팝업 상태 //
-  const [followeeModalOpen, setFolloweeModalOpen] = useState<boolean>(false);
-
-  const [followerList, setFollowerList] = useState<Follow[]>([]);
-  const [followeeList, setFolloweeList] = useState<Follow[]>([]);
-
   // state: 구인 신고글 상태 //
   const [showRecruitReports, setShowRecruitReports] = useState(false);
 
+  // state: 활동 신고글 상태 //
+  const [showActiveReports, setShowActiveReports] = useState(false);
+
   const accessToken = cookies[ACCESS_TOKEN];
-
-  // function: follower list 불러오기 함수 //
-  const getFollowerList = () => {
-    const accessToken = cookies[ACCESS_TOKEN];
-    if (!accessToken) return;
-    getSignInFollowerListRequest(accessToken).then(getFollowerListResponse);
-  }
-
-  // function: get follower list response 처리 함수 //
-  const getFollowerListResponse = (responseBody: GetFollowerListResponseDto | ResponseDto | null) => {
-    const message =
-      !responseBody ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-          responseBody.code === 'NF' ? '팔로워가 없습니다' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-
-    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    if (!isSuccessed) {
-      alert(message);
-      return;
-    }
-
-    const { follows } = responseBody as GetFollowerListResponseDto;
-    setFollowerList(follows);
-  }
-
-  // function: followee list 불러오기 함수 //
-  const getFolloweeList = () => {
-    const accessToken = cookies[ACCESS_TOKEN];
-    if (!accessToken) return;
-    getSignInFolloweeListRequest(accessToken).then(getFolloweeListResponse);
-  }
-
-  // function: get followee list response 처리 함수 //
-  const getFolloweeListResponse = (responseBody: GetFolloweeListResponseDto | ResponseDto | null) => {
-    const message =
-      !responseBody ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-          responseBody.code === 'NF' ? '팔로잉이 없습니다' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-
-    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    if (!isSuccessed) {
-      alert(message);
-      return;
-    }
-
-    const { follows } = responseBody as GetFolloweeListResponseDto;
-    setFolloweeList(follows);
-  }
 
   // effect: 유저 정보가 변경되면 state에 반영 // 
   useEffect(() => {
@@ -156,6 +79,26 @@ export default function Admin() {
     setShowRecruitReports(true);
 
   };
+
+  // function: 활동 신고글 list 불러오기 함수 //
+  const getActiveReportPostList = () => { GetActiveReportListRequest(accessToken).then(getActiveReportListResponse); };
+
+  // function: get active report list response 처리 함수 //
+  const getActiveReportListResponse = (responseBody: GetActiveReportListResponseDto | ResponseDto | null) => {
+
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) { alert(message); return; }
+
+    const reports = (responseBody as GetActiveReportListResponseDto).reports;
+    // setTotalList(reports);
+    setShowActiveReports(true);
+  }
+
   // function: patch comment post list response 처리 함수 //
   const patchCommentResponse = (responseBody: ResponseDto | null) => {
     const message =
@@ -181,7 +124,7 @@ export default function Admin() {
   }
 
   // component: 구인 신고글 리스트 아이템 컴포넌트 //
-  function TableRow({ recruitreportPostId, getRecruitReportList }: TableRowProps) {
+  function RecruitTableRow({ recruitreportPostId, getRecruitReportList }: TableRowProps) {
 
     //function: 네비게이터 함수 //
     const navigator = useNavigate();
@@ -203,9 +146,9 @@ export default function Admin() {
     // render: 게시글 리스트 렌더링 //
     return (
       <div className="tr" key={recruitreportPostId.reportId}>
-        <div className="td-report-reportid">{recruitreportPostId.recruitId}</div>
+        <div className="td-report-reportid">{recruitreportPostId.reportId}</div>
         <div className="td-report-writer">{recruitreportPostId.userId}</div>
-        <div className="td-report-number">{recruitreportPostId.reportId}</div>
+        <div className="td-report-number">{recruitreportPostId.recruitId}</div>
         <div className="td-report-content">{recruitreportPostId.content}</div>
         <div className="td-report-create-date">{formatDate(recruitreportPostId.createdAt)}</div>
       </div>
@@ -315,21 +258,12 @@ export default function Admin() {
     getRecruitReportPostList();
   };
 
-  // event handler: 팔로워 모달 버튼 클릭 이벤트 처리 함수 //
-  const onFollowerOpenHandler = () => {
-    setFollowerModalOpen(!followerModalOpen);
+  // event handler: active report 클릭 이벤트 처리 //
+  const onActiveReportClickHandler = () => {
+    setShowActiveReports(true);
+    getActiveReportPostList();
   }
-
-  // event handler: 팔로위 모달 버튼 클릭 이벤트 처리 함수 //
-  const onFolloweeOpenHandler = () => {
-    setFolloweeModalOpen(!followeeModalOpen);
-  };
-
-  // effect: 컴포넌트 로드 시 팔로워 리스트 불러오기 함수 //
-  useEffect(getFollowerList, []);
-
-  // effect: 컴포넌트 로드 시 팔로위 리스트 불러오기 함수 //
-  useEffect(getFolloweeList, []);
+    
   return (
     <div id='adminpage'>
       <div className='top'>
@@ -351,18 +285,6 @@ export default function Admin() {
           </div>
         </div>
         <div className='activity-container'>
-          <div className='score-container'>
-            <div className='line'>
-              <div className='follower-box' onClick={onFollowerOpenHandler}>
-                <div className='follower-score'>팔로우</div>
-                <div className='score'>{followerList.length}</div>
-              </div>
-            </div>
-            <div className='followee-box' onClick={onFolloweeOpenHandler}>
-              <div className='followee-score'>팔로잉</div>
-              <div className='score'>{followeeList.length}</div>
-            </div>
-          </div>
           <div className='mileage-container'>
             <div className='mileage-box'>
               <div className='mileage-button'>M</div>
@@ -376,12 +298,9 @@ export default function Admin() {
         <div className='table-contents'>
           <div className='recruit-report' onClick={onRecruitReportClickHandler}><span>구인 신고글</span></div>
           <div className='line'>
-            <div className='active-report' ><span>활동 신고글</span></div>
+            <div className='active-report' onClick={onActiveReportClickHandler}><span>활동 신고글</span></div>
           </div>
-          <div className='line-right'>
-            <div className='user-list'><span>유저 리스트</span></div>
-          </div>
-          <div className='admin-scrap'><span>스크랩 글</span></div>
+          <div className='user-list'><span>유저 리스트</span></div>
         </div>
         <div className='table'>
           {showRecruitReports && (
@@ -398,7 +317,7 @@ export default function Admin() {
                 </div>
                 {
                   viewList.map((recruitPostId, index) => (
-                    <TableRow key={index} recruitreportPostId={recruitPostId} getRecruitReportList={getRecruitReportPostList} />
+                    <RecruitTableRow key={index} recruitreportPostId={recruitPostId} getRecruitReportList={getRecruitReportPostList} />
                   ))}
               </div>
               <div className="pagination">
