@@ -36,7 +36,6 @@ import Admin from './views/Admin';
 import ActiveDetail from './views/Active/Detail';
 import ActiveUpdate from './views/Active/Update';
 import ActiveWrite from './views/Active/Write';
-import Test from './views/test';
 
 
 
@@ -142,7 +141,6 @@ function Plogger() {
         <Route path={FIND_PASSWORD} element={<FindPassword />} />
         <Route path={SNS_SUCCESS_PATH} element={<SnsSuccess />} />
         <Route path='/admin' element={<Admin />} />
-        <Route path='/test' element={<Test />} />
       </Routes>
     </>
   );
