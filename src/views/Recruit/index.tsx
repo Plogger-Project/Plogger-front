@@ -15,6 +15,7 @@ import { getRecruitPostListRequest } from "src/apis";
 import useRecruitPagination from "src/hooks/recruit.pagination.hook";
 import Pagination from "src/components/pagination";
 import SignInUser from './../../types/sign-in-user.interface';
+import { differenceInDays, parseISO } from "date-fns";
 
 
 // variable : 카카오 맵 키 //
@@ -29,6 +30,8 @@ interface TableRowProps {
 // component: 구인 게시글 리스트 아이템 컴포넌트 //
 function TableRow({ recruitPostId, getRecruitList }: TableRowProps) {
 
+  const [dday, setDday] = useState<string>('');
+
   //function: 네비게이터 함수 //
   const navigator = useNavigate();
 
@@ -40,12 +43,40 @@ function TableRow({ recruitPostId, getRecruitList }: TableRowProps) {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
+ 
+
+  // function: 날짜 d-day 함수 //
+  function calculateDday() {
+    // 문자열을 Date 객체로 변환
+    const now = new Date();
+    const end = parseISO(recruitPostId.recruitEndDate);
+    const koreanNow = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+    const finalnow = koreanNow.toISOString().split('T')[0];
+    const start = parseISO(finalnow);
+
+    // D-day 계산
+    const daysBetween = differenceInDays(end, start);
+
+    if (daysBetween > 0) {
+      return `D-${daysBetween}`;
+    } else if (daysBetween < 0) {
+      return `D+${Math.abs(daysBetween)}`;
+    } else {
+      return 'D-day';
+    }
+
+  }
 
 
   // event handler: 상세 정보 보기 버튼 클릭 이벤트 처리 함수 //
   const onDetailButtonClickHandler = () => {
     navigator(RECRUIT_DETAIL_ABSOLUTE_PATH(recruitPostId.recruitPostId));
   };
+
+  // effect: dday //
+  useEffect(() => {
+    setDday(calculateDday());
+  }, [recruitPostId.recruitEndDate]);
 
   // render : 게시글 리스트 렌더링 //
   return (
@@ -57,7 +88,7 @@ function TableRow({ recruitPostId, getRecruitList }: TableRowProps) {
       <div className="td-recruit-like-count">{recruitPostId.recruitPostLike}</div>
       <div className="td-recruit-view-count">{recruitPostId.recruitView}</div>
       <div className="td-recruit-people">{recruitPostId.currentPeople}/{recruitPostId.minPeople}</div>
-      <div className="td-recruit-end-date">{recruitPostId.recruitEndDate}</div>
+      <div className="td-recruit-end-date">{dday}</div>
       <div className="td-recruit-create-date">{formatDate(recruitPostId.recruitPostCreatedAt)}</div>
     </div>
   )
@@ -243,7 +274,7 @@ export default function RecruitPost() {
               <div className="td-recruit-like-count">추천수</div>
               <div className="td-recruit-view-count">조회수</div>
               <div className="td-recruit-people">모집인원</div>
-              <div className="td-recruit-end-date">마감일자</div>
+              <div className="td-recruit-end-date">모집종료</div>
               <div className="td-recruit-create-date">날짜</div>
             </div>
             {

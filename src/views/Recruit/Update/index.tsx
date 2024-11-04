@@ -57,9 +57,12 @@ export default function RecruitUpdate() {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false); // 달력 열기 상태 추가
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
   const [image, setImage] = useState<string | null>('');
-
+  const [writerProfileImage, setWriterProfileImage] = useState<string>('');
   const [writer, setWriter] = useState<string>('');
   const [createdAt, setCreatedAt] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
+  const [like, setLike] = useState<number>(0);
+  const [view, setView] = useState<number>(0);
 
 
   
@@ -120,6 +123,7 @@ export default function RecruitUpdate() {
     setLat(postLat);
     setLng(postLng);
   
+    getRecruitUserInfoRequest(recruitPostWriter).then(getRecruitPostUserResponse);
   };
   
 
@@ -154,6 +158,25 @@ export default function RecruitUpdate() {
     navigator(RECRUIT_ABSOLUTE_PATH);
 
   }
+
+  // function : get recruit post user response 처리 함수 //
+  const getRecruitPostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
+
+    const message = !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '잘못된 vf접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 af접근입니다.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      navigator(RECRUIT_ABSOLUTE_PATH);
+      return;
+    }
+
+    const { profileImage } = responseBody as GetSignInResponseDto;
+    setWriterProfileImage(profileImage);
+  };
 
 
 
@@ -277,15 +300,27 @@ export default function RecruitUpdate() {
     <div id='recruit-update-wrapper'>
       <div className='navi'></div>
       <div id='recruit-update-input-container'>
+        <div className="postTop">
         <div className='userInfo'>
           <div className='userInfo-left'>
-            <div className='profileImage'></div>
+            <div className='profileImage' style={{ backgroundImage: `url(${writerProfileImage})` }} ></div>
             <div className='userInfo-right'>
-              <div className='name'>{signInUser?.userId}</div>
-              <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
+              <div className='name'>작성자 : {writer}</div>
+              <div className='location'>장소 : {address}</div>
+              <div className='date'>작성일 : {createdAt}</div>
             </div>
           </div>
         </div>
+        <div className='postBox'>
+          <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
+          <div className='detailCount'>좋아요 : {like}</div>
+          |
+          <div className='detailCount'>조회수 : {view}</div>
+          </div>
+        </div>
+
+
+        
         <div className='input-box'>
           <div className='input-label'>제목</div>
           <input className='input' value={title} placeholder='제목을 입력해주세요.(최대 32자)' onChange={onTitleChangeHandler} maxLength={32} />
