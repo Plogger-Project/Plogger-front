@@ -16,11 +16,11 @@ import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
 import {  PatchRecruitIsCompletedRequestDto, PostRecruitRequestDto } from "./dto/request/recruit";
 import GetRecruitPostResponseDto from "./dto/response/recruit/get-recruit.response.dto";
 import PostActivePostRequestDto from "./dto/request/active/post-active-post.request.dto";
-import { PatchActiveCommentRequestDto, PatchActivePostRequestDto, PostActiveCommentRequestDto } from "./dto/request/active";
+import { PatchActiveCommentRequestDto, PatchActivePostRequestDto, PostActiveCommentRequestDto, PostActiveReportRequestDto } from "./dto/request/active";
 import PostRecruitReportRequestDto from "./dto/request/recruit/post-recruit-report-request.dto";
 import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from "./dto/response/follow";
 import { GetMileageListResponseDto } from "./dto/response/mileage";
-import { GetActiveCommentListResponseDto, GetActivePostListResponseDto, GetActivePostResponseDto, GetMyRecruitReponseDto } from "./dto/response/active";
+import { GetActiveCommentListResponseDto, GetActivePostListResponseDto, GetActivePostResponseDto, GetActiveReportListResponseDto, GetMyRecruitReponseDto } from "./dto/response/active";
 import { GetUserListResponseDto } from "./dto/response/mypage";
 
 
@@ -106,6 +106,7 @@ const DELETE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MOD
 const PURCHASE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`;
 
 const POST_RECRUIT_REPORT_API_URL = (recruitId: number | string) => `${RECRUIT_REPORT_API_URL}/${recruitId}`;
+const POST_ACTIVE_REPORT_API_URL = (activeId: number | string) => `${ACTIVE_REPORT_API_URL}/${activeId}`;
 
 const FOLLOW_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/follow`;
 
@@ -462,6 +463,22 @@ export const PostRecruitReportRequest = async (requestBody: PostRecruitReportReq
 export const GetRecruitReportListRequest = async (accessToken: string) => {
     const responseBody = await axios.get(GET_RECRUIT_REPORT_LIST_API_URL, bearerAuthorization(accessToken))
     .then(responseDataHandler<GetRecruitReportListResponseDto>)
+    .catch(responseErrorHandler);
+return responseBody;
+}
+
+//function: post active report 요청 함수 //
+export const PostActiveReportRequest = async (requestBody: PostActiveReportRequestDto, accessToken: string, activePostId: number | string) => {
+    const responseBody = await axios.post(POST_ACTIVE_REPORT_API_URL(activePostId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: get active report list 요청 함수 //
+export const GetActiveReportListRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_ACTIVE_REPORT_LIST_API_URL, bearerAuthorization(accessToken))
+    .then(responseDataHandler<GetActiveReportListResponseDto>)
     .catch(responseErrorHandler);
 return responseBody;
 }

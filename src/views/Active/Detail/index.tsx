@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { useNavigate, useParams } from 'react-router-dom'
-import { deleteActiveCommentRequest, deleteActivePostRequest, getActiveCommentListRequest, getActivePostRequest, patchActiveCommentRequest, postActiveCommentRequest } from 'src/apis';
+import { deleteActiveCommentRequest, deleteActivePostRequest, getActiveCommentListRequest, getActivePostRequest, patchActiveCommentRequest, postActiveCommentRequest, PostActiveReportRequest } from 'src/apis';
 import { ResponseDto } from 'src/apis/dto/response';
 import { GetActiveCommentListResponseDto, GetActivePostResponseDto } from 'src/apis/dto/response/active';
 import { ACCESS_TOKEN, ACTIVE_DETAIL_PATH, ACTIVE_PATH, ACTIVE_UPDATE_PATH } from 'src/constants';
@@ -11,7 +11,7 @@ import './style.css';
 import { useCookies } from 'react-cookie';
 import { ActiveComment } from 'src/types';
 import usePagination from 'src/hooks/pagination.hook';
-import { PatchActiveCommentRequestDto, PostActiveCommentRequestDto } from 'src/apis/dto/request/active';
+import { PatchActiveCommentRequestDto, PostActiveCommentRequestDto, PostActiveReportRequestDto } from 'src/apis/dto/request/active';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 
@@ -42,11 +42,11 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
     const deleteActiveCommentResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
-            responseBody.code === 'NAC' ? '존재하지 않는 댓글입니다.' :
-            responseBody.code === 'NP' ? '권한이 없습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 삭제!';
+                responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
+                        responseBody.code === 'NAC' ? '존재하지 않는 댓글입니다.' :
+                            responseBody.code === 'NP' ? '권한이 없습니다.' :
+                                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 삭제!';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -61,11 +61,11 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
     const patchActiveCommentResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NP' ? '권한이 없습니다.' :
-            responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
-            responseBody.code === 'NAC' ? '존재하지 않는 댓글입니다.' : '댓글 수정!';
+                responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NP' ? '권한이 없습니다.' :
+                            responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
+                                responseBody.code === 'NAC' ? '존재하지 않는 댓글입니다.' : '댓글 수정!';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -159,7 +159,7 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
 export default function ActiveDetail() {
 
     // state: 게시글 번호 경로 변수 상태 //
-    const { activePostId } = useParams();
+    const { activePostId } = useParams<{ activePostId: string}>();
 
     // state: 로그인 유저 상태 //
     const { signInUser } = useSignInUserStore();
@@ -198,6 +198,15 @@ export default function ActiveDetail() {
     const optionBoxRef = useRef<HTMLDivElement | null>(null);
     const mapRef = useRef<HTMLDivElement | null>(null);
 
+    // state: 신고내역 작성창 오픈 여부 상태 //
+    const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
+
+    // state: 신고 내역 내용 상태 //
+    const [reportContent, setReportContent] = useState<string>('');
+
+    // variable: accessToken //
+    const accessToken = cookies[ACCESS_TOKEN];
+
     // function: 네비게이터 함수 //
     const navigator = useNavigate();
 
@@ -207,11 +216,11 @@ export default function ActiveDetail() {
     // function: 활동 게시글 가져오기 함수 //
     const getActivePostResponse = (responseBody: GetActivePostResponseDto | ResponseDto | null) => {
         const message =
-        !responseBody ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-        responseBody.code === 'NAP' ? '존재하지 않는 글입니다.' :
-        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NAP' ? '존재하지 않는 글입니다.' :
+                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -245,12 +254,12 @@ export default function ActiveDetail() {
     // function: 활동 게시글 삭제 함수 //
     const deleteActivePostResponse = (responseBody: ResponseDto | null) => {
         const message =
-        !responseBody ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-        responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
-        responseBody.code === 'NP' ? '권한이 없습니다.' :
-        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+                            responseBody.code === 'NP' ? '권한이 없습니다.' :
+                                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -261,14 +270,31 @@ export default function ActiveDetail() {
         navigator(ACTIVE_PATH);
     }
 
+    // function: post active report response 처리 함수 //
+    const postActiveReportResponse = (responseBody: ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '내역을 입력해주세요.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+        alert("신고가 완료 되었습니다.");
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+    }
+
     // function: 활동 게시판 댓글 목록 가져오기 함수 //
     const getActiveCommentListResponse = (responseBody: GetActiveCommentListResponseDto | ResponseDto | null) => {
         const message =
-        !responseBody ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'VF' ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-        responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
-        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '서버에 문제가 있습니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
+                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -286,10 +312,10 @@ export default function ActiveDetail() {
         if (!activePostId) return;
 
         const message =
-        !responseBody ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
-        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 작성!';
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 작성!';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -386,6 +412,38 @@ export default function ActiveDetail() {
         deleteActivePostRequest(activePostId, accessToken).then(deleteActivePostResponse);
     }
 
+    // event handler: 신고 작성 모달 오픈 이벤트 처리 //
+    const openReportModalHandler = () => {
+        setIsReportModalOpen(!isReportModalOpen);
+        setReportContent("");
+    }
+
+    // event handler: 신고 작성 버튼 클릭 시 이벤트 처리 //
+    const onreportWriteButtonHandler = () => {
+        if (!signInUser?.userId) {
+            alert("로그인을 해주세요.");
+            return;
+        }
+
+        if (!activePostId) {
+            alert("게시글 정보가 없습니다.");
+            return;
+        }
+
+        const requestBody: PostActiveReportRequestDto = { content: reportContent };
+        PostActiveReportRequest(requestBody, accessToken, activePostId).then(postActiveReportResponse);
+    }
+
+    // event handler: 신고 모달 취소 버튼 클릭 시 이벤트 처리 //
+    const onreportCancelButtonHandler = () => {
+        setIsReportModalOpen(!isReportModalOpen);
+    }
+
+    // event handler: 신고 내역 입력 시 처리 //
+    const onreportContentHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
+        setReportContent(event.target.value);
+    }
+
     // event handler: 댓글 등록 버튼 클릭 이벤트 처리 //
     const onCommentPostButtonClick = () => {
         if (!commentConent) {
@@ -434,6 +492,27 @@ export default function ActiveDetail() {
                             </div>
                         </div>
                     </div>
+                    {isReportModalOpen &&
+                        <div className='report-modal'>
+                            <div className='report-box'>
+                                <div className='report-top'>
+                                    <div className='report-top-title'>해당 게시글을 신고하시겠습니까?</div>
+                                </div>
+                                <div className='report-main'>
+                                    <div className='report-content'>
+                                        <textarea className='report-input' placeholder='내용을 입력하세요.' value={reportContent} onChange={onreportContentHandler} />
+                                    </div>
+                                </div>
+                                <div className='report-bottom'>
+                                    <div className='report-button'>
+                                        <div className='report-button-container'>
+                                            <div className='button report-write' onClick={onreportWriteButtonHandler}>제출</div>
+                                            <div className='button report-cancel' onClick={onreportCancelButtonHandler}>취소</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>}
                     <div className='postBox'>
                         <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
                         <div className='detailCount'>조회수 : {view}</div>
@@ -449,9 +528,15 @@ export default function ActiveDetail() {
                                     left: optionPosition.left + 'px'
                                 }}
                             >
-                                <button className="editButton" onClick={onPostUpdateButtonClick}>수정하기</button>
-                                <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제하기</button>
-                                <button className='reportButton'>신고하기</button>
+                                {signInUser?.userId === writer ?
+                                    <>
+                                        <button className="editButton" onClick={onPostUpdateButtonClick}>수정하기</button>
+                                        <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제하기</button>
+                                    </>
+                                    : ''}
+                                {signInUser?.userId === writer ? '' :
+                                    <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
+                                }
                             </div>
                         )}
                     </div>
@@ -479,10 +564,10 @@ export default function ActiveDetail() {
                         <div className='tag'>
                             <AvatarGroup max={4}>
                                 {activePeople.map((tagUser, index) =>
-                                <Avatar key={index} src={tagUser} />
+                                    <Avatar key={index} src={tagUser} />
                                 )}
                             </AvatarGroup>
-                        {/* <AvatarGroup size="lg">
+                            {/* <AvatarGroup size="lg">
                             {activePeople.slice(0, 3).map((tagUser, index) => (
                                 <Avatar key={index} src={tagUser} />
                             ))}

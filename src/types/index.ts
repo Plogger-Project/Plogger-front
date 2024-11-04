@@ -10,6 +10,7 @@ import MyRecruitPost from "./my-recruit-post.interface";
 import Mileage from "./mileage.interface";
 import ActiveComment from "./active-comment.interface";
 import RecruitReportList from "./recruitreport.interface";
+import ActiveReportList from "./activereport.interface";
 
 export type {
     User,
@@ -24,5 +25,6 @@ export type {
     MyRecruitPost,
     RecruitPostList,
     Mileage,
-    RecruitReportList
+    RecruitReportList,
+    ActiveReportList
 }
