@@ -15,6 +15,9 @@ import { AlertList } from 'src/types';
 import GetAlertListResponseDto from 'src/apis/dto/response/alert/get-alert-list.response.dto';
 import useAlertPagination from 'src/hooks/alert.pagination.hook';
 import { get } from 'http';
+import { Badge } from '@mui/material';
+import MailIcon from '@mui/icons-material/Mail';
+
 
 type AuthPath = '회원가입';
 
@@ -49,25 +52,25 @@ function TableRow({ alerts, getAlertList }: TableRowProps) {
         }
     }, [alerts]);
 
-        // function: delete alert response 처리 함수 //
-        const deleteAlertListResponse = (responseBody: ResponseDto | null) => {
-            const message =
-                !responseBody ? '서버에 문제가 있습니다.' :
+    // function: delete alert response 처리 함수 //
+    const deleteAlertListResponse = (responseBody: ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
                 responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-                responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-                responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
-                responseBody.code === 'NG' ? '해당 기프티콘이 없습니다' :
-                responseBody.code === 'NP' ? '해당 권한이 없습니다.' :
-                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-    
-            const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-            if (!isSuccessed) {
-                alert(message);
-                return;
-            }
-    
-            getAlertList();
-        };
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+                            responseBody.code === 'NG' ? '해당 기프티콘이 없습니다' :
+                                responseBody.code === 'NP' ? '해당 권한이 없습니다.' :
+                                    responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+
+        getAlertList();
+    };
 
     // effect: 컴포넌트 로드시 알람 리스트 불러오기 함수 //
     useEffect(getAlertList, []);
@@ -98,6 +101,7 @@ function TableRow({ alerts, getAlertList }: TableRowProps) {
     )
 }
 
+// component: Navigation Ba 컴포넌트 //
 export default function NavigationBar() {
 
     // state: 로그인 유저 정보 상태 //
@@ -129,9 +133,12 @@ export default function NavigationBar() {
     // state: cookie 상태 관리
     const [cookies, setCookie, removeCookie] = useCookies([ACCESS_TOKEN]);
 
+    // state: scroll 상태 //
+    const [isScrolled, setIsScrolled] = useState(false);
+
     // // function: get recruit post list response 처리 함수 //
     // const getAlertListResponse = (responseBody: GetAlertListResponseDto | ResponseDto | null) => {
-        
+
     //     const message =
     //         !responseBody ? '서버에 문제가 있습니다.' :
     //         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
@@ -151,7 +158,7 @@ export default function NavigationBar() {
     // function: alert list 불러오기 함수 //
     const getAlertList = () => {
         const accessToken = cookies[ACCESS_TOKEN];
-        if(!accessToken) return;
+        if (!accessToken) return;
         getAlertListRequest(accessToken).then(getAlertListResponse);
     }
 
@@ -159,9 +166,9 @@ export default function NavigationBar() {
     const getAlertListResponse = (responseBody: GetAlertListResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code == 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code == 'DBE' ? '서버에 문제가 있습니다.' : '';
-        
+                responseBody.code == 'AF' ? '잘못된 접근입니다.' :
+                    responseBody.code == 'DBE' ? '서버에 문제가 있습니다.' : '';
+
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
             alert(message);
@@ -173,11 +180,11 @@ export default function NavigationBar() {
         setOriginalList(alerts);
     }
     useEffect(() => {
-        if(signInUser) {
-        getAlertList();
-        const interval = setInterval(getAlertList, 10000);
+        if (signInUser) {
+            getAlertList();
+            const interval = setInterval(getAlertList, 10000);
 
-        return () => clearInterval(interval);
+            return () => clearInterval(interval);
         }
     }, [signInUser]);
 
@@ -386,7 +393,7 @@ export default function NavigationBar() {
 
     }
 
-    
+
     // event handler: 로그아웃 버튼 클릭 이벤트 처리 //
     const onLogoutButtonClickHandler = () => {
         removeCookie('accessToken', { path: ROOT_PATH });
@@ -394,9 +401,31 @@ export default function NavigationBar() {
         onLocationHref();
     }
 
+    // event handler: 스크롤 이벤트 핸들러 //
+    const handleScroll = () => {
+        const scrollY = window.scrollY;
+        if (scrollY > 0) {
+            setIsScrolled(true);
+        } else {
+            setIsScrolled(false);
+        }
+    };
+
+    // effect: 스크롤 이벤트 설정 // 
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    // render: Navigation Bar 컴포넌트 렌더링 //
     return (
-        <div id='navigation-bar'>
+        <div id='navigation-bar'  className={isScrolled ? 'scrolled' : ''}>
+            <div className='title'>
             <div className='logo' onClick={onLogoClickHandler}></div>
+            <div className='logo-name'>plogger</div>
+            </div>
             <div className='manu'>
                 <div className={`manu-recruit ${isReruit ? 'active' : ''}`} onClick={onRecruitClickHandler}>구인게시판</div>
                 <div className={`manu-active ${isActive ? 'active' : ''}`} onClick={onActiveClickHandler}>활동게시판</div>
@@ -410,7 +439,9 @@ export default function NavigationBar() {
                     <div className='button sign-in' onClick={onModelOpenHandler}>로그인</div> :
                     <div className='mypage-button-container'>
                         <div className='mypage-button' style={{ backgroundImage: `url(${signInUser.profileImage})` }} onClick={onMyPageClickHandler}></div>
-                        <div className='mypage-alert-button' onClick={onAlertModelOpenHandler}></div>
+                        <Badge color="success" badgeContent={viewList.length > 0 ? viewList.length : 0}>
+                            <MailIcon sx={{ fontSize: 30 }} className='mypage-alert-button' onClick={onAlertModelOpenHandler} />
+                        </Badge>
                     </div>
                 }
                 {!signInUser ?
@@ -465,17 +496,17 @@ export default function NavigationBar() {
                     </div>
                 </div>
             }
-        {alertModalOpen && (
-            <div className="alert-modal">
-                {viewList.length > 0 ? (
-                    viewList.map((alerts, index) => (
-                        <TableRow key={index} alerts={alerts} getAlertList={getAlertList} />
-                    ))
-                ) : (
-                    <div>알림이 없습니다.</div>
-                )}
-            </div>
-        )}
+            {alertModalOpen && (
+                <div className="alert-modal">
+                    {viewList.length > 0 ? (
+                        viewList.map((alerts, index) => (
+                            <TableRow key={index} alerts={alerts} getAlertList={getAlertList} />
+                        ))
+                    ) : (
+                        <div>알림이 없습니다.</div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
