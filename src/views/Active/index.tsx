@@ -68,7 +68,7 @@ export default function Active() {
   const onWriteButtonClickHandler = () => {
     navigator(ACTIVE_WRITE_PATH);
   }
-
+  
   useEffect(() => {
     getActivePostList();
   }, []);
@@ -93,13 +93,12 @@ export default function Active() {
             {viewList.map((activePost, index) => (
               <TableRow
                 key={index}
-                number={(currentPage - 1) * viewList.length + index + 1}
+                number={(currentPage - 1) * 10 + index + 1}
                 activePost={activePost}
                 getActiveList={getActivePostList}
               />
             ))}
           </div>
-
           <div className="pagination">
             <Pagination currentPage={currentPage} {...paginationProps} />
           </div>

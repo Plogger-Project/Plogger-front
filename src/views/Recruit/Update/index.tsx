@@ -114,7 +114,6 @@ export default function RecruitUpdate() {
     setEndDate(recruitEndDate);
     setPeople(minPeople.toString());
     setPreviewUrl(recruitPostImage);
-   
 
     const [postLat, postLng] = recruitLocation.split(',').map(coord => parseFloat(coord.trim()));
 

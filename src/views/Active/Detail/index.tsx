@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { useNavigate, useParams } from 'react-router-dom'
-import { deleteActiveCommentRequest, deleteActivePostRequest, getActiveCommentListRequest, getActivePostRequest, patchActiveCommentRequest, postActiveCommentRequest, PostActiveReportRequest } from 'src/apis';
+import { deleteActiveCommentRequest, deleteActivePostRequest, getActiveCommentListRequest, getActiveCommentUserInfoRequest, getActivePostRequest, getActiveTagUserInfoRequest, getActiveUserInfoRequest, getSignInRequest, patchActiveCommentRequest, postActiveCommentRequest, PostActiveReportRequest } from 'src/apis';
 import { ResponseDto } from 'src/apis/dto/response';
 import { GetActiveCommentListResponseDto, GetActivePostResponseDto } from 'src/apis/dto/response/active';
 import { ACCESS_TOKEN, ACTIVE_DETAIL_PATH, ACTIVE_PATH, ACTIVE_UPDATE_PATH } from 'src/constants';
@@ -14,6 +14,7 @@ import usePagination from 'src/hooks/pagination.hook';
 import { PatchActiveCommentRequestDto, PostActiveCommentRequestDto, PostActiveReportRequestDto } from 'src/apis/dto/request/active';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
+import { GetSignInResponseDto } from '@/apis/dto/response/auth';
 
 interface TableRowProps {
     activeComment: ActiveComment;
@@ -74,7 +75,6 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
         }
 
         getActiveCommentList();
-
     }
 
     // event handler: 활동 게시판 댓글 수정 이벤트 핸들러 //
@@ -129,34 +129,31 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
     }
 
     return (
-        <div className='commentUserInfo'>
-            <div className='profileImage'></div>
-            <div className='commentUserInfo-right'>
-                <div className='activeCommentWriter'>{activeComment.activeCommentWriter}</div>
-                {isEdit ? (
-                    <div>
-                        <textarea value={content} onChange={onContentChangeHandler} />
-                        <button onClick={onUpdateButtonClickHandler}>저장</button>
-                        <button onClick={onCancelButtonClickHandler}>취소</button>
-                    </div>
-                ) : (
-                    <div>
-                        <div className='activeCommentContent'>{activeComment.activeCommentContent}</div>
-                        <div className='activeCommentCreatedAt'>{activeComment.activeCommentCreatedAt}</div>
-                        {isAuthor && (
-                            <div>
-                                <button onClick={onEditButtonClickHandler}>수정</button>
-                                <button onClick={onDeleteButtonClickHandler}>삭제</button>
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
+        <div className='commentUserInfo-right'>
+            <div className='activeCommentWriter'>{activeComment.activeCommentWriter}</div>
+            {isEdit ? (
+                <div>
+                    <textarea value={content} onChange={onContentChangeHandler} />
+                    <button onClick={onUpdateButtonClickHandler}>저장</button>
+                    <button onClick={onCancelButtonClickHandler}>취소</button>
+                </div>
+            ) : (
+                <div>
+                    <div className='activeCommentContent'>{activeComment.activeCommentContent}</div>
+                    <div className='activeCommentCreatedAt'>{activeComment.activeCommentCreatedAt}</div>
+                    {isAuthor && (
+                        <div>
+                            <button onClick={onEditButtonClickHandler}>수정</button>
+                            <button onClick={onDeleteButtonClickHandler}>삭제</button>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     )
 }
 
-export default function ActiveDetail() {
+export default function ActiveDetail({ activeComment }: TableRowProps) {
 
     // state: 게시글 번호 경로 변수 상태 //
     const { activePostId } = useParams<{ activePostId: string}>();
@@ -175,9 +172,10 @@ export default function ActiveDetail() {
     const [postId, setPostId] = useState<number>(0);
     const [title, setTitle] = useState<string>('');
     const [content, setContent] = useState<string>('');
+    const [tagProfileImage, setTagProfileImage] = useState<{[key: string]: string | undefined }>({});
+    const [commentProfileImage, setCommentProfileImage] = useState<{[key: number]: string | null }>({});
     const [profileImage, setProfileImage] = useState<string>('');
     const [image, setImage] = useState<string | null>('');
-    const [imageFile, setImageFile] = useState<string | null>(null);
     const [writer, setWriter] = useState<string>('');
     const [startDate, setStartDate] = useState<string>('');
     const [endDate, setEndDate] = useState<string>('');
@@ -198,6 +196,8 @@ export default function ActiveDetail() {
     const optionBoxRef = useRef<HTMLDivElement | null>(null);
     const mapRef = useRef<HTMLDivElement | null>(null);
 
+    const isAuthor = writer === signInUser?.userId;
+        
     // state: 신고내역 작성창 오픈 여부 상태 //
     const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
 
@@ -217,10 +217,10 @@ export default function ActiveDetail() {
     const getActivePostResponse = (responseBody: GetActivePostResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-                        responseBody.code === 'NAP' ? '존재하지 않는 글입니다.' :
-                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NAP' ? '존재하지 않는 글입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -249,17 +249,26 @@ export default function ActiveDetail() {
         const [postLat, postLng] = activeLocation.split(', ').map(coord => (Math.floor(Number(coord.trim()) * 1000000) / 1000000));
         setLat(postLat);
         setLng(postLng);
+
+        activePeople.forEach(tagId => {
+            getActiveTagUserInfoRequest(tagId)
+                .then(response => {
+                    getActiveTagUserResponse(response, tagId); // 댓글 ID를 함께 전달
+                });
+        });
+
+        getActiveUserInfoRequest(activePostWriterId).then(getActivePostUserResponse);
     }
 
     // function: 활동 게시글 삭제 함수 //
     const deleteActivePostResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-                        responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
-                            responseBody.code === 'NP' ? '권한이 없습니다.' :
-                                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+            responseBody.code === 'NP' ? '권한이 없습니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -270,6 +279,25 @@ export default function ActiveDetail() {
         navigator(ACTIVE_PATH);
     }
 
+    // function : get active post user response 처리 함수 //
+    const getActivePostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            navigator(ACTIVE_PATH);
+            return;
+        }
+
+        const { profileImage } = responseBody as GetSignInResponseDto;
+        setProfileImage(profileImage);
+    };
+       
     // function: post active report response 처리 함수 //
     const postActiveReportResponse = (responseBody: ResponseDto | null) => {
         const message =
@@ -291,10 +319,10 @@ export default function ActiveDetail() {
     const getActiveCommentListResponse = (responseBody: GetActiveCommentListResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-                responseBody.code === 'VF' ? '서버에 문제가 있습니다.' :
-                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-                        responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
-                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+            responseBody.code === 'VF' ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -305,6 +333,47 @@ export default function ActiveDetail() {
         const { activeComments } = responseBody as GetActiveCommentListResponseDto;
         setOriginalList(activeComments);
         setTotalList(activeComments);
+
+        activeComments.forEach(activeComment => {
+            getActiveCommentUserInfoRequest(activeComment.activeCommentWriter)
+                .then(response => {
+                    getActiveCommentUserResponse(response, activeComment.activeCommentId); // 댓글 ID를 함께 전달
+                });
+        });
+    }
+
+    const getActiveCommentUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null, commentId: number) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+
+        const { profileImage } = responseBody as GetSignInResponseDto;
+        setCommentProfileImage(prev => ({ ...prev, [commentId]: profileImage }));
+    };
+
+    const getActiveTagUserResponse = async (responseBody: GetSignInResponseDto | ResponseDto | null, tagId: string) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+    
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+    
+        const { profileImage } = responseBody as GetSignInResponseDto;    
+        setTagProfileImage(prev => ({ ...prev, [tagId]: profileImage }));
     }
 
     // function: 활동 게시판 댓글 작성 함수 //
@@ -313,9 +382,9 @@ export default function ActiveDetail() {
 
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-                responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
-                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 작성!';
+            responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 작성!';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -484,11 +553,14 @@ export default function ActiveDetail() {
                 <div className='postTop'>
                     <div className='userInfo'>
                         <div className='userInfo-left'>
-                            <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }} ></div>
+                            <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }}></div>
                             <div className='userInfo-right'>
                                 <div className='name'>{writer}</div>
                                 <div className='location'>{address}</div>
                                 <div className='date'>{createdAt}</div>
+                                <div className='activity-period'>
+                                    <span>활동 날짜: {startDate} ~ {endDate}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -528,15 +600,13 @@ export default function ActiveDetail() {
                                     left: optionPosition.left + 'px'
                                 }}
                             >
-                                {signInUser?.userId === writer ?
+                                {isAuthor && (
                                     <>
                                         <button className="editButton" onClick={onPostUpdateButtonClick}>수정하기</button>
                                         <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제하기</button>
                                     </>
-                                    : ''}
-                                {signInUser?.userId === writer ? '' :
-                                    <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
-                                }
+                                )}
+                                <button className='reportButton'>신고하기</button>
                             </div>
                         )}
                     </div>
@@ -544,7 +614,8 @@ export default function ActiveDetail() {
                 <div className='postDetail'>
                     <div className='postTitle'>{title}</div>
                     <div className='postContents'>{content}</div>
-                    <div className='postImage' style={{ backgroundImage: `url(${image})` }}></div>
+                    {image === '' ? '' : 
+                    <div className='postImage' style={{ backgroundImage: `url(${image})` }}></div>}
                     {lat !== 0 && lng !== 0 &&
                         <div className="kakaomap" ref={mapRef} >
                             <Map
@@ -564,17 +635,9 @@ export default function ActiveDetail() {
                         <div className='tag'>
                             <AvatarGroup max={4}>
                                 {activePeople.map((tagUser, index) =>
-                                    <Avatar key={index} src={tagUser} />
+                                    <Avatar key={index} src={tagProfileImage[tagUser] } />
                                 )}
                             </AvatarGroup>
-                            {/* <AvatarGroup size="lg">
-                            {activePeople.slice(0, 3).map((tagUser, index) => (
-                                <Avatar key={index} src={tagUser} />
-                            ))}
-                            {activePeople.length > 3 && (
-                                <Avatar variant="solid" fallback={`+${activePeople.length - 3}`} />
-                            )}
-                        </AvatarGroup> */}
                         </div>
                         <div className='right'>
                             <div
@@ -586,18 +649,23 @@ export default function ActiveDetail() {
                     <div className='line'></div>
                     <div className='comments'>
                         <div className='commentUserInfoWrite'>
-                            <div className='profileImage'></div>
+                            <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
                             <div className='commentUserInfo-right'>
                                 <div className='recruitCommentWriter'>{signInUser?.userId}</div>
                                 <input placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
                             </div>
                             <div className='commentButton' onClick={onCommentPostButtonClick}>등록</div>
                         </div>
-                        {viewList.map((activeComment, index) => <TableRow key={index} activeComment={activeComment} getActiveCommentList={getActiveCommentList} />)}
+                        {viewList.map((activeComment, index) => (
+                            <div className='commentUserInfo'key={index}>
+                                <div className='profileImage' style={{ backgroundImage: `url(${commentProfileImage[activeComment.activeCommentId]})` }}></div>
+                                <TableRow activeComment={activeComment} getActiveCommentList={getActiveCommentList} />
+                            </div>
+                        ))}
                     </div>
                 </div>
-                <div className='bottom'></div>
             </div>
+            <div className='bottom'></div>
         </div>
     );
 }
