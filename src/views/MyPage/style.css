@@ -509,7 +509,12 @@
 #mypage .td-mileage-change,
 #mypage .td-mileage-description,
 #mypage .td-mileage-date,
-#mypage .td-mileage-final {
+#mypage .td-mileage-final,
+#mypage .td-active-number,
+#mypage .td-active-title,
+#mypage .td-active-location,
+#mypage .td-active-view,
+#mypage .td-active-date {
     padding: 10px;
     font-size: 18px;
 }
@@ -518,7 +523,8 @@
     width: 40px;
 }
 
-#mypage .td-mileage-id {
+#mypage .td-mileage-id,
+#mypage .td-active-number {
     width: 50px;
 }
 
@@ -528,11 +534,8 @@
     width: 120px;
 }
 
-#mypage .td-recruit-title {
-    flex: 1;
-    cursor: pointer;
-}
-
+#mypage .td-recruit-title,
+#mypage .td-active-title,
 #mypage .td-mileage-description {
     flex: 1;
     cursor: pointer;
@@ -560,7 +563,8 @@
 }
 
 #mypage .td-recruit-like-count,
-#mypage .td-recruit-view-count {
+#mypage .td-recruit-view-count,
+#mypage .td-active-view {
     width: 60px;
 }
 
@@ -571,9 +575,14 @@
     width: 75px;
 }
 
+#mypage .td-active-date,
 #mypage .td-recruit-end-date,
-#mypage .td-recruit-create-date{
-    width: 95px;
+#mypage .td-recruit-create-date {
+    width: 120px;
+}
+
+#mypage .td-active-location {
+    width: 290px;
 }
 
 #mypage .pagination {
