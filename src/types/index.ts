@@ -11,7 +11,7 @@ import Mileage from "./mileage.interface";
 import ActiveComment from "./active-comment.interface";
 import RecruitReportList from "./recruitreport.interface";
 import ActiveReportList from "./activereport.interface";
-
+import RecruitComment from "./recruit-comment-list.interface"
 export type {
     User,
     Follow,

@@ -19,11 +19,13 @@ import { PostRecruitReportRequest } from 'src/apis';
 import PostRecruitReportRequestDto from 'src/apis/dto/request/recruit/post-recruit-report-request.dto';
 
 import RecruitCommentList from 'src/types/recruit-comment-list.interface';
-import { usePagination } from '@chakra-ui/react';
+
 import useRecruitCommentPagination from 'src/hooks/recruit-comment.pagination.hook';
-import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto } from 'src/apis/dto/response/recruit';
+import { GetRecruitCommentListResponseDto} from 'src/apis/dto/response/recruit';
 import { PatchRecruitIsCompletedRequestDto } from 'src/apis/dto/request/recruit';
 import { differenceInDays, parseISO } from 'date-fns';
+
+
 
 // interface: recruit comment list 아이템 컴포넌트 Properties //
 interface TableRowProps {
@@ -503,10 +505,10 @@ export default function RecruitDetail() {
   // effect: 좌표로 주소 정보 요청 함수 //
   useEffect(() => {
     const { kakao } = window;
-    if (!kakao) return;
+    if (!kakao || !kakao.maps || !kakao.maps.services ) return;
     
     const geocoder = new kakao.maps.services.Geocoder();
-    if (!geocoder) return;
+    
 
     // 지정된 좌표의 주소를 가져오는 함수
     const displayAddressInfo = (lat: number, lng: number) => {
