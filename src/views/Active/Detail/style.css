@@ -224,20 +224,18 @@
 
 #active-detail-wrapper .postBottom .comments {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; 
     gap: 10px;
 }
 
 #active-detail-wrapper .postBottom .comments input {
-    border: 0px;
-    flex-grow: 1;
+    border: 0;
+    flex-grow: 1; 
     width: 550px;
     margin-right: 10px;
-
 }
 
 #active-detail-wrapper .postBottom .comments .commentButton {
-
     width: 80px;
     height: 30px;
     background-color: #4CAF50;
@@ -245,54 +243,44 @@
     border-radius: 16px;
     border: none;
     cursor: pointer;
-    justify-content: center;
-    align-items: center;
     display: flex;
-    text-align: center;
-}
-
-#active-detail-wrapper .postBottom .profileImage {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-
-    background-image: url(/public/images/img.png);
-    background-position: 50% 50%;
-    background-size: cover;
-
+    align-items: center;
+    justify-content: center;
 }
 
 #active-detail-wrapper .commentUserInfo {
     display: flex;
-    flex-direction: row;
+    align-items: center; 
     gap: 15px;
     padding-bottom: 10px;
-    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+    border-bottom: 1px solid rgba(25, 25, 25, 0.3); 
 }
 
 #active-detail-wrapper .commentUserInfoWrite {
     display: flex;
-    flex-direction: row;
-    gap: 15px;
+    align-items: center;
+    gap: 15px; 
     padding-bottom: 10px;
     border-bottom: 1px solid rgba(25, 25, 25, 0.3);
-
-    align-items: center;
-
 }
 
-
+#active-detail-wrapper .profileImage {
+    width: 50px;
+    height: 50px; 
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover; 
+}
 
 #active-detail-wrapper .commentUserInfo-right {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; 
 }
 
 #active-detail-wrapper .activeCommentWriter,
 #active-detail-wrapper .activeCommentCreatedAt {
     font-size: 12px;
 }
-
 
 #active-detail-wrapper .bottom {
     padding: 15px;

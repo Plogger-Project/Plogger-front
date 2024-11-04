@@ -12,5 +12,6 @@ export default interface GetActivePostResponseDto extends ResponseDto {
     activeView: number;
     activePostLike: number;
     activePostImage: string;
+    recruitId: number;
     activePeople: string[];
 }
