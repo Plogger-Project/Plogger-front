@@ -35,25 +35,47 @@ body {
     text-align: center;
 }
 
-#main-wrapper .image-section {
-    user-select: none;
-    /* 부모 요소에 대해 자식 요소의 절대 위치 설정 */
+#main-wrapper .video-section {
+    position: relative;
     width: 100%;
-    /* 이미지의 너비를 100%로 설정 */
     max-width: 100%;
-    /* 최대 너비를 100%로 설정하여 화면 전체를 채움 */
     margin: 0 auto;
-    /* 이미지 가운데 정렬 */
-    height: 520px;
-    /* 이미지 높이 설정 */
-    background-image: url('/public/images/MainPage.jpg');
-    /* 이미지 경로 설정 */
-    background-size: 100% auto;
-    /* 이미지 너비는 100%, 높이는 비율을 유지하도록 설정 */
-    background-position: center;
-    /* 이미지가 중앙에 위치하도록 설정 */
-    background-repeat: no-repeat;
-    background-size: cover;
+    height: 900px;
+    overflow: hidden;
+}
+
+#main-wrapper .background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    user-select: none;
+}
+
+#main-wrapper .video-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    gap: 100px;
+}
+
+#main-wrapper .button-previous,
+#main-wrapper .button-next {
+
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.5);
+    user-select: none;
 }
 
 #main-wrapper .title-box {
@@ -151,108 +173,4 @@ body {
     min-height: 300px;
     padding: 20px 0;
     gap: 20px;
-}
-
-#content-wrapper .religion-wrapper,
-#content-wrapper .popular-wrapper,
-#content-wrapper .recent-wrapper {
-    width: 100%;
-    /* 각 wrapper의 너비 설정 */
-    background-color: #ffffff;
-    /* 배경 색상 추가 (필요 시) */
-    border-radius: 8px;
-    /* 모서리를 둥글게 */
-    margin-bottom: 20px;
-    /* 각 wrapper 사이에 일정 간격 */
-    padding: 20px;
-    /* 내부 패딩 설정 */
-}
-
-#content-wrapper .popular-content,
-#content-wrapper .recent-content {
-    border: 1px solid #D9D9D9;
-    border-radius: 8px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-#content-wrapper .religion-image {
-    background-image: url(/public/images/titleimage.jpg);
-    background-repeat: no-repeat;
-    width: 100%;
-    height: 300px;
-    border: 1px solid #D9D9D9;
-    border-radius: 8px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-#content-wrapper .popular-content-list,
-#content-wrapper .recent-content-list {
-    padding: 16px;
-}
-
-#content-wrapper .religion-text,
-#content-wrapper .popular-text,
-#content-wrapper .recent-text {
-    font-weight: bold;
-    font-size: 1.5rem;
-}
-
-#content-wrapper .religion-text,
-#content-wrapper .popular-title-box,
-#content-wrapper .recent-title-box {
-    display: flex;
-    /* 플렉스박스 설정으로 수평 정렬 */
-    align-items: center;
-    /* 수직 중앙 정렬 */
-    margin-bottom: 10px;
-    /* 아래쪽 여백 */
-}
-
-#content-wrapper .popular-content-title,
-#content-wrapper .popular-active-title,
-#content-wrapper .recent-content-title,
-#content-wrapper .recent-active-title {
-    border-bottom: 1px solid #D9D9D9;
-    padding: 16px;
-}
-
-#content-wrapper .recent-image,
-#content-wrapper .popular-image {
-    padding-left: 20px;
-    background-image: url('/public/images/titleimage.jpg');
-    /* 배경 이미지 설정 */
-    background-repeat: no-repeat;
-    /* 이미지 반복 방지 */
-    background-size: 64px 32px;
-    /* 이미지 크기 조절 */
-    width: 64px;
-    /* 이미지 너비 */
-    height: 32px;
-    /* 이미지 높이 */
-}
-
-#content-wrapper .popular-content-list,
-#content-wrapper .popular-active-list,
-#content-wrapper .recent-content-list,
-#content-wrapper .recent-active-list {
-    padding: 8px;
-}
-
-#content-wrapper .popular-content-box,
-#content-wrapper .recent-content-box {
-    width: auto;
-    border-bottom: 2px solid #D9D9D9;
-}
-
-#content-wrapper .popular-content-title,
-#content-wrapper .recent-content-title,
-#content-wrapper .popular-active-title,
-#content-wrapper .recent-active-title {
-    font-weight: bold;
 }

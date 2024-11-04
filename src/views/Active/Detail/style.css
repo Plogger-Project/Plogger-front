@@ -407,7 +407,7 @@
     justify-content: center;
     flex-direction: row;
     margin-top: 10px;
-    gap: 100px;
+    gap: 30px;
 }
 
 .report-button {
@@ -418,7 +418,7 @@
 }
 
 .report-write {
-    padding: 5px 10px;
+    padding: 5px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -428,7 +428,7 @@
 }
 
 .report-cancel {
-    padding: 5px 10px;
+    padding: 5px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
