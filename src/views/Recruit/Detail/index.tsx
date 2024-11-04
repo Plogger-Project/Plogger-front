@@ -11,7 +11,7 @@ import GetRecruitPostResponseDto from 'src/apis/dto/response/recruit/get-recruit
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import RecruitWrite from './../Write/index';
 import { RecruitPostList } from 'src/types';
-import { getRecruitCommentListRequest, patchRecruitRequest } from 'src/apis';
+import { getRecruitCommentListRequest, patchRecruitRequest, postRecruitScrapRequest } from 'src/apis';
 import axios from 'axios';
 import { deleteRecruitPostRequest, getRecruitPostRequest, getRecruitUserInfoRequest } from 'src/apis';
 
@@ -51,10 +51,6 @@ function TableRow({ recruitComment, getRecruitCommentList  }: TableRowProps) {
   </div>
   )
 } 
-
-
-
-
 
 // variable : 카카오 맵 키 //
 const appkey = process.env.REACT_APP_KAKAO_MAP_KEY;
@@ -244,6 +240,25 @@ export default function RecruitDetail() {
     if (!accessToken) return;
   };
 
+  // function: post recruit scrap response 처리 함수 //
+  const postRecruitScrapResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NP' ? '권한이 없습니다.' :
+              responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+                responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
+                  responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+    const isSuccessed = responseBody !== null && (responseBody.code === 'SC' || responseBody.code === 'SUC');
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    setIsScraped(!isScraped);
+  };
+
   // function : delete recruit post response 처리 함수 //
   const deleteRecruitPostResponse = (responseBody: ResponseDto | null) => {
     const message = !responseBody ? '서버에 문제가 있습니다.' :
@@ -288,7 +303,7 @@ export default function RecruitDetail() {
     
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
-        alert(message);
+        setIsScraped(!isScraped);
         return;
     }
 
@@ -369,61 +384,76 @@ export default function RecruitDetail() {
     deleteRecruitPostRequest(recruitPostId, accessToken).then(deleteRecruitPostResponse)
   }
 
-      const toggleLikeHandler = () => {
-        setIsLiked(!isLiked);
-      }
-      const toggleScrapHandler = () => {
-        setIsScraped(!isScraped);
-      }
+  const toggleLikeHandler = () => {
+    setIsLiked(!isLiked);
+  }
 
-      // event handler: 신고 내역 입력 시 처리 //
-      const onreportContentHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
-        setReportContent(event.target.value);
-      }
+  // event handler: 신고 내역 입력 시 처리 //
+  const onreportContentHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setReportContent(event.target.value);
+  }
 
-      // 클릭 시 옵션 항목을 보여주거나 숨기는 함수
-      // event handler: 클릭 시 옵션 항목을 보여주거나 숨기는 함수 //
-      const toggleOptionsHandler = () => {
-        if (optionBoxRef.current) {
-          const rect = optionBoxRef.current.getBoundingClientRect();  // optionBox 위치 가져오기
-          setOptionPosition({
-            top: rect.top + window.scrollY,  // 화면 스크롤을 고려한 Y축 위치
-            left: rect.left + window.scrollX + rect.width,  // X축 위치는 optionBox의 너비를 더해서 오른쪽에 위치
-          });
-        }
-        setShowOptions(!showOptions);  // 옵션 항목 표시 상태 반전
-      };
-      // event handler: 신고 작성 모달 오픈 이벤트 처리 //
-      const openReportModalHandler = () => {
-        setIsReportModalOpen(!isReportModalOpen);
-        setReportContent("");
-      };
+  // 클릭 시 옵션 항목을 보여주거나 숨기는 함수
+  // event handler: 클릭 시 옵션 항목을 보여주거나 숨기는 함수 //
+  const toggleOptionsHandler = () => {
+    if (optionBoxRef.current) {
+      const rect = optionBoxRef.current.getBoundingClientRect();  // optionBox 위치 가져오기
+      setOptionPosition({
+        top: rect.top + window.scrollY,  // 화면 스크롤을 고려한 Y축 위치
+        left: rect.left + window.scrollX + rect.width,  // X축 위치는 optionBox의 너비를 더해서 오른쪽에 위치
+      });
+    }
+    setShowOptions(!showOptions);  // 옵션 항목 표시 상태 반전
+  };
+  // event handler: 신고 작성 모달 오픈 이벤트 처리 //
+  const openReportModalHandler = () => {
+    setIsReportModalOpen(!isReportModalOpen);
+    setReportContent("");
+  };
 
-      // event handler: 신고 모달 작성 버튼 클릭 시 이벤트 처리 //
-      const onreportWriteButtonHandler = () => {
-        if (!signInUser?.userId) {
-          alert("로그인을 해주세요.");
-          return;
-        }
+  // event handler: 신고 모달 작성 버튼 클릭 시 이벤트 처리 //
+  const onreportWriteButtonHandler = () => {
+    if (!signInUser?.userId) {
+      alert("로그인을 해주세요.");
+      return;
+    }
 
-        if (!recruitPostId) {
-          alert("게시글 정보가 없습니다.");
-          return;
-        }
+    if (!recruitPostId) {
+      alert("게시글 정보가 없습니다.");
+      return;
+    }
 
-        const requestBody: PostRecruitReportRequestDto = { content: reportContent };
-        PostRecruitReportRequest(requestBody, accessToken, recruitPostId).then(postRecruitReportResponse);
-
-      }
-      // event handler: 신고 모달 취소 버튼 클릭 시 이벤트 처리 //
-      const onreportCancelButtonHandler = () => {
-        setIsReportModalOpen(!isReportModalOpen);
-      }
-      // event handler: 좋아요 버튼 클릭 이벤트 처리 //
-      const onLikeButtonClickHandler = () => {
+    const requestBody: PostRecruitReportRequestDto = { content: reportContent };
+    PostRecruitReportRequest(requestBody, accessToken, recruitPostId).then(postRecruitReportResponse);
 
   }
-  
+
+  // event handler: 신고 모달 취소 버튼 클릭 시 이벤트 처리 //
+  const onreportCancelButtonHandler = () => {
+    setIsReportModalOpen(!isReportModalOpen);
+  }
+
+  // event handler: 좋아요 버튼 클릭 이벤트 처리 //
+  const onLikeButtonClickHandler = () => {
+
+  }
+
+  // event handler: 스크랩 버튼 클릭 이벤트 처리 //
+  const onScrapButtonClickHandler = () => {
+    if (!signInUser?.userId) {
+      alert("로그인을 해주세요.");
+      return;
+    }
+    if (!recruitPostId) {
+      alert("유효한 recruitPostId가 필요합니다.");
+      return;
+    }
+    
+    console.log(recruitPostId)
+    console.log(accessToken);
+    postRecruitScrapRequest(recruitPostId, accessToken).then(postRecruitScrapResponse);
+  }
+
   // event handler : 참여하기 버튼 클릭 이벤트 처리
   const onAccessionButtonClickHandler = () => {
     if (!signInUser?.userId) {
@@ -444,12 +474,6 @@ export default function RecruitDetail() {
       alert("유효한 recruitPostId가 필요합니다.");
       return;
     }
-
-    
-    
-      
-    
-
       const isConfirm = window.confirm(isCompleted ? '모집중으로 바꾸시겠습니까?' : '정말로 모집종료 하시겠습니까?')
       if (!isConfirm) return;
 
@@ -467,204 +491,192 @@ export default function RecruitDetail() {
           console.error(error);
           setIsCompleted(isCompleted); // 실패 시 상태를 원래대로 복구
         });
-    
   };
     
+  // effect: 게시물 번호가 바뀔 때 글 정보 요청 함수 //
+  useEffect(() => {
+    if (!recruitPostId) return;
+      getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
+    
+  }, [recruitPostId, writer]);
 
-  
+  // effect: 좌표로 주소 정보 요청 함수 //
+  useEffect(() => {
+    const { kakao } = window;
+    if (!kakao) return;
+    
+    const geocoder = new kakao.maps.services.Geocoder();
+    if (!geocoder) return;
 
-
-      // effect: 게시물 번호가 바뀔 때 글 정보 요청 함수 //
-      useEffect(() => {
-        if (!recruitPostId) return;
-          getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
-        
-      }, [recruitPostId, writer]);
-  
-
-
-
-      // effect: 좌표로 주소 정보 요청 함수 //
-      useEffect(() => {
-        const { kakao } = window;
-        if (!kakao) return;
-        
-        const geocoder = new kakao.maps.services.Geocoder();
-        if (!geocoder) return;
-
-        // 지정된 좌표의 주소를 가져오는 함수
-        const displayAddressInfo = (lat: number, lng: number) => {
-          geocoder.coord2RegionCode(lng, lat, (result: string | any[], status: any) => {
-            if (status === kakao.maps.services.Status.OK) {
-              for (let i = 0; i < result.length; i++) {
-                if (result[i].region_type === 'H') {
-                  setAddress(result[i].address_name);  // address 주소 문자열 저장
-                  break;
-                }
-              }
+    // 지정된 좌표의 주소를 가져오는 함수
+    const displayAddressInfo = (lat: number, lng: number) => {
+      geocoder.coord2RegionCode(lng, lat, (result: string | any[], status: any) => {
+        if (status === kakao.maps.services.Status.OK) {
+          for (let i = 0; i < result.length; i++) {
+            if (result[i].region_type === 'H') {
+              setAddress(result[i].address_name);  // address 주소 문자열 저장
+              break;
             }
-          });
-        };
+          }
+        }
+      });
+    };
 
-        // 좌표에 따른 주소 요청 함수 호출
-        displayAddressInfo(lat, lng);
-      }, [lat, lng]);
+    // 좌표에 따른 주소 요청 함수 호출
+    displayAddressInfo(lat, lng);
+  }, [lat, lng]);
 
-      // effect: recruit 변경 시 recruit comment 함수 //
-      useEffect(() => {
-        if (!recruitPostId) return;
-        const accessToken = cookies[ACCESS_TOKEN];
-        if (!accessToken) return;
-        getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
-        getRecruitCommentListRequest(recruitPostId, accessToken).then(getRecruitCommentListResponse);
-      }, [recruitPostId]);
-  
+  // effect: recruit 변경 시 recruit comment 함수 //
+  useEffect(() => {
+    if (!recruitPostId) return;
+    const accessToken = cookies[ACCESS_TOKEN];
+    if (!accessToken) return;
+    getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
+    getRecruitCommentListRequest(recruitPostId, accessToken).then(getRecruitCommentListResponse);
+}, [recruitPostId]);
+
+
   // effect: dday //
   useEffect(() => {
     setDday(calculateDday(endDate));
   }, [endDate]);
 
- 
 
-  
 
-  
-      // render: 게시글 정보 상세보기 컴포넌트 렌더링 //
-
-      return (
-        <div id="recruit-detail-wrapper">
-          <div className='navi'></div>
-          <div className='main'>
-            <div className='postTop'>
-              <div className='userInfo'>
-                <div className='userInfo-left'>
-                  <div className='profileImage' style={{ backgroundImage: `url(${writerProfileImage})` }} ></div>
-                  <div className='userInfo-right'>
-                    <div className='name'>작성자 : {writer}</div>
-                    <div className='location'>장소 : {address}</div>
-                    <div className='date'>작성일 : {createdAt}</div>
+  // render: 게시글 정보 상세보기 컴포넌트 렌더링 //
+  return (
+    <div id="recruit-detail-wrapper">
+      <div className='navi'></div>
+      <div className='main'>
+        <div className='postTop'>
+          <div className='userInfo'>
+            <div className='userInfo-left'>
+              <div className='profileImage' style={{ backgroundImage: `url(${writerProfileImage})` }} ></div>
+              <div className='userInfo-right'>
+                <div className='name'>작성자 : {writer}</div>
+                <div className='location'>장소 : {address}</div>
+                <div className='date'>작성일 : {createdAt}</div>
+              </div>
+            </div>
+            {isReportModalOpen &&
+              <div className='report-modal'>
+                <div className='report-box'>
+                  <div className='report-top'>
+                    <div className='report-top-title'>해당 게시글을 신고하시겠습니까?</div>
                   </div>
-                </div>
-
-                {isReportModalOpen &&
-                  <div className='report-modal'>
-                    <div className='report-box'>
-                      <div className='report-top'>
-                        <div className='report-top-title'>해당 게시글을 신고하시겠습니까?</div>
-                      </div>
-                      <div className='report-main'>
-                        <div className='report-content'>
-                          <textarea className='report-input' placeholder='내용을 입력하세요.' value={reportContent} onChange={onreportContentHandler} />
-                        </div>
-                      </div>
-                      <div className='report-bottom'>
-                        <div className='report-button'>
-                          <div className='report-button-container'>
-                            <div className='button report-write' onClick={onreportWriteButtonHandler}>제출</div>
-                            <div className='button report-cancel' onClick={onreportCancelButtonHandler}>취소</div>
-                          </div>
-                        </div>
+                  <div className='report-main'>
+                    <div className='report-content'>
+                      <textarea className='report-input' placeholder='내용을 입력하세요.' value={reportContent} onChange={onreportContentHandler} />
+                    </div>
+                  </div>
+                  <div className='report-bottom'>
+                    <div className='report-button'>
+                      <div className='report-button-container'>
+                        <div className='button report-write' onClick={onreportWriteButtonHandler}>제출</div>
+                        <div className='button report-cancel' onClick={onreportCancelButtonHandler}>취소</div>
                       </div>
                     </div>
-                  </div>}
-              </div>
-              <div className='postBox'>
-                <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
-                <div className='detailCount'>좋아요 : {like}</div>
-                |
-                <div className='detailCount'>조회수 : {view}</div>
-                <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}></div>
-                {showOptions && (
-                  <div
-                    className="options"
-                    style={{
-                      position: 'absolute',
-                      top: optionPosition.top + 'px',
-                      left: optionPosition.left + 'px'
-                    }}
-                  >
-                    {signInUser?.userId === writer ? 
-                      <>
-                    <button className="editButton" onClick={onEditButtonClickHandler}>수정하기</button>
-                        <button className="deleteButton" onClick={onDeleteButtonClickHandler}>삭제하기</button>
-                      </>
-                      : ''}
-                    {signInUser?.userId === writer ? '' :
-                      <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
-                    }
                   </div>
-                )}
-              </div>
-            </div>
-            <div className='postDetail'>
-              <div className='postTitle'>{title}</div>
-              <div className='postContents'>{contents}</div>
-              {image === '' ?  
-              ''
-                : <div className='postImage' style={{ backgroundImage: `url(${image})` }}></div>}
-              {lat && lng ? (
-                <div className="kakaomap" ref={mapRef} >
-                  <Map
-                    center={{ lat, lng }}
-                    style={{ width: "100%", height: "360px" }}
-                  >
-                    <MapMarker position={{ lat, lng }}>
-                      <div style={{ color: "#000" }}>장소</div>
-                    </MapMarker>
-                  </Map>
                 </div>
-              ) : ''}
-            </div>
-            <div className='postBottom'>
-              <div className='postInfo'>
-                <div className='left'>
-                  <div className='endDate'>모집 종료일 : {endDate}</div>
-                  <div className='members'>모집 인원 : {currentPeople}/{people}</div>
-                  <div className='isCompleted'>{isCompleted ? "마감됨" : "모집중"}</div>
-                  {signInUser?.userId === writer ? '' :
-                    
-                      <div className='accession' onClick={onAccessionButtonClickHandler}>참여</div>
-                      
-                  }
-                  {signInUser?.userId === writer ? 
-                    <div className='end' onClick={onEndButtonClickHandler}>{isCompleted ? "종료 취소" : "모집 종료"}</div>
-                    : ''}
-                </div>
-                <div className='right'>
-                  <div
-                    className={`like ${isLiked ? 'liked' : ''}`}  // liked 클래스를 동적으로 추가
-                    onClick={toggleLikeHandler}
-                  ></div>
-                  <div className={`scrap ${isScraped ? 'scraped' : ''}`} onClick={toggleScrapHandler}></div>
-                </div>
-              </div>
-              
-              <div className='line'></div>
-          <div className='comments'>
-            <div className='commentUserInfoWrite'>
-              <div className='profileImage'></div>
-              <div className='commentUserInfo-right'>
-                <div className='recruitCommentWriter'></div>
-                <input placeholder='댓글을 입력해주세요.'></input>
-                <div className='recruitCommentCreatedAt'>2024. 10. 17</div>
-              </div>
-              <div className='commentButton'>등록</div>
-            </div>
-            <div className='commentUserInfo'>
-              <div className='profileImage'></div>
-              {viewList.length > 0 ? (
-                    viewList.map((recruitComment, index) => (
-                        <TableRow key={index} recruitComment={recruitComment} getRecruitCommentList={() => getRecruitCommentList} />
-                    ))
-                ) : (
-                    <div>존재하는 댓글이 없습니다.</div>
-                )}
-            </div>
+              </div>}
           </div>
-              
-            </div>
-            <div className='bottom'></div>
+          <div className='postBox'>
+            <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
+            <div className='detailCount'>좋아요 : {like}</div>
+            |
+            <div className='detailCount'>조회수 : {view}</div>
+            <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}></div>
+            {showOptions && (
+              <div
+                className="options"
+                style={{
+                  position: 'absolute',
+                  top: optionPosition.top + 'px',
+                  left: optionPosition.left + 'px'
+                }}
+              >
+                {signInUser?.userId === writer ? 
+                  <>
+                <button className="editButton" onClick={onEditButtonClickHandler}>수정하기</button>
+                    <button className="deleteButton" onClick={onDeleteButtonClickHandler}>삭제하기</button>
+                  </>
+                  : ''}
+                {signInUser?.userId === writer ? '' :
+                  <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
+                }
+              </div>
+            )}
           </div>
         </div>
-      );
-    }
+        <div className='postDetail'>
+          <div className='postTitle'>{title}</div>
+          <div className='postContents'>{contents}</div>
+          {image === '' ?  
+          ''
+            : <div className='postImage' style={{ backgroundImage: `url(${image})` }}></div>}
+          {lat && lng ? (
+            <div className="kakaomap" ref={mapRef} >
+              <Map
+                center={{ lat, lng }}
+                style={{ width: "100%", height: "360px" }}
+              >
+                <MapMarker position={{ lat, lng }}>
+                  <div style={{ color: "#000" }}>장소</div>
+                </MapMarker>
+              </Map>
+            </div>
+          ) : ''}
+        </div>
+        <div className='postBottom'>
+          <div className='postInfo'>
+            <div className='left'>
+              <div className='endDate'>모집 종료일 : {endDate}</div>
+              <div className='members'>모집 인원 : {currentPeople}/{people}</div>
+              <div className='isCompleted'>{isCompleted ? "마감됨" : "모집중"}</div>
+              {signInUser?.userId === writer ? '' :
+                
+                  <div className='accession' onClick={onAccessionButtonClickHandler}>참여</div>
+                  
+              }
+              {signInUser?.userId === writer ? 
+                <div className='end' onClick={onEndButtonClickHandler}>{isCompleted ? "종료 취소" : "모집 종료"}</div>
+                : ''}
+            </div>
+            <div className='right'>
+              <div
+                className={`like ${isLiked ? 'liked' : ''}`}  // liked 클래스를 동적으로 추가
+                onClick={toggleLikeHandler}
+              ></div>
+              <div className={`scrap ${isScraped ? 'scraped' : ''}`} onClick={onScrapButtonClickHandler}></div>
+            </div>
+          </div>
+          
+          <div className='line'></div>
+      <div className='comments'>
+        <div className='commentUserInfoWrite'>
+          <div className='profileImage'></div>
+          <div className='commentUserInfo-right'>
+            <div className='recruitCommentWriter'></div>
+            <input placeholder='댓글을 입력해주세요.'></input>
+            <div className='recruitCommentCreatedAt'>2024. 10. 17</div>
+          </div>
+          <div className='commentButton'>등록</div>
+        </div>
+        <div className='commentUserInfo'>
+          <div className='profileImage'></div>
+          {viewList.length > 0 ? (
+                viewList.map((recruitComment, index) => (
+                    <TableRow key={index} recruitComment={recruitComment} getRecruitCommentList={() => getRecruitCommentList} />
+                ))
+            ) : (
+                <div>존재하는 댓글이 없습니다.</div>
+            )}
+        </div>
+      </div>
+          
+        </div>
+        <div className='bottom'></div>
+      </div>
+    </div>
+  );
+}

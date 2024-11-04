@@ -214,8 +214,6 @@ export default function RecruitWrite() {
     }
     url = url ? url : '';
 
-
-
     const requestBody: PostRecruitRequestDto = {
       recruitPostImage: url,
       recruitPostTitle: title,

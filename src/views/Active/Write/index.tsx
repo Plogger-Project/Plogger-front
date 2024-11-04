@@ -5,14 +5,16 @@ import { useSignInUserStore } from 'src/stores';
 import { useNavigate } from 'react-router-dom';
 import { useKakaoLoader } from 'src/hooks';
 import { ACCESS_TOKEN, ACTIVE_PATH } from 'src/constants';
-import { fileUploadRequest, getMyRecruitPostRequest, postActivePostRequest } from 'src/apis';
+import { fileUploadRequest, getMyRecruitPostRequest, getUserListRequest, postActivePostRequest } from 'src/apis';
 import { PostActivePostRequestDto } from 'src/apis/dto/request/active';
 import { ResponseDto } from 'src/apis/dto/response';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { FaCalendarAlt } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import { GetMyRecruitReponseDto } from 'src/apis/dto/response/active';
-import { MyRecruitPost } from 'src/types';
+import { MyRecruitPost, User } from 'src/types';
+import { GetUserListResponseDto } from 'src/apis/dto/response/mypage';
+import { Mention, MentionsInput, SuggestionDataItem } from 'react-mentions';
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
@@ -31,9 +33,13 @@ export default function ActiveWrite() {
   // state: cookie 상태 //
   const [cookies] = useCookies();
 
+  const [userList, setUserList] = useState<User[]>([]);
+  const [inputValue, setInputValue] = useState<string>('');
+
   // state: 활동 게시판 상태 //
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const [activePeople, setActivePeople] = useState<string[]>([]);
   const [image, setImage] = useState<string>(''); // 이미지 미리보기
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -80,10 +86,10 @@ export default function ActiveWrite() {
   const getMyRecruitPostResponse = (responseBody: GetMyRecruitReponseDto | ResponseDto | null) => {
     const message =
       !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-      responseBody.code === 'NRP' ? '존재하지 않는 게시글입니다.' :
-      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NRP' ? '존재하지 않는 게시글입니다.' :
+              responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
@@ -95,6 +101,26 @@ export default function ActiveWrite() {
 
     setSelectedMyRecruit(myRecruitPosts);
 
+  }
+
+  // function: 유저 리스트 가져오는 함수 //
+  const getUserListResponse = (responseBody: GetUserListResponseDto | ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NI' ? '존재하지 않는 사용자입니다.' :
+              responseBody.code === 'NP' ? '권한이 없습니다.' :
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    const { users } = responseBody as GetUserListResponseDto;
+    setUserList(users);
   }
 
   // event handler: 목록 버튼 클릭 이벤트 처리 //
@@ -174,6 +200,7 @@ export default function ActiveWrite() {
     }
   };
 
+  // function: 내가 쓴 구인 게시글 가지고 오는 이벤트 핸들러 //
   const getMyRecruitPosts = () => {
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
@@ -187,19 +214,18 @@ export default function ActiveWrite() {
 
     if (myRecruitPost) {
       const [postLat, postLng] = myRecruitPost.recruitLocation.split(', ').map(coord => (Math.floor(Number(coord.trim()) * 1000000) / 1000000));
-      setRecruitId(selectedPostId)
+      setRecruitId(selectedPostId);
       setLat(postLat);
       setLng(postLng);
       setLocation(myRecruitPost.recruitLocation);
       setActivePeople(myRecruitPost.recruitJoinPeople);
     } else {
-      setRecruitId(0)
+      setRecruitId(0);
       setLat(0);
       setLng(0);
       setLocation('');
       setActivePeople([]);
     }
-
   }
 
   // event handler: 달력 열기/닫기 버튼 클릭 핸들러 //
@@ -212,36 +238,6 @@ export default function ActiveWrite() {
     setEndIsDatePickerOpen((prev) => !prev); // 달력 열기/닫기 상태 변경
   };
 
-  // event handler: 등록 버튼 이벤트 처리 함수 //
-  const onPostButtonClickHandler = async () => {
-    if (!title || !content || !endDate || !startDate || !activePeople || !lng || !lat) {
-      alert('모두 입력해주세요.'); return;
-    }
-
-    const accessToken = cookies[ACCESS_TOKEN];
-    if (!accessToken) return;
-
-    if (!recruitId) return;
-
-    let url: string | null = defaultImageUrl;
-    if (imageFile) {
-      const formData = new FormData();
-      formData.append('file', imageFile);
-      url = await fileUploadRequest(formData);
-    }
-
-    url = url ? url : defaultImageUrl;
-
-    const requestBody: PostActivePostRequestDto = {
-      activePostTitle: title, activePostContent: content, activePostImage: url,
-      activeEndDate: endDate, activeStartDate: startDate,
-      activeLocation: location, activePeople
-    };
-
-    postActivePostRequest(requestBody, recruitId, accessToken).then(postActivePostResponse);
-
-  };
-
   const onCancleButtonClickHandler = () => {
     const isConfirm = window.confirm('정말로 삭제하시겠습니까?');
     if (!isConfirm) return;
@@ -249,10 +245,69 @@ export default function ActiveWrite() {
     navigator(ACTIVE_PATH);
   }
 
+  // event handler: 태그 인원을 추가하는 이벤트 핸들러 //
+  const onTagUserAddHandler = (tagId: string | number) => {
+    const tagUserId = String(tagId);
+
+    if (!activePeople.includes(tagUserId)) {
+      setActivePeople((prev) => [...prev, tagUserId]);
+      setInputValue((prev) => prev.replace(/@\w*$/, `@${tagUserId} `));
+    }
+  }
+
   // event handler: 태그된 인원을 삭제하는 이벤트 핸들러 //
   const onTagUserRemoveHandler = (tagId: string) => {
     setActivePeople((prev) => prev.filter((tagUser) => tagUser !== tagId));
   };
+
+  // event handler: 사진 삭제하는 이벤트 핸들러 //
+  const onDeleteImageClickHandler = (e: any) => {
+    e.stopPropagation();
+    setImage('');
+  }
+
+  // event handler: 등록 버튼 이벤트 처리 함수 //
+  const onPostButtonClickHandler = async () => {
+    if (!title || !content || !endDate || !startDate || !activePeople || !lng || !lat) {
+      alert('모두 입력해주세요.'); return;
+    }
+  
+    const accessToken = cookies[ACCESS_TOKEN];
+    if (!accessToken) return;
+  
+    if (!recruitId) return;
+  
+    let url: string | null = defaultImageUrl;
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append('file', imageFile);
+      url = await fileUploadRequest(formData);
+    }
+  
+    const requestBody: PostActivePostRequestDto = {
+      activePostTitle: title, activePostContent: content, activePostImage: image,
+      activeEndDate: endDate, activeStartDate: startDate,
+      activeLocation: location, activePeople
+    };
+  
+    postActivePostRequest(requestBody, recruitId, accessToken).then(postActivePostResponse);
+  };
+
+  // 입력값 변화에 따른 사용자 목록 필터링 // 
+  const handleChange = (value: string) => {
+    setInputValue(value);
+    const mentionInput = value.split('@').pop(); // 마지막 '@' 이후의 텍스트 가져오기
+    if (mentionInput) {
+      getUserList(); // 사용자 목록 요청
+    };
+  };
+
+  const getUserList = () => {
+    const accessToken = cookies[ACCESS_TOKEN];
+    if (!accessToken) return;
+
+    getUserListRequest(accessToken).then(getUserListResponse);
+  }
 
   // effect: 좌표로 주소 정보 요청 함수 //
   useEffect(() => {
@@ -278,8 +333,9 @@ export default function ActiveWrite() {
   }, [lat, lng]);
 
   useEffect(() => {
+    setProfileImage(signInUser?.profileImage || null);
     getMyRecruitPosts();
-  }, []);
+  }, [recruitId]);
 
   // render : 활동 게시판 작성 컴포넌트 렌더링 //
   return (
@@ -288,7 +344,7 @@ export default function ActiveWrite() {
       <div id='recruit-write-input-container'>
         <div className='userInfo'>
           <div className='userInfo-left'>
-            <div className='profileImage'></div>
+            <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }}></div>
             <div className='userInfo-right'>
               <div className='name'>{signInUser?.userId}</div>
               <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
@@ -313,13 +369,40 @@ export default function ActiveWrite() {
         <div className='input-box'>
           <div className='input-label'>태그된 인원들</div>
           <div className='tag'>
-            {(activePeople.map((tagUser) => (
-              <span className='tagUser'>
+            {(activePeople.map((tagUser, index) => (
+              <span key={index} className='tagUser'>
                 {tagUser}
                 <button onClick={() => onTagUserRemoveHandler(tagUser)}>X</button>
               </span>))
             )}
           </div>
+          <MentionsInput value={inputValue} onChange={(e) => handleChange(e.target.value)} placeholder='@유저아이디를 입력해주세요'>
+            <Mention trigger="@" data={userList.map(user => ({
+              id: user.userId,
+              display: user.userId,
+              name: user.name,
+              profileImage: user.profileImage
+            })) as SuggestionDataItem[]}
+              displayTransform={(id: string) => `@${id}`}
+              onAdd={onTagUserAddHandler}
+              renderSuggestion={(entry, highlightedDisplay) => {
+                const userEntry = entry as SuggestionDataItem & { profileImage: string, name: string };
+                return (
+                  <div className="user-suggestion" style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src={userEntry.profileImage}
+                      alt={userEntry.name}
+                      style={{ width: 24, height: 24, borderRadius: '50%', marginRight: 8 }}
+                    />
+                    <div>
+                      <div>{highlightedDisplay}</div>
+                      <div style={{ fontSize: '0.85em', color: '#888' }}>{userEntry.name}</div>
+                    </div>
+                  </div>
+                );
+              }}
+              style={{ backgroundColor: '#e6f7ff' }} />
+          </MentionsInput>
         </div>
         <div className='input-box'>
           <div className='input-label'>내용</div>
@@ -382,14 +465,17 @@ export default function ActiveWrite() {
         </div>
         <div className='input-box'>
           <div className='input-label'>이미지</div>
-          <div className={`image ${image ? 'uploaded' : 'preview'}`} onClick={onImageClickHandler}>
-            {image ? (
-              <img src={image} alt='미리보기 이미지' />
-            ) : (
-              <div></div>
-            )}
-            <input ref={imageInputRef} style={{ display: 'none' }} type='file' accept='image/*' onChange={onImageInputChangeHandler} />
-          </div>
+          {!image ? null : (
+            <div className={`image ${image ? 'uploaded' : 'preview'}`} onClick={onImageClickHandler}>
+              <div className='image-box'>
+                <img src={image} alt='미리보기 이미지' />
+                <button className='deleteImageButton' onClick={onDeleteImageClickHandler}>
+                  <span>X</span>
+                </button>
+              </div>
+              <input ref={imageInputRef} style={{ display: 'none' }} type='file' accept='image/*' onChange={onImageInputChangeHandler} />
+            </div>
+          )}
         </div>
         <div className='input-box'>
           <div className='input-label'>위치</div>

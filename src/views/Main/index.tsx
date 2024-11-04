@@ -1,67 +1,66 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
 import './style.css';
 
 // component: 메인페이지 컴포넌트 //
 export default function Main() {
 
+  // 비디오 소스 //
+  const videoSources = [
+    "/images/Plogging1.mp4",
+    "/images/Plogging2.mp4"
+  ];
+
+  // state: 비디오 관련 상태 //
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // event handler: 비디오 다음 버튼 입력 시 처리 //
+  const handleNextVideo = () => {
+    setCurrentVideoIndex((prevIndex) =>
+      prevIndex === videoSources.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  // event handler: 비디오 이전 버튼 입력 시 처리 //
+  const handlePrevVideo = () => {
+    setCurrentVideoIndex((prevIndex) =>
+      prevIndex === 0 ? videoSources.length - 1 : prevIndex - 1
+    );
+  };
+
+  // effect: 비디오 재생 처리 함수 //
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.src = videoSources[currentVideoIndex];
+      
+      setTimeout(() => {
+        videoRef.current?.play()
+      }, 100);
+    }
+  }, [currentVideoIndex]);
+
   // render: 메인페이지 컴포넌트 렌더링 //
   return (
     <div id='main-wrapper'>
-      {/* 제거 */}
-      <div className='navigation'>네비게이션</div>
-      {/* // 제거 (router 사용하여 빼기) */}
-
-      {/* 이미지 및 버튼 섹션 */}
-      <div className='image-section'>
-        {/* 메인 타이틀 섹션 */}
-        <div className='title-box'>
-          <div className='title-section'>플로거</div>
-        
-        {/* 버튼 섹션 */}
-        <div className='button-section'>
-          <input className='main-input' placeholder='지역을 입력해주세요.' />
-          <div className='button-main'>검색</div>
+      <div className="video-section">
+        <video ref={videoRef} autoPlay loop muted playsInline className="background-video">
+        <source src={videoSources[currentVideoIndex]} type="video/mp4" />
+        </video>
+        <div className="video-controls">
+        <div className='button-previous' onClick={handlePrevVideo}>&lt;</div>          
+          <div className='button-next' onClick={handleNextVideo}>&gt;</div>        
           </div>
-        </div>
       </div>
-      {/*컨텐츠 섹션 */}
-      <div id='content-wrapper'>
-        <div className='religion-wrapper'>
-          <div className='religion-text'>지역별 활성도</div>
-          <div className='religion-image'>이미지 구역</div>
+
+      <div id='first-content-wrapper'>
+        <div className='main-text'>
+          <div className=''></div>
+          <div className=''></div>
         </div>
-        <div className='popular-wrapper'>
-          <div className='popular-title-box'>
-            <div className='popular-text'>인기글</div>
-            <div className='popular-image'></div>
-          </div>
-          <div className='popular-content'>
-            <div className='popular-content-box'>
-              <div className='popular-content-title'>구인게시판</div>
-              <div className='popular-content-list'>내용</div>
-            </div>
-            <div className='popular-active-content'>
-              <div className='popular-active-title'>활동게시판</div>
-              <div className='popular-active-list'>내용</div>
-            </div>
-          </div>
-        </div>
-        <div className='recent-wrapper'>
-          <div className='recent-title-box'>
-            <div className='recent-text'>최신글</div>
-            <div className='recent-image'></div>
-          </div>
-          <div className='recent-content'>
-            <div className='recent-content-box'>
-              <div className='recent-content-title'>구인게시판</div>
-              <div className='recent-content-list'>내용</div>
-            </div>
-            <div className='recent-active-content'>
-              <div className='recent-active-title'>활동게시판</div>
-              <div className='recent-active-list'>내용</div>
-            </div>
-          </div>
-        </div>
+
       </div>
     </div>
   );

@@ -5,37 +5,51 @@
 
     align-items: center;
     justify-content: space-between;
-    background-color: rgba(255, 255, 255, 1);
 
     width: 100%;
     height: 90px;
 
     overflow: hidden;
-    min-width: 1900px;
 
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     z-index: 9999;
+}
+
+#navigation-bar.scrolled {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+#navigation-bar .title {
+    display: flex;
+    width: 350px;
+    margin-right: 50px;
+
+    height: 70px;
+    align-items: center;
+    justify-items: center;
+    margin-top: 10px
 }
 
 #navigation-bar .logo {
     cursor: pointer;
     
-    width: 70px;
-    height: 70px;
-
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
     border-radius: 50%;
 
     background-image: url(/public/images/ploggerMin.png);
     background-size: 100% 100%;
-    margin: 5px 50px;
+    margin: 0px 50px;
+    margin-top: 10px;
     
 }
 
 #navigation-bar .manu {
     display: flex;
 
-    font-size: 30px;
+    font-size: 20px;
     font-weight: 400;
+    min-width: 630px;
     color: rgba(0, 0, 0, 0.8);
     gap: 150px;
     flex-grow: 0.5;
@@ -62,13 +76,14 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 10px;
-    margin-left: 300px;
+    margin-left: 10px;
     font-size: 15px;
 }
 
 #navigation-bar .button-box {
     display: flex;
     height: 46px;
+    min-width: 260px;
     padding: 0px 50px;
     gap: 15px;
 }
@@ -90,47 +105,47 @@
     background-color: #6b8f5c;
 }
 
-.middle-box {
+#navigation-bar .middle-box {
     display: flex;
     flex-direction: column;
     height: 60px;
     justify-content: space-between;
 }
 
-.error-message {
+#navigation-bar .error-message {
     font-size: 14px;
     height: 20px;
     margin-top: 5px;
     color: rgba(255, 0, 0, 1);
 }
-.primary-message {
+#navigation-bar .primary-message {
     font-size: 14px;
     height: 20px;
     margin-top: 5px;
     color: rgba(0, 95, 65, 1);
 }
 
-.middle-box .button.sign-in {
+#navigation-bar .middle-box .button.sign-in {
     margin-top: auto;
 }
 
-.button.sign-in,
-.button.sign-up {
+#navigation-bar .button.sign-in,
+#navigation-bar .button.sign-up {
     background-color: #84A264;
     font-size: 20px;
     justify-content: center;
     align-content: center;
 }
 
-.mypage-button-container {
+#navigation-bar .mypage-button-container {
     display: flex;
-    margin-right: -40px;
+    margin-right: 30px
 }
 
-.mypage-button {
+#navigation-bar .mypage-button {
     cursor: pointer;
-    width: 46px;
-    height: 46px;
+    width: 45px;
+    height: 45px;
     align-content: center;
     justify-content: center;
     border-radius: 50%;
@@ -140,29 +155,26 @@
     background-repeat: no-repeat;
 }
 
-.mypage-alert-button {
+#navigation-bar .mypage-alert-button {
     cursor: pointer;
-    width: 46px;
-    height: 46px;
-    align-content: center;
-    justify-content: center;
+    align-items: center;
+    justify-items: center;
     border-radius: 50%;
-    margin-right: 70px;
-    background-image: url('/public/images/alert.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    margin-top: 8px;
 }
 
-.button.logout {
-    background-color: #dd7272;
-    font-size: 20px;
+#navigation-bar .button.logout {
+    border: 0.1px solid rgba(221, 114, 114, 0.8);
+    font-size: 18px;
+    color: rgb(255, 0, 0) !important;
+    min-width: 70px;
     justify-content: center;
     align-content: center;
 }
 
-.button.logout:hover {
+#navigation-bar .button.logout:hover {
     background-color: #da3e3e !important;
+    color: rgba(255, 255, 255, 1) !important;
 }
 
 #navigation-bar .modal {
@@ -183,7 +195,7 @@
     z-index: 9999;
 }
 
-.modal-input-box {
+#navigation-bar .modal-input-box {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -202,12 +214,12 @@
     background-color: rgba(255, 255, 255, 1);
 }
 
-.modal-top {
+#navigation-bar .modal-top {
     display: flex;
     justify-content: space-between;
 }
 
-.modal-top-title {
+#navigation-bar .modal-top-title {
     flex: 1;
     font-size: 40px;
     font-weight: bolder;
@@ -218,7 +230,7 @@
     margin-top: 0px;
 }
 
-.button-close {
+#navigation-bar .button-close {
     cursor: pointer;
     margin-top: -20px;
     margin-right: -10px;
@@ -226,38 +238,39 @@
     font-weight: 700;
 }
 
-.modal-main {
+#navigation-bar .modal-main {
     display: flex;
     flex-direction: column;
 
     gap: 10px;
 }
 
-.sign-in-id,
-.sign-in-password {
+#navigation-bar .sign-in-id,
+#navigation-bar .sign-in-password {
     display: flex;
     flex-direction: column;
 }
 
-.sign-in-id .name {
+
+
     font-size: 15px;
     font-weight: 700;
     margin-bottom: 5px;
 }
 
-.input {
+#navigation-bar .input {
     border: 1px solid #ccc;
     padding: 10px;
     border-radius: 10px;
     width: 1;
 }
 
-.modal-main .sign-in {
+#navigation-bar .modal-main .sign-in {
     margin-top: 20px;
     font-size: 15px;
 }
 
-.sign-text {
+#navigation-bar .sign-text {
     display: flex;
 
     justify-content: center;
@@ -268,24 +281,24 @@
     padding-top: 10px;
 }
 
-.find-id,
-.find-password,
-.sign-up {
+#navigation-bar .find-id,
+#navigation-bar .find-password,
+#navigation-bar .sign-up {
     cursor: pointer;
 }
 
-.line {
+#navigation-bar .line {
     border-right: 1px solid rgba(0, 0, 0, 1);
     border-left: 1px solid rgba(0, 0, 0, 1);
 
     padding: 0px 20px;
 }
 
-.modal-bottom {
+#navigation-bar .modal-bottom {
     margin: 40px;
 }
 
-.sns-button-container {
+#navigation-bar .sns-button-container {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -293,7 +306,7 @@
     width: 100%;
 }
 
-.sns-button {
+#navigation-bar .sns-button {
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -303,26 +316,26 @@
     margin: -20px 10px;
 }
 
-.sns-button.kakao {
+#navigation-bar .sns-button.kakao {
     background-image: url(/public/images/kakao-button.png);
 }
 
-.sns-button.naver {
+#navigation-bar .sns-button.naver {
     background-image: url(/public/images/naver-button.png);
 }
 
-.sns-button.google {
+#navigation-bar .sns-button.google {
     background-image: url(/public/images/google-button.png);
 }
 
-.alert-modal {
+#navigation-bar .alert-modal {
     position: fixed;
     top: 80px;
     right: 0;
     padding: 10px;
 
     box-sizing: border-box;
-    width: 270px;
+    width: 350px;
     max-height: 400px;
     border: 1px solid rgba(0, 0, 0, 0.3);
 
@@ -338,7 +351,7 @@
     overflow-y: scroll;
 }
 
-.alert-box {
+#navigation-bar .alert-box {
     display: flex;
     gap: 20px;
     width: 230px;
@@ -351,18 +364,18 @@
 
 }
 
-.alert-box:not(:last-child) {
+#navigation-bar .alert-box:not(:last-child) {
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
 }
 
-.alert-box:last-child {
+#navigation-bar .alert-box:last-child {
     padding-bottom: 0px;
 }
 
-.alert-text {
+#navigation-bar .alert-text {
     width: 200px;
 }
 
-.alert-close {
+#navigation-bar .alert-close {
     cursor: pointer;
 }

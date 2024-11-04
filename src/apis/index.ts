@@ -16,11 +16,11 @@ import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
 import {  PatchRecruitIsCompletedRequestDto, PostRecruitRequestDto } from "./dto/request/recruit";
 import GetRecruitPostResponseDto from "./dto/response/recruit/get-recruit.response.dto";
 import PostActivePostRequestDto from "./dto/request/active/post-active-post.request.dto";
-import { PatchActiveCommentRequestDto, PatchActivePostRequestDto, PostActiveCommentRequestDto } from "./dto/request/active";
+import { PatchActiveCommentRequestDto, PatchActivePostRequestDto, PostActiveCommentRequestDto, PostActiveTagRequestDto, PostActiveReportRequestDto } from "./dto/request/active";
 import PostRecruitReportRequestDto from "./dto/request/recruit/post-recruit-report-request.dto";
 import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from "./dto/response/follow";
 import { GetMileageListResponseDto } from "./dto/response/mileage";
-import { GetActiveCommentListResponseDto, GetActivePostListResponseDto, GetActivePostResponseDto, GetMyRecruitReponseDto } from "./dto/response/active";
+import { GetActiveCommentListResponseDto, GetActivePostListResponseDto, GetActivePostResponseDto, GetActiveReportListResponseDto, GetMyRecruitReponseDto } from "./dto/response/active";
 import { GetUserListResponseDto } from "./dto/response/mypage";
 
 
@@ -67,6 +67,7 @@ const GET_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_
 const POST_ACTIVE_POST_API_URL = (recruitId: number | string) =>`${ACTIVE_MODULE_URL}/${recruitId}`;
 const PATCH_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 const DELETE_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
+const GET_ACTIVE_USER_INFO_API_URL = (activePostWriter: string) => `${GET_SIGN_IN_API_URL}/${activePostWriter}`;
 
 const ACTIVE_COMMENT_MODULE_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`
 
@@ -74,6 +75,11 @@ const POST_ACTIVE_COMMENT_API_URL = (activeId: number | string) => `${ACTIVE_COM
 const GET_ACTIVE_COMMENT_LIST_API_URL = (activeId: number | string) => `${ACTIVE_COMMENT_MODULE_URL(activeId)}/comments`;
 const PATCH_ACTIVE_COMMENT_API_URL = (activeId: number | string, commentId: number | string) => `${ACTIVE_COMMENT_MODULE_URL(activeId)}/comments/${commentId}`;
 const DELETE_ACTIVE_COMMENT_API_URL = (activeId: number | string, commentId: number | string) => `${ACTIVE_COMMENT_MODULE_URL(activeId)}/comments/${commentId}`;
+
+const ACTIVE_TAG_MODULE_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/tag/${activeId}`;
+
+const POST_ACTIVE_TAG_API_URL = (activeId: number | string, recruitId: number | string) => `${ACTIVE_TAG_MODULE_URL(activeId)}/${recruitId}`;
+const DELETE_ACTIVE_TAG_API_URL = (activeId: number | string, recruitId: number | string, tagId: string) => `${ACTIVE_TAG_MODULE_URL(activeId)}/${recruitId}/${tagId}`;
 
 const GET_ALERT_LIST_API_URL = `${ALERT_MODULE_URL}`;
 const DELETE_ALERT_LIST_API_URL = (id: number | string) => `${ALERT_MODULE_URL}/${id}`;
@@ -83,6 +89,7 @@ const GET_ACTIVE_REPORT_LIST_API_URL = `${ACTIVE_REPORT_API_URL}`;
 
 const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
 const POST_RECRUIT_LIKE_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/like/${recruitId}`;
+const POST_RECRUIT_SCRAP_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/scrap/${recruitId}`;
 
 const GET_QNA_POST_LIST_API_URL = `${QNA_MODULE_URL}`
 
@@ -105,6 +112,7 @@ const DELETE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MOD
 const PURCHASE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_MODULE_URL}/${gifticonId}`;
 
 const POST_RECRUIT_REPORT_API_URL = (recruitId: number | string) => `${RECRUIT_REPORT_API_URL}/${recruitId}`;
+const POST_ACTIVE_REPORT_API_URL = (activeId: number | string) => `${ACTIVE_REPORT_API_URL}/${activeId}`;
 
 const FOLLOW_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/follow`;
 
@@ -115,7 +123,7 @@ const GET_FOLLOWER_LIST_API_URL = (followeeId: string) => `${FOLLOW_MODULE_URL}/
 const GET_FOLLOWEE_LIST_API_URL = (followerId: string) => `${FOLLOW_MODULE_URL}/followee/${followerId}`;
 const DELETE_FOLLOWEE_API_URL = (followeeId: string) => `${GIFTICON_MODULE_URL}/${followeeId}`;
 
-const GET_MILEAGE_LIST_API_URL = `${PLOGGER_API_DOMAIN}/api/v1/mileage`;
+const GET_MILEAGE_LIST_API_URL = `${PLOGGER_API_DOMAIN}/api/v1/mileage`
 
 // function: Authorizarion Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({ headers: { 'Authorization': `Bearer ${accessToken}` } })
@@ -278,7 +286,7 @@ export const postActivePostRequest = async (requestBody: PostActivePostRequestDt
 }
 
 // function: 활동 게시판 수정 요청 함수 //
-export const pathActivePostRequest = async (requestBody: PatchActivePostRequestDto, activeId: string | number, accessToken: string) => {
+export const patchActivePostRequest = async (requestBody: PatchActivePostRequestDto, activeId: string | number, accessToken: string) => {
     const responseBody = await axios.patch(PATCH_ACTIVE_POST_API_URL(activeId), requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
@@ -347,6 +355,22 @@ export const deleteActiveCommentRequest = async (activeId: string | number, comm
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
+}
+
+// function: 활동 게시글 태그 추가 요청 함수 //
+export const postTagRequest = async (requestBody: PostActiveTagRequestDto, activeId: string | number, recruitId: string | number, accessToken: string) => {
+    const responseBody = await axios.post(POST_ACTIVE_TAG_API_URL(activeId, recruitId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 활동 게시글 태그 삭제 요청 함수 //
+export const deleteTagRequest = async (activeId: string | number, recruitId: string | number, tagId: string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_ACTIVE_TAG_API_URL(activeId, recruitId, tagId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;    
 }
 
 // function: 유저 정보 수정 요청 함수 //
@@ -465,6 +489,22 @@ export const GetRecruitReportListRequest = async (accessToken: string) => {
 return responseBody;
 }
 
+//function: post active report 요청 함수 //
+export const PostActiveReportRequest = async (requestBody: PostActiveReportRequestDto, accessToken: string, activePostId: number | string) => {
+    const responseBody = await axios.post(POST_ACTIVE_REPORT_API_URL(activePostId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: get active report list 요청 함수 //
+export const GetActiveReportListRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_ACTIVE_REPORT_LIST_API_URL, bearerAuthorization(accessToken))
+    .then(responseDataHandler<GetActiveReportListResponseDto>)
+    .catch(responseErrorHandler);
+return responseBody;
+}
+
 // function: recruit like & unlike 요청 함수 //
 export const postRecruitLikeRequest = async (recruitId: number | string) => {
     const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId))
@@ -482,7 +522,7 @@ export const getAlertListRequest = async (accesstoken: string) => {
 return responseBody;
 }
 
-// function: get alert list 삭제 요청 함수 //
+// function: delete alert list 삭제 요청 함수 //
 export const deleteAlertListRequest = async (id: string | number, accessToken: string) => {
     const resopnseBody = await axios.delete(DELETE_ALERT_LIST_API_URL(id), bearerAuthorization((accessToken)))
         .then(responseDataHandler<ResponseDto>)
@@ -541,7 +581,7 @@ export const getFolloweeListRequest = async (followerId: string, accessToken: st
     return responseBody;
 };
 
-// function : recruit post user Info 요청 함수 //
+// function : get recruit post user Info 요청 함수 //
 export const getRecruitUserInfoRequest = async (recruitPostWriter: string) => {
     const responseBody = await axios.get(GET_RECRUIT_USER_INFO_API_URL(recruitPostWriter))
         .then(responseDataHandler<GetSignInResponseDto>)
@@ -549,7 +589,37 @@ export const getRecruitUserInfoRequest = async (recruitPostWriter: string) => {
     return responseBody;
 }
 
+// function : active post user Info 요청 함수 //
+export const getActiveUserInfoRequest = async (activePostWriter: string) => {
+    const responseBody = await axios.get(GET_ACTIVE_USER_INFO_API_URL(activePostWriter))
+        .then(responseDataHandler<GetSignInResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
 
+// function : active comment user Info 요청 함수 //
+export const getActiveCommentUserInfoRequest = async (activeCommentWriter: string) => {
+    const responseBody = await axios.get(GET_ACTIVE_USER_INFO_API_URL(activeCommentWriter))
+        .then(responseDataHandler<GetSignInResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function : active tag user Info 요청 함수 //
+export const getActiveTagUserInfoRequest = async (tagId: string) => {
+    const responseBody = await axios.get(GET_ACTIVE_USER_INFO_API_URL(tagId))
+        .then(responseDataHandler<GetSignInResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function : post recruit scrap 요청 함수 //
+export const postRecruitScrapRequest = async (recruitPostId: number | string, accessToken: string) => {
+    const responseBody = await axios.post(POST_RECRUIT_SCRAP_API_URL(recruitPostId), {}, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
 
 // function: get mileage list 요청 함수 //
 export const getMileageListRequest = async (accessToken: string) => {
@@ -558,4 +628,3 @@ export const getMileageListRequest = async (accessToken: string) => {
         .catch(responseErrorHandler);
     return responseBody;
 };
-

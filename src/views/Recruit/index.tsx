@@ -246,6 +246,7 @@ export default function RecruitPost() {
             <div style={{ color: "#000" }}>학원 위치</div>
           </MapMarker>
         </Map>
+        <div className="down-image"></div>
       </div>
       <div className={`middle ${showPosts ? 'show' : ''}`}>
         <div className="main">

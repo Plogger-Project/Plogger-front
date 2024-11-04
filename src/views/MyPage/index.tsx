@@ -1,11 +1,12 @@
 import React, { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react'
 import './style.css'
+import { useKakaoLoader } from 'src/hooks';
 import { useNavigate, useNavigation } from 'react-router-dom'
 import InputBox from '../../components/InputBox';
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
-import { Follow, Mileage, RecruitPostList } from 'src/types';
-import { getGifticonRequest, getMileageListRequest, getRecruitPostListRequest, getRecruitUserInfoRequest, getSignInFolloweeListRequest, getSignInFollowerListRequest, patchCommentRequest } from 'src/apis';
+import { ActivePost, Follow, Mileage, RecruitPostList } from 'src/types';
+import { getActivePostListRequest, getGifticonRequest, getMileageListRequest, getRecruitPostListRequest, getRecruitUserInfoRequest, getSignInFolloweeListRequest, getSignInFollowerListRequest, patchCommentRequest } from 'src/apis';
 import { GetRecruitPostListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
@@ -17,6 +18,14 @@ import useFollowPagination from 'src/hooks/follow.pagination.hook';
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import { GetMileageListResponseDto } from 'src/apis/dto/response/mileage';
 import { GetGifticonResponseDto } from 'src/apis/dto/response/gifticon';
+import { GetActivePostListResponseDto } from '@/apis/dto/response/active';
+
+// kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
+declare global {
+  interface Window {
+    kakao: any;
+  }
+}
 
 // interface: 팔로워&팔로위 리스트 컴포넌트 Properties //
 interface FollowTableRowProps {
@@ -70,6 +79,9 @@ export default function Mypage() {
   // state: 페이징 관련 상태 //
   const { currentPage: currentPage2, totalPage: totalPage2, totalCount: totalCount2, viewList: viewList2, setTotalList: setTotalList2, initViewList: initViewList2, ...mileagePaginationProps } = useRecruitPagination<Mileage>();
 
+  // state: 페이징 관련 상태 //
+  const { currentPage: currentPage3, totalPage: totalPage3, totalCount: totalCount3, viewList: viewList3, setTotalList: setTotalList3, initViewList: initViewList3, ...activePaginationProps } = useRecruitPagination<ActivePost>();
+
   // state: 프로필 상태 //
   const [input, onInput] = useState<boolean>(false);
   const [comment, setComment] = useState<string>('');
@@ -94,6 +106,9 @@ export default function Mypage() {
 
   // state: 내 구인 게시판 목록 상태 //
   const [recruitContents, setRecruitContents] = useState<RecruitPostList[]>([]);
+
+  // state: 내 활동 게시판 목록 상태 //
+  const [activeContents, setActiveContents] = useState<ActivePost[]>([]);
 
   // state: 내 마일리지 목록 상태 //
   const [mileageContents, setMileageContents] = useState<Mileage[]>([]);
@@ -169,9 +184,13 @@ export default function Mypage() {
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
-  // function: tool list 불러오기 함수 //
+  // function: recruit list 불러오기 함수 //
   const getRecruitPostList = () => { getRecruitPostListRequest().then(getRecruitPostListResponse); };
 
+  // function: active list 불러오기 함수 //
+  const getActivePostList = () => { getActivePostListRequest().then(getActivePostListResponse); };
+
+  // function: mileage list 불러오기 함수 //
   const getMileagePostList = () => { getMileageListRequest(accessToken).then(getMileagePostListResponse) };
 
   // function: get recruit post list response 처리 함수 //
@@ -189,6 +208,24 @@ export default function Mypage() {
     const myPosts = recruitPosts.filter(post => post.recruitPostWriter === signInUser?.userId);
     setTotalList(myPosts);
     setRecruitContents(myPosts);
+
+  };
+
+  // function: get active post list response 처리 함수 //
+  const getActivePostListResponse = (responseBody: GetActivePostListResponseDto | ResponseDto | null) => {
+
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) { alert(message); return; }
+
+    const activePosts = (responseBody as GetActivePostListResponseDto).activePosts || [];
+    const myPosts = activePosts.filter(post => post.activePostWriterId === signInUser?.userId);
+    setTotalList3(myPosts);
+    setActiveContents(myPosts);
 
   };
 
@@ -267,6 +304,79 @@ export default function Mypage() {
         <div className="td-recruit-people">{recruitPostId.currentPeople}/{recruitPostId.minPeople}</div>
         <div className="td-recruit-end-date">{recruitPostId.recruitEndDate}</div>
         <div className="td-recruit-create-date">{formatDate(recruitPostId.recruitPostCreatedAt)}</div>
+      </div>
+    )
+  }
+
+  // interface: 활동 게시글 리스트 컴포넌트 Properties //
+  interface ActiveTableRowProps {
+    activePostId: ActivePost;
+    getActiveList: () => void;
+  }
+
+  // component: 활동 게시글 리스트 아이템 컴포넌트 //
+  function TableActiveRow({ activePostId, getActiveList }: ActiveTableRowProps) {
+
+    // state: 활동 게시판 위치 정보 상태 //
+    const [location, setLocation ] = useState<string>('');
+
+    //function: 네비게이터 함수 //
+    const navigator = useNavigate();
+    useKakaoLoader();
+
+    // function : 날짜 포맷팅 함수 //
+    const formatDate = (dateString: string) => {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // 0부터 시작하므로 +1
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    // function: 지정된 좌표의 주소를 가져오는 함수 //
+    useEffect(() => {
+      const { kakao } = window;
+      if (!kakao) {
+        console.error("Kakao Maps API is not loaded.");
+        return;
+      };
+      const geocoder = new kakao.maps.services.Geocoder();
+  
+      // 지정된 좌표의 주소를 가져오는 함수
+      const displayAddressInfo = (lat: number, lng: number) => {
+        geocoder.coord2RegionCode(lng, lat, (result: string | any[], status: any) => {
+          if (status === kakao.maps.services.Status.OK) {
+            for (let i = 0; i < result.length; i++) {
+              if (result[i].region_type === 'H') {
+                setLocation(result[i].address_name);  // address 주소 문자열 저장
+                break;
+              }
+            }
+          }
+        });
+      };
+      // 좌표에 따른 주소 요청 함수 호출
+
+      if(activePostId.activeLocation) {
+        const [lat, lng] = (activePostId.activeLocation).split(", ").map(coord => (Math.floor(Number(coord.trim()) * 1000000) / 1000000));
+        console.log(lat, lng);
+        displayAddressInfo(lat, lng);
+      }
+    }, []);
+
+    // event handler: 구인 게시글 상세 정보 보기 버튼 클릭 이벤트 처리 함수 //
+    const onDetailButtonClickHandler = () => {
+      navigator(ACTIVE_DETAIL_ABSOLUTE_PATE(activePostId.activePostId));
+    };
+
+    // render : 게시글 리스트 렌더링 //
+    return (
+      <div className="tr" key={activePostId.activePostId}>
+        <div className="td-active-number">{activePostId.activePostId}</div>
+        <div className="td-active-title" onClick={onDetailButtonClickHandler}>{activePostId.activePostTitle}</div>
+        <div className="td-active-location">{location}</div>
+        <div className="td-active-view">{activePostId.activeView}</div>
+        <div className="td-active-date">{formatDate(activePostId.activePostCreatedAt)}</div>
       </div>
     )
   }
@@ -427,13 +537,22 @@ export default function Mypage() {
 
   // event handler: my recruit 클릭 이벤트 처리 // 
   const onMyRecruitClickHandler = () => {
+    setActiveContents([]);
     setMileageContents([]);
     getRecruitPostList();
+  };
+
+  // event handler: my recruit 클릭 이벤트 처리 // 
+  const onMyActiveClickHandler = () => {
+    setRecruitContents([]);
+    setMileageContents([]);
+    getActivePostList();
   };
 
   // event handler: my mileage 클릭 이벤트 처리 // 
   const onMyMileageClickHandler = () => {
     setRecruitContents([]);
+    setActiveContents([]);
     getMileagePostList();
   };
 
@@ -501,7 +620,7 @@ export default function Mypage() {
           <div className='table-contents'>
             <div className='my-recruit' onClick={onMyRecruitClickHandler}><span>구인 게시글</span></div>
             <div className='line'>
-              <div className='my-active'><span>활동 게시글</span></div>
+              <div className='my-active' onClick={onMyActiveClickHandler}><span>활동 게시글</span></div>
             </div>
             <div className='line-right'>
               <div className='my-mileage' onClick={onMyMileageClickHandler}><span>마일리지 내역</span></div>
@@ -511,56 +630,76 @@ export default function Mypage() {
           <div className='table'>
             {recruitContents.length > 0 &&
               (
-                <div className="main">
-                  <div className="table">
-                    <div className="th">
-                      <div className="td-recruit-number">번호</div>
-                      <div className="td-recruit-isCompleted">마감유무</div>
-                      <div className="td-recruit-title">제목</div>
-                      <div className="td-recruit-writer">작성자</div>
-                      <div className="td-recruit-like-count">추천수</div>
-                      <div className="td-recruit-view-count">조회수</div>
-                      <div className="td-recruit-people">모집인원</div>
-                      <div className="td-recruit-end-date">마감일자</div>
-                      <div className="td-recruit-create-date">날짜</div>
-                    </div>
-                    {
-                      viewList.map((recruitPostId, index) => (
-                        <TableRow key={index} recruitPostId={recruitPostId} getRecruitList={getRecruitPostList} />
-                      ))}
+              <div className="main">
+                <div className="table">
+                  <div className="th">
+                    <div className="td-recruit-number">번호</div>
+                    <div className="td-recruit-isCompleted">마감유무</div>
+                    <div className="td-recruit-title">제목</div>
+                    <div className="td-recruit-writer">작성자</div>
+                    <div className="td-recruit-like-count">추천수</div>
+                    <div className="td-recruit-view-count">조회수</div>
+                    <div className="td-recruit-people">모집인원</div>
+                    <div className="td-recruit-end-date">마감일자</div>
+                    <div className="td-recruit-create-date">날짜</div>
                   </div>
-
-                  <div className="pagination">
-                    <Pagination currentPage={currentPage} {...paginationProps} />
-                  </div>
+                  {
+                    viewList.map((recruitPostId, index) => (
+                      <TableRow key={index} recruitPostId={recruitPostId} getRecruitList={getRecruitPostList} />
+                    ))}
                 </div>
-              )}
 
-            <div>
-              {mileageContents.length > 0 &&
-                (
-                <div className="main">
-                  <div className="table">
-                    <div className="th">
-                      <div className="td-mileage-id">번호</div>
-                      <div className="td-mileage-change">변동 마일리지</div>
-                      <div className="td-mileage-description">사유</div>
-                      <div className="td-mileage-date">날짜</div>
-                      <div className="td-mileage-final">최종 마일리지</div>
-                    </div>
-                    {
-                      viewList2.map((mileageId, index) => (
-                        <TableMileageRow key={index} mileageId={mileageId} getMileageList={getMileagePostList} />
-                      ))}
-                  </div>
-
-                  <div className="pagination">
-                    <Pagination currentPage={currentPage2} {...mileagePaginationProps} />
-                  </div>
+                <div className="pagination">
+                  <Pagination currentPage={currentPage} {...paginationProps} />
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
+            {activeContents.length > 0 &&
+              (
+              <div className="main">
+                <div className="table">
+                  <div className="th">
+                    <div className="td-active-number">번호</div>
+                    <div className="td-active-title">제목</div>
+                    <div className="td-active-location">위치</div>
+                    <div className="td-active-view">조회수</div>
+                    <div className="td-active-date">날짜</div>
+                  </div>
+                  {
+                    viewList3.map((activePostId, index) => (
+                      <TableActiveRow key={index} activePostId={activePostId} getActiveList={getActivePostList} />
+                    ))}
+                </div>
+
+                <div className="pagination">
+                  <Pagination currentPage={currentPage3} {...activePaginationProps} />
+                </div>
+              </div>
+            )}
+
+            {mileageContents.length > 0 &&
+              (
+              <div className="main">
+                <div className="table">
+                  <div className="th">
+                    <div className="td-mileage-id">번호</div>
+                    <div className="td-mileage-change">변동 마일리지</div>
+                    <div className="td-mileage-description">사유</div>
+                    <div className="td-mileage-date">날짜</div>
+                    <div className="td-mileage-final">최종 마일리지</div>
+                  </div>
+                  {
+                    viewList2.map((mileageId, index) => (
+                      <TableMileageRow key={index} mileageId={mileageId} getMileageList={getMileagePostList} />
+                    ))}
+                </div>
+
+                <div className="pagination">
+                  <Pagination currentPage={currentPage2} {...mileagePaginationProps} />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
