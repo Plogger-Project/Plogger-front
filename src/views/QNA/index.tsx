@@ -5,23 +5,23 @@ import { useNavigate } from "react-router-dom";
 import useQnaPagination from "src/hooks/qna.pagination.hook";
 import { GetQnaPostListResponseDto } from "src/apis/dto/response/qna";
 import { ResponseDto } from "src/apis/dto/response";
-import { QNA_WRITE_ABSOLUTE_PATH } from "src/constants";
+import { QNA_DETAIL_ABSOLUTE_PATH, QNA_WRITE_ABSOLUTE_PATH } from "src/constants";
 import { getQnaPostListRequest } from './../../apis/index';
 import Pagination from "src/components/pagination";
 
-// interface: 구인 게시글 리스트 컴포넌트 Properties //
+// interface: QnA 게시글 리스트 컴포넌트 Properties //
 interface TableRowProps {
   qnaPostId: QnaPostList;
   getQnaList: () => void;
 }
 
-// component: 구인 게시글 리스트 아이템 컴포넌트 //
+// component: QnA 게시글 리스트 아이템 컴포넌트 //
 function TableRow({ qnaPostId, getQnaList }: TableRowProps) {
 
-  //function: 네비게이터 함수 //
+  // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
-  // function : 날짜 포맷팅 함수
+  // function: 날짜 포맷팅 함수
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -33,7 +33,7 @@ function TableRow({ qnaPostId, getQnaList }: TableRowProps) {
 
   // event handler: 게시글 상세보기 클릭 이벤트 처리 //
   const onDetailButtonClickHandler = () => {
-    // navigator(QNA_DETAIL_ABSOLUTE_PATH);
+    navigator(QNA_DETAIL_ABSOLUTE_PATH);
   };
 
   // render : 게시글 리스트 렌더링 //
