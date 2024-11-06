@@ -16,11 +16,11 @@
 
 #recruit-post-wrapper .kakaomap {
     position: fixed;
-    top: 450px;
+    top: 530px;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 1134px;
-    height: 700px;
+    height: 750px;
     background-position: center;
     display: flex;
     flex-direction: column;
@@ -29,12 +29,14 @@
     font-weight: bold;
     z-index: 1;
     transition: opacity 0.5s ease;
+    
 
 }#recruit-post-wrapper .arrow {
     position: relative;
     width: 24px;
     height: 24px;
-    margin: 70px auto;
+    margin-top: 50px;
+    /* margin: 70px auto; */
     /* 상단 여백을 추가하려면 이 값을 조정하세요 */
     border-left: 2px solid #000000;
     border-bottom: 2px solid #000000;
@@ -116,19 +118,13 @@
     border: 1px solid rgba(0, 0, 0, 0.301);
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    height: 800px;
 }
 
-#recruit-post-wrapper .down-image {
-    width: 50px;
-    height: 50px;
-    background-image: url('/public/images/down-arrow.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    
-}
+
 
 #recruit-post-wrapper .kakaomap.hidden,
-#recruit-post-wrapper .down-image.hidden {
+#recruit-post-wrapper .arrow.hidden {
     display: none;
 }
 
