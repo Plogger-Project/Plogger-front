@@ -8,6 +8,8 @@ import RecruitPostList from './recruitpost.interface';
 import AlertList from "./alert.interface";
 import MyRecruitPost from "./my-recruit-post.interface";
 import Mileage from "./mileage.interface";
+import ChatRoom from "./chat-room.interface";
+import ChatMessage from "./chat-message.interface";
 import RecruitComment from "./recruit-comment-list.interface"
 import ActiveComment from "./active-comment.interface";
 import RecruitComment from "./recruit-comment-list.interface"
@@ -23,6 +25,8 @@ export type {
     ActivePost,
     SignInUser,
     AlertList,
+    ChatRoom,
+    ChatMessage,
     ActiveComment,
     RecruitComment,
     QnaPostList,

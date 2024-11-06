@@ -11,7 +11,7 @@ import Main from './views/Main';
 import QnaPost from './views/QNA';
 
 
-import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD, RECRUIT_DETAIL_ABSOLUTE_PATH, MYPAGE_PATH, ACTIVE_DETAIL_PATH, ACTIVE_UPDATE_PATH, ACTIVE_WRITE_PATH } from './constants';
+import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD, RECRUIT_DETAIL_ABSOLUTE_PATH, MYPAGE_PATH, ACTIVE_DETAIL_PATH, ACTIVE_UPDATE_PATH, ACTIVE_WRITE_PATH, CHAT_PATH, CHAT_DETAIL_PATH } from './constants';
 
 import Mypage from './views/MyPage';
 import Mileage from './views/Gifticon';
@@ -36,6 +36,8 @@ import Admin from './views/Admin';
 import ActiveDetail from './views/Active/Detail';
 import ActiveUpdate from './views/Active/Update';
 import ActiveWrite from './views/Active/Write';
+import Chat from './views/Chat';
+import ChatDetail from './views/Chat/Detail';
 
 
 
@@ -135,7 +137,9 @@ function Plogger() {
         <Route path={ACTIVE_UPDATE_PATH(':activePostId')} element={<ActiveUpdate />} />
         <Route path="/qna" element={<QnaPost />} />
         <Route path='/mileage' element={<Mileage/>} />
-        <Route path={MYPAGE_PATH} element={<Mypage />} />
+        <Route path={MYPAGE_PATH(':userId')} element={<Mypage />} />
+        <Route path={CHAT_PATH} element={<Chat />} />
+        <Route path={CHAT_DETAIL_PATH(':roomId')} element={<ChatDetail />} />
         <Route path='/mypage/update' element={<MyPageUpdate />} />
         <Route path={FIND_ID} element={<FindId />} />
         <Route path={FIND_PASSWORD} element={<FindPassword />} />
