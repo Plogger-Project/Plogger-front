@@ -27,7 +27,7 @@ export const QNA_WRITE_PATH = `${QNA_PATH}/write`;
 export const FIND_ID = '/find-id';
 export const FIND_PASSWORD = '/find-password';
 
-export const MYPAGE_PATH = '/mypage';
+export const MYPAGE_PATH = (userId: string) => `/mypage/${userId}`;
 
 export const GIFTICON_PATH = '/mileage';
 
@@ -49,6 +49,9 @@ export const ACTIVE_DETAIL_ABSOLUTE_PATE = ACTIVE_DETAIL_PATH;
 
 export const QNA_DETAIL_ABSOLUTE_PATH = `${QNA_DETAIL_PATH}`;
 export const QNA_WRITE_ABSOLUTE_PATH = `${QNA_WRITE_PATH}`;
+
+export const CHAT_PATH = '/chat';
+export const CHAT_DETAIL_PATH = (roomId: string | number) => `${ACTIVE_PATH}/${roomId}`;
 
 // variable: HTTP BEARER TOKEN COOKIE NAME //
 export const ACCESS_TOKEN = 'accessToken';

@@ -7,16 +7,17 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FaCalendarAlt } from 'react-icons/fa'; // 캘린더 아이콘을 위한 라이브러리
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { useKakaoLoader } from "src/hooks";
-import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH, RECRUIT_MYPAGE_PATH } from "src/constants";
+import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH, RECRUIT_DETAIL_PATH, RECRUIT_MYPAGE_PATH } from "src/constants";
 import { useSignInUserStore } from "src/stores";
-import { fileUploadRequest, getRecruitPostRequest, getRecruitUserInfoRequest, postRecruitPostRequest } from "src/apis";
+import { fileUploadRequest, getRecruitPostRequest, getRecruitUserInfoRequest, patchRecruitPostRequest, postRecruitPostRequest } from "src/apis";
 import { ResponseDto } from "src/apis/dto/response";
-import { PostRecruitRequestDto } from "src/apis/dto/request/recruit";
+import { PatchRecruitRequestDto, PostRecruitRequestDto } from "src/apis/dto/request/recruit";
 import useGeolocation from "src/hooks/useGeolocation.hook";
 import DatePicker from "react-datepicker";
 import { MYPAGE_PATH } from "src/constants";
 import GetRecruitPostResponseDto from "src/apis/dto/response/recruit/get-recruit.response.dto";
 import { GetSignInResponseDto } from "src/apis/dto/response/auth";
+import { isMap } from "util/types";
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
@@ -41,7 +42,7 @@ export default function RecruitUpdate() {
   const { signInUser } = useSignInUserStore();
 
   // state: 게시글 번호 경로 변수 상태 //
-  const { recruitPostId } = useParams<{ recruitPostId: string }>();
+  const { recruitPostId } = useParams();
 
   // state: cookie 상태 //
   const [cookies] = useCookies();
@@ -63,7 +64,13 @@ export default function RecruitUpdate() {
   const [address, setAddress] = useState<string>('');
   const [like, setLike] = useState<number>(0);
   const [view, setView] = useState<number>(0);
-
+  const [lat, setLat] = useState<number>(0);
+  const [lng, setLng] = useState<number>(0);
+  const [center, setCenter] = useState<{ lat: number; lng: number }>({
+    lat: 35.152170407376424, // 기본 값 설정
+    lng: 129.05979624585217,
+  });
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
 
   
   const [position, setPosition] = useState<{
@@ -106,7 +113,9 @@ export default function RecruitUpdate() {
       recruitLocation,
       recruitPostCreatedAt,
       recruitEndDate,
-      minPeople
+      minPeople,
+      recruitView,
+      recruitPostLike
       } = responseBody as GetRecruitPostResponseDto;
 
     setTitle(recruitPostTitle);
@@ -117,6 +126,9 @@ export default function RecruitUpdate() {
     setEndDate(recruitEndDate);
     setPeople(minPeople.toString());
     setPreviewUrl(recruitPostImage);
+    setView(recruitView);
+    setLike(recruitPostLike);
+    setLocation(recruitLocation);
 
     const [postLat, postLng] = recruitLocation.split(',').map(coord => parseFloat(coord.trim()));
 
@@ -126,21 +138,6 @@ export default function RecruitUpdate() {
     getRecruitUserInfoRequest(recruitPostWriter).then(getRecruitPostUserResponse);
   };
   
-
-
-  const [lat, setLat] = useState<number>(0);
-  const [lng, setLng] = useState<number>(0);
-  const [center, setCenter] = useState<{ lat: number; lng: number }>({
-    lat: 35.152170407376424, // 기본 값 설정
-    lng: 129.05979624585217,
-  });
-
-
-
-
-
-
-
 
   // function: post recruit post response 처리 함수 //
   const postRecruitPostResponse = (responseBody: ResponseDto | null) => {
@@ -163,8 +160,8 @@ export default function RecruitUpdate() {
   const getRecruitPostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
 
     const message = !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'VF' ? '잘못된 vf접근입니다.' :
-        responseBody.code === 'AF' ? '잘못된 af접근입니다.' :
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
@@ -177,6 +174,27 @@ export default function RecruitUpdate() {
     const { profileImage } = responseBody as GetSignInResponseDto;
     setWriterProfileImage(profileImage);
   };
+
+  // function : patch recruit post response 처리 함수 //
+  const patchRecruitPostResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '모두 입력해주세요.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
+              responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '수정 완료!';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+    if (!recruitPostId) return;
+
+    navigator(RECRUIT_DETAIL_PATH(recruitPostId));
+
+  }
 
 
 
@@ -232,7 +250,7 @@ export default function RecruitUpdate() {
     const fileReader = new FileReader();
     fileReader.readAsDataURL(file);
     fileReader.onloadend = () => {
-      setPreviewUrl(fileReader.result as string);
+    setImage(fileReader.result as string);
     }
   }
 
@@ -256,8 +274,8 @@ export default function RecruitUpdate() {
     setIsDatePickerOpen((prev) => !prev); // 달력 열기/닫기 상태 변경
   };
 
-  // event handler: 등록 버튼 이벤트 처리 함수 //
-  const onPostButtonClickHandler = async () => {
+  // event handler: 수정 버튼 이벤트 처리 함수 //
+  const onPatchButtonClickHandler = async () => {
     if (!title || !contents || !people || !endDate || !location) {
       alert('모두 입력해주세요.'); return;
     }
@@ -266,33 +284,63 @@ export default function RecruitUpdate() {
     if (!accessToken) return;
 
 
-    let url: string | null = null;
-    if (imageFile) {
-      const formData = new FormData();
-      formData.append('file', imageFile);
-      url = await fileUploadRequest(formData);
-    }
-    url = url ? url : '';
-
-
-
-    const requestBody: PostRecruitRequestDto = {
-      recruitPostImage: url,
+    const requestBody: PatchRecruitRequestDto = {
+      recruitPostImage: image,
       recruitPostTitle: title,
       recruitPostContent: contents,
       minPeople: parseInt(people),
       recruitEndDate: endDate,
       recruitLocation: location,
     };
-    postRecruitPostRequest(requestBody, accessToken).then(postRecruitPostResponse);
-  };
 
+    patchRecruitPostRequest(requestBody, recruitPostId as string,  accessToken).then(patchRecruitPostResponse);
+  };
+  // event handler : 삭제 이미지 클릭 핸들러 //
+  const onDeleteImageClickHandler = (e: any) => {
+    e.stopPropagation();
+    setImage('');
+  }
+
+  // effect : 구인 게시글 정보 가져오기 //
   useEffect(() => {
     if (!recruitPostId) return;
     getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
 
   }, [recruitPostId, writer]);
 
+
+  // effect : 맵 로딩 확인 //
+  useEffect(() => {
+    if (lat !== 0 && lng !== 0) {
+      setIsMapLoaded(true);
+    }
+  }, [lat, lng])
+  
+  // effect: 좌표로 주소 정보 요청 함수 //
+  useEffect(() => {
+    const { kakao } = window;
+    if (!kakao || !kakao.maps || !kakao.maps.services) return;
+
+    const geocoder = new kakao.maps.services.Geocoder();
+
+
+    // 지정된 좌표의 주소를 가져오는 함수
+    const displayAddressInfo = (lat: number, lng: number) => {
+      geocoder.coord2RegionCode(lng, lat, (result: string | any[], status: any) => {
+        if (status === kakao.maps.services.Status.OK) {
+          for (let i = 0; i < result.length; i++) {
+            if (result[i].region_type === 'H') {
+              setAddress(result[i].address_name);  // address 주소 문자열 저장
+              break;
+            }
+          }
+        }
+      });
+    };
+
+    // 좌표에 따른 주소 요청 함수 호출
+    displayAddressInfo(lat, lng);
+  }, [lat, lng]);
 
 
   // render : 구인 게시판 작성 컴포넌트 렌더링 //
@@ -364,10 +412,14 @@ export default function RecruitUpdate() {
         </div>
         <div className='input-box'>
           <div className='input-label'>이미지</div>
-
-          <div className={`image ${previewUrl ? 'uploaded' : 'preview'}`} onClick={onImageClickHandler}>
-            {previewUrl ? (
-              <img src={previewUrl} alt='미리보기 이미지' />
+          <div className={`image ${image ? 'uploaded' : 'preview'}`} onClick={onImageClickHandler}>
+            {image ? (
+              <div className='image-box'>
+                <img src={image} alt='미리보기 이미지' />
+                <button className='deleteImageButton' onClick={onDeleteImageClickHandler}>
+                  <span>X</span>
+                </button>
+              </div>
             ) : (
               <div></div>
             )}
@@ -377,30 +429,25 @@ export default function RecruitUpdate() {
         <div className='input-box'>
           <div className='input-label'>위치</div>
           <div className="kakaomap" ref={mapRef} >
+            {isMapLoaded ? (
             <Map
               center={{ lat, lng }}
               style={{ width: "100%", height: "360px" }}
-              onClick={(_, MouseEvent) => {
-                const latlng = MouseEvent.latLng;
-                const lat = latlng.getLat();
-                const lng = latlng.getLng();
-
-                setLat(lat);
-                setLng(lng);
-
-              }}
 
             >
               <MapMarker position={{ lat, lng }}>
                 <div style={{ color: "#000" }}>장소</div>
               </MapMarker>
             </Map>
+          
+          ) : (
+          <div>지도 로딩 중...</div> // 지도 로딩 상태 표시
+            )}
           </div>
-          <div className="kakaomap">{location}</div>
         </div>
 
         <div className="bottom">
-          <div className='button primary' onClick={onPostButtonClickHandler}>등록</div>
+          <div className='button primary' onClick={onPatchButtonClickHandler}>수정</div>
           <div className='button disable' >취소</div>
         </div>
       </div>
