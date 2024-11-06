@@ -4,7 +4,7 @@ import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SignUpRe
 import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
-import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from "./dto/response/recruit";
+import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto, GetRecruitReportListResponseDto, GetRecruitScrapListResponseDto, GetRecruitScrapResponseDto } from "./dto/response/recruit";
 import { GetQnaPostListResponseDto } from "./dto/response/qna";
 import { PatchCommentRequestDto, PatchUserRequestDto } from "./dto/request/user";
 import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
@@ -90,6 +90,8 @@ const GET_ACTIVE_REPORT_LIST_API_URL = `${ACTIVE_REPORT_API_URL}`;
 const GET_RECRUIT_POST_LIST_API_URL = `${RECRUIT_MODULE_URL}`
 const POST_RECRUIT_LIKE_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/like/${recruitId}`;
 const POST_RECRUIT_SCRAP_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/scrap/${recruitId}`;
+const GET_RECRUIT_SCRAP_LIST_API_URL = `${RECRUIT_MODULE_URL}/scrap`;
+const GET_RECRUIT_SCRAP_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/scrap/${recruitId}`;
 
 const GET_QNA_POST_LIST_API_URL = `${QNA_MODULE_URL}`
 
@@ -620,6 +622,22 @@ export const postRecruitScrapRequest = async (recruitPostId: number | string, ac
         .catch(responseErrorHandler);
     return responseBody;
 }
+
+// function: get recruit scrap list 요청 함수 //
+export const getRecruitScrapListRequest = async () => {
+    const responseBody = await axios.get(GET_RECRUIT_SCRAP_LIST_API_URL)
+        .then(responseDataHandler<GetRecruitScrapListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: get recruit scrap 요청 함수 //
+export const getRecruitScrapRequest = async (recruitPostId: number | string, accessToken: string) => {
+    const responseBody = await axios.get(GET_RECRUIT_SCRAP_API_URL(recruitPostId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetRecruitScrapResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 
 // function: get mileage list 요청 함수 //
 export const getMileageListRequest = async (accessToken: string) => {

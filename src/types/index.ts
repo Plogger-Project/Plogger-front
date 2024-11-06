@@ -8,9 +8,11 @@ import RecruitPostList from './recruitpost.interface';
 import AlertList from "./alert.interface";
 import MyRecruitPost from "./my-recruit-post.interface";
 import Mileage from "./mileage.interface";
+import RecruitComment from "./recruit-comment-list.interface"
 import ActiveComment from "./active-comment.interface";
 import RecruitReportList from "./recruitreport.interface";
 import ActiveReportList from "./activereport.interface";
+import RecruitScrapList from "./recruit-scrap-list.interface";
 
 export type {
     User,
@@ -26,5 +28,6 @@ export type {
     RecruitPostList,
     Mileage,
     RecruitReportList,
-    ActiveReportList
+    ActiveReportList,
+    RecruitScrapList
 }
