@@ -339,9 +339,9 @@ export default function ActiveWrite() {
 
   // render : 활동 게시판 작성 컴포넌트 렌더링 //
   return (
-    <div id='recruit-write-wrapper'>
+    <div id='active-write-wrapper'>
       <div className='navi'></div>
-      <div id='recruit-write-input-container'>
+      <div id='active-write-input-container'>
         <div className='userInfo'>
           <div className='userInfo-left'>
             <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }}></div>
@@ -353,7 +353,7 @@ export default function ActiveWrite() {
         </div>
         <div className='input-box'>
           <div className='input-label'>내가 쓴 구인 글 불러오기</div>
-          <select id="recruitmentPostSelect" onChange={onMyRecruitPostChangeHandler}>
+          <select id="activePostSelect" onChange={onMyRecruitPostChangeHandler}>
             <option value="">선택하세요</option>
             {selectedMyRecruit.map((myRecruitPost, index) => (
               <option key={index} value={myRecruitPost.recruitPostId}>
@@ -465,17 +465,19 @@ export default function ActiveWrite() {
         </div>
         <div className='input-box'>
           <div className='input-label'>이미지</div>
-          {!image ? null : (
-            <div className={`image ${image ? 'uploaded' : 'preview'}`} onClick={onImageClickHandler}>
+          <div className={`image ${image ? 'uploaded' : 'preview'}`} onClick={onImageClickHandler}>
+          {image ? (
               <div className='image-box'>
                 <img src={image} alt='미리보기 이미지' />
                 <button className='deleteImageButton' onClick={onDeleteImageClickHandler}>
                   <span>X</span>
                 </button>
               </div>
-              <input ref={imageInputRef} style={{ display: 'none' }} type='file' accept='image/*' onChange={onImageInputChangeHandler} />
-            </div>
-          )}
+            ) : (
+              <div></div>
+            )}
+            <input ref={imageInputRef} style={{ display: 'none' }} type='file' accept='image/*' onChange={onImageInputChangeHandler} />
+          </div>
         </div>
         <div className='input-box'>
           <div className='input-label'>위치</div>
