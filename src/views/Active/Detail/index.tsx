@@ -153,7 +153,7 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
     )
 }
 
-export default function ActiveDetail({ activeComment }: TableRowProps) {
+export default function ActiveDetail() {
 
     // state: 게시글 번호 경로 변수 상태 //
     const { activePostId } = useParams<{ activePostId: string}>();
@@ -404,7 +404,7 @@ export default function ActiveDetail({ activeComment }: TableRowProps) {
     // effect: 좌표로 주소 정보 요청 함수 //
     useEffect(() => {
         const { kakao } = window;
-        if (!kakao) return;
+        if (!kakao || !kakao.maps || !kakao.maps.services) return;
         const geocoder = new kakao.maps.services.Geocoder();
 
         // 지정된 좌표의 주소를 가져오는 함수
