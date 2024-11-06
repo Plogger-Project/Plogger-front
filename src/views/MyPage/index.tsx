@@ -1,7 +1,7 @@
 import React, { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react'
 import './style.css'
 import { useKakaoLoader } from 'src/hooks';
-import { useNavigate, useNavigation } from 'react-router-dom'
+import { useNavigate, useNavigation, useParams } from 'react-router-dom'
 import InputBox from '../../components/InputBox';
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
@@ -735,7 +735,7 @@ export default function Mypage() {
           </div>
         </div>
       </div>
-     }
+    }
     </>
   )
 }

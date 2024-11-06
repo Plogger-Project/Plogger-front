@@ -4,7 +4,7 @@
     justify-content: center;
     align-items: center;
     width: 1134px;
-    height: 100vh;
+    height: 900px;
     overflow: hidden;
     margin: 0 auto;
 }
@@ -193,7 +193,6 @@
 }
 
 #recruit-post-wrapper .button:hover {
-
     background-color: rgba(0, 95, 65, 1);
     color: rgba(255, 255, 255, 1);
 }
