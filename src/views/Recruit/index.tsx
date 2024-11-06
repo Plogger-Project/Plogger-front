@@ -338,7 +338,7 @@ useEffect(() => {
         <Map
           className="kakao-map"
           center={ center }
-          style={{ width: "100%", height: "650px" }}
+          style={{ width: "100%" }}
           level={5}
           onMouseEnter={() => setIsMapHovered(true)}  // 마우스 진입 시 isMapHovered 설정
           onMouseLeave={() => setIsMapHovered(false)} // 마우스 나갈 시 isMapHovered 해제
@@ -388,8 +388,10 @@ useEffect(() => {
             ))}
             </MarkerClusterer>
         </Map>
+        
         <div className="arrow"></div>
       </div>
+      
       <div className={`middle ${showPosts ? 'show' : ''}`}>
         <div className="main">
           <div className="middle-top">
