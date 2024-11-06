@@ -404,7 +404,7 @@ export default function ActiveDetail() {
     // effect: 좌표로 주소 정보 요청 함수 //
     useEffect(() => {
         const { kakao } = window;
-        if (!kakao) return;
+        if (!kakao || !kakao.maps || !kakao.maps.services) return;
         const geocoder = new kakao.maps.services.Geocoder();
 
         // 지정된 좌표의 주소를 가져오는 함수

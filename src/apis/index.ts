@@ -4,7 +4,7 @@ import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SignUpRe
 import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
-import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from "./dto/response/recruit";
+import { GetRecruitCommentListResponseDto, GetRecruitJoinListResponseDto, GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from "./dto/response/recruit";
 import { GetQnaPostListResponseDto } from "./dto/response/qna";
 import { PatchCommentRequestDto, PatchUserRequestDto } from "./dto/request/user";
 import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
@@ -59,6 +59,8 @@ const PATCH_RECRUIT_ISCOMPLETED_POST_API_URL = (recruitPostId: number | string) 
 const GET_RECRUIT_USER_INFO_API_URL = (recruitPostWriter: string) => `${GET_SIGN_IN_API_URL}/${recruitPostWriter}`;
 
 const POST_RECRUIT_POST_API_URL = `${RECRUIT_MODULE_URL}`
+const POST_RECRUIT_JOIN_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/join/${recruitPostId}`;
+const GET_RECRUIT_JOIN_LIST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/join/${recruitPostId}`;
 
 const ACTIVE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/active`;
 
@@ -594,6 +596,22 @@ export const getFolloweeListRequest = async (followerId: string, accessToken: st
 export const getRecruitUserInfoRequest = async (recruitPostWriter: string) => {
     const responseBody = await axios.get(GET_RECRUIT_USER_INFO_API_URL(recruitPostWriter))
         .then(responseDataHandler<GetSignInResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function : post recruit post join 요청 함수 //
+export const postRecruitJoinRequest = async (recruitPostId: string | number, accessToken: string) => {
+    const responseBody = await axios.post(POST_RECRUIT_JOIN_API_URL(recruitPostId), {}, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function : get recruit join list 요청 함수 //
+export const getRecruitJoinListRequest = async (recruitPostId: string | number, accessToken: string) => {
+    const responseBody = await axios.get(GET_RECRUIT_JOIN_LIST_API_URL(recruitPostId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetRecruitJoinListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }

@@ -12,6 +12,7 @@ import ActiveComment from "./active-comment.interface";
 import RecruitReportList from "./recruitreport.interface";
 import ActiveReportList from "./activereport.interface";
 import RecruitComment from "./recruit-comment-list.interface"
+import RecruitJoinList from './recruit-join.interface';
 export type {
     User,
     Follow,
@@ -26,5 +27,6 @@ export type {
     RecruitPostList,
     Mileage,
     RecruitReportList,
-    ActiveReportList
+    ActiveReportList,
+    RecruitJoinList
 }
