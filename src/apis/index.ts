@@ -719,8 +719,8 @@ export const getRecruitScrapListRequest = async () => {
 };
 
 // function: get recruit scrap 요청 함수 //
-export const getRecruitScrapRequest = async (recruitPostId: number | string, accessToken: string) => {
-    const responseBody = await axios.get(GET_RECRUIT_SCRAP_API_URL(recruitPostId), bearerAuthorization(accessToken))
+export const getRecruitScrapRequest = async (recruitPostId: number | string) => {
+    const responseBody = await axios.get(GET_RECRUIT_SCRAP_API_URL(recruitPostId))
         .then(responseDataHandler<GetRecruitScrapResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
