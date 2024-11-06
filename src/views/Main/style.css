@@ -40,7 +40,7 @@ body {
     width: 100%;
     max-width: 100%;
     margin: 0 auto;
-    height: 900px;
+    height: 800px;
     overflow: hidden;
 }
 
@@ -105,7 +105,6 @@ body {
     display: flex;
     gap: 15px;
     justify-content: center;
-    /* 버튼들을 가운데 정렬 */
 
     margin-top: 80px;
 }
@@ -151,7 +150,6 @@ body {
     width: 700px;
     flex-grow: 1;
     max-width: 450px;
-    /* 왼쪽 버튼의 최대 너비 설정 */
 }
 
 #button-section .button-right {
@@ -165,12 +163,352 @@ body {
     width: 90px;
 }
 
-#content-wrapper {
-    display: flex;
-    flex-direction: row;
-    /* 각 wrapper들을 수평으로 정렬 */
+#first-content-wrapper {
+    user-select: none;
     width: 1134px;
-    min-height: 300px;
-    padding: 20px 0;
+    height: 700px;
+    margin-top: 70px;
+}
+
+#first-content-wrapper .main-text {
+    opacity: 0;
+
+    transform: translateY(100px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+#first-content-wrapper .main-text.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#first-content-wrapper .text-question {
+    font-size: 70px;
+    font-weight: 600;
+    transition-delay: 0.2s;
+}
+
+#first-content-wrapper .text-sweden {
+    margin-top: 70px;
+    margin-left: 200px;
+    font-size: 30px;
+    font-weight: 700;
+    transition-delay: 2.4s;
+}
+
+#first-content-wrapper .text-description {
+    font-size: 105px;
+    transition-delay: 2.8s;
+}
+
+#first-content-wrapper .text-interpretation {
+    font-size: 80px;
+    transition-delay: 3.2s;
+}
+
+#first-content-wrapper .text-point {
+    color: rgba(0, 95, 65, 1);
+    font-weight: 700;
+}
+
+#first-content-wrapper .text-question,
+#first-content-wrapper .text-sweden,
+#first-content-wrapper .text-description,
+#first-content-wrapper .text-interpretation {
+    text-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3);
+}
+
+#second-content-wrapper {
+    user-select: none;
+    width: 100%;
+    height: 900px;
+    justify-items: center;
+    background-color: rgba(150, 180, 150, 1);
+}
+
+#second-content-wrapper .second-container {
+    width: 1134px;
+    height: 900px;
+    justify-items: center;
+    align-content: center;
+}
+
+#second-content-wrapper .main-box {
+    
+    display: flex;
+    width: 1000px;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+
+    gap: 70px;
+}
+
+#second-content-wrapper .text-box {
+    font-size: 85px;
+    color: rgba(255, 255, 255, 1);
+}
+
+#second-content-wrapper .text-point {
+    font-weight: 700;
+    border-bottom: 6px solid rgb(87, 116, 105);
+    border-radius: 10px;
+    text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3);
+
+    opacity: 0;
+    transform: translateY(80px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    transition-delay: 0.7s;
+}
+
+#second-content-wrapper .text-point.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#second-content-wrapper .description-box {
+    display: flex;
+    width: 100%;
+    height: 300px;
+    justify-content: space-between;
+    gap: 10px
+}
+
+#second-content-wrapper .environment-box,
+#second-content-wrapper .health-box {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    
+    min-width: 300px;
     gap: 20px;
+
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    font-size: 24px;
+    transition: flex 0.5s ease; 
+}
+
+#second-content-wrapper .environment-box {
+    background-image: url(/public/images/환경.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    height: 300px;
+}
+
+#second-content-wrapper .health-box {
+    background-image: url(/public/images/건강.PNG);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    height: 300px;
+}
+
+#second-content-wrapper .environment-box::before,
+#second-content-wrapper .health-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+    border-radius: 16px;
+}
+
+#second-content-wrapper .environment-box:hover::before,
+#second-content-wrapper .health-box:hover::before {
+    opacity: 1;
+}
+
+#second-content-wrapper .environment-box:hover, 
+#second-content-wrapper .health-box:hover {
+    flex: 2;
+}
+
+#second-content-wrapper .environment-box:hover ~ .health-box,
+#second-content-wrapper .health-box:hover ~ .environment-box {
+    flex: 0.5;
+}
+
+#second-content-wrapper .text-title {
+    font-size: 60px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 1);
+    position: relative;
+    z-index: 2
+}
+
+#second-content-wrapper .test-content {
+    font-size: 20px;
+    color: rgba(255, 255, 255, 1);
+    position: relative;
+    z-index: 2
+}
+
+#third-content-wrapper {
+    user-select: none;
+    width: 100%;
+    height: 1200px;
+    justify-items: center;
+    align-content: center;
+}
+
+#third-content-wrapper .third-container {
+    width: 1134px;
+    height: 900px;
+    justify-items: center;
+    align-content: center;
+    margin-bottom: 250px;
+}
+
+#third-content-wrapper .main-box {
+    width: 1100px;
+    height: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+}
+
+#third-content-wrapper .main-top {
+    width: 1100px;
+    height: 120px;
+    align-items: center;
+    justify-items: center;
+
+}
+
+#third-content-wrapper .top-text {
+    font-size: 100px;
+    font-weight: 700;
+    text-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3);
+}
+
+#third-content-wrapper .main-middle {
+    display: flex;
+    width: 1100px;
+    height: 900px;
+    gap: 50px;
+}
+
+#third-content-wrapper .main-left {
+    margin-top: 80px;
+}
+
+#third-content-wrapper .main-right {
+    width: 600px;
+
+}
+
+#third-content-wrapper .location-box {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+#third-content-wrapper  .location-title {
+    font-size: 50px;
+    font-weight: 600;
+    margin-left: 40px;
+    border-bottom: 5px solid rgba(9, 22, 17, 0.2);
+}
+
+#third-content-wrapper .point-word {
+    color: rgb(200, 110, 110);
+    font-size: 60px;
+    text-shadow: 0.5px 0.5px 3px rgb(197, 70, 70);
+}
+
+#third-content-wrapper .Busan,
+#third-content-wrapper .Daegu,
+#third-content-wrapper .Daejeon,
+#third-content-wrapper .Gangwon,
+#third-content-wrapper .Gwangju,
+#third-content-wrapper .Gyeonggi,
+#third-content-wrapper .Incheon,
+#third-content-wrapper .Jeju,
+#third-content-wrapper .North-Chungcheong,
+#third-content-wrapper .North-Gyeongsang,
+#third-content-wrapper .North-Jeolla,
+#third-content-wrapper .Sejong,
+#third-content-wrapper .Seoul,
+#third-content-wrapper .South-Chungcheong,
+#third-content-wrapper .South-Gyeongsang,
+#third-content-wrapper .South-Jeolla,
+#third-content-wrapper .Ulsan{
+    fill: #fff6f6;
+    stroke: none;
+    stroke: #a79a9a;
+    stroke-width: 1;
+    cursor: pointer;
+}
+
+#third-content-wrapper .Busan:hover,
+#third-content-wrapper .Daegu:hover,
+#third-content-wrapper .Daejeon:hover,
+#third-content-wrapper .Gangwon:hover,
+#third-content-wrapper .Gwangju:hover,
+#third-content-wrapper .Gyeonggi:hover,
+#third-content-wrapper .Incheon:hover,
+#third-content-wrapper .Jeju:hover,
+#third-content-wrapper .North-Chungcheong:hover,
+#third-content-wrapper .North-Gyeongsang:hover,
+#third-content-wrapper .North-Jeolla:hover,
+#third-content-wrapper .Sejong:hover,
+#third-content-wrapper .Seoul:hover,
+#third-content-wrapper .South-Chungcheong:hover,
+#third-content-wrapper .South-Gyeongsang:hover,
+#third-content-wrapper .South-Jeolla:hover,
+#third-content-wrapper .Ulsan:hover{
+    fill: #e2aea7;
+}
+
+#fourth-content-wrapper {
+    user-select: none;
+    width: 100%;
+    height: 1200px;
+    justify-items: center;
+    align-content: center;
+    background-color: rgba(150, 180, 150, 1);
+}
+
+#fourth-content-wrapper .fourth-container {
+    width: 1134px;
+    height: 700px;
+    justify-items: center;
+    align-items: center;
+    margin-bottom: 250px;
+}
+
+#fourth-content-wrapper .main-container {
+    display: flex;
+    flex-direction: column;
+    width: 1134px;
+    height: 900px;
+    align-items: center;
+    justify-items: center;
+}
+
+#fourth-content-wrapper .top-text {
+    width: 1100px;
+    height: 150px;
+
+    font-size: 70px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 1);
+    text-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3);
+}
+
+#fourth-content-wrapper .main-middle {
+    width: 1000px;
+    height: 750px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }

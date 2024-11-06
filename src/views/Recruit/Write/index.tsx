@@ -316,7 +316,6 @@ export default function RecruitWrite() {
               </MapMarker>
             </Map>
           </div>
-          <div className="kakaomap">{location}</div>
         </div>
 
         <div className="bottom">
