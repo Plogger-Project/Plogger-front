@@ -309,13 +309,6 @@ export default function ActiveUpdate() {
 
     if (!activePostId) return;
 
-    let url: string | null = defaultImageUrl;
-    if (imageFile) {
-      const formData = new FormData();
-      formData.append('file', imageFile);
-      url = await fileUploadRequest(formData);
-    }
-
     const requestBody: PatchActivePostRequestDto = {
       activePostTitle: title, activePostContent: content, activePostImage: image,
       activeEndDate: endDate, activeStartDate: startDate, activePeople
@@ -381,9 +374,9 @@ export default function ActiveUpdate() {
 
   // render : 활동 게시판 수정 컴포넌트 렌더링 //
   return (
-    <div id='recruit-write-wrapper'>
+    <div id='active-write-wrapper'>
       <div className='navi'></div>
-      <div id='recruit-write-input-container'>
+      <div id='active-write-input-container'>
         <div className='userInfo'>
           <div className='userInfo-left'>
             <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }}></div>

@@ -1,5 +1,5 @@
 /* 전체 레이아웃 */
-#recruit-detail-wrapper {
+#qna-detail-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -7,17 +7,14 @@
     width: 1134px;
     margin: 0 auto;
     background-color: white;
-
 }
 
-#recruit-detail-wrapper .navi {
+#qna-detail-wrapper .navi {
     height: 90px;
 }
 
-#recruit-detail-wrapper .main {
+#qna-detail-wrapper .main {
     margin-top: 30px;
-
-
     width: 700px;
 
     display: flex;
@@ -31,44 +28,46 @@
 }
 
 /* 상단 사용자 정보 및 게시글 옵션 */
-#recruit-detail-wrapper .postTop {
+#qna-detail-wrapper .postTop {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
     border-bottom: 1px solid #000000;
 
     padding: 10px;
 }
 
-#recruit-detail-wrapper .postTop .userInfo {
+#qna-detail-wrapper .postTop .userInfo {
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
-#recruit-detail-wrapper .postTop .userInfo-left {
+#qna-detail-wrapper .postTop .userInfo-left {
     display: flex;
     flex-direction: row;
     gap: 15px;
 }
 
-#recruit-detail-wrapper .postTop .userInfo-right {
+#qna-detail-wrapper .postTop .userInfo-right {
     display: flex;
     flex-direction: column;
 }
 
 
-#recruit-detail-wrapper .postTop .profileImage {
+#qna-detail-wrapper .postTop .profileImage {
     width: 50px;
     height: 50px;
     border-radius: 50%;
+
     background-image: url(/public/images/img.png);
     background-position: 50% 50%;
     background-size: cover;
 
 }
 
-#recruit-detail-wrapper .optionBox {
+#qna-detail-wrapper .optionBox {
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -77,13 +76,13 @@
     background-size: cover;
 }
 
-#recruit-detail-wrapper .postTop .postBox {
+#qna-detail-wrapper .postTop .postBox {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-#recruit-detail-wrapper .postTop .postBox .listButton {
+#qna-detail-wrapper .postTop .postBox .listButton {
     width: 50px;
     height: 30px;
     background-color: #4CAF50;
@@ -98,28 +97,25 @@
 
 }
 
-#recruit-detail-wrapper .postDetail {
+#qna-detail-wrapper .postDetail {
     display: flex;
     flex-direction: column;
     gap: 15px;
 
 }
 
-#recruit-detail-wrapper .postTitle {
+#qna-detail-wrapper .postTitle {
     border-bottom: 1px solid rgba(25, 25, 25, 0.3);
-    font-size: 24px;
-    font-weight: 700;
     padding: 15px;
 }
 
-#recruit-detail-wrapper .postContents {
+#qna-detail-wrapper .postContents {
     border-bottom: 1px solid rgba(25, 25, 25, 0.3);
-    
     height: 300px;
-    padding: 0 15px 15px 15px;
+    padding: 15px;
 }
 
-#recruit-detail-wrapper .postImage {
+#qna-detail-wrapper .postImage {
     width: 100%;
     height: 300px;
     background-size: contain;
@@ -128,17 +124,12 @@
 
 }
 
-
-
-#recruit-detail-wrapper .kakaomap {
-    border: 1px solid rgba(0, 0, 0, 0.2);
+#qna-detail-wrapper .kakaomap {
     width: 100%;
     height: 360px;
 }
 
-#recruit-detail-wrapper .postInfo {
-    height: 50px;
-    align-items: center;
+#qna-detail-wrapper .postInfo {
     padding: 15px;
     display: flex;
     flex-direction: row;
@@ -146,46 +137,54 @@
     justify-content: space-between;
     padding-bottom: 10px;
     border-bottom: 1px solid rgba(25, 25, 25, 0.3);
-    line-height: 175%;
 }
 
-#recruit-detail-wrapper .postInfo .left {
+#qna-detail-wrapper .postInfo .left {
     display: flex;
     flex-direction: row;
     gap: 20px;
-    
+    font-weight: 700;
 }
 
-#recruit-detail-wrapper .postInfo .left .isCompleted {
+#qna-detail-wrapper .tag {
+    display: flex;               
+    flex-wrap: wrap;            
+    margin: 10px 0;            
+    padding: 5px;               
+    background-color: #f2f2f2; 
+    border-radius: 8px;        
+    border: 1px solid #ccc;    
+}
+
+#qna-detail-wrapper .tagUser {
+    background-color: #e0f7fa;  
+    color: #00796b;            
+    padding: 5px 10px;          
+    border-radius: 5px;         
+    margin-right: 5px;          
+    font-size: 14px;            
+    transition: background-color 0.3s; 
+}
+
+#qna-detail-wrapper .postInfo .left .isCompleted {
+    color: white;
     width: 50px;
     height: 25px;
+    background-color: rgba(0, 0, 0, 0.7);
     border-radius: 10px;
     text-align: center;
-}
-#recruit-detail-wrapper .postInfo .left .accession {
-    width: 60px;
-    background-color: #4CAF50;
-    text-align: center;
-    color: white;
-    border-radius: 8px;
     cursor: pointer;
-}
-#recruit-detail-wrapper .postInfo .left .end{
-    width: 70px;
-    background-color: #4CAF50;
-    text-align: center;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
+    line-height: 165%;
+
 }
 
-#recruit-detail-wrapper .postInfo .right {
+#qna-detail-wrapper .postInfo .right {
     display: flex;
     flex-direction: row;
     gap: 10px
 }
 
-#recruit-detail-wrapper .postInfo .right .like {
+#qna-detail-wrapper .postInfo .right .like {
     width: 25px;
     height: 25px;
     background-size: contain;
@@ -194,11 +193,11 @@
     cursor: pointer;
 }
 
-#recruit-detail-wrapper .postInfo .right .like.liked {
+#qna-detail-wrapper .postInfo .right .like.liked {
     background-image: url(/public/images/full-heart.png);
 }
 
-#recruit-detail-wrapper .postInfo .right .scrap {
+#qna-detail-wrapper .postInfo .right .scrap {
     width: 25px;
     height: 25px;
     background-size: contain;
@@ -207,38 +206,36 @@
     cursor: pointer;
 }
 
-#recruit-detail-wrapper .postInfo .right .scrap.scraped {
+#qna-detail-wrapper .postInfo .right .scrap.scraped {
     background-image: url(/public/images/full-scrap.png);
 }
 
 /* 하단 정보 및 댓글 섹션 */
-#recruit-detail-wrapper .postBottom {
+#qna-detail-wrapper .postBottom {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-#recruit-detail-wrapper .postBottom .line {
+#qna-detail-wrapper .postBottom .line {
     width: 100%;
     text-align: center;
 }
 
-#recruit-detail-wrapper .postBottom .comments {
+#qna-detail-wrapper .postBottom .comments {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; 
     gap: 10px;
 }
 
-#recruit-detail-wrapper .postBottom .comments input {
-    border: 0px;
-    flex-grow: 1;
+#qna-detail-wrapper .postBottom .comments input {
+    border: 0;
+    flex-grow: 1; 
     width: 550px;
     margin-right: 10px;
-
 }
 
-#recruit-detail-wrapper .postBottom .comments .commentButton {
-
+#qna-detail-wrapper .postBottom .comments .commentButton {
     width: 80px;
     height: 30px;
     background-color: #4CAF50;
@@ -246,61 +243,51 @@
     border-radius: 16px;
     border: none;
     cursor: pointer;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    align-items: center;
-    display: flex;
-    text-align: center;
 }
 
-#recruit-detail-wrapper .postBottom .profileImage {
+#qna-detail-wrapper .commentUserInfo {
+    display: flex;
+    align-items: center; 
+    gap: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(25, 25, 25, 0.3); 
+}
+
+#qna-detail-wrapper .commentUserInfoWrite {
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+}
+
+#qna-detail-wrapper .profileImage {
     width: 50px;
-    height: 50px;
+    height: 50px; 
     border-radius: 50%;
-
-    background-image: url(/public/images/img.png);
-    background-position: 50% 50%;
-    background-size: cover;
-
+    background-position: center;
+    background-size: cover; 
 }
 
-#recruit-detail-wrapper .commentUserInfo {
+#qna-detail-wrapper .commentUserInfo-right {
     display: flex;
-    flex-direction: row;
-    gap: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+    flex-direction: column; 
 }
 
-#recruit-detail-wrapper .commentUserInfoWrite {
-    display: flex;
-    flex-direction: row;
-    gap: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
-
-    align-items: center;
-
-}
-
-
-
-#recruit-detail-wrapper .commentUserInfo-right {
-    display: flex;
-    flex-direction: column;
-}
-
-#recruit-detail-wrapper .recruitCommentWriter,
-#recruit-detail-wrapper .recruitCommentCreatedAt {
+#qna-detail-wrapper .activeCommentWriter,
+#qna-detail-wrapper .activeCommentCreatedAt {
     font-size: 12px;
 }
 
-
-#recruit-detail-wrapper .bottom {
+#qna-detail-wrapper .bottom {
     padding: 15px;
     width: 100%;
 }
 
-#recruit-detail-wrapper .options {
+#qna-detail-wrapper .options {
     position: absolute;
     z-index: 9000;
     width: 80px;
@@ -314,31 +301,31 @@
     overflow-y: auto;
 }
 
-#recruit-detail-wrapper .editButton,
-#recruit-detail-wrapper .deleteButton,
-#recruit-detail-wrapper .reportButton {
+#qna-detail-wrapper .editButton,
+#qna-detail-wrapper .deleteButton,
+#qna-detail-wrapper .reportButton {
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
-#recruit-detail-wrapper .editButton {
+#qna-detail-wrapper .editButton {
     background-color: #4caf50;
     color: white;
 }
 
-#recruit-detail-wrapper .deleteButton {
+#qna-detail-wrapper .deleteButton {
     background-color: #f44336;
     color: white;
 }
 
-#recruit-detail-wrapper .reportButton {
+#qna-detail-wrapper .reportButton {
     background-color: #f44336;
     color: white;
 }
 
-#recruit-detail-wrapper .report-modal {
+#qna-detail-wrapper .report-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -359,7 +346,7 @@
     display: flex;
 }
 
-#recruit-detail-wrapper .report-box {
+#qna-detail-wrapper .report-box {
     display: flex;
     flex-direction: column;
     position: relative;
@@ -387,7 +374,6 @@
     letter-spacing: 2px;
     margin-bottom: 9px;
     text-align: left;
-
     margin-top: 0px;
 }
 
@@ -403,7 +389,6 @@
     border-radius: 10px;
     width: 100%;
     height: 222px;
-    resize: none;
 }
 
 .report-input::placeholder {
@@ -433,7 +418,7 @@
 }
 
 .report-write {
-    padding: 5px 30px;
+    padding: 5px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -443,7 +428,7 @@
 }
 
 .report-cancel {
-    padding: 5px 30px;
+    padding: 5px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
