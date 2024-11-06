@@ -11,7 +11,7 @@ import GetRecruitPostResponseDto from 'src/apis/dto/response/recruit/get-recruit
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import RecruitWrite from './../Write/index';
 import { RecruitPostList } from 'src/types';
-import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, postRecruitScrapRequest } from 'src/apis';
+import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, getRecruitScrapRequest, postRecruitScrapRequest } from 'src/apis';
 import axios from 'axios';
 import { deleteRecruitPostRequest, getRecruitPostRequest, getRecruitUserInfoRequest } from 'src/apis';
 
@@ -21,7 +21,7 @@ import PostRecruitReportRequestDto from 'src/apis/dto/request/recruit/post-recru
 import RecruitCommentList from 'src/types/recruit-comment-list.interface';
 
 import useRecruitCommentPagination from 'src/hooks/recruit-comment.pagination.hook';
-import { GetRecruitCommentListResponseDto, GetRecruitJoinListResponseDto} from 'src/apis/dto/response/recruit';
+import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto, GetRecruitScrapResponseDto, GetRecruitJoinListResponseDto } from 'src/apis/dto/response/recruit';
 import { PatchRecruitIsCompletedRequestDto } from 'src/apis/dto/request/recruit';
 import { differenceInDays, parseISO } from 'date-fns';
 
@@ -180,16 +180,19 @@ export default function RecruitDetail() {
     
     setLat(postLat);
     setLng(postLng);
-
+    
     getRecruitUserInfoRequest(recruitPostWriter).then(getRecruitPostUserResponse);
+    if(!recruitPostId) return;
+    alert("dfdfd");
+    getRecruitScrapRequest(recruitPostId, accessToken).then(getRecruitScrapResponse);;
   };
 
   // function : get recruit post user response 처리 함수 //
   const getRecruitPostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
     
     const message = !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'VF' ? '잘못된 vf접근입니다.' :
-        responseBody.code === 'AF' ? '잘못된 af접근입니다.' :
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
@@ -211,15 +214,14 @@ export default function RecruitDetail() {
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
-  alert("신고가 완료 되었습니다.");
+      alert("신고가 완료 되었습니다.");
 
-
-  const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-  if (!isSuccessed) {
-    alert(message);
-    return;
-  }
-  };
+      const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+      if (!isSuccessed) {
+        alert(message);
+        return;
+      }
+    };
   
   // function : get recruit join list response 처리 함수 //
   const getRecruitJoinResponse = (responseBody: GetRecruitJoinListResponseDto | ResponseDto | null) => {
@@ -278,6 +280,31 @@ export default function RecruitDetail() {
     }
 
     setIsScraped(!isScraped);
+  };
+
+  // function : get recruit scrap response 처리 함수 //
+  const getRecruitScrapResponse = (responseBody: GetRecruitScrapResponseDto | ResponseDto | null) => {
+    
+    const message = !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'NRS' ? '올바르지 않은 스크랩입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+    
+    const { createdAt } = responseBody as GetRecruitScrapResponseDto;
+    if(createdAt){
+      setIsScraped(true)
+      console.log(createdAt)}
+    else{ setIsScraped(false);
+      console.log("없음")
+    }
+    alert("끝")
   };
 
   // function : delete recruit post response 처리 함수 //
@@ -543,8 +570,6 @@ export default function RecruitDetail() {
           setIsCompleted(isCompleted); // 실패 시 상태를 원래대로 복구
         });
   };
-    
- 
 
   // effect: 좌표로 주소 정보 요청 함수 //
   useEffect(() => {
@@ -578,9 +603,10 @@ export default function RecruitDetail() {
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
     getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
+    getRecruitCommentList();
     getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
     getRecruitCommentListRequest(recruitPostId, accessToken).then(getRecruitCommentListResponse);
-}, [recruitPostId]);
+  }, [recruitPostId]);
 
 
   // effect: dday //
