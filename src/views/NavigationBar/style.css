@@ -89,6 +89,7 @@
 }
 
 #navigation-bar .button {
+    cursor: pointer;
     border-radius: 6px;
     padding: 10px 30px;
 
@@ -99,11 +100,6 @@
     color: rgba(255, 255, 255, 1);
 }
 
-
-#navigation-bar .button:hover {
-    cursor: pointer;
-    background-color: #6b8f5c;
-}
 
 #navigation-bar .middle-box {
     display: flex;
@@ -131,10 +127,19 @@
 
 #navigation-bar .button.sign-in,
 #navigation-bar .button.sign-up {
-    background-color: #84A264;
-    font-size: 20px;
+    border: 0.1px solid rgb(103, 141, 129);
+    font-size: 18px;
+    color: rgba(0, 95, 65, 1);
+    min-width: 70px;
     justify-content: center;
     align-content: center;
+}
+
+#navigation-bar .button.sign-in:hover,
+#navigation-bar .button.sign-up:hover {
+
+    background-color: rgba(0, 95, 65, 1);
+    color: rgba(255, 255, 255, 1);
 }
 
 #navigation-bar .mypage-button-container {
@@ -251,7 +256,7 @@
     flex-direction: column;
 }
 
-#navigation-bar .name {
+#navigation-bar .name{
     font-size: 15px;
     font-weight: 700;
     margin-bottom: 5px;

@@ -11,7 +11,7 @@ import GetRecruitPostResponseDto from 'src/apis/dto/response/recruit/get-recruit
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import RecruitWrite from './../Write/index';
 import { RecruitPostList } from 'src/types';
-import { getRecruitCommentListRequest, patchRecruitRequest, postRecruitScrapRequest } from 'src/apis';
+import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, getRecruitScrapRequest, postRecruitScrapRequest } from 'src/apis';
 import axios from 'axios';
 import { deleteRecruitPostRequest, getRecruitPostRequest, getRecruitUserInfoRequest } from 'src/apis';
 
@@ -19,11 +19,13 @@ import { PostRecruitReportRequest } from 'src/apis';
 import PostRecruitReportRequestDto from 'src/apis/dto/request/recruit/post-recruit-report-request.dto';
 
 import RecruitCommentList from 'src/types/recruit-comment-list.interface';
-import { usePagination } from '@chakra-ui/react';
+
 import useRecruitCommentPagination from 'src/hooks/recruit-comment.pagination.hook';
-import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto } from 'src/apis/dto/response/recruit';
+import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto, GetRecruitScrapResponseDto, GetRecruitJoinListResponseDto } from 'src/apis/dto/response/recruit';
 import { PatchRecruitIsCompletedRequestDto } from 'src/apis/dto/request/recruit';
 import { differenceInDays, parseISO } from 'date-fns';
+
+
 
 // interface: recruit comment list 아이템 컴포넌트 Properties //
 interface TableRowProps {
@@ -65,7 +67,7 @@ export default function RecruitDetail() {
 } = useRecruitCommentPagination<RecruitCommentList>();
 
   // state: 게시글 번호 경로 변수 상태 //
-  const { recruitPostId } = useParams<{ recruitPostId: string }>();
+  const { recruitPostId } = useParams();
 
   // state: 고객 번호 경로 변수 상태 //
   const { customerNumber } = useParams();
@@ -106,6 +108,7 @@ export default function RecruitDetail() {
   const [optionPosition, setOptionPosition] = useState({ top: 0, left: 0 });  // 옵션 항목 위치
   const optionBoxRef = useRef<HTMLDivElement | null>(null);  // optionBox 참조
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
+  const [joinList, setJoinList] = useState<string[]>([]);
 
   const [lng, setLng] = useState<number>(0);
   const [lat, setLat] = useState<number>(0);
@@ -177,16 +180,19 @@ export default function RecruitDetail() {
     
     setLat(postLat);
     setLng(postLng);
-
+    
     getRecruitUserInfoRequest(recruitPostWriter).then(getRecruitPostUserResponse);
+    if(!recruitPostId) return;
+    alert("dfdfd");
+    getRecruitScrapRequest(recruitPostId, accessToken).then(getRecruitScrapResponse);;
   };
 
   // function : get recruit post user response 처리 함수 //
   const getRecruitPostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
     
     const message = !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'VF' ? '잘못된 vf접근입니다.' :
-        responseBody.code === 'AF' ? '잘못된 af접근입니다.' :
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
@@ -208,15 +214,32 @@ export default function RecruitDetail() {
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
-  alert("신고가 완료 되었습니다.");
+      alert("신고가 완료 되었습니다.");
 
+      const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+      if (!isSuccessed) {
+        alert(message);
+        return;
+      }
+    };
+  
+  // function : get recruit join list response 처리 함수 //
+  const getRecruitJoinResponse = (responseBody: GetRecruitJoinListResponseDto | ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '내역을 입력해주세요.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+    
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
 
-  const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-  if (!isSuccessed) {
-    alert(message);
-    return;
+    const { joins } = responseBody as GetRecruitJoinListResponseDto;
+    setJoinList(joins);
   }
-};
 
 
   // function: post recruit like response 처리 함수 //
@@ -257,6 +280,31 @@ export default function RecruitDetail() {
     }
 
     setIsScraped(!isScraped);
+  };
+
+  // function : get recruit scrap response 처리 함수 //
+  const getRecruitScrapResponse = (responseBody: GetRecruitScrapResponseDto | ResponseDto | null) => {
+    
+    const message = !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'NRS' ? '올바르지 않은 스크랩입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+    
+    const { createdAt } = responseBody as GetRecruitScrapResponseDto;
+    if(createdAt){
+      setIsScraped(true)
+      console.log(createdAt)}
+    else{ setIsScraped(false);
+      console.log("없음")
+    }
+    alert("끝")
   };
 
   // function : delete recruit post response 처리 함수 //
@@ -311,6 +359,27 @@ export default function RecruitDetail() {
     setOriginalList(recruitComments);
     setTotalList(recruitComments);
   };
+
+  // function : post recruit join response 처리 함수 //
+  const postRecruitJoinResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NP' ? '권한이 없습니다.' :
+              responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+                responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
+                  responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+    
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    if (!recruitPostId) return;
+    getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
+  }
 
   // function: recruit list 불러오기 함수 //
   const getRecruitCommentList = () => {
@@ -460,8 +529,17 @@ export default function RecruitDetail() {
       alert("로그인을 해주세요.");
       return;
     }
+    
+    if (isCompleted) {
+      alert("이미 모집 종료된 글입니다.")
+      return;
+    }
+
     const isConfirm = window.confirm('정말로 참여 하시겠습니까?')
     if (!isConfirm) return;
+
+    if (!recruitPostId) return;
+    postRecruitJoinRequest(recruitPostId, accessToken).then(postRecruitJoinResponse);
   }
   
   // event handler : 모집종료 버튼 클릭 이벤트 처리
@@ -492,16 +570,13 @@ export default function RecruitDetail() {
           setIsCompleted(isCompleted); // 실패 시 상태를 원래대로 복구
         });
   };
-    
-  // effect: 게시물 번호가 바뀔 때 글 정보 요청 함수 //
 
   // effect: 좌표로 주소 정보 요청 함수 //
   useEffect(() => {
     const { kakao } = window;
-    if (!kakao) return;
-    
+    if (!kakao || !kakao.maps || !kakao.maps.services ) return;
     const geocoder = new kakao.maps.services.Geocoder();
-    if (!geocoder) return;
+    
 
     // 지정된 좌표의 주소를 가져오는 함수
     const displayAddressInfo = (lat: number, lng: number) => {
@@ -521,14 +596,17 @@ export default function RecruitDetail() {
     displayAddressInfo(lat, lng);
   }, [lat, lng]);
 
+
   // effect: recruit 변경 시 recruit comment 함수 //
   useEffect(() => {
     if (!recruitPostId) return;
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
     getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
+    getRecruitCommentList();
+    getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
     getRecruitCommentListRequest(recruitPostId, accessToken).then(getRecruitCommentListResponse);
-}, [recruitPostId]);
+  }, [recruitPostId]);
 
 
   // effect: dday //
@@ -626,12 +704,10 @@ export default function RecruitDetail() {
           <div className='postInfo'>
             <div className='left'>
               <div className='endDate'>모집 종료일 : {endDate}</div>
-              <div className='members'>모집 인원 : {currentPeople}/{people}</div>
+              <div className='members'>모집 인원 : {(joinList.length)+1}/{people}</div>
               <div className='isCompleted'>{isCompleted ? "마감됨" : "모집중"}</div>
               {signInUser?.userId === writer ? '' :
-                
-                  <div className='accession' onClick={onAccessionButtonClickHandler}>참여</div>
-                  
+                <div className='accession' onClick={onAccessionButtonClickHandler}>{isCompleted ? "모집완료" : (signInUser && joinList.includes(signInUser.userId)) ? "참여완료" : "참여"}</div>
               }
               {signInUser?.userId === writer ? 
                 <div className='end' onClick={onEndButtonClickHandler}>{isCompleted ? "종료 취소" : "모집 종료"}</div>
