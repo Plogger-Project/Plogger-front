@@ -29,7 +29,7 @@
     font-weight: bold;
     z-index: 1;
     transition: opacity 0.5s ease;
-    margin-top: 100px;
+
 }#recruit-post-wrapper .arrow {
     position: relative;
     width: 24px;
@@ -57,9 +57,78 @@
         transform: rotate(-45deg) translate(-20px, 20px);
         opacity: 0;
     }
+    
 }
 
-#recruit-post-wrapper .kakaomap.hidden {
+#recruit-post-wrapper .kakaomap .marker-info{
+    width: 200px;
+    height: 200px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+#recruit-post-wrapper .kakaomap .marker-text {
+    padding: 5px;
+
+}
+
+#recruit-post-wrapper .kakaomap .marker-overlay{
+    display: flex;
+    flex-direction: column;
+    width: 180px;
+    height: 180px;
+    padding: 10px;
+    background-color:white;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+
+#recruit-post-wrapper .marker-overlay-navigator{
+    cursor: pointer;
+}
+
+#recruit-post-wrapper .marker-overlay-title{
+    margin-bottom: 5px;
+}
+#recruit-post-wrapper .marker-overlay .marker-overlay-image{
+    width: 150px;
+    height: 150px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+#recruit-post-wrapper .marker-overlay .marker-overlay-bottom{
+    
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+
+#recruit-post-wrapper .marker-overlay-navigator{
+    background-color: rgba(0, 0, 255, 0.377);
+}
+
+#recruit-post-wrapper .kakaomap .kakao-map{
+    border: 1px solid rgba(0, 0, 0, 0.301);
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+#recruit-post-wrapper .down-image {
+    width: 50px;
+    height: 50px;
+    background-image: url('/public/images/down-arrow.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    
+}
+
+#recruit-post-wrapper .kakaomap.hidden,
+#recruit-post-wrapper .down-image.hidden {
     display: none;
 }
 

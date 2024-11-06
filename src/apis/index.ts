@@ -4,7 +4,7 @@ import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SignUpRe
 import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
-import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from "./dto/response/recruit";
+import { GetRecruitCommentListResponseDto, GetRecruitJoinListResponseDto, GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from "./dto/response/recruit";
 import { GetQnaPostListResponseDto } from "./dto/response/qna";
 import { PatchCommentRequestDto, PatchUserRequestDto } from "./dto/request/user";
 import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
@@ -13,7 +13,7 @@ import PatchPasswordRequestDto from "./dto/request/user/patch-password.request.d
 import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from "./dto/request/gifticon";
 import { FindPasswordResponseDto, GetSignInResponseDto } from "./dto/response/auth";
 import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
-import {  PatchRecruitIsCompletedRequestDto, PostRecruitRequestDto } from "./dto/request/recruit";
+import { PatchRecruitIsCompletedRequestDto, PatchRecruitRequestDto, PostRecruitRequestDto } from "./dto/request/recruit";
 import GetRecruitPostResponseDto from "./dto/response/recruit/get-recruit.response.dto";
 import PostActivePostRequestDto from "./dto/request/active/post-active-post.request.dto";
 import { PatchActiveCommentRequestDto, PatchActivePostRequestDto, PostActiveCommentRequestDto, PostActiveTagRequestDto, PostActiveReportRequestDto } from "./dto/request/active";
@@ -54,17 +54,20 @@ const GET_RECRUIT_COMMENT_LIST_API_URL = (recruitPostId: string | number) => `${
 
 
 const DELETE_RECRUIT_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}`;
+const PATCH_RECRUIT_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/${recruitPostId}`;
 const PATCH_RECRUIT_ISCOMPLETED_POST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/iscompleted/${recruitPostId}`;
 const GET_RECRUIT_USER_INFO_API_URL = (recruitPostWriter: string) => `${GET_SIGN_IN_API_URL}/${recruitPostWriter}`;
 
 const POST_RECRUIT_POST_API_URL = `${RECRUIT_MODULE_URL}`
+const POST_RECRUIT_JOIN_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/join/${recruitPostId}`;
+const GET_RECRUIT_JOIN_LIST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/join/${recruitPostId}`;
 
 const ACTIVE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/active`;
 
 const GET_ACTIVE_POST_LIST_API_URL = `${ACTIVE_MODULE_URL}`;
 const GET_MY_RECRUIT_POST_API_URL = `${ACTIVE_MODULE_URL}/my-recruits`;
 const GET_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
-const POST_ACTIVE_POST_API_URL = (recruitId: number | string) =>`${ACTIVE_MODULE_URL}/${recruitId}`;
+const POST_ACTIVE_POST_API_URL = (recruitId: number | string) => `${ACTIVE_MODULE_URL}/${recruitId}`;
 const PATCH_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 const DELETE_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 const GET_ACTIVE_USER_INFO_API_URL = (activePostWriter: string) => `${GET_SIGN_IN_API_URL}/${activePostWriter}`;
@@ -370,7 +373,7 @@ export const deleteTagRequest = async (activeId: string | number, recruitId: str
     const responseBody = await axios.delete(DELETE_ACTIVE_TAG_API_URL(activeId, recruitId, tagId), bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
-    return responseBody;    
+    return responseBody;
 }
 
 // function: 유저 정보 수정 요청 함수 //
@@ -448,7 +451,15 @@ export const getRecruitPostRequest = async (recruitPostId: number | string) => {
     return responseBody;
 }
 
-// function: recruit post 수정 요청 함수 //
+// function : patch recruit post 요청 함수 //
+export const patchRecruitPostRequest = async (requestBody: PatchRecruitRequestDto, recruitPostId: string | number, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_RECRUIT_POST_API_URL(recruitPostId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: recruit post iscompleted 수정 요청 함수 //
 export const patchRecruitRequest = async (requestBody: PatchRecruitIsCompletedRequestDto, recruitPostId: string | number, accessToken: string) => {
     const responseBody = await axios.patch(PATCH_RECRUIT_ISCOMPLETED_POST_API_URL(recruitPostId), requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
@@ -484,9 +495,9 @@ export const PostRecruitReportRequest = async (requestBody: PostRecruitReportReq
 // function: get recruit report list 요청 함수 //
 export const GetRecruitReportListRequest = async (accessToken: string) => {
     const responseBody = await axios.get(GET_RECRUIT_REPORT_LIST_API_URL, bearerAuthorization(accessToken))
-    .then(responseDataHandler<GetRecruitReportListResponseDto>)
-    .catch(responseErrorHandler);
-return responseBody;
+        .then(responseDataHandler<GetRecruitReportListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 }
 
 //function: post active report 요청 함수 //
@@ -500,9 +511,9 @@ export const PostActiveReportRequest = async (requestBody: PostActiveReportReque
 // function: get active report list 요청 함수 //
 export const GetActiveReportListRequest = async (accessToken: string) => {
     const responseBody = await axios.get(GET_ACTIVE_REPORT_LIST_API_URL, bearerAuthorization(accessToken))
-    .then(responseDataHandler<GetActiveReportListResponseDto>)
-    .catch(responseErrorHandler);
-return responseBody;
+        .then(responseDataHandler<GetActiveReportListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 }
 
 // function: recruit like & unlike 요청 함수 //
@@ -517,9 +528,9 @@ export const postRecruitLikeRequest = async (recruitId: number | string) => {
 // function: get alert list 요청 함수 //
 export const getAlertListRequest = async (accesstoken: string) => {
     const responseBody = await axios.get(GET_ALERT_LIST_API_URL, bearerAuthorization(accesstoken))
-    .then(responseDataHandler<ResponseDto>)
-    .catch(responseErrorHandler);
-return responseBody;
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 }
 
 // function: delete alert list 삭제 요청 함수 //
@@ -585,6 +596,22 @@ export const getFolloweeListRequest = async (followerId: string, accessToken: st
 export const getRecruitUserInfoRequest = async (recruitPostWriter: string) => {
     const responseBody = await axios.get(GET_RECRUIT_USER_INFO_API_URL(recruitPostWriter))
         .then(responseDataHandler<GetSignInResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function : post recruit post join 요청 함수 //
+export const postRecruitJoinRequest = async (recruitPostId: string | number, accessToken: string) => {
+    const responseBody = await axios.post(POST_RECRUIT_JOIN_API_URL(recruitPostId), {}, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function : get recruit join list 요청 함수 //
+export const getRecruitJoinListRequest = async (recruitPostId: string | number, accessToken: string) => {
+    const responseBody = await axios.get(GET_RECRUIT_JOIN_LIST_API_URL(recruitPostId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetRecruitJoinListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }

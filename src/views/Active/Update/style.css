@@ -1,4 +1,4 @@
-#recruit-update-wrapper {
+#active-update-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,11 +8,11 @@
     background-color: white;
 }
 
-#recruit-update-wrapper .navi {
+#active-update-wrapper .navi {
     height: 90px;
 }
 
-#recruit-update-input-container {
+#active-update-input-container {
     margin: 50px 0;
     width: 700px;
     display: flex;
@@ -26,20 +26,20 @@
 
 }
 
-#recruit-update-wrapper .userInfo {
+#active-update-wrapper .userInfo {
     display: flex;
     flex-direction: column;
     gap: 5px;
     margin-bottom: 10px;
 }
 
-#recruit-update-wrapper .userInfo-left {
+#active-update-wrapper .userInfo-left {
     display: flex;
     flex-direction: row;
     gap: 15px;
 }
 
-#recruit-update-wrapper .userInfo-right {
+#active-update-wrapper .userInfo-right {
     display: flex;
     flex-direction: row;
     flex: 1;
@@ -50,7 +50,7 @@
 
 }
 
-#recruit-update-wrapper .userInfo-right .listButton {
+#active-update-wrapper .userInfo-right .listButton {
     width: 50px;
     height: 30px;
     background-color: #4CAF50;
@@ -66,7 +66,7 @@
 
 
 
-#recruit-update-wrapper .profileImage {
+#active-update-wrapper .profileImage {
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -77,11 +77,11 @@
 
 }
 
-#recruit-update-wrapper .userInfo-right .name {
+#active-update-wrapper .userInfo-right .name {
     cursor: pointer;
 }
 
-#recruit-update-wrapper .input-box {
+#active-update-wrapper .input-box {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -89,19 +89,19 @@
     margin-bottom: 10px;
 }
 
-#recruit-update-wrapper .input-box .input {
+#active-update-wrapper .input-box .input {
     border: 1px solid #ccc;
     padding: 10px;
     border-radius: 10px;
     width: 1;
 }
 
-#recruit-update-wrapper .react-datepicker {
+#active-update-wrapper .react-datepicker {
     width: auto;
     height: auto;
 }
 
-#recruit-update-wrapper .react-datepicker__day {
+#active-update-wrapper .react-datepicker__day {
     width: 30px;
     /* 각 날짜 셀의 너비 */
     height: 30px;
@@ -109,37 +109,37 @@
     font-size: 16px;
 }
 
-#recruit-update-wrapper .react-datepicker__header {
+#active-update-wrapper .react-datepicker__header {
     font-size: 28px;
     /* 달력 헤더(월, 년도) 폰트 크기 조정 */
 }
 
-#recruit-update-wrapper .react-datepicker__day-name {
+#active-update-wrapper .react-datepicker__day-name {
     font-size: 16px;
     /* 요일 헤더(월, 화 등) 폰트 크기 조정 */
 }
 
 
-#recruit-update-wrapper .date-picker-wrapper {
+#active-update-wrapper .date-picker-wrapper {
     display: flex;
     align-items: center;
     position: relative;
 }
 
-#recruit-update-wrapper .react-datepicker {
+#active-update-wrapper .react-datepicker {
     position: absolute;
     top: 0;
     left: 35%;
     z-index: 2;
 }
 
-#recruit-update-wrapper .input-label {
+#active-update-wrapper .input-label {
     color: rgba(64, 64, 64, 1);
     font-size: 16px;
     font-weight: 700;
 }
 
-#recruit-update-wrapper .textarea {
+#active-update-wrapper .textarea {
     width: 100%;
     height: 200px;
     padding: 10px;
@@ -151,7 +151,7 @@
 }
 
 
-#recruit-update-wrapper .image.preview {
+#active-update-wrapper .image.preview {
     width: 100px;
     height: 100px;
     border-radius: 6px;
@@ -162,14 +162,14 @@
 
 }
 
-/* #recruit-update-wrapper .input-box .previewImage {
+/* #active-update-wrapper .input-box .previewImage {
     width: 50px;
     height: 50px;
     background-image: url(/public/images/add_icon.png);
 } */
 
 
-#recruit-update-wrapper .image img {
+#active-update-wrapper .image img {
     width: 100%;
     height: auto;
     max-width: 100%;
@@ -178,7 +178,7 @@
     object-position: center;
 }
 
-#recruit-update-wrapper .image.uploaded {
+#active-update-wrapper .image.uploaded {
     width: 100%;
     height: auto;
     max-width: 100%;
@@ -187,21 +187,21 @@
     object-position: center;
 }
 
-#recruit-update-wrapper .location {
+#active-update-wrapper .location {
     width: 100%;
     height: 300px;
 
 }
 
 
-#recruit-update-wrapper .bottom {
+#active-update-wrapper .bottom {
     display: flex;
     flex-direction: row;
     width: 100%;
     gap: 10px;
     justify-content: right;
 
-}#recruit-update-wrapper {
+}#active-update-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -211,11 +211,11 @@
     background-color: white;
 }
 
-#recruit-update-wrapper .navi {
+#active-update-wrapper .navi {
     height: 90px;
 }
 
-#recruit-update-input-container {
+#active-update-input-container {
     margin: 50px 0;
     width: 700px;
     display: flex;
@@ -229,20 +229,20 @@
 
 }
 
-#recruit-update-wrapper .userInfo {
+#active-update-wrapper .userInfo {
     display: flex;
     flex-direction: column;
     gap: 5px;
     margin-bottom: 10px;
 }
 
-#recruit-update-wrapper .userInfo-left {
+#active-update-wrapper .userInfo-left {
     display: flex;
     flex-direction: row;
     gap: 15px;
 }
 
-#recruit-update-wrapper .userInfo-right {
+#active-update-wrapper .userInfo-right {
     display: flex;
     flex-direction: row;
     flex: 1;
@@ -253,7 +253,7 @@
 
 }
 
-#recruit-update-wrapper .userInfo-right .listButton {
+#active-update-wrapper .userInfo-right .listButton {
     width: 50px;
     height: 30px;
     background-color: #4CAF50;
@@ -269,7 +269,7 @@
 
 
 
-#recruit-update-wrapper .profileImage {
+#active-update-wrapper .profileImage {
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -280,11 +280,11 @@
 
 }
 
-#recruit-update-wrapper .userInfo-right .name {
+#active-update-wrapper .userInfo-right .name {
     cursor: pointer;
 }
 
-#recruit-update-wrapper .input-box {
+#active-update-wrapper .input-box {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -292,19 +292,19 @@
     margin-bottom: 10px;
 }
 
-#recruit-update-wrapper .input-box .input {
+#active-update-wrapper .input-box .input {
     border: 1px solid #ccc;
     padding: 10px;
     border-radius: 10px;
     width: 1;
 }
 
-#recruit-update-wrapper .react-datepicker {
+#active-update-wrapper .react-datepicker {
     width: auto;
     height: auto;
 }
 
-#recruit-update-wrapper .react-datepicker__day {
+#active-update-wrapper .react-datepicker__day {
     width: 30px;
     /* 각 날짜 셀의 너비 */
     height: 30px;
@@ -312,37 +312,37 @@
     font-size: 16px;
 }
 
-#recruit-update-wrapper .react-datepicker__header {
+#active-update-wrapper .react-datepicker__header {
     font-size: 28px;
     /* 달력 헤더(월, 년도) 폰트 크기 조정 */
 }
 
-#recruit-update-wrapper .react-datepicker__day-name {
+#active-update-wrapper .react-datepicker__day-name {
     font-size: 16px;
     /* 요일 헤더(월, 화 등) 폰트 크기 조정 */
 }
 
 
-#recruit-update-wrapper .date-picker-wrapper {
+#active-update-wrapper .date-picker-wrapper {
     display: flex;
     align-items: center;
     position: relative;
 }
 
-#recruit-update-wrapper .react-datepicker {
+#active-update-wrapper .react-datepicker {
     position: absolute;
     top: 0;
     left: 35%;
     z-index: 2;
 }
 
-#recruit-update-wrapper .input-label {
+#active-update-wrapper .input-label {
     color: rgba(64, 64, 64, 1);
     font-size: 16px;
     font-weight: 700;
 }
 
-#recruit-update-wrapper .textarea {
+#active-update-wrapper .textarea {
     width: 100%;
     height: 200px;
     padding: 10px;
@@ -354,7 +354,7 @@
 }
 
 
-#recruit-update-wrapper .image.preview {
+#active-update-wrapper .image.preview {
     width: 100px;
     height: 100px;
     border-radius: 6px;
@@ -365,14 +365,14 @@
 
 }
 
-/* #recruit-update-wrapper .input-box .previewImage {
+/* #active-update-wrapper .input-box .previewImage {
     width: 50px;
     height: 50px;
     background-image: url(/public/images/add_icon.png);
 } */
 
 
-#recruit-update-wrapper .image img {
+#active-update-wrapper .image img {
     width: 100%;
     height: auto;
     max-width: 100%;
@@ -381,7 +381,7 @@
     object-position: center;
 }
 
-#recruit-update-wrapper .image.uploaded {
+#active-update-wrapper .image.uploaded {
     width: 100%;
     height: auto;
     max-width: 100%;
@@ -390,21 +390,21 @@
     object-position: center;
 }
 
-#recruit-update-wrapper .location {
+#active-update-wrapper .location {
     width: 100%;
     height: 300px;
 
 }
 
 
-#recruit-update-wrapper .bottom {
+#active-update-wrapper .bottom {
     display: flex;
     flex-direction: row;
     width: 100%;
     gap: 10px;
     justify-content: right;
 
-}#recruit-update-wrapper {
+}#active-update-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -414,11 +414,11 @@
     background-color: white;
 }
 
-#recruit-update-wrapper .navi {
+#active-update-wrapper .navi {
     height: 90px;
 }
 
-#recruit-update-input-container {
+#active-update-input-container {
     margin: 50px 0;
     width: 700px;
     display: flex;
@@ -432,20 +432,20 @@
 
 }
 
-#recruit-update-wrapper .userInfo {
+#active-update-wrapper .userInfo {
     display: flex;
     flex-direction: column;
     gap: 5px;
     margin-bottom: 10px;
 }
 
-#recruit-update-wrapper .userInfo-left {
+#active-update-wrapper .userInfo-left {
     display: flex;
     flex-direction: row;
     gap: 15px;
 }
 
-#recruit-update-wrapper .userInfo-right {
+#active-update-wrapper .userInfo-right {
     display: flex;
     flex-direction: row;
     flex: 1;
@@ -456,7 +456,7 @@
 
 }
 
-#recruit-update-wrapper .userInfo-right .listButton {
+#active-update-wrapper .userInfo-right .listButton {
     width: 50px;
     height: 30px;
     background-color: #4CAF50;
@@ -472,7 +472,7 @@
 
 
 
-#recruit-update-wrapper .profileImage {
+#active-update-wrapper .profileImage {
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -483,11 +483,11 @@
 
 }
 
-#recruit-update-wrapper .userInfo-right .name {
+#active-update-wrapper .userInfo-right .name {
     cursor: pointer;
 }
 
-#recruit-update-wrapper .input-box {
+#active-update-wrapper .input-box {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -495,19 +495,19 @@
     margin-bottom: 10px;
 }
 
-#recruit-update-wrapper .input-box .input {
+#active-update-wrapper .input-box .input {
     border: 1px solid #ccc;
     padding: 10px;
     border-radius: 10px;
     width: 1;
 }
 
-#recruit-update-wrapper .react-datepicker {
+#active-update-wrapper .react-datepicker {
     width: auto;
     height: auto;
 }
 
-#recruit-update-wrapper .react-datepicker__day {
+#active-update-wrapper .react-datepicker__day {
     width: 30px;
     /* 각 날짜 셀의 너비 */
     height: 30px;
@@ -515,37 +515,37 @@
     font-size: 16px;
 }
 
-#recruit-update-wrapper .react-datepicker__header {
+#active-update-wrapper .react-datepicker__header {
     font-size: 28px;
     /* 달력 헤더(월, 년도) 폰트 크기 조정 */
 }
 
-#recruit-update-wrapper .react-datepicker__day-name {
+#active-update-wrapper .react-datepicker__day-name {
     font-size: 16px;
     /* 요일 헤더(월, 화 등) 폰트 크기 조정 */
 }
 
 
-#recruit-update-wrapper .date-picker-wrapper {
+#active-update-wrapper .date-picker-wrapper {
     display: flex;
     align-items: center;
     position: relative;
 }
 
-#recruit-update-wrapper .react-datepicker {
+#active-update-wrapper .react-datepicker {
     position: absolute;
     top: 0;
     left: 35%;
     z-index: 2;
 }
 
-#recruit-update-wrapper .input-label {
+#active-update-wrapper .input-label {
     color: rgba(64, 64, 64, 1);
     font-size: 16px;
     font-weight: 700;
 }
 
-#recruit-update-wrapper .textarea {
+#active-update-wrapper .textarea {
     width: 100%;
     height: 200px;
     padding: 10px;
@@ -557,7 +557,7 @@
 }
 
 
-#recruit-update-wrapper .image.preview {
+#active-update-wrapper .image.preview {
     width: 100px;
     height: 100px;
     border-radius: 6px;
@@ -568,14 +568,14 @@
 
 }
 
-/* #recruit-update-wrapper .input-box .previewImage {
+/* #active-update-wrapper .input-box .previewImage {
     width: 50px;
     height: 50px;
     background-image: url(/public/images/add_icon.png);
 } */
 
 
-#recruit-update-wrapper .image img {
+#active-update-wrapper .image img {
     width: 100%;
     height: auto;
     max-width: 100%;
@@ -584,7 +584,7 @@
     object-position: center;
 }
 
-#recruit-update-wrapper .image.uploaded {
+#active-update-wrapper .image.uploaded {
     width: 100%;
     height: auto;
     max-width: 100%;
@@ -593,14 +593,14 @@
     object-position: center;
 }
 
-#recruit-update-wrapper .location {
+#active-update-wrapper .location {
     width: 100%;
     height: 300px;
 
 }
 
 
-#recruit-update-wrapper .bottom {
+#active-update-wrapper .bottom {
     display: flex;
     flex-direction: row;
     width: 100%;
