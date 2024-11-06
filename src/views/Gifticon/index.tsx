@@ -522,7 +522,7 @@ export default function Mileage() {
 
   return (
     <div id='mg-wrapper'>
-      <div className='nav' style={{height: '90px', backgroundColor:'gray'}}></div>
+      <div className='nav' style={{height: '90px'}}></div>
       <div className='top'>
           <div className='top-text'>보유한 마일리지: <span className='emphasis'>{signInUser?.mileage} 포인트</span></div>
           {isAdmin && <div className='button primary' onClick={onCreateOpenHandler}>등록</div>}

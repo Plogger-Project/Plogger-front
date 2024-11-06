@@ -78,17 +78,20 @@ function TableRow({ recruitPostId, getRecruitList }: TableRowProps) {
     setDday(calculateDday());
   }, [recruitPostId.recruitEndDate]);
 
+  // function: td-recruit-end-date 색 변경을 위한 함수 //
+  const daysLeft = parseInt(dday.split('-')[1]);
+
   // render : 게시글 리스트 렌더링 //
   return (
     <div className="tr" key={recruitPostId.recruitPostId}>
       <div className="td-recruit-number">{recruitPostId.recruitPostId}</div>
-      <div className="td-recruit-isCompleted">{recruitPostId.isCompleted ? '마감됨' : '모집중'}</div>
+      <div className={`td-recruit-isCompleted ${recruitPostId.isCompleted ? 'end' : ''}`}>{recruitPostId.isCompleted ? '마감됨' : '모집중'}</div>
       <div className="td-recruit-title" onClick={onDetailButtonClickHandler}>{recruitPostId.recruitPostTitle}</div>
       <div className="td-recruit-writer">{recruitPostId.recruitPostWriter}</div>
       <div className="td-recruit-like-count">{recruitPostId.recruitPostLike}</div>
       <div className="td-recruit-view-count">{recruitPostId.recruitView}</div>
       <div className="td-recruit-people">{recruitPostId.currentPeople}/{recruitPostId.minPeople}</div>
-      <div className="td-recruit-end-date">{dday}</div>
+      <div className={`td-recruit-end-date ${daysLeft <= 5 ? 'soon' : dday== "D-day" ? 'soon':''}`}>{dday}</div>
       <div className="td-recruit-create-date">{formatDate(recruitPostId.recruitPostCreatedAt)}</div>
     </div>
   )
@@ -246,7 +249,7 @@ export default function RecruitPost() {
             <div style={{ color: "#000" }}>학원 위치</div>
           </MapMarker>
         </Map>
-        <div className="down-image"></div>
+        <div className="arrow"></div>
       </div>
       <div className={`middle ${showPosts ? 'show' : ''}`}>
         <div className="main">
@@ -261,9 +264,7 @@ export default function RecruitPost() {
               | <div className={`Recruiting ${filter === 'recruiting' ? 'active' : ''}`} onClick={() => handleFilterClick('recruiting')}>모집중</div>
               | <div className={`Recruited ${filter === 'closed' ? 'active' : ''}`} onClick={() => handleFilterClick('closed')}>마감됨</div>
             </div>
-            {signInUser == null ? 
-              ''
-              : <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>}
+            
           </div>
           <div className="table">
             <div className="th">
@@ -275,7 +276,7 @@ export default function RecruitPost() {
               <div className="td-recruit-view-count">조회수</div>
               <div className="td-recruit-people">모집인원</div>
               <div className="td-recruit-end-date">모집종료</div>
-              <div className="td-recruit-create-date">날짜</div>
+              <div className="td-recruit-create-date">작성날짜</div>
             </div>
             {
               viewList.map((recruitPostId, index) => (
@@ -285,6 +286,9 @@ export default function RecruitPost() {
           
           <div className="pagination">
             <Pagination currentPage={currentPage} {...paginationProps} />
+            {signInUser == null ? 
+              ''
+              : <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>}
           </div>
         </div>
       </div>

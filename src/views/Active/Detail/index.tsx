@@ -153,7 +153,7 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
     )
 }
 
-export default function ActiveDetail({ activeComment }: TableRowProps) {
+export default function ActiveDetail() {
 
     // state: 게시글 번호 경로 변수 상태 //
     const { activePostId } = useParams<{ activePostId: string}>();

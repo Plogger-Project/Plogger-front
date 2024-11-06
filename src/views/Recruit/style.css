@@ -30,14 +30,33 @@
     z-index: 1;
     transition: opacity 0.5s ease;
     margin-top: 100px;
+}#recruit-post-wrapper .arrow {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    margin: 70px auto;
+    /* 상단 여백을 추가하려면 이 값을 조정하세요 */
+    border-left: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    transform: rotate(-45deg);
+    animation: sdb 1.5s infinite;
+    box-sizing: border-box;
 }
 
-#recruit-post-wrapper .down-image {
-    width: 50px;
-    height: 50px;
-    background-image: url('/public/images/down-arrow.png');
-    background-size: cover;
-    margin-top: 100px;
+@keyframes sdb {
+    0% {
+        transform: rotate(-45deg) translate(0, 0);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: rotate(-45deg) translate(-20px, 20px);
+        opacity: 0;
+    }
 }
 
 #recruit-post-wrapper .kakaomap.hidden {
@@ -66,6 +85,7 @@
     transform: translateY(100%);
     transition: transform 0.5s ease;
     z-index: 2;
+    margin-top: 120px;
 }
 
 #recruit-post-wrapper .middle.show {
@@ -98,13 +118,19 @@
     height: 25px;
     
     text-align: center;
+    border: 0.1px solid rgb(103, 141, 129);
+    border-radius: 8px;
 
-    border-radius: 7px;
-    background-color: #84A264;
     font-size: 15px;
-    color: rgba(255, 255, 255, 1);
+    color: rgba(0, 95, 65, 1);
     justify-content: center;
     align-content: center;
+}
+
+#recruit-post-wrapper .button:hover {
+
+    background-color: rgba(0, 95, 65, 1);
+    color: rgba(255, 255, 255, 1);
 }
 
 #recruit-post-wrapper .middle-top .post-filter {
@@ -157,13 +183,13 @@
 }
 
 #recruit-post-wrapper .table {
-    width: 100%;
+    
+    width: 1134px;
     margin: 0 auto;
     font-family: 'Arial', sans-serif;
     border-collapse: collapse;
 
-    font-size: 14px;
-
+    font-size: 15px;
 }
 
 #recruit-post-wrapper .th {
@@ -171,7 +197,7 @@
     flex-direction: row;
     text-align: center;
     font-weight: 700;
-
+    margin: 5px 0px;
 }
 
 #recruit-post-wrapper .tr {
@@ -179,7 +205,8 @@
     flex-direction: row;
     text-align: center;
     border-bottom: 1px solid #ccc;
-
+    padding: 20px 0;
+    align-content: center;
 }
 
 #recruit-post-wrapper .td-recruit-number,
@@ -192,6 +219,8 @@
 #recruit-post-wrapper .td-recruit-end-date,
 #recruit-post-wrapper .td-recruit-create-date {
     padding: 10px 5px;
+    align-content: center;
+    text-align: center;
 
 }
 
@@ -203,14 +232,21 @@
     width: 60px;
 }
 
+#recruit-post-wrapper .tr .td-recruit-isCompleted {
+    font-weight: 700;
+    color:rgba(0, 0, 0, 1);
+}
+
+#recruit-post-wrapper .tr .td-recruit-isCompleted.end {
+    color: rgb(170, 170, 170);
+}
+
 #recruit-post-wrapper .td-recruit-title {
     flex: 1;
     cursor: pointer;
-
 }
 
 #recruit-post-wrapper .td-recruit-writer,
-
 #recruit-post-wrapper .td-recruit-people
 {
     width: 60px;
@@ -225,13 +261,34 @@
     width: 80px;
 }
 
+#recruit-post-wrapper .tr .td-recruit-end-date {
+    width: 60px !important;
+    height: 30px;
+    border: 1px solid rgba(103, 141, 129, 1);
+    border-radius: 8px;
+    padding: 0px 5px;
+    margin: 0px 10px;
+    color: rgba(0, 95, 65, 1);
+    justify-content: center;
+    align-content: center;
+    font-weight: 700;
+}
+
+#recruit-post-wrapper .tr .td-recruit-end-date.soon {
+    border: 1px solid rgba(221, 114, 114, 1); 
+    color: rgba(255, 0, 0, 1);
+}
+
 #recruit-post-wrapper .pagination {
     display: flex;
     justify-content: center;
     margin-top: 20px;
-
     gap: 15px;
+    margin-left: 400px;
+}
 
+#recruit-post-wrapper .pagination .button {
+    margin-left: 380px;
 }
 
 #recruit-post-wrapper .pagination .active {
