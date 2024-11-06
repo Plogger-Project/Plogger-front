@@ -316,35 +316,26 @@
 
 .recruit-report,
 .active-report,
-.user-list,
-.admin-scrap {
+.user-list {
     cursor: pointer;
     width: 200px;
     text-align: center;
 }
 
-.recruit-report span,
-.active-report span,
-.user-list span,
-.admin-scrap span {
-    cursor: pointer;
-}
-
 .recruit-report span:hover,
 .active-report span:hover,
-.user-list span:hover,
-.admin-scrap span:hover {
+.user-list span:hover {
+    cursor: pointer;
     font-weight: 600;
+    color: rgba(0, 0, 0, 1);
 }
 
 .recruit-report span:active,
 .active-report span:active,
-.user-list span:active,
-.admin-scrap span:active {
+.user-list span:active {
+    color: rgba(0, 95, 65, 1);
     font-weight: 600;
 }
-
-
 
 .recruit-report,
 .active-report,
@@ -549,6 +540,91 @@
 #adminpage .td-report-number,
 #adminpage .td-report-create-date {
     width: 80px;
+}
+
+#adminpage .td-active-reportid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+}
+
+#adminpage .td-active-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+}
+
+#adminpage .td-active-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+}
+
+#adminpage .td-active-writer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+}
+
+#adminpage .td-active-create-date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    padding: 10px;
+
+}
+
+#adminpage .td-active-number {
+    width: 30px;
+}
+
+#adminpage .td-active-content {
+    flex: auto;
+    cursor: pointer;
+
+}
+
+#adminpage .td-active-writer,
+#adminpage .td-active-number,
+#adminpage .td-active-create-date {
+    width: 80px;
+}
+
+#adminpage .td-user-userId,
+#adminpage .td-user-name,
+#adminpage .td-user-TelNumber,
+#adminpage .td-user-address,
+#adminpage .td-user-score,
+#adminpage .td-user-mileage,
+#adminpage .td-user-joinpath {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+
+    padding: 10px;
+}
+
+#adminpage .td-user-userId {
+    width: 120px;
+}
+
+#adminpage .td-user-name {
+    width: 80px;
+}
+
+#adminpage .td-user-score,
+#adminpage .td-user-TelNumber {
+    width: 120px;
+}
+#adminpage .td-user-address {
+    flex: auto;
+    cursor: pointer;
 }
 
 #adminpage .pagination {

@@ -117,7 +117,7 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
         setContent(value);
     }
 
-    // evenht handler: 활동 게시판 수정 클릭 이벤트 핸들러 //
+    // event handler: 활동 게시판 수정 클릭 이벤트 핸들러 //
     const onEditButtonClickHandler = () => {
         setIsEdit(true);
         setContent(activeComment.activeCommentContent);
@@ -157,7 +157,7 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
 export default function ActiveDetail() {
 
     // state: 게시글 번호 경로 변수 상태 //
-    const { activePostId } = useParams<{ activePostId: string}>();
+    const { activePostId } = useParams<{ activePostId: string }>();
 
     // state: 로그인 유저 상태 //
     const { signInUser } = useSignInUserStore();
@@ -173,8 +173,8 @@ export default function ActiveDetail() {
     const [postId, setPostId] = useState<number>(0);
     const [title, setTitle] = useState<string>('');
     const [content, setContent] = useState<string>('');
-    const [tagProfileImage, setTagProfileImage] = useState<{[key: string]: string | undefined }>({});
-    const [commentProfileImage, setCommentProfileImage] = useState<{[key: number]: string | null }>({});
+    const [tagProfileImage, setTagProfileImage] = useState<{ [key: string]: string | undefined }>({});
+    const [commentProfileImage, setCommentProfileImage] = useState<{ [key: number]: string | null }>({});
     const [profileImage, setProfileImage] = useState<string>('');
     const [image, setImage] = useState<string | null>('');
     const [writer, setWriter] = useState<string>('');
@@ -222,10 +222,10 @@ export default function ActiveDetail() {
     const getActivePostResponse = (responseBody: GetActivePostResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NAP' ? '존재하지 않는 글입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NAP' ? '존재하지 않는 글입니다.' :
+                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -269,11 +269,11 @@ export default function ActiveDetail() {
     const deleteActivePostResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
-            responseBody.code === 'NP' ? '권한이 없습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+                            responseBody.code === 'NP' ? '권한이 없습니다.' :
+                                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -288,10 +288,10 @@ export default function ActiveDetail() {
     const getActivePostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-        
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
             alert(message);
@@ -302,7 +302,7 @@ export default function ActiveDetail() {
         const { profileImage } = responseBody as GetSignInResponseDto;
         setProfileImage(profileImage);
     };
-    
+
     // function: post active report response 처리 함수 //
     const postActiveReportResponse = (responseBody: ResponseDto | null) => {
         const message =
@@ -324,10 +324,10 @@ export default function ActiveDetail() {
     const getActiveCommentListResponse = (responseBody: GetActiveCommentListResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '서버에 문제가 있습니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
+                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -350,9 +350,9 @@ export default function ActiveDetail() {
     const getActiveCommentUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null, commentId: number) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -367,17 +367,17 @@ export default function ActiveDetail() {
     const getActiveTagUserResponse = async (responseBody: GetSignInResponseDto | ResponseDto | null, tagId: string) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-    
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
             alert(message);
             return;
         }
-    
-        const { profileImage } = responseBody as GetSignInResponseDto;    
+
+        const { profileImage } = responseBody as GetSignInResponseDto;
         setTagProfileImage(prev => ({ ...prev, [tagId]: profileImage }));
     }
 
@@ -387,9 +387,9 @@ export default function ActiveDetail() {
 
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 작성!';
+                responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 작성!';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -624,7 +624,11 @@ export default function ActiveDetail() {
                                         <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제하기</button>
                                     </>
                                 )}
-                                <button className='reportButton'>신고하기</button>
+                                {!isAuthor && (
+                                    <>
+                                        <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
+                                    </>
+                                )}
                             </div>
                         )}
                     </div>
@@ -632,8 +636,8 @@ export default function ActiveDetail() {
                 <div className='postDetail'>
                     <div className='postTitle'>{title}</div>
                     <div className='postContents'>{content}</div>
-                    {image === '' ? '' : 
-                    <div className='postImage' style={{ backgroundImage: `url(${image})` }}></div>}
+                    {image === '' ? '' :
+                        <div className='postImage' style={{ backgroundImage: `url(${image})` }}></div>}
                     {lat !== 0 && lng !== 0 &&
                         <div className="kakaomap" ref={mapRef} >
                             <Map
@@ -653,7 +657,7 @@ export default function ActiveDetail() {
                         <div className='tag'>
                             <AvatarGroup max={4} onClick={handleClick}>
                                 {activePeople.map((tagUser, index) =>
-                                    <Avatar key={index} src={tagProfileImage[tagUser] } />
+                                    <Avatar key={index} src={tagProfileImage[tagUser]} />
                                 )}
                             </AvatarGroup>
                             <Popover
