@@ -22,6 +22,9 @@ import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from "./dto/re
 import { GetMileageListResponseDto } from "./dto/response/mileage";
 import { GetActiveCommentListResponseDto, GetActivePostListResponseDto, GetActivePostResponseDto, GetActiveReportListResponseDto, GetMyRecruitReponseDto } from "./dto/response/active";
 import { GetUserListResponseDto } from "./dto/response/mypage";
+import PostChatRoomRequestDto from "./dto/request/chat/post-chat-room.request.dto";
+import PostChatMessageRequestDto from "./dto/request/chat/post-chat-message.request.dto";
+import { GetMessageListResponseDto, GetRoomListResponseDto } from "./dto/response/chat";
 
 
 
@@ -124,6 +127,14 @@ const GET_FOLLOWEE_LIST_API_URL = (followerId: string) => `${FOLLOW_MODULE_URL}/
 const DELETE_FOLLOWEE_API_URL = (followeeId: string) => `${GIFTICON_MODULE_URL}/${followeeId}`;
 
 const GET_MILEAGE_LIST_API_URL = `${PLOGGER_API_DOMAIN}/api/v1/mileage`
+
+const CHAT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/chat`;
+
+const POST_CHAT_ROOM_API_URL = `${CHAT_MODULE_URL}/rooms`;
+const GET_CHAT_ROOM_LIST_API_URL = `${CHAT_MODULE_URL}/rooms`;
+const POST_CHAT_MESSAGE_API_URL = (roomId: string | number) => `${CHAT_MODULE_URL}/rooms/${roomId}/messages`;
+const GET_CHAT_MESSAGE_LIST_API_URL = (roomId: string | number) => `${CHAT_MODULE_URL}/rooms/${roomId}/messages`;
+const POST_CHAT_ROOM_JOIN_API_URL = (roomId: string | number) => `${CHAT_MODULE_URL}/rooms/${roomId}/join`;
 
 // function: Authorizarion Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({ headers: { 'Authorization': `Bearer ${accessToken}` } })
@@ -628,3 +639,43 @@ export const getMileageListRequest = async (accessToken: string) => {
         .catch(responseErrorHandler);
     return responseBody;
 };
+
+// function: 채팅방 만들기 요청 함수 //
+export const postChatRoomRequeset = async (requestBody: PostChatRoomRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_CHAT_ROOM_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 채팅방 참여하기 함수 //
+export const joinChatRoomRequest = async (roomId: string | number, accessToken: string) => {
+    const responseBody = await axios.post(POST_CHAT_ROOM_JOIN_API_URL(roomId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 내 채팅방 리스트 가져오기 함수 //
+export const getMyChatRoomListRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_CHAT_ROOM_LIST_API_URL, bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetRoomListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 채팅 가져오기 함수 //
+export const getChatMessageListRequest = async (roomId: string | number, accessToken: string) => {
+    const responseBody = await axios.get(GET_CHAT_MESSAGE_LIST_API_URL(roomId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetMessageListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 채팅 쓰기 요청 함수 //
+export const postChatMessageRequest = async (requestBody: PostChatMessageRequestDto, roomId: string | number, accessToken: string) => {
+    const responseBody = await axios.post(POST_CHAT_MESSAGE_API_URL(roomId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}

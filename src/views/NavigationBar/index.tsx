@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { GetSignInResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
-import { ACCESS_TOKEN, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD, MYPAGE_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH } from '../../constants';
+import { ACCESS_TOKEN, FIND_ID, FIND_PASSWORD, MYPAGE_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH } from '../../constants';
 import SignInRequestDto from '../../apis/dto/request/auth/sign-in.request.dto';
 import { deleteAlertListRequest, getAlertListRequest, getSignInRequest, signInRequest } from '../../apis';
 import { ACTIVE_PATH, QNA_PATH, RECRUIT_PATH } from '../../constants';
@@ -14,7 +14,6 @@ import { AlertList } from 'src/types';
 
 import GetAlertListResponseDto from 'src/apis/dto/response/alert/get-alert-list.response.dto';
 import useAlertPagination from 'src/hooks/alert.pagination.hook';
-import { get } from 'http';
 import { Badge } from '@mui/material';
 import MailIcon from '@mui/icons-material/Mail';
 
@@ -388,7 +387,8 @@ export default function NavigationBar() {
         if (signInUser?.isAdmin) {
             navigator('/admin');
         } else {
-            navigator(MYPAGE_PATH); // isAdmin이 true일때 관리자로 로그인
+            if (!signInUser) return;
+            navigator(MYPAGE_PATH(signInUser?.userId)); // isAdmin이 true일때 관리자로 로그인
         }
 
     }
@@ -431,7 +431,7 @@ export default function NavigationBar() {
                 <div className={`manu-active ${isActive ? 'active' : ''}`} onClick={onActiveClickHandler}>활동게시판</div>
                 <div className={`manu-qna ${isQnA ? 'active' : ''}`} onClick={onQnaClickHandler}>Q&A</div>
             </div>
-            {location.pathname !== '/' && location.pathname !== MYPAGE_PATH &&
+            {location.pathname !== '/' && location.pathname !== (signInUser && MYPAGE_PATH(signInUser?.userId)) &&
                 <input className='input-box' placeholder='검색어를 입력하세요.' />
             }
             <div className='button-box'>

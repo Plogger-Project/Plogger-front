@@ -12,11 +12,10 @@ import Pagination from "src/components/pagination";
 // interface: 활동 게시글 리스트 컴포넌트 properties //
 interface TableRowProps {
   activePost: ActivePost;
-  number: number;
   getActiveList: () => void;
 }
 
-function TableRow({ activePost, number, getActiveList }: TableRowProps) {
+function TableRow({ activePost, getActiveList }: TableRowProps) {
 
   const navigator = useNavigate();
 
@@ -26,7 +25,7 @@ function TableRow({ activePost, number, getActiveList }: TableRowProps) {
 
   return (
     <div className="tr" key={activePost.activePostId} onClick={onDetailButtonClickHandler}>
-      <div className="td-active-number">{number}</div>
+      <div className="td-active-number">{activePost.activePostId}</div>
       <div className="td-active-title">{activePost.activePostTitle}</div>
       <div className="td-active-writer">{activePost.activePostWriterId}</div>
       <div className="td-active-like-count">{activePost.activePostLike}</div>
@@ -93,7 +92,6 @@ export default function Active() {
             {viewList.map((activePost, index) => (
               <TableRow
                 key={index}
-                number={(currentPage - 1) * 10 + index + 1}
                 activePost={activePost}
                 getActiveList={getActivePostList}
               />

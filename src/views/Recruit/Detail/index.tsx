@@ -494,11 +494,6 @@ export default function RecruitDetail() {
   };
     
   // effect: 게시물 번호가 바뀔 때 글 정보 요청 함수 //
-  useEffect(() => {
-    if (!recruitPostId) return;
-      getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
-    
-  }, [recruitPostId, writer]);
 
   // effect: 좌표로 주소 정보 요청 함수 //
   useEffect(() => {
