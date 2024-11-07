@@ -718,7 +718,9 @@ export default function RecruitDetail() {
                 className={`like ${isLiked ? 'liked' : ''}`}  // liked 클래스를 동적으로 추가
                 onClick={toggleLikeHandler}
               ></div>
+              {signInUser &&
               <div className={`scrap ${isScraped ? 'scraped' : ''}`} onClick={onScrapButtonClickHandler}></div>
+              }
             </div>
           </div>
           

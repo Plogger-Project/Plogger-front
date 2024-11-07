@@ -283,9 +283,11 @@ export default function ActiveWrite() {
       formData.append('file', imageFile);
       url = await fileUploadRequest(formData);
     }
+
+    url = url ? url : '';
   
     const requestBody: PostActivePostRequestDto = {
-      activePostTitle: title, activePostContent: content, activePostImage: image,
+      activePostTitle: title, activePostContent: content, activePostImage: url,
       activeEndDate: endDate, activeStartDate: startDate,
       activeLocation: location, activePeople
     };
