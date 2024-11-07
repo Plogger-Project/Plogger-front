@@ -1,15 +1,18 @@
 import QnaComment from 'src/types/qna-comment.interface';
+import './style.css'
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSignInUserStore } from 'src/stores';
 import { useCookies } from 'react-cookie';
 import { ResponseDto } from 'src/apis/dto/response';
-import { patchActiveCommentRequest, deleteActiveCommentRequest, getQnaPostRequest, deleteQnaPostRequest, patchQnaCommentRequest, deleteQnaCommentRequest } from 'src/apis';
-import { PatchActiveCommentRequestDto } from 'src/apis/dto/request/active';
-import { ACCESS_TOKEN, ADMIN, QNA_ABSOLUTE_PATH, QNA_PATH, QNA_UPDATE_PATH } from 'src/constants';
+import { getQnaPostRequest, deleteQnaPostRequest, patchQnaCommentRequest, deleteQnaCommentRequest, postQnaCommentRequest, getQnaCommentListRequest, getQnaCommentUserInfoRequest, getQnaUserInfoRequest } from 'src/apis';
+import { ACCESS_TOKEN, QNA_DETAIL_PATH, QNA_PATH, QNA_UPDATE_PATH } from 'src/constants';
 import { PatchQnaCommentRequestDto } from 'src/apis/dto/request/qna';
 import usePagination from 'src/hooks/pagination.hook';
 import GetQnaPostResponseDto from 'src/apis/dto/response/qna/get-qna-post.response.dto';
+import PostQnaCommentRequestDto from 'src/apis/dto/request/qna/post-qna-comment.request.dto';
+import GetQnaCommentListResponseDto from 'src/apis/dto/response/qna/get-qna-comment-list.response.dto';
+import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 
 // interface: Qna 댓글 인터페이스 //
 interface TableRowProps {
@@ -112,13 +115,13 @@ function TableRow({ qnaComment, getQnaCommentList }: TableRowProps) {
         setContent(value);
     }
 
-    // event handler: 활동 게시판 수정 클릭 이벤트 핸들러 //
+    // event handler: qna 게시판 댓글 수정 클릭 이벤트 핸들러 //
     const onEditButtonClickHandler = () => {
         setIsEdit(true);
         setContent(qnaComment.qnaCommentContent);
     }
 
-    // event handler: 활동 게시판 댓글 수정 취소 클릭 이벤트 핸들러 //
+    // event handler: qna 게시판 댓글 수정 취소 클릭 이벤트 핸들러 //
     const onCancelButtonClickHandler = () => {
         setIsEdit(false);
         setContent(qnaComment.qnaCommentContent);
@@ -207,15 +210,17 @@ export default function QnADetail() {
             return;
         }
 
-        const { qnaPostId, qnaPostTitle, qnaPostContent, qnaPostWriterId, qnaPostCreatedAt, isPinned
+        const { qnaPostId, qnaPostTitle, qnaPostContent, qnaPostImage, qnaPostWriter, qnaPostCreatedAt, isPinned
         } = responseBody as GetQnaPostResponseDto;
 
         setPostId(qnaPostId);
         setTitle(qnaPostTitle);
         setContent(qnaPostContent);
-        setWriter(qnaPostWriterId);
+        setWriter(qnaPostWriter);
         setCreatedAt(qnaPostCreatedAt);
         setIsPinned(isPinned);
+
+        getQnaUserInfoRequest(qnaPostWriter).then(getQnaPostUserResponse);
     }
 
     // function: Qna 게시글 삭제 함수 //
@@ -235,6 +240,88 @@ export default function QnADetail() {
 
         navigator(QNA_PATH);
     }
+
+    // function: get qna post user response 처리 함수 //
+    const getQnaPostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            navigator(QNA_PATH);
+            return;
+        }
+
+        const { profileImage } = responseBody as GetSignInResponseDto;
+        setProfileImage(profileImage);
+    };
+
+    // function: Qna 게시판 댓글 작성 함수 //
+    const postQnaCommentResponse = (responseBody: ResponseDto | null) => {
+        if (!qnaPostId) return;
+
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 작성!';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+
+        window.location.href = QNA_DETAIL_PATH(qnaPostId);
+    }
+
+    // function: Qna 게시판 댓글 목록 가져오기 함수 //
+    const getQnaCommentListResponse = (responseBody: GetQnaCommentListResponseDto | ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '서버에 문제가 있습니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
+                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+
+        const { qnaComments } = responseBody as GetQnaCommentListResponseDto;
+        setOriginalList(qnaComments);
+        setTotalList(qnaComments);
+
+        qnaComments.forEach(qnaComment => {
+            getQnaCommentUserInfoRequest(qnaComment.qnaCommentWriter)
+                .then(response => {
+                    getQnaCommentUserResponse(response, qnaComment.qnaCommentId); // 댓글 ID를 함께 전달
+                });
+        });
+    }
+
+    const getQnaCommentUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null, commentId: number) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+
+        const { profileImage } = responseBody as GetSignInResponseDto;
+        setCommentProfileImage(prev => ({ ...prev, [commentId]: profileImage }));
+    };
 
     // effect: 게시글 상세 보기 요청 함수 //
     useEffect(() => {
@@ -279,6 +366,48 @@ export default function QnADetail() {
         if (!accessToken) return;
 
         deleteQnaPostRequest(qnaPostId, accessToken).then(deleteQnaPostResponse);
+    }
+
+    // event handler: 댓글 등록 버튼 클릭 이벤트 처리 //
+    const onCommentPostButtonClick = () => {
+        if (!commentConent) {
+            alert('댓글을 입력해주세요.');
+            return;
+        }
+
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) return;
+
+        if (!qnaPostId) return;
+
+        const requestBody: PostQnaCommentRequestDto = {
+            qnaCommentContent: commentConent
+        }
+
+        postQnaCommentRequest(requestBody, qnaPostId, accessToken).then(postQnaCommentResponse);
+    }
+
+    const getQnaCommentList = () => {
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) return;
+
+        if (!qnaPostId) return;
+
+        getQnaCommentListRequest(qnaPostId, accessToken).then(getQnaCommentListResponse);
+    };
+
+    // event handler: 댓글 수정 이벤트 처리 //
+    const onCommentContentChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+        setCommentContent(value);
+    }
+
+    // event handler: 댓글 작성 키다운 이벤트 처리 //
+    const onCommentEnterHandler = (e: any) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            onCommentPostButtonClick();
+        }
     }
     // render: Q&A 게시판 Detail 컴포넌트 렌더링 //
     return (
@@ -329,15 +458,15 @@ export default function QnADetail() {
                         <div className='commentUserInfoWrite'>
                             <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
                             <div className='commentUserInfo-right'>
-                                <div className='recruitCommentWriter'>{signInUser?.userId}</div>
-                                {/* <input placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input> */}
+                                <div className='qnaCommentWriter'>{signInUser?.userId}</div>
+                                <input placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
                             </div>
-                            {/* <div className='commentButton' onClick={onCommentPostButtonClick}>등록</div> */}
+                            <div className='commentButton' onClick={onCommentPostButtonClick}>등록</div>
                         </div>
                         {viewList.map((qnaComment, index) => (
                             <div className='commentUserInfo' key={index}>
                                 <div className='profileImage' style={{ backgroundImage: `url(${commentProfileImage[qnaComment.qnaCommentId]})` }}></div>
-                                {/* <TableRow qnaComment={qnaComment} getQnaCommentList={getQnaCommentList} /> */}
+                                <TableRow qnaComment={qnaComment} getQnaCommentList={getQnaCommentList} />
                             </div>
                         ))}
                     </div>

@@ -9,7 +9,7 @@ import ActivePost from './views/Active';
 import NavigationBar from './views/NavigationBar';
 import Main from './views/Main';
 import QnaPost from './views/QNA';
-import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD, RECRUIT_DETAIL_ABSOLUTE_PATH, MYPAGE_PATH, ACTIVE_DETAIL_PATH, ACTIVE_UPDATE_PATH, ACTIVE_WRITE_PATH, CHAT_PATH, CHAT_DETAIL_PATH, QNA_DETAIL_PATH } from './constants';
+import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD, RECRUIT_DETAIL_ABSOLUTE_PATH, MYPAGE_PATH, ACTIVE_DETAIL_PATH, ACTIVE_UPDATE_PATH, ACTIVE_WRITE_PATH, CHAT_PATH, CHAT_DETAIL_PATH, QNA_DETAIL_PATH, QNA_WRITE_PATH, QNA_UPDATE_PATH } from './constants';
 
 import Mypage from './views/MyPage';
 import Mileage from './views/Gifticon';
@@ -39,6 +39,8 @@ import QnADetail from './views/QNA/Detail';
 
 import Chat from './views/Chat';
 import ChatDetail from './views/Chat/Detail';
+import QnaWrite from './views/QNA/Write';
+import QnaUpdate from './views/QNA/Update';
 
 
 
@@ -138,7 +140,9 @@ function Plogger() {
         <Route path={ACTIVE_DETAIL_PATH(':activePostId')} element={<ActiveDetail />} />
         <Route path={ACTIVE_UPDATE_PATH(':activePostId')} element={<ActiveUpdate />} />
         <Route path="/qna" element={<QnaPost />} />
+        <Route path={QNA_WRITE_PATH} element={<QnaWrite />} />
         <Route path={QNA_DETAIL_PATH(':qnaPostId')} element={<QnADetail />} />
+        <Route path={QNA_UPDATE_PATH(':qnaPostId')} element={<QnaUpdate /> }/>
         <Route path='/mileage' element={<Mileage/>} />
         <Route path={MYPAGE_PATH(':userId')} element={<Mypage />} />
         <Route path={CHAT_PATH} element={<Chat />} />

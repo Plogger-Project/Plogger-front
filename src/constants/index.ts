@@ -47,8 +47,8 @@ export const RECRUIT_UPDATE_ABSOLUTE_PATH = RECRUIT_UPDATE_PATH;
 
 export const ACTIVE_DETAIL_ABSOLUTE_PATE = ACTIVE_DETAIL_PATH;
 
-export const QNA_DETAIL_ABSOLUTE_PATH = `${QNA_DETAIL_PATH}`;
-export const QNA_WRITE_ABSOLUTE_PATH = `${QNA_WRITE_PATH}`;
+export const QNA_DETAIL_ABSOLUTE_PATH = QNA_DETAIL_PATH;
+export const QNA_WRITE_ABSOLUTE_PATH = QNA_WRITE_PATH;
 
 export const CHAT_PATH = '/chat';
 export const CHAT_DETAIL_PATH = (roomId: string | number) => `${ACTIVE_PATH}/${roomId}`;
