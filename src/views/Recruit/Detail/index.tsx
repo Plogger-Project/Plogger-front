@@ -183,9 +183,7 @@ export default function RecruitDetail() {
     setLng(postLng);
     
     getRecruitUserInfoRequest(recruitPostWriter).then(getRecruitPostUserResponse);
-    if(!recruitPostId) return;
-    alert("dfdfd");
-    getRecruitScrapRequest(recruitPostId, accessToken).then(getRecruitScrapResponse);;
+    
   };
 
   // function : get recruit post user response 처리 함수 //
@@ -298,14 +296,15 @@ export default function RecruitDetail() {
       return;
     }
     
-    const { createdAt } = responseBody as GetRecruitScrapResponseDto;
-    if(createdAt){
-      setIsScraped(true)
-      console.log(createdAt)}
-    else{ setIsScraped(false);
-      console.log("없음")
+    const { userIds } = responseBody as GetRecruitScrapResponseDto;
+
+    if (Array.isArray(userIds)) {
+      const isUserScraped = userIds.some(userId => userId === signInUser?.userId);
+      setIsScraped(isUserScraped);
+    } else {
+      setIsScraped(false);
     }
-    alert("끝")
+
   };
 
   // function : delete recruit post response 처리 함수 //
@@ -352,7 +351,7 @@ export default function RecruitDetail() {
     
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
-        setIsScraped(!isScraped);
+        alert(message);
         return;
     }
 
@@ -434,7 +433,7 @@ export default function RecruitDetail() {
   const onDeleteButtonClickHandler = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
 
-    if (!(writer == signInUser?.userId))
+    if (!(writer === signInUser?.userId))
     {
       alert("작성자만 삭제할 수 있습니다.");
       return;
@@ -607,6 +606,7 @@ export default function RecruitDetail() {
     getRecruitCommentList();
     getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
     getRecruitCommentListRequest(recruitPostId, accessToken).then(getRecruitCommentListResponse);
+    getRecruitScrapRequest(recruitPostId).then(getRecruitScrapResponse);
   }, [recruitPostId]);
 
 
