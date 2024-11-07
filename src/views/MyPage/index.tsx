@@ -6,7 +6,7 @@ import InputBox from '../../components/InputBox';
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
 import { ActivePost, Follow, Mileage, RecruitPostList, RecruitScrapList } from 'src/types';
-import { getActivePostListRequest, getGifticonRequest, getMileageListRequest, getRecruitPostListRequest, getRecruitPostRequest, getRecruitScrapListRequest, getRecruitUserInfoRequest, getFollowerListRequest, getFolloweeListRequest, patchCommentRequest } from 'src/apis';
+import { getActivePostListRequest, getGifticonRequest, getMileageListRequest, getRecruitPostListRequest, getRecruitPostRequest, getRecruitScrapListRequest, getRecruitUserInfoRequest, getFollowerListRequest, getFolloweeListRequest, patchCommentRequest, getFollowUserInfoRequest } from 'src/apis';
 import { GetRecruitPostListResponseDto, GetRecruitScrapListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
@@ -22,6 +22,7 @@ import { GetActivePostListResponseDto } from '@/apis/dto/response/active';
 import useGifticonPagination from '@/hooks/gifticon.pagination.hook';
 
 import SavingsTwoToneIcon from '@mui/icons-material/SavingsTwoTone';
+import GetRecruitPostResponseDto from '@/apis/dto/response/recruit/get-recruit.response.dto';
 
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
@@ -34,22 +35,21 @@ declare global {
 // interface: 팔로워&팔로위 리스트 컴포넌트 Properties //
 interface FollowTableRowProps {
   follow: Follow;
-  getFollowList: () => void;
   mode: 'follower' | 'followee';
 }
 
 // component: 팔로워&팔로위 리스트 아이템 컴포넌트 //
-function FollowTableRow({ follow, getFollowList, mode }: FollowTableRowProps) {
+function FollowTableRow({ follow, mode }: FollowTableRowProps) {
 
   // state: 팔로워&팔로위 정보 상태 //
   const [profileImage, setprofileImage] = useState<string | null>('');
 
-  // function : get recruit post user response 처리 함수 //
-  const getRecruitPostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
+  // function : get follower info response 처리 함수 //
+  const getFollowInfoResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
     
     const message = !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'VF' ? '잘못된 vf접근입니다.' :
-        responseBody.code === 'AF' ? '잘못된 af접근입니다.' :
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
@@ -63,7 +63,7 @@ function FollowTableRow({ follow, getFollowList, mode }: FollowTableRowProps) {
   };
 
   const displayedId = mode === 'follower' ? follow.followerId : follow.followeeId;
-  getRecruitUserInfoRequest(displayedId).then(getRecruitPostUserResponse);
+  getFollowUserInfoRequest(displayedId).then(getFollowInfoResponse);
 
   // render : 팔로워&팔로위 게시글 리스트 렌더링 //
   return (
@@ -271,7 +271,7 @@ export default function Mypage() {
           fetchUserDataFromApi();
         }
       }
-    }, [followId, userId, signInUser]);
+    }, [userId]);
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -354,11 +354,8 @@ export default function Mypage() {
       if (!isSuccessed) { alert(message); return; }
   
       const scrapPosts = (responseBody as GetRecruitScrapListResponseDto).scraps || [];
-      console.log(scrapPosts);
-      const myPosts = scrapPosts.filter(post => post.userId === signInUser?.userId);
-      console.log(myPosts)
-      setTotalList4(myPosts);
-      setScrapContents(myPosts);
+      setTotalList4(scrapPosts);
+      setScrapContents(scrapPosts);
     };
 
 
@@ -517,18 +514,20 @@ export default function Mypage() {
       return `${year}-${month}-${day}`;
     };
 
-    getRecruitPostRequest(scrapId.recruitId).then();
-    
 
     // event handler: 구인 게시글 상세 정보 보기 버튼 클릭 이벤트 처리 함수 //
     const onDetailButtonClickHandler = () => {
-      navigator(RECRUIT_DETAIL_ABSOLUTE_PATH(scrapId.recruitId));
+      navigator(RECRUIT_DETAIL_ABSOLUTE_PATH(scrapId.recruitPostId));
     };
 
     // render : 게시글 리스트 렌더링 //
     return (
-      <div className="tr" key={scrapId.recruitId}>
-        <div className="td-recruit-number" onClick={onDetailButtonClickHandler}>{scrapId.recruitId}</div>
+      <div className="tr" key={scrapId.recruitPostId}>
+        <div className="td-scrap-number">{scrapId.recruitPostId}</div>
+        <div className="td-scrap-title" onClick={onDetailButtonClickHandler}>{scrapId.recruitPostTitle}</div>
+        <div className="td-scrap-writer">{scrapId.recruitPostWriter}</div>
+        <div className="td-scrap-location">{scrapId.recruitAddress}</div>
+        <div className="td-scrap-date">{scrapId.recruitEndDate}</div>
       </div>
     )
   }
@@ -584,8 +583,6 @@ export default function Mypage() {
     const onMileageButtonClickHandler = () => {
       navigator(ACTIVE_DETAIL_ABSOLUTE_PATE(mileageId.activeId));
     };
-
-    console.log(gifticonName);
 
     // render : 게시글 리스트 렌더링 //
     return (
@@ -729,11 +726,11 @@ export default function Mypage() {
     setFolloweeModalOpen(!followeeModalOpen);
   };
 
-  // effect: 컴포넌트 로드 시 팔로워 리스트 불러오기 함수 //
-  useEffect(getFollowerList, []);
-
-  // effect: 컴포넌트 로드 시 팔로위 리스트 불러오기 함수 //
-  useEffect(getFolloweeList, []);
+  // effect: 컴포넌트 로드 시 팔로워, 팔로이 리스트 불러오기 함수 //
+  useEffect(() => {
+    getFollowerList();
+    getFolloweeList();
+  }, [userId]);
 
   return (
     <>
@@ -895,7 +892,7 @@ export default function Mypage() {
           <div style={{marginTop:"30px"}}>
             {
               followerList.map( (follow, index)=> (
-                <FollowTableRow key={index} follow={follow} getFollowList={() => getFollowerList} mode='follower'/>
+                <FollowTableRow key={index} follow={follow} mode='follower'/>
               ))}
           </div>
           <div className='modal-bottom'>
@@ -912,7 +909,7 @@ export default function Mypage() {
           <div style={{marginTop:"30px"}}>
             {
               followeeList.map( (follow, index)=> (
-                <FollowTableRow key={index} follow={follow} getFollowList={() => getFolloweeList} mode='followee'/>
+                <FollowTableRow key={index} follow={follow} mode='followee'/>
               ))}
           </div>
           <div className='modal-bottom'>
