@@ -44,6 +44,10 @@
 
 }
 
+#navigation-bar .logo-name {
+    cursor: pointer;
+}
+
 #navigation-bar .manu {
     display: flex;
 
@@ -138,7 +142,6 @@
 
 #navigation-bar .button.sign-in:hover,
 #navigation-bar .button.sign-up:hover {
-
     background-color: rgba(0, 95, 65, 1);
     color: rgba(255, 255, 255, 1);
 }

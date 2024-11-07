@@ -132,9 +132,7 @@ export default function QnaPost() {
               <div className={`all ${filter === 'all' ? 'active' : ''}`} onClick={() => handleFilterClick('all')}>전체</div>
               | <div className={`notice ${filter === 'notice' ? 'active' : ''}`} onClick={() => handleFilterClick('notice')}>공지</div>
               | <div className={`qna ${filter === 'qna' ? 'active' : ''}`} onClick={() => handleFilterClick('qna')}>Q&A</div>
-              
             </div>
-            <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>
           </div>
           <div className="table">
             <div className="th">
@@ -151,6 +149,7 @@ export default function QnaPost() {
           </div>
           <div className="pagination">
             <Pagination currentPage={currentPage} {...paginationProps} />
+            <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>
           </div>
         </div>
       </div>

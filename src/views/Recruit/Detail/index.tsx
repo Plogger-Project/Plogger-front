@@ -27,6 +27,7 @@ import { differenceInDays, parseISO } from 'date-fns';
 
 
 
+
 // interface: recruit comment list 아이템 컴포넌트 Properties //
 interface TableRowProps {
   recruitComment: RecruitCommentList;

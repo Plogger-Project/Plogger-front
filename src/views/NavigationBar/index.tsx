@@ -424,7 +424,7 @@ export default function NavigationBar() {
         <div id='navigation-bar'  className={isScrolled ? 'scrolled' : ''}>
             <div className='title'>
             <div className='logo' onClick={onLogoClickHandler}></div>
-            <div className='logo-name'>plogger</div>
+            <div className='logo-name' onClick={onLogoClickHandler}>plogger</div>
             </div>
             <div className='manu'>
                 <div className={`manu-recruit ${isReruit ? 'active' : ''}`} onClick={onRecruitClickHandler}>구인게시판</div>
