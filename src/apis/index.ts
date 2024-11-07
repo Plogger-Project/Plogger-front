@@ -22,11 +22,13 @@ import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from "./dto/re
 import { GetMileageListResponseDto } from "./dto/response/mileage";
 import { GetActiveCommentListResponseDto, GetActivePostListResponseDto, GetActivePostResponseDto, GetActiveReportListResponseDto, GetMyRecruitReponseDto } from "./dto/response/active";
 import { GetUserListResponseDto } from "./dto/response/mypage";
-import { PatchQnaCommentRequestDto, PostQnaPostRequestDto } from "./dto/request/qna";
+import { PatchQnaCommentRequestDto, PatchQnaPostRequestDto, PostQnaPostRequestDto } from "./dto/request/qna";
 import GetQnaPostResponseDto from "./dto/response/qna/get-qna-post.response.dto";
 import PostChatRoomRequestDto from "./dto/request/chat/post-chat-room.request.dto";
 import PostChatMessageRequestDto from "./dto/request/chat/post-chat-message.request.dto";
 import { GetMessageListResponseDto, GetRoomListResponseDto } from "./dto/response/chat";
+import PostQnaCommentRequestDto from "./dto/request/qna/post-qna-comment.request.dto";
+import GetQnaCommentListResponseDto from "./dto/response/qna/get-qna-comment-list.response.dto";
 
 
 
@@ -102,14 +104,16 @@ const POST_RECRUIT_SCRAP_API_URL = (recruitId: number | string) => `${RECRUIT_MO
 const GET_RECRUIT_SCRAP_LIST_API_URL = `${RECRUIT_MODULE_URL}/scrap`;
 const GET_RECRUIT_SCRAP_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/scrap/${recruitId}`;
 
-const GET_QNA_POST_LIST_API_URL = `${QNA_MODULE_URL}`
-const POST_QNA_POST_API_URL = (qnaId: number | string ) => `${QNA_MODULE_URL}/${qnaId}`;
+const GET_QNA_POST_LIST_API_URL = `${QNA_MODULE_URL}`;
+const POST_QNA_POST_API_URL = `${QNA_MODULE_URL}`;
 const GET_QNA_POST_API_URL = (qnaId: number | string) => `${QNA_MODULE_URL}/${qnaId}`;
-const PATCH_QNA_POST_API_URL = (qnaId: number | string) => `${ACTIVE_MODULE_URL}/${qnaId}`;
-const DELETE_QNA_POST_API_URL = (qnaId: number | string) => `${ACTIVE_MODULE_URL}/${qnaId}`;
+const PATCH_QNA_POST_API_URL = (qnaId: number | string) => `${QNA_MODULE_URL}/${qnaId}`;
+const DELETE_QNA_POST_API_URL = (qnaId: number | string) => `${QNA_MODULE_URL}/${qnaId}`;
+const GET_QNA_USER_INFO_API_URL = (qnaPostWriter: string) => `${GET_SIGN_IN_API_URL}/${qnaPostWriter}`;
 
 const GET_QNA_COMMENT_LIST_API_URL = (qnaPostId: string | number) => `${QNA_MODULE_URL}/${qnaPostId}/comments`;
 const PATCH_QNA_COMMENT_API_URL = (qnaId: number | string, commentId: number | string) => `${QNA_COMMENT_MODULE_URL(qnaId)}/comments/${commentId}`;
+const POST_QNA_COMMENT_API_URL = (qnaId: number | string) => `${QNA_COMMENT_MODULE_URL(qnaId)}/comments`;
 const DELETE_QNA_COMMENT_API_URL = (qnaId: number | string, commentId: number | string) => `${QNA_COMMENT_MODULE_URL(qnaId)}/comments/${commentId}`;
 const MYPAGE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/mypage`;
 
@@ -368,8 +372,8 @@ export const patchActiveCommentRequest = async (requestBody: PatchActiveCommentR
 }
 
 // function: 활동 게시글 댓글 가져오기 요청 함수 //
-export const getActiveCommentListRequest = async (activeId: string | number, accessToken: string) => {
-    const responseBody = await axios.get(GET_ACTIVE_COMMENT_LIST_API_URL(activeId), bearerAuthorization(accessToken))
+export const getActiveCommentListRequest = async (activeId: string | number) => {
+    const responseBody = await axios.get(GET_ACTIVE_COMMENT_LIST_API_URL(activeId))
         .then(responseDataHandler<GetActiveCommentListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
@@ -400,15 +404,15 @@ export const deleteTagRequest = async (activeId: string | number, recruitId: str
 }
 
 // function: Q&A 게시판 생성 요청 함수 //
-export const postQnaPostRequest = async (requestBody: PostQnaPostRequestDto, qnaId: string | number, accessToken: string) => {
-    const responseBody = await axios.post(POST_QNA_POST_API_URL(qnaId), requestBody, bearerAuthorization(accessToken))
+export const postQnaPostRequest = async (requestBody: PostQnaPostRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_QNA_POST_API_URL, requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }
 
 // function: get qna post 요청 함수 //
-export const getQnaPostRequest = async (qnaPostId: string) => {
+export const getQnaPostRequest = async (qnaPostId: string | number) => {
     const responseBody = await axios.get(GET_QNA_POST_API_URL(qnaPostId))
         .then(responseDataHandler<GetQnaPostResponseDto>)
         .catch(responseErrorHandler);
@@ -431,6 +435,14 @@ const responseBody = await axios.delete(DELETE_QNA_POST_API_URL(qnaId), bearerAu
     return responseBody;
 }
 
+// function: 활동 게시판 수정 요청 함수 //
+export const patchQnaPostRequest = async (requestBody: PatchQnaPostRequestDto, qnaId: string | number, accessToken: string) => {
+    const responseBody = await axios.patch(PATCH_QNA_POST_API_URL(qnaId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
 // function: qna 게시판 댓글 수정 함수 //
 export const patchQnaCommentRequest = async (requestBody: PatchQnaCommentRequestDto, qnaId: string | number, commentId: string | number, accessToken: string) => {
     const responseBody = await axios.patch(PATCH_QNA_COMMENT_API_URL(qnaId, commentId), requestBody, bearerAuthorization(accessToken))
@@ -443,6 +455,30 @@ export const patchQnaCommentRequest = async (requestBody: PatchQnaCommentRequest
 export const deleteQnaCommentRequest = async ( qnaId: string | number, commentId: string | number, accessToken: string) => {
     const responseBody = await axios.delete(DELETE_QNA_COMMENT_API_URL(qnaId, commentId), bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: qna 게시글 댓글 작성 요청 함수 //
+export const postQnaCommentRequest = async (requestBody: PostQnaCommentRequestDto, qnaId: string | number, accessToken: string) => {
+    const responseBody = await axios.post(POST_QNA_COMMENT_API_URL(qnaId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: qna 게시글 댓글 가져오기 요청 함수 //
+export const getQnaCommentListRequest = async (qnaId: string | number, accessToken: string) => {
+    const responseBody = await axios.get(GET_QNA_COMMENT_LIST_API_URL(qnaId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetQnaCommentListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: qna comment user Info 요청 함수 //
+export const getQnaCommentUserInfoRequest = async (qnaCommentWriter: string) => {
+    const responseBody = await axios.get(GET_QNA_USER_INFO_API_URL(qnaCommentWriter))
+        .then(responseDataHandler<GetSignInResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }
@@ -620,35 +656,35 @@ export const getRecruitCommentListRequest = async (recruitPostId: number | strin
     return responseBody;
 };
 
-// function: get sign in follower list 요청 함수 //
-export const getSignInFollowerListRequest = async (accessToken: string) => {
-    const responseBody = await axios.get(GET_SIGN_IN_FOLLOWER_LIST_API_URL, bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetFollowerListResponseDto>)
-        .catch(responseErrorHandler);
-    console.log(responseBody);
-    return responseBody;
-};
+// // function: get sign in follower list 요청 함수 //
+// export const getSignInFollowerListRequest = async (accessToken: string) => {
+//     const responseBody = await axios.get(GET_SIGN_IN_FOLLOWER_LIST_API_URL, bearerAuthorization(accessToken))
+//         .then(responseDataHandler<GetFollowerListResponseDto>)
+//         .catch(responseErrorHandler);
+//     console.log(responseBody);
+//     return responseBody;
+// };
 
-// function: get sign in followee list 요청 함수 //
-export const getSignInFolloweeListRequest = async (accessToken: string) => {
-    const responseBody = await axios.get(GET_SIGN_IN_FOLLOWEE_LIST_API_URL, bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetFolloweeListResponseDto>)
-        .catch(responseErrorHandler);
-    console.log(responseBody);
-    return responseBody;
-};
+// // function: get sign in followee list 요청 함수 //
+// export const getSignInFolloweeListRequest = async (accessToken: string) => {
+//     const responseBody = await axios.get(GET_SIGN_IN_FOLLOWEE_LIST_API_URL, bearerAuthorization(accessToken))
+//         .then(responseDataHandler<GetFolloweeListResponseDto>)
+//         .catch(responseErrorHandler);
+//     console.log(responseBody);
+//     return responseBody;
+// };
 
 // function: get follower list 요청 함수 //
-export const getFollowerListRequest = async (followeeId: string, accessToken: string) => {
-    const responseBody = await axios.get(GET_FOLLOWER_LIST_API_URL(followeeId), bearerAuthorization(accessToken))
+export const getFollowerListRequest = async (followeeId: string) => {
+    const responseBody = await axios.get(GET_FOLLOWER_LIST_API_URL(followeeId))
         .then(responseDataHandler<GetFollowerListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 };
 
 // function: get followee list 요청 함수 //
-export const getFolloweeListRequest = async (followerId: string, accessToken: string) => {
-    const responseBody = await axios.get(GET_FOLLOWEE_LIST_API_URL(followerId), bearerAuthorization(accessToken))
+export const getFolloweeListRequest = async (followerId: string) => {
+    const responseBody = await axios.get(GET_FOLLOWEE_LIST_API_URL(followerId))
         .then(responseDataHandler<GetFolloweeListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
@@ -702,6 +738,14 @@ export const getActiveTagUserInfoRequest = async (tagId: string) => {
     return responseBody;
 }
 
+// function : active post user Info 요청 함수 //
+export const getQnaUserInfoRequest = async (qnaPostWriter: string) => {
+    const responseBody = await axios.get(GET_QNA_USER_INFO_API_URL(qnaPostWriter))
+        .then(responseDataHandler<GetSignInResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
 // function : post recruit scrap 요청 함수 //
 export const postRecruitScrapRequest = async (recruitPostId: number | string, accessToken: string) => {
     const responseBody = await axios.post(POST_RECRUIT_SCRAP_API_URL(recruitPostId), {}, bearerAuthorization(accessToken))
@@ -711,16 +755,16 @@ export const postRecruitScrapRequest = async (recruitPostId: number | string, ac
 }
 
 // function: get recruit scrap list 요청 함수 //
-export const getRecruitScrapListRequest = async () => {
-    const responseBody = await axios.get(GET_RECRUIT_SCRAP_LIST_API_URL)
+export const getRecruitScrapListRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_RECRUIT_SCRAP_LIST_API_URL, bearerAuthorization(accessToken))
         .then(responseDataHandler<GetRecruitScrapListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 };
 
 // function: get recruit scrap 요청 함수 //
-export const getRecruitScrapRequest = async (recruitPostId: number | string, accessToken: string) => {
-    const responseBody = await axios.get(GET_RECRUIT_SCRAP_API_URL(recruitPostId), bearerAuthorization(accessToken))
+export const getRecruitScrapRequest = async (recruitPostId: number | string) => {
+    const responseBody = await axios.get(GET_RECRUIT_SCRAP_API_URL(recruitPostId))
         .then(responseDataHandler<GetRecruitScrapResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;

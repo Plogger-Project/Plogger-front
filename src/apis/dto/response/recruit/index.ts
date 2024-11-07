@@ -10,6 +10,6 @@ export type {
     GetRecruitReportListResponseDto,
     GetRecruitCommentListResponseDto,
     GetRecruitScrapListResponseDto,
-    GetRecruitScrapResponseDto
+    GetRecruitScrapResponseDto,
     GetRecruitJoinListResponseDto
 }

@@ -116,6 +116,7 @@
     font-size: 30px;
 
     justify-content: center;
+    margin-left: 300px;
 
     font-weight: 600;
     gap: 90px;
@@ -142,8 +143,6 @@
 
 #mypage .line {
     border-right: 2px solid rgba(0, 0, 0, 1);
-    border-left: 2px solid rgba(0, 0, 0, 1);
-
     padding: 0px 90px;
 }
 
@@ -184,24 +183,42 @@
     overflow: auto;
 }
 
-.button-mileage {
+#mypage .button-mileage {
     user-select: none;
     cursor: pointer;
-
     width: 160px;
     height: 40px;
-    
     text-align: center;
-
     border-radius: 8px;
-    background-color: #84A264;
+    border: 0.1px solid rgb(103, 141, 129);
     font-size: 20px;
-    color: rgba(255, 255, 255, 1);
+    color: rgba(0, 95, 65, 1);
+    background-color:white;
     justify-content: center;
     align-content: center;
 }
-.button-mileage:hover {
-    background-color: #6b8f5c;
+#mypage .button-mileage:hover {
+    background-color: rgba(0, 95, 65, 1);
+    color: rgba(255, 255, 255, 1);
+}
+
+#mypage .button-follow {
+    user-select: none;
+    cursor: pointer;
+    width: 160px;
+    height: 40px;
+    text-align: center;
+    border-radius: 8px;
+    border: 0.1px solid rgba(221, 114, 114, 0.8);
+    font-size: 20px;
+    color: rgb(255, 0, 0);
+    justify-content: center;
+    align-content: center;
+}
+
+#mypage .button-follow:hover {
+    background-color: #da3e3e !important;
+    color: rgba(255, 255, 255, 1) !important;
 }
 
 #mypage .modal {
@@ -308,6 +325,11 @@
     font-size: 30px;
 }
 
+#mypage .mypage-bottom .line {
+    border-right: 2px solid rgba(0, 0, 0, 1);
+    border-left: 2px solid rgba(0, 0, 0, 1);
+    padding: 0px 90px;
+}
 
 .line-right {
     border-right: 2px solid rgba(0, 0, 0, 1);

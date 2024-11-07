@@ -27,6 +27,7 @@ import { differenceInDays, parseISO } from 'date-fns';
 
 
 
+
 // interface: recruit comment list 아이템 컴포넌트 Properties //
 interface TableRowProps {
   recruitComment: RecruitCommentList;
@@ -184,8 +185,6 @@ export default function RecruitDetail() {
     setLng(postLng);
     
     getRecruitUserInfoRequest(recruitPostWriter).then(getRecruitPostUserResponse);
-    if(!recruitPostId) return;
-    getRecruitScrapRequest(recruitPostId, accessToken).then(getRecruitScrapResponse);;
   };
 
   // function : get recruit post user response 처리 함수 //
@@ -298,14 +297,15 @@ export default function RecruitDetail() {
       return;
     }
     
-    const { createdAt } = responseBody as GetRecruitScrapResponseDto;
-    if(createdAt){
-      setIsScraped(true)
-      console.log(createdAt)}
-    else{ setIsScraped(false);
-      console.log("없음")
+    const { userIds } = responseBody as GetRecruitScrapResponseDto;
+
+    if (Array.isArray(userIds)) {
+      const isUserScraped = userIds.some(userId => userId === signInUser?.userId);
+      setIsScraped(isUserScraped);
+    } else {
+      setIsScraped(false);
     }
-    
+
   };
 
   // function : delete recruit post response 처리 함수 //
@@ -352,7 +352,7 @@ export default function RecruitDetail() {
     
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
-        setIsScraped(!isScraped);
+        alert(message);
         return;
     }
 
@@ -434,7 +434,9 @@ export default function RecruitDetail() {
   const onDeleteButtonClickHandler = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
 
-    if (!(writer || isAdmin == signInUser?.userId))
+
+    if (!(writer || isAdmin === signInUser?.userId))
+
     {
       alert("작성자만 삭제할 수 있습니다.");
       return;
@@ -613,6 +615,7 @@ export default function RecruitDetail() {
     getRecruitCommentList();
     getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
     getRecruitCommentListRequest(recruitPostId, accessToken).then(getRecruitCommentListResponse);
+    getRecruitScrapRequest(recruitPostId).then(getRecruitScrapResponse);
   }, [recruitPostId]);
 
 
@@ -730,7 +733,9 @@ export default function RecruitDetail() {
                 className={`like ${isLiked ? 'liked' : ''}`}  // liked 클래스를 동적으로 추가
                 onClick={toggleLikeHandler}
               ></div>
+              {signInUser &&
               <div className={`scrap ${isScraped ? 'scraped' : ''}`} onClick={onScrapButtonClickHandler}></div>
+              }
             </div>
           </div>
           

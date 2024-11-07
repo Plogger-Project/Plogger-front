@@ -4,7 +4,8 @@ export default interface GetQnaPostResponseDto extends ResponseDto {
     qnaPostId: number;
     qnaPostTitle: string;
     qnaPostContent: string;
-    qnaPostWriterId: string;
+    qnaPostImage: string;
+    qnaPostWriter: string;
     qnaPostCreatedAt: string;
     isPinned: boolean;
 }

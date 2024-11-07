@@ -283,9 +283,11 @@ export default function ActiveWrite() {
       formData.append('file', imageFile);
       url = await fileUploadRequest(formData);
     }
+
+    url = url ? url : '';
   
     const requestBody: PostActivePostRequestDto = {
-      activePostTitle: title, activePostContent: content, activePostImage: image,
+      activePostTitle: title, activePostContent: content, activePostImage: url,
       activeEndDate: endDate, activeStartDate: startDate,
       activeLocation: location, activePeople
     };
@@ -337,7 +339,7 @@ export default function ActiveWrite() {
     getMyRecruitPosts();
   }, [recruitId]);
 
-  // render : 활동 게시판 작성 컴포넌트 렌더링 //
+  // render: 활동 게시판 작성 컴포넌트 렌더링 //
   return (
     <div id='active-write-wrapper'>
       <div className='navi'></div>

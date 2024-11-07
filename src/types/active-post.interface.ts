@@ -9,5 +9,5 @@ export default interface ActivePost {
     activeEndDate: string;
     activeView: number;
     activePostLike: number;
-    activPostImage: string;
+    activePostImage: string;
 }

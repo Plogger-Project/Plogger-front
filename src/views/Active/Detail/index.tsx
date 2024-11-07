@@ -551,12 +551,8 @@ export default function ActiveDetail() {
     };
 
     const getActiveCommentList = () => {
-        const accessToken = cookies[ACCESS_TOKEN];
-        if (!accessToken) return;
-
         if (!activePostId) return;
-
-        getActiveCommentListRequest(activePostId, accessToken).then(getActiveCommentListResponse);
+        getActiveCommentListRequest(activePostId).then(getActiveCommentListResponse);
     };
 
     useEffect(() => {

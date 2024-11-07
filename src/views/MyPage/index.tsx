@@ -1,13 +1,13 @@
 import React, { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react'
 import './style.css'
 import { useKakaoLoader } from 'src/hooks';
-import { useNavigate, useNavigation } from 'react-router-dom'
+import { useNavigate, useNavigation, useParams } from 'react-router-dom'
 import InputBox from '../../components/InputBox';
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
-import { ActivePost, Follow, Mileage, RecruitPostList } from 'src/types';
-import { getActivePostListRequest, getGifticonRequest, getMileageListRequest, getRecruitPostListRequest, getRecruitUserInfoRequest, getSignInFolloweeListRequest, getSignInFollowerListRequest, patchCommentRequest } from 'src/apis';
-import { GetRecruitPostListResponseDto } from 'src/apis/dto/response/recruit';
+import { ActivePost, Follow, Mileage, RecruitPostList, RecruitScrapList } from 'src/types';
+import { getActivePostListRequest, getGifticonRequest, getMileageListRequest, getRecruitPostListRequest, getRecruitPostRequest, getRecruitScrapListRequest, getRecruitUserInfoRequest, getFollowerListRequest, getFolloweeListRequest, patchCommentRequest } from 'src/apis';
+import { GetRecruitPostListResponseDto, GetRecruitScrapListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
 import { ACCESS_TOKEN, ACTIVE_DETAIL_ABSOLUTE_PATE, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';
@@ -19,6 +19,10 @@ import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import { GetMileageListResponseDto } from 'src/apis/dto/response/mileage';
 import { GetGifticonResponseDto } from 'src/apis/dto/response/gifticon';
 import { GetActivePostListResponseDto } from '@/apis/dto/response/active';
+import useGifticonPagination from '@/hooks/gifticon.pagination.hook';
+
+import SavingsTwoToneIcon from '@mui/icons-material/SavingsTwoTone';
+
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
@@ -71,6 +75,20 @@ function FollowTableRow({ follow, getFollowList, mode }: FollowTableRowProps) {
   
 }
 
+// interface: another user 정보 //
+interface AnotherUser {
+  userId: string;
+  password: string;
+  name: string;
+  telNumber: string;
+  address: string;
+  profileImage: string;
+  isAdmin: boolean;
+  ecoScore: number;
+  mileage: number;
+  comment: string;
+}
+
 // component: 마이페이지 컴포넌트 //
 export default function Mypage() {
   // state: 페이징 관련 상태 //
@@ -81,6 +99,9 @@ export default function Mypage() {
 
   // state: 페이징 관련 상태 //
   const { currentPage: currentPage3, totalPage: totalPage3, totalCount: totalCount3, viewList: viewList3, setTotalList: setTotalList3, initViewList: initViewList3, ...activePaginationProps } = useRecruitPagination<ActivePost>();
+
+  // state: 페이징 관련 상태 //
+  const { currentPage: currentPage4, totalPage: totalPage4, totalCount: totalCount4, viewList: viewList4, setTotalList: setTotalList4, initViewList: initViewList4, ...scrapPaginationProps } = useRecruitPagination<RecruitScrapList>();
 
   // state: 프로필 상태 //
   const [input, onInput] = useState<boolean>(false);
@@ -96,6 +117,8 @@ export default function Mypage() {
 
   // state: 로그인 유저 정보 //
   const { signInUser, setSignInUser } = useSignInUserStore();
+  const [user, setUser] = useState<AnotherUser | null>(null);
+  const { userId } = useParams<{ userId: string }>();
 
   // state: cookie 상태 //
   const [cookies] = useCookies();
@@ -113,6 +136,9 @@ export default function Mypage() {
   // state: 내 마일리지 목록 상태 //
   const [mileageContents, setMileageContents] = useState<Mileage[]>([]);
 
+  // state: 내 스크랩 목록 상태 //
+  const [scrapContents, setScrapContents] = useState<RecruitScrapList[]>([]);
+
   // state: 팔로워 모달 팝업 상태 //
   const [followerModalOpen, setFollowerModalOpen] = useState<boolean>(false);
 
@@ -125,11 +151,14 @@ export default function Mypage() {
   // variable: accessToken
   const accessToken = cookies[ACCESS_TOKEN];
 
+  // variable: 작성자 여부 //
+  const isOwner = (signInUser?.userId === userId) ? signInUser : user;
+  let followId = (signInUser?.userId === userId) ? signInUser?.userId : user?.userId;
   
   // function: follower list 불러오기 함수 //
   const getFollowerList = () => {
-    if(!accessToken) return;
-    getSignInFollowerListRequest(accessToken).then(getFollowerListResponse);
+    if(!followId) return;
+    getFollowerListRequest(followId).then(getFollowerListResponse);
   }
 
   // function: get follower list response 처리 함수 //
@@ -152,8 +181,8 @@ export default function Mypage() {
 
   // function: followee list 불러오기 함수 //
   const getFolloweeList = () => {
-    if(!accessToken) return;
-    getSignInFolloweeListRequest(accessToken).then(getFolloweeListResponse);
+    if(!followId) return;
+    getFolloweeListRequest(followId).then(getFolloweeListResponse);
   }
 
   // function: get followee list response 처리 함수 //
@@ -176,10 +205,73 @@ export default function Mypage() {
 
   // effect: 유저 정보가 변경되면 state에 반영 // 
   useEffect(() => {
-    if (signInUser) {
-      setComment(signInUser.comment || '플로깅 파이팅!');
+    if (isOwner) {
+      setComment(isOwner.comment || '플로깅 파이팅!');
     }
-  }, [signInUser]);
+  }, [isOwner]);
+
+  // function: API 호출하여 사용자 데이터 받기 //
+  const fetchUserData = async (id: string) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/v1/auth/sign-in/${id}`);
+      const data = await response.json();
+      setSignInUser(data);  // 로그인된 사용자 데이터 반영
+    } catch (error) {
+      console.error("사용자 데이터 로드 실패", error);
+    }
+  };
+  useEffect(() => {
+    if (userId) {
+      console.log("현재 userId:", userId); // 유저 ID 출력
+      const fetchUserDataFromApi = async () => {
+        try {
+          const response = await fetch(`http://localhost:4000/api/v1/auth/sign-in/${userId}`);
+          console.log("API 응답 상태:", response.status);  // 응답 상태 확인
+          if (!response.ok) {
+            const errorText = await response.text();  // 응답이 HTML일 경우
+            console.error("서버 응답 내용:", errorText);
+            return;
+          }
+          const data = await response.json();
+          console.log("받은 데이터:", data); // 받은 데이터 확인
+          setUser(data);
+        } catch (error) {
+          console.error("사용자 데이터를 가져오는 데 실패했습니다.", error);
+        }
+      };
+      fetchUserDataFromApi();
+    }
+  }, [userId]);
+
+    // effect: userId 가 변경되면 그에 맞는 데이터 반영 //
+    useEffect(() => {
+      if (userId) {
+        if (signInUser?.userId === userId) {
+          fetchUserData(userId);
+          followId = userId;
+        } else {
+          followId = userId;
+          const fetchUserDataFromApi = async () => {
+            try {
+
+              const response = await fetch(`http://localhost:4000/api/v1/auth/sign-in/${userId}`);
+
+              if (!response.ok) {
+                return;
+              }
+
+              const data = await response.json();
+
+              setUser(data);  // 다른 사용자의 데이터 상태로 반영
+            } catch (error) {
+              console.error("사용자 데이터를 가져오는 데 실패했습니다.", error);
+            }
+          };
+          console.log("API 호출 준비 중:", userId);
+          fetchUserDataFromApi();
+        }
+      }
+    }, [followId, userId, signInUser]);
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -193,6 +285,9 @@ export default function Mypage() {
   // function: mileage list 불러오기 함수 //
   const getMileagePostList = () => { getMileageListRequest(accessToken).then(getMileagePostListResponse) };
 
+  // function: scrap list 불러오기 함수 //
+  const getScrapPostList = () => { getRecruitScrapListRequest(accessToken).then(getRecruitScrapListResponse) };
+
   // function: get recruit post list response 처리 함수 //
   const getRecruitPostListResponse = (responseBody: GetRecruitPostListResponseDto | ResponseDto | null) => {
 
@@ -205,7 +300,7 @@ export default function Mypage() {
     if (!isSuccessed) { alert(message); return; }
 
     const recruitPosts = (responseBody as GetRecruitPostListResponseDto).recruitPosts || [];
-    const myPosts = recruitPosts.filter(post => post.recruitPostWriter === signInUser?.userId);
+    const myPosts = recruitPosts.filter(post => post.recruitPostWriter === isOwner?.userId);
     setTotalList(myPosts);
     setRecruitContents(myPosts);
 
@@ -223,7 +318,7 @@ export default function Mypage() {
     if (!isSuccessed) { alert(message); return; }
 
     const activePosts = (responseBody as GetActivePostListResponseDto).activePosts || [];
-    const myPosts = activePosts.filter(post => post.activePostWriterId === signInUser?.userId);
+    const myPosts = activePosts.filter(post => post.activePostWriterId === isOwner?.userId);
     setTotalList3(myPosts);
     setActiveContents(myPosts);
 
@@ -241,11 +336,30 @@ export default function Mypage() {
     if (!isSuccessed) { alert(message); return; }
 
     const mileagePosts = (responseBody as GetMileageListResponseDto).mileages || [];
-    const myPosts = mileagePosts.filter(post => post.userId === signInUser?.userId);
+    const myPosts = mileagePosts.filter(post => post.userId === isOwner?.userId);
     setTotalList2(myPosts);
     setMileageContents(myPosts);
 
   };
+
+    // function: get recruit scrap list response 처리 함수 //
+    const getRecruitScrapListResponse = (responseBody: GetRecruitScrapListResponseDto | ResponseDto | null) => {
+
+      const message =
+        !responseBody ? '서버에 문제가 있습니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+  
+      const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+      if (!isSuccessed) { alert(message); return; }
+  
+      const scrapPosts = (responseBody as GetRecruitScrapListResponseDto).scraps || [];
+      console.log(scrapPosts);
+      const myPosts = scrapPosts.filter(post => post.userId === signInUser?.userId);
+      console.log(myPosts)
+      setTotalList4(myPosts);
+      setScrapContents(myPosts);
+    };
 
 
   // function: patch comment post list response 처리 함수 //
@@ -377,6 +491,43 @@ export default function Mypage() {
         <div className="td-active-location">{location}</div>
         <div className="td-active-view">{activePostId.activeView}</div>
         <div className="td-active-date">{formatDate(activePostId.activePostCreatedAt)}</div>
+      </div>
+    )
+  }
+
+  // interface: 스크랩 리스트 컴포넌트 Properties //
+  interface ScrapTableRowProps {
+    scrapId: RecruitScrapList;
+    getScrapList: () => void;
+  }
+
+  // component: 스크랩 리스트 아이템 컴포넌트 //
+  function TableScrapRow({ scrapId, getScrapList }: ScrapTableRowProps) {
+
+    //function: 네비게이터 함수 //
+    const navigator = useNavigate();
+
+    // function : 날짜 포맷팅 함수
+    const formatDate = (dateString: string) => {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // 0부터 시작하므로 +1
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    getRecruitPostRequest(scrapId.recruitId).then();
+    
+
+    // event handler: 구인 게시글 상세 정보 보기 버튼 클릭 이벤트 처리 함수 //
+    const onDetailButtonClickHandler = () => {
+      navigator(RECRUIT_DETAIL_ABSOLUTE_PATH(scrapId.recruitId));
+    };
+
+    // render : 게시글 리스트 렌더링 //
+    return (
+      <div className="tr" key={scrapId.recruitId}>
+        <div className="td-recruit-number" onClick={onDetailButtonClickHandler}>{scrapId.recruitId}</div>
       </div>
     )
   }
@@ -539,6 +690,7 @@ export default function Mypage() {
   const onMyRecruitClickHandler = () => {
     setActiveContents([]);
     setMileageContents([]);
+    setScrapContents([]);
     getRecruitPostList();
   };
 
@@ -546,13 +698,23 @@ export default function Mypage() {
   const onMyActiveClickHandler = () => {
     setRecruitContents([]);
     setMileageContents([]);
+    setScrapContents([]);
     getActivePostList();
+  };
+
+  // event handler: my recruit 클릭 이벤트 처리 // 
+  const onMyScrapClickHandler = () => {
+    setRecruitContents([]);
+    setActiveContents([]);
+    setMileageContents([]);
+    getScrapPostList();
   };
 
   // event handler: my mileage 클릭 이벤트 처리 // 
   const onMyMileageClickHandler = () => {
     setRecruitContents([]);
     setActiveContents([]);
+    setScrapContents([]);
     getMileagePostList();
   };
 
@@ -577,13 +739,13 @@ export default function Mypage() {
       <div id='mypage'>
         <div className='top'>
           <div className='profile-container'>
-            <div className='image' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
+            <div className='image' style={{ backgroundImage: `url(${isOwner?.profileImage})` }}></div>
             <div className='profile-box'>
               <div className='name-box'>
-                <div className='name'>{signInUser?.name}</div>
+                <div className='name'>{isOwner?.name}</div>
                 <div className='change' onClick={onMypageUpdateOpenHandler}></div>
               </div>
-              <div className='address'>{signInUser?.address}</div>
+              <div className='address'>{isOwner?.address}</div>
               <div className='sentence-box'>
                 {input ?
                   <input className='input' type='text' value={comment} onChange={onCommentChangeHandler} placeholder='30글자 내로 입력하세요.' onKeyDown={onCommentKeydownHandler}
@@ -609,10 +771,13 @@ export default function Mypage() {
             </div>
             <div className='mileage-container'>
               <div className='mileage-box'>
-                <div className='mileage-button'>M</div>
-                <div className='mileage-score'>{signInUser?.mileage}</div>
+                <SavingsTwoToneIcon sx={{ fontSize: 45 }}  />
+                <div className='mileage-score'>{isOwner?.mileage}</div>
               </div>
-              <div className='button-mileage' onClick={onGiftClickHandler}>기프티콘 바로가기</div>
+              {
+              signInUser?.userId === user?.userId ? <div className='button-mileage' onClick={onGiftClickHandler}>기프티콘 바로가기</div> 
+              : <div className='button-follow'>팔로잉</div>
+              }
             </div>
           </div>
         </div>
@@ -625,7 +790,7 @@ export default function Mypage() {
             <div className='line-right'>
               <div className='my-mileage' onClick={onMyMileageClickHandler}><span>마일리지 내역</span></div>
             </div>
-            <div className='my-scrap'><span>스크랩 글</span></div>
+            <div className='my-scrap' onClick={onMyScrapClickHandler}><span>스크랩 글</span></div>
           </div>
           <div className='table'>
             {recruitContents.length > 0 &&
@@ -674,6 +839,25 @@ export default function Mypage() {
 
                 <div className="pagination">
                   <Pagination currentPage={currentPage3} {...activePaginationProps} />
+                </div>
+              </div>
+            )}
+
+            {scrapContents.length > 0 &&
+              (
+              <div className="main">
+                <div className="table">
+                  <div className="th">
+                    <div className="td-active-number">번호</div>
+                  </div>
+                  {
+                    viewList4.map((scrapId, index) => (
+                      <TableScrapRow key={index} scrapId={scrapId} getScrapList={getScrapPostList} />
+                    ))}
+                </div>
+
+                <div className="pagination">
+                  <Pagination currentPage={currentPage4} {...scrapPaginationProps} />
                 </div>
               </div>
             )}
@@ -735,7 +919,7 @@ export default function Mypage() {
           </div>
         </div>
       </div>
-     }
+    }
     </>
   )
 }

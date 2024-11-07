@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import useQnaPagination from "src/hooks/qna.pagination.hook";
 import { GetQnaPostListResponseDto } from "src/apis/dto/response/qna";
 import { ResponseDto } from "src/apis/dto/response";
-import { QNA_DETAIL_ABSOLUTE_PATH, QNA_WRITE_ABSOLUTE_PATH } from "src/constants";
+import { QNA_DETAIL_PATH, QNA_WRITE_PATH } from "src/constants";
 import { getQnaPostListRequest } from './../../apis/index';
 import Pagination from "src/components/pagination";
 
@@ -33,10 +33,10 @@ function TableRow({ qnaPostId, getQnaList }: TableRowProps) {
 
   // event handler: 게시글 상세보기 클릭 이벤트 처리 //
   const onDetailButtonClickHandler = () => {
-    navigator(QNA_DETAIL_ABSOLUTE_PATH);
+    navigator(QNA_DETAIL_PATH(qnaPostId.qnaPostId));
   };
 
-  // render : 게시글 리스트 렌더링 //
+  // render: 게시글 리스트 렌더링 //
   return (
     <div className="tr" key={qnaPostId.qnaPostId}>
       <div className="td-qna-number">{qnaPostId.qnaPostId}</div>
@@ -60,7 +60,7 @@ export default function QnaPost() {
   //function: 네비게이터 함수 //
   const navigator = useNavigate();
 
-  // function: tool list 불러오기 함수 //
+  // function: qna게시글 list 불러오기 함수 //
   const getQnaPostList = () => { getQnaPostListRequest().then(getQnaPostListResponse); };
 
   // function: get qna post list response 처리 함수 //
@@ -72,7 +72,7 @@ export default function QnaPost() {
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    if (!isSuccessed) { alert(message); return; }
+    if (!isSuccessed) { alert(message); }
 
     const qnaPosts = (responseBody as GetQnaPostListResponseDto).qnaPosts || [];
     setTotalList(qnaPosts);
@@ -80,7 +80,7 @@ export default function QnaPost() {
 
   };
 
-  // function : filtering 및 페이징 처리 함수 //
+  // function: filtering 및 페이징 처리 함수 //
   const setFilteredAndPagedPosts = (posts: QnaPostList[]) => {
     const filtered = posts.filter((post) => {
       if (filter === "all") return true;
@@ -99,7 +99,7 @@ export default function QnaPost() {
 
   
 
-  // effect : 필터 변경 시 필터링 및 페이징 //
+  // effect: 필터 변경 시 필터링 및 페이징 //
   useEffect(() => {
     setFilteredAndPagedPosts(originalList);
   }, [filter, originalList]);
@@ -112,14 +112,15 @@ export default function QnaPost() {
 
   // event handler: 글쓰기 버튼 클릭 이벤트 처리 //
   const onWriteButtonClickHandler = () => {
-    navigator(QNA_WRITE_ABSOLUTE_PATH);
+    navigator(QNA_WRITE_PATH);
   };
-  // event handler : 필터 버튼 클릭 핸들러 //
+
+  // event handler: 필터 버튼 클릭 핸들러 //
   const handleFilterClick = (newFilter: 'all' | 'qna' | 'notice' ) => {
     setFilter(newFilter);
   };
   
-  // render : 구인 게시판 컴포넌트 렌더링 //
+  // render: qna 게시판 컴포넌트 렌더링 //
   return (
     <div id="qna-post-wrapper">
       <div className="middle">
@@ -132,9 +133,7 @@ export default function QnaPost() {
               <div className={`all ${filter === 'all' ? 'active' : ''}`} onClick={() => handleFilterClick('all')}>전체</div>
               | <div className={`notice ${filter === 'notice' ? 'active' : ''}`} onClick={() => handleFilterClick('notice')}>공지</div>
               | <div className={`qna ${filter === 'qna' ? 'active' : ''}`} onClick={() => handleFilterClick('qna')}>Q&A</div>
-              
             </div>
-            <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>
           </div>
           <div className="table">
             <div className="th">
@@ -151,6 +150,7 @@ export default function QnaPost() {
           </div>
           <div className="pagination">
             <Pagination currentPage={currentPage} {...paginationProps} />
+            <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>
           </div>
         </div>
       </div>
