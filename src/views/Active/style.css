@@ -58,7 +58,7 @@
 }
 
 /* 추가적인 카드와 버튼 스타일 */
-button {
+#active-post-wrapper button {
     background-color: #4caf50; /* 초록색 배경 */
     color: white;
     padding: 10px 20px;
@@ -69,22 +69,22 @@ button {
     transition: background-color 0.3s ease;
 }
 
-button:hover {
+#active-post-wrapper button:hover {
     background-color: #388e3c; /* 버튼 색상 어두워지기 */
 }
 
 /* 페이지네이션 스타일 */
-.pagination {
+#active-post-wrapper .pagination {
     display: flex;
     justify-content: center;
     margin-top: 20px;
 }
 
-.pagination .MuiPaginationItem-root {
+#active-post-wrapper .pagination .MuiPaginationItem-root {
     color: #4caf50;
 }
 
-.pagination .MuiPaginationItem-root.Mui-selected {
+#active-post-wrapper .pagination .MuiPaginationItem-root.Mui-selected {
     background-color: #388e3c;
     color: white;
 }

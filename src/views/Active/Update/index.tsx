@@ -309,7 +309,7 @@ export default function ActiveUpdate() {
 
     if (!activePostId) return;
 
-    let url: string | null = defaultImageUrl;
+    let url: string | null = '';
     if (imageFile) {
       const formData = new FormData();
       formData.append('file', imageFile);
