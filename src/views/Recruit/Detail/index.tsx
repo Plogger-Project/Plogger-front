@@ -432,7 +432,7 @@ export default function RecruitDetail() {
   const onDeleteButtonClickHandler = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
 
-    if (!(writer == signInUser?.userId))
+    if (!(writer === signInUser?.userId))
     {
       alert("작성자만 삭제할 수 있습니다.");
       return;
