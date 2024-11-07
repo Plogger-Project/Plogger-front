@@ -205,7 +205,6 @@ export default function RecruitWrite() {
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
 
-
     let url: string | null = null;
     if (imageFile) {
       const formData = new FormData();

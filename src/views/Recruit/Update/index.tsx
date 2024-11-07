@@ -283,9 +283,16 @@ export default function RecruitUpdate() {
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
 
+    let url: string | null = image;
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append('file', imageFile);
+      url = await fileUploadRequest(formData);
+    }
+    url = url ? url : image;
 
     const requestBody: PatchRecruitRequestDto = {
-      recruitPostImage: image,
+      recruitPostImage: url,
       recruitPostTitle: title,
       recruitPostContent: contents,
       minPeople: parseInt(people),

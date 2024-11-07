@@ -2,7 +2,7 @@ import React, { MouseEvent, useEffect, useRef, useState } from "react";
 import "./style.css";
 import { useNavigate } from "react-router-dom";
 import { RECRUIT_DETAIL_ABSOLUTE_PATH, RECRUIT_WRITE_ABSOLUTE_PATH } from "../../constants";
-import { Map, MapMarker, MarkerClusterer } from "react-kakao-maps-sdk";
+import { CustomOverlayMap, Map, MapMarker, MarkerClusterer } from "react-kakao-maps-sdk";
 import { useKakaoLoader } from "src/hooks";
 import { url } from "inspector";
 import { RecruitPostList } from "src/types";
@@ -56,9 +56,10 @@ function MarkerOverlay({ recruitPostId, getRecruitList }: recruitPostTableRow) {
       <div className="marker-overlay-bottom">
         <div className="marker-overlay-isCompleted">{recruitPostId.isCompleted ? '마감됨' : '모집중'}</div>
         <div className="marker-overlay-people">{recruitPostId.currentPeople}/{recruitPostId.minPeople}</div>
+        </div>
+        <div className="marker-overlay-navigator" onClick={onDetailButtonClickHandler}>글로 이동</div>
       </div>
-      </div>
-      <div className="marker-overlay-navigator" onClick={onDetailButtonClickHandler}>글로 이동</div>
+      
     </>
   )
 }
@@ -167,6 +168,13 @@ export default function RecruitPost() {
     lng: 129.05979624585217,
   });
   const [isOpen, setIsOpen] = useState<number | null>(null);
+
+  const [state, setState] = useState({
+    // 지도의 초기 위치
+    center: { lat: 33.450701, lng: 126.570667 },
+    // 지도 위치 변경시 panto를 이용할지에 대해서 정의
+    isPanto: false,
+  })
 
 
   
@@ -339,36 +347,53 @@ useEffect(() => {
           className="kakao-map"
           center={ center }
           style={{ width: "100%" }}
-          level={5}
+          level={6}
           onMouseEnter={() => setIsMapHovered(true)}  // 마우스 진입 시 isMapHovered 설정
           onMouseLeave={() => setIsMapHovered(false)} // 마우스 나갈 시 isMapHovered 해제
         >
           <MarkerClusterer
-            averageCenter={true} minLevel={5}
+            averageCenter={true} minLevel={6}
           >
             {positions.map((pos) => (
+              <div key={`${pos.id}-${pos.lat}-${pos.lng}`}>
               <MapMarker
-                key={`${pos.id}-${pos.lat}-${pos.lng}`}
-                position={{ lat: pos.lat, lng: pos.lng }}
-                clickable={true}
-                onClick={() => setIsOpen(pos.id)}
-              >
-                {/* MapMarker의 자식을 넣어줌으로 해당 자식이 InfoWindow로 만들어지게 합니다 */}
-                {/* 인포윈도우에 표출될 내용으로 HTML 문자열이나 React Component가 가능합니다 */}
-                {isOpen === pos.id && (
-                  <div className="marker-info">
+                  position={{ lat: pos.lat, lng: pos.lng }}
+                  onClick={() => {
+                    setIsOpen(pos.id)
+                    setCenter({ lat: pos.lat, lng: pos.lng }
+                  )
+                  }
+                  }
+                  
+                
+                  
+              />
+              </div> 
+            ))}
+          </MarkerClusterer>
+          {positions.map(pos =>
+            <>
+              {isOpen === pos.id && (
+                <CustomOverlayMap
+                  position={{ lat: pos.lat, lng: pos.lng }}
+                  yAnchor={1.2}
+                  zIndex={5000}
+                  clickable={true}
+
+                >
+                  <div className="marker-info" >
                     <MarkerOverlay
                       recruitPostId={{
-                      recruitPostId: pos.recruitPostId, // 각 pos에서 가져오는 ID
-                      recruitPostTitle: pos.recruitPostTitle, // 제목
-                      recruitPostContent: pos.recruitPostContent, // 내용
-                      recruitPostImage: pos.recruitPostImage, // 이미지
-                      recruitEndDate: pos.recruitEndDate, // 종료일
-                      minPeople: pos.minPeople, // 최소 인원
-                      currentPeople: pos.currentPeople, // 현재 인원
-                      isCompleted: pos.isCompleted // 모집 상태
-                      
-                    }} getRecruitList={getRecruitPostList} />
+                        recruitPostId: pos.recruitPostId, // 각 pos에서 가져오는 ID
+                        recruitPostTitle: pos.recruitPostTitle, // 제목
+                        recruitPostContent: pos.recruitPostContent, // 내용
+                        recruitPostImage: pos.recruitPostImage, // 이미지
+                        recruitEndDate: pos.recruitEndDate, // 종료일
+                        minPeople: pos.minPeople, // 최소 인원
+                        currentPeople: pos.currentPeople, // 현재 인원
+                        isCompleted: pos.isCompleted // 모집 상태
+
+                      }} getRecruitList={getRecruitPostList} />
                     <img
                       alt="close"
                       width="14"
@@ -383,10 +408,11 @@ useEffect(() => {
                       onClick={() => setIsOpen(null)}
                     />
                   </div>
-                )}
-              </MapMarker>
-            ))}
-            </MarkerClusterer>
+                </CustomOverlayMap>
+
+              )}
+            </>
+          )}
         </Map>
         
         <div className="arrow"></div>

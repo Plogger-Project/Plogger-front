@@ -1,7 +1,7 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react'
 import "./style.css";
 import {  useNavigate, useParams } from 'react-router-dom';
-import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH,  RECRUIT_DETAIL_ABSOLUTE_PATH,  RECRUIT_UPDATE_ABSOLUTE_PATH } from '../../../constants';
+import { ACCESS_TOKEN, MYPAGE_PATH, RECRUIT_ABSOLUTE_PATH,  RECRUIT_DETAIL_ABSOLUTE_PATH,  RECRUIT_UPDATE_ABSOLUTE_PATH } from '../../../constants';
 import { useKakaoLoader } from 'src/hooks';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { useSignInUserStore } from 'src/stores';
@@ -127,6 +127,8 @@ export default function RecruitDetail() {
   // variable: 작성자 여부 //
   const isAuthor = Author === signInUser?.userId;
 
+  const isAdmin = signInUser?.isAdmin;
+
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
@@ -183,7 +185,6 @@ export default function RecruitDetail() {
     
     getRecruitUserInfoRequest(recruitPostWriter).then(getRecruitPostUserResponse);
     if(!recruitPostId) return;
-    alert("dfdfd");
     getRecruitScrapRequest(recruitPostId, accessToken).then(getRecruitScrapResponse);;
   };
 
@@ -304,7 +305,7 @@ export default function RecruitDetail() {
     else{ setIsScraped(false);
       console.log("없음")
     }
-    alert("끝")
+    
   };
 
   // function : delete recruit post response 처리 함수 //
@@ -433,7 +434,7 @@ export default function RecruitDetail() {
   const onDeleteButtonClickHandler = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
 
-    if (!(writer == signInUser?.userId))
+    if (!(writer || isAdmin == signInUser?.userId))
     {
       alert("작성자만 삭제할 수 있습니다.");
       return;
@@ -518,8 +519,6 @@ export default function RecruitDetail() {
       return;
     }
     
-    console.log(recruitPostId)
-    console.log(accessToken);
     postRecruitScrapRequest(recruitPostId, accessToken).then(postRecruitScrapResponse);
   }
 
@@ -534,10 +533,15 @@ export default function RecruitDetail() {
       alert("이미 모집 종료된 글입니다.")
       return;
     }
-
+    if ((signInUser && joinList.includes(signInUser.userId))) {
+      const isConfirm = window.confirm('참여 취소 하시겠습니까?')
+      if (!isConfirm) return;
+      
+    }
+    if (!(signInUser && joinList.includes(signInUser.userId))) {
     const isConfirm = window.confirm('정말로 참여 하시겠습니까?')
     if (!isConfirm) return;
-
+  }
     if (!recruitPostId) return;
     postRecruitJoinRequest(recruitPostId, accessToken).then(postRecruitJoinResponse);
   }
@@ -570,6 +574,9 @@ export default function RecruitDetail() {
           setIsCompleted(isCompleted); // 실패 시 상태를 원래대로 복구
         });
   };
+  const onProfileImageClickButtonHandler = () => {
+    navigator(MYPAGE_PATH(writer));
+  }
 
   // effect: 좌표로 주소 정보 요청 함수 //
   useEffect(() => {
@@ -601,7 +608,7 @@ export default function RecruitDetail() {
   useEffect(() => {
     if (!recruitPostId) return;
     const accessToken = cookies[ACCESS_TOKEN];
-    if (!accessToken) return;
+    // if (!accessToken) return;
     getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
     getRecruitCommentList();
     getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
@@ -615,7 +622,7 @@ export default function RecruitDetail() {
   }, [endDate]);
 
 
-
+  
   // render: 게시글 정보 상세보기 컴포넌트 렌더링 //
   return (
     <div id="recruit-detail-wrapper">
@@ -624,7 +631,7 @@ export default function RecruitDetail() {
         <div className='postTop'>
           <div className='userInfo'>
             <div className='userInfo-left'>
-              <div className='profileImage' style={{ backgroundImage: `url(${writerProfileImage})` }} ></div>
+              <div className='profileImage' onClick={onProfileImageClickButtonHandler} style={{ backgroundImage: `url(${writerProfileImage})` }} ></div>
               <div className='userInfo-right'>
                 <div className='name'>작성자 : {writer}</div>
                 <div className='location'>장소 : {address}</div>
@@ -668,7 +675,7 @@ export default function RecruitDetail() {
                   left: optionPosition.left + 'px'
                 }}
               >
-                {signInUser?.userId === writer ? 
+                {signInUser?.userId === writer || signInUser?.isAdmin ? 
                   <>
                 <button className="editButton" onClick={onEditButtonClickHandler}>수정하기</button>
                     <button className="deleteButton" onClick={onDeleteButtonClickHandler}>삭제하기</button>
@@ -694,7 +701,12 @@ export default function RecruitDetail() {
                 style={{ width: "100%", height: "360px" }}
               >
                 <MapMarker position={{ lat, lng }}>
-                  <div style={{ color: "#000" }}>장소</div>
+                  {}
+                  {
+                  <div className='marker-info' >
+                    여기서 모여요!
+                    </div>
+                  }
                 </MapMarker>
               </Map>
             </div>
