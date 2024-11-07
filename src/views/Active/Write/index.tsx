@@ -337,7 +337,7 @@ export default function ActiveWrite() {
     getMyRecruitPosts();
   }, [recruitId]);
 
-  // render : 활동 게시판 작성 컴포넌트 렌더링 //
+  // render: 활동 게시판 작성 컴포넌트 렌더링 //
   return (
     <div id='active-write-wrapper'>
       <div className='navi'></div>

@@ -1,4 +1,4 @@
-export default interface PostQnaPostRequestDto {
+export default interface PatchQnaPostRequestDto {
     qnaPostTitle: string;
     qnaPostImage: string;
     qnaPostContent: string;
