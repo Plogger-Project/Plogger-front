@@ -16,7 +16,7 @@
 
 #recruit-post-wrapper .kakaomap {
     position: fixed;
-    top: 530px;
+    top: 430px;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 1134px;
@@ -63,11 +63,14 @@
 }
 
 #recruit-post-wrapper .kakaomap .marker-info{
-    width: 200px;
+    
+    width: 300px;
     height: 200px;
     text-align: center;
     justify-content: center;
     align-items: center;
+    border-radius: 8px;
+    border: 1px solid black;
 }
 #recruit-post-wrapper .kakaomap .marker-text {
     padding: 5px;
@@ -77,9 +80,9 @@
 #recruit-post-wrapper .kakaomap .marker-overlay{
     display: flex;
     flex-direction: column;
-    width: 180px;
-    height: 180px;
-    padding: 10px;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
     background-color:white;
     align-items: center;
     justify-content: center;
@@ -88,19 +91,21 @@
 
 
 #recruit-post-wrapper .marker-overlay-navigator{
+    width: 100%;
     cursor: pointer;
+    border-radius: 0 0  8px 8px;
 }
 
 #recruit-post-wrapper .marker-overlay-title{
     margin-bottom: 5px;
 }
 #recruit-post-wrapper .marker-overlay .marker-overlay-image{
-    width: 150px;
-    height: 150px;
+    width: 100%;
+    height: 100%;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    
 }
 #recruit-post-wrapper .marker-overlay .marker-overlay-bottom{
     
@@ -111,14 +116,15 @@
 
 
 #recruit-post-wrapper .marker-overlay-navigator{
-    background-color: rgba(0, 0, 255, 0.377);
+    background-color: rgb(222, 239, 239);
+    border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
 #recruit-post-wrapper .kakaomap .kakao-map{
     border: 1px solid rgba(0, 0, 0, 0.301);
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-    height: 800px;
+    height: 600px;
 }
 
 
