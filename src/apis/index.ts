@@ -620,35 +620,35 @@ export const getRecruitCommentListRequest = async (recruitPostId: number | strin
     return responseBody;
 };
 
-// function: get sign in follower list 요청 함수 //
-export const getSignInFollowerListRequest = async (accessToken: string) => {
-    const responseBody = await axios.get(GET_SIGN_IN_FOLLOWER_LIST_API_URL, bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetFollowerListResponseDto>)
-        .catch(responseErrorHandler);
-    console.log(responseBody);
-    return responseBody;
-};
+// // function: get sign in follower list 요청 함수 //
+// export const getSignInFollowerListRequest = async (accessToken: string) => {
+//     const responseBody = await axios.get(GET_SIGN_IN_FOLLOWER_LIST_API_URL, bearerAuthorization(accessToken))
+//         .then(responseDataHandler<GetFollowerListResponseDto>)
+//         .catch(responseErrorHandler);
+//     console.log(responseBody);
+//     return responseBody;
+// };
 
-// function: get sign in followee list 요청 함수 //
-export const getSignInFolloweeListRequest = async (accessToken: string) => {
-    const responseBody = await axios.get(GET_SIGN_IN_FOLLOWEE_LIST_API_URL, bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetFolloweeListResponseDto>)
-        .catch(responseErrorHandler);
-    console.log(responseBody);
-    return responseBody;
-};
+// // function: get sign in followee list 요청 함수 //
+// export const getSignInFolloweeListRequest = async (accessToken: string) => {
+//     const responseBody = await axios.get(GET_SIGN_IN_FOLLOWEE_LIST_API_URL, bearerAuthorization(accessToken))
+//         .then(responseDataHandler<GetFolloweeListResponseDto>)
+//         .catch(responseErrorHandler);
+//     console.log(responseBody);
+//     return responseBody;
+// };
 
 // function: get follower list 요청 함수 //
-export const getFollowerListRequest = async (followeeId: string, accessToken: string) => {
-    const responseBody = await axios.get(GET_FOLLOWER_LIST_API_URL(followeeId), bearerAuthorization(accessToken))
+export const getFollowerListRequest = async (followeeId: string) => {
+    const responseBody = await axios.get(GET_FOLLOWER_LIST_API_URL(followeeId))
         .then(responseDataHandler<GetFollowerListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 };
 
 // function: get followee list 요청 함수 //
-export const getFolloweeListRequest = async (followerId: string, accessToken: string) => {
-    const responseBody = await axios.get(GET_FOLLOWEE_LIST_API_URL(followerId), bearerAuthorization(accessToken))
+export const getFolloweeListRequest = async (followerId: string) => {
+    const responseBody = await axios.get(GET_FOLLOWEE_LIST_API_URL(followerId))
         .then(responseDataHandler<GetFolloweeListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;

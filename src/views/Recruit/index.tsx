@@ -128,7 +128,7 @@ function TableRow({ recruitPostId, getRecruitList }: TableRowProps) {
       <div className="td-recruit-like-count">{recruitPostId.recruitPostLike}</div>
       <div className="td-recruit-view-count">{recruitPostId.recruitView}</div>
       <div className="td-recruit-people">{recruitPostId.currentPeople}/{recruitPostId.minPeople}</div>
-      <div className={`td-recruit-end-date ${daysLeft <= 5 ? 'soon' : dday== "D-day" ? 'soon':''}`}>{dday}</div>
+      <div className={`td-recruit-end-date ${daysLeft <= 5 ? 'soon' : dday == "D-day" ? 'soon': dday.includes('+') ? 'over' : ''}`}>{dday}</div>
       <div className="td-recruit-create-date">{formatDate(recruitPostId.recruitPostCreatedAt)}</div>
     </div>
   )

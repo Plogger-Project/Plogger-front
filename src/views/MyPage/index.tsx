@@ -6,7 +6,7 @@ import InputBox from '../../components/InputBox';
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
 import { ActivePost, Follow, Mileage, RecruitPostList } from 'src/types';
-import { getActivePostListRequest, getGifticonRequest, getMileageListRequest, getRecruitPostListRequest, getRecruitUserInfoRequest, getSignInFolloweeListRequest, getSignInFollowerListRequest, patchCommentRequest } from 'src/apis';
+import { getActivePostListRequest, getGifticonRequest, getMileageListRequest, getRecruitPostListRequest, getRecruitUserInfoRequest, getFollowerListRequest, getFolloweeListRequest, patchCommentRequest } from 'src/apis';
 import { GetRecruitPostListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
@@ -19,6 +19,9 @@ import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import { GetMileageListResponseDto } from 'src/apis/dto/response/mileage';
 import { GetGifticonResponseDto } from 'src/apis/dto/response/gifticon';
 import { GetActivePostListResponseDto } from '@/apis/dto/response/active';
+
+import SavingsTwoToneIcon from '@mui/icons-material/SavingsTwoTone';
+
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
@@ -71,6 +74,20 @@ function FollowTableRow({ follow, getFollowList, mode }: FollowTableRowProps) {
   
 }
 
+// interface: another user 정보 //
+interface AnotherUser {
+  userId: string;
+  password: string;
+  name: string;
+  telNumber: string;
+  address: string;
+  profileImage: string;
+  isAdmin: boolean;
+  ecoScore: number;
+  mileage: number;
+  comment: string;
+}
+
 // component: 마이페이지 컴포넌트 //
 export default function Mypage() {
   // state: 페이징 관련 상태 //
@@ -96,6 +113,8 @@ export default function Mypage() {
 
   // state: 로그인 유저 정보 //
   const { signInUser, setSignInUser } = useSignInUserStore();
+  const [user, setUser] = useState<AnotherUser | null>(null);
+  const { userId } = useParams<{ userId: string }>();
 
   // state: cookie 상태 //
   const [cookies] = useCookies();
@@ -125,11 +144,14 @@ export default function Mypage() {
   // variable: accessToken
   const accessToken = cookies[ACCESS_TOKEN];
 
+  // variable: 작성자 여부 //
+  const isOwner = (signInUser?.userId === userId) ? signInUser : user;
+  let followId = (signInUser?.userId === userId) ? signInUser?.userId : user?.userId;
   
   // function: follower list 불러오기 함수 //
   const getFollowerList = () => {
-    if(!accessToken) return;
-    getSignInFollowerListRequest(accessToken).then(getFollowerListResponse);
+    if(!followId) return;
+    getFollowerListRequest(followId).then(getFollowerListResponse);
   }
 
   // function: get follower list response 처리 함수 //
@@ -152,8 +174,8 @@ export default function Mypage() {
 
   // function: followee list 불러오기 함수 //
   const getFolloweeList = () => {
-    if(!accessToken) return;
-    getSignInFolloweeListRequest(accessToken).then(getFolloweeListResponse);
+    if(!followId) return;
+    getFolloweeListRequest(followId).then(getFolloweeListResponse);
   }
 
   // function: get followee list response 처리 함수 //
@@ -176,10 +198,73 @@ export default function Mypage() {
 
   // effect: 유저 정보가 변경되면 state에 반영 // 
   useEffect(() => {
-    if (signInUser) {
-      setComment(signInUser.comment || '플로깅 파이팅!');
+    if (isOwner) {
+      setComment(isOwner.comment || '플로깅 파이팅!');
     }
-  }, [signInUser]);
+  }, [isOwner]);
+
+  // function: API 호출하여 사용자 데이터 받기 //
+  const fetchUserData = async (id: string) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/v1/auth/sign-in/${id}`);
+      const data = await response.json();
+      setSignInUser(data);  // 로그인된 사용자 데이터 반영
+    } catch (error) {
+      console.error("사용자 데이터 로드 실패", error);
+    }
+  };
+  useEffect(() => {
+    if (userId) {
+      console.log("현재 userId:", userId); // 유저 ID 출력
+      const fetchUserDataFromApi = async () => {
+        try {
+          const response = await fetch(`http://localhost:4000/api/v1/auth/sign-in/${userId}`);
+          console.log("API 응답 상태:", response.status);  // 응답 상태 확인
+          if (!response.ok) {
+            const errorText = await response.text();  // 응답이 HTML일 경우
+            console.error("서버 응답 내용:", errorText);
+            return;
+          }
+          const data = await response.json();
+          console.log("받은 데이터:", data); // 받은 데이터 확인
+          setUser(data);
+        } catch (error) {
+          console.error("사용자 데이터를 가져오는 데 실패했습니다.", error);
+        }
+      };
+      fetchUserDataFromApi();
+    }
+  }, [userId]);
+
+    // effect: userId 가 변경되면 그에 맞는 데이터 반영 //
+    useEffect(() => {
+      if (userId) {
+        if (signInUser?.userId === userId) {
+          fetchUserData(userId);
+          followId = userId;
+        } else {
+          followId = userId;
+          const fetchUserDataFromApi = async () => {
+            try {
+
+              const response = await fetch(`http://localhost:4000/api/v1/auth/sign-in/${userId}`);
+
+              if (!response.ok) {
+                return;
+              }
+
+              const data = await response.json();
+
+              setUser(data);  // 다른 사용자의 데이터 상태로 반영
+            } catch (error) {
+              console.error("사용자 데이터를 가져오는 데 실패했습니다.", error);
+            }
+          };
+          console.log("API 호출 준비 중:", userId);
+          fetchUserDataFromApi();
+        }
+      }
+    }, [followId, userId, signInUser]);
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -205,7 +290,7 @@ export default function Mypage() {
     if (!isSuccessed) { alert(message); return; }
 
     const recruitPosts = (responseBody as GetRecruitPostListResponseDto).recruitPosts || [];
-    const myPosts = recruitPosts.filter(post => post.recruitPostWriter === signInUser?.userId);
+    const myPosts = recruitPosts.filter(post => post.recruitPostWriter === isOwner?.userId);
     setTotalList(myPosts);
     setRecruitContents(myPosts);
 
@@ -223,7 +308,7 @@ export default function Mypage() {
     if (!isSuccessed) { alert(message); return; }
 
     const activePosts = (responseBody as GetActivePostListResponseDto).activePosts || [];
-    const myPosts = activePosts.filter(post => post.activePostWriterId === signInUser?.userId);
+    const myPosts = activePosts.filter(post => post.activePostWriterId === isOwner?.userId);
     setTotalList3(myPosts);
     setActiveContents(myPosts);
 
@@ -241,7 +326,7 @@ export default function Mypage() {
     if (!isSuccessed) { alert(message); return; }
 
     const mileagePosts = (responseBody as GetMileageListResponseDto).mileages || [];
-    const myPosts = mileagePosts.filter(post => post.userId === signInUser?.userId);
+    const myPosts = mileagePosts.filter(post => post.userId === isOwner?.userId);
     setTotalList2(myPosts);
     setMileageContents(myPosts);
 
@@ -577,13 +662,13 @@ export default function Mypage() {
       <div id='mypage'>
         <div className='top'>
           <div className='profile-container'>
-            <div className='image' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
+            <div className='image' style={{ backgroundImage: `url(${isOwner?.profileImage})` }}></div>
             <div className='profile-box'>
               <div className='name-box'>
-                <div className='name'>{signInUser?.name}</div>
+                <div className='name'>{isOwner?.name}</div>
                 <div className='change' onClick={onMypageUpdateOpenHandler}></div>
               </div>
-              <div className='address'>{signInUser?.address}</div>
+              <div className='address'>{isOwner?.address}</div>
               <div className='sentence-box'>
                 {input ?
                   <input className='input' type='text' value={comment} onChange={onCommentChangeHandler} placeholder='30글자 내로 입력하세요.' onKeyDown={onCommentKeydownHandler}
@@ -609,10 +694,13 @@ export default function Mypage() {
             </div>
             <div className='mileage-container'>
               <div className='mileage-box'>
-                <div className='mileage-button'>M</div>
-                <div className='mileage-score'>{signInUser?.mileage}</div>
+                <SavingsTwoToneIcon sx={{ fontSize: 45 }}  />
+                <div className='mileage-score'>{isOwner?.mileage}</div>
               </div>
-              <div className='button-mileage' onClick={onGiftClickHandler}>기프티콘 바로가기</div>
+              {
+              signInUser?.userId === user?.userId ? <div className='button-mileage' onClick={onGiftClickHandler}>기프티콘 바로가기</div> 
+              : <div className='button-follow'>팔로잉</div>
+              }
             </div>
           </div>
         </div>
