@@ -4,7 +4,7 @@
     justify-content: center;
     align-items: center;
     width: 1134px;
-    height: 100vh;
+    height: 900px;
     overflow: hidden;
     margin: 0 auto;
 }
@@ -21,6 +21,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
+    margin-top: 100px;
     
 }
 
@@ -43,16 +44,26 @@
     cursor: pointer;
     width: 40px;
     height: 25px;
-
+    
     text-align: center;
+    border: 0.1px solid rgb(103, 141, 129);
+    border-radius: 8px;
 
-    border-radius: 7px;
-    background-color: #84A264;
     font-size: 15px;
-    color: rgba(255, 255, 255, 1);
+    color: rgba(0, 95, 65, 1);
     justify-content: center;
     align-content: center;
 }
+
+#qna-post-wrapper .button:hover {
+    background-color: rgba(0, 95, 65, 1);
+    color: rgba(255, 255, 255, 1);
+}
+
+#qna-post-wrapper .pagination .button {
+    margin-left: 380px;
+}
+
 
 #qna-post-wrapper .middle-top .post-filter {
     flex: 5;
@@ -108,7 +119,6 @@
     margin: 0 auto;
     font-family: 'Arial', sans-serif;
     border-collapse: collapse;
-
     font-size: 14px;
 
 }
@@ -126,6 +136,7 @@
     flex-direction: row;
     text-align: center;
     border-bottom: 1px solid #ccc;
+    padding: 13px 0px;
 
 }
 
@@ -172,8 +183,8 @@
     display: flex;
     justify-content: center;
     margin-top: 20px;
-
-    gap: 15px;
+    margin-left: 430px;
+    gap: 45px;
 
 }
 

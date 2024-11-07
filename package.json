@@ -39,14 +39,7 @@
     "react-scripts": "5.0.1",
     "react-spring-carousel": "^2.0.19",
     "socket.io": "^4.8.1",
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
     "socket.io-client": "^4.8.1",
->>>>>>> a1cfce84f1495e5ee2a35011b7ead79cc993cf17
-=======
-    "socket.io-client": "^4.8.1",
->>>>>>> 714b399da21bfad722f301bc23a12cda1954ec4d
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
     "zustand": "^5.0.0"
