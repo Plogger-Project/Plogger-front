@@ -454,6 +454,7 @@ export default function Mypage() {
         console.error("Kakao Maps API is not loaded.");
         return;
       };
+      if (!kakao || !kakao.maps || !kakao.maps.services) return;
       const geocoder = new kakao.maps.services.Geocoder();
   
       // 지정된 좌표의 주소를 가져오는 함수
