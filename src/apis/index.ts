@@ -368,8 +368,8 @@ export const patchActiveCommentRequest = async (requestBody: PatchActiveCommentR
 }
 
 // function: 활동 게시글 댓글 가져오기 요청 함수 //
-export const getActiveCommentListRequest = async (activeId: string | number, accessToken: string) => {
-    const responseBody = await axios.get(GET_ACTIVE_COMMENT_LIST_API_URL(activeId), bearerAuthorization(accessToken))
+export const getActiveCommentListRequest = async (activeId: string | number) => {
+    const responseBody = await axios.get(GET_ACTIVE_COMMENT_LIST_API_URL(activeId))
         .then(responseDataHandler<GetActiveCommentListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
