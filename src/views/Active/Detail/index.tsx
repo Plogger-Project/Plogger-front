@@ -45,11 +45,11 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
     const deleteActiveCommentResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
-            responseBody.code === 'NAC' ? '존재하지 않는 댓글입니다.' :
-            responseBody.code === 'NP' ? '권한이 없습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 삭제!';
+                responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
+                        responseBody.code === 'NAC' ? '존재하지 않는 댓글입니다.' :
+                            responseBody.code === 'NP' ? '권한이 없습니다.' :
+                                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 삭제!';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -64,11 +64,11 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
     const patchActiveCommentResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NP' ? '권한이 없습니다.' :
-            responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
-            responseBody.code === 'NAC' ? '존재하지 않는 댓글입니다.' : '댓글 수정!';
+                responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NP' ? '권한이 없습니다.' :
+                            responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
+                                responseBody.code === 'NAC' ? '존재하지 않는 댓글입니다.' : '댓글 수정!';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -206,12 +206,15 @@ export default function ActiveDetail() {
 
     const open = Boolean(anchorEl);
     const id = open ? 'tag-list-popover' : undefined;
-        
+
     // state: 신고내역 작성창 오픈 여부 상태 //
     const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
 
     // state: 신고 내역 내용 상태 //
     const [reportContent, setReportContent] = useState<string>('');
+
+    // state: 신고된 글 여부 상태 //
+    const [isAlreadyReported, setIsAlreadyReported] = useState<boolean>(false);
 
     // variable: accessToken //
     const accessToken = cookies[ACCESS_TOKEN];
@@ -226,10 +229,10 @@ export default function ActiveDetail() {
     const getActivePostResponse = (responseBody: GetActivePostResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NAP' ? '존재하지 않는 글입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NAP' ? '존재하지 않는 글입니다.' :
+                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -273,11 +276,11 @@ export default function ActiveDetail() {
     const deleteActivePostResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
-            responseBody.code === 'NP' ? '권한이 없습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+                            responseBody.code === 'NP' ? '권한이 없습니다.' :
+                                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -292,9 +295,9 @@ export default function ActiveDetail() {
     const getActivePostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -311,27 +314,28 @@ export default function ActiveDetail() {
     const postActiveReportResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '내역을 입력해주세요.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-
-        alert("신고가 완료 되었습니다.");
+                responseBody.code === 'VF' ? '내역을 입력해주세요.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+                            responseBody.code === 'DR' ? '이미 신고한 글입니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
             alert(message);
             return;
         }
+
+        alert("신고가 완료 되었습니다.");
     }
 
     // function: 활동 게시판 댓글 목록 가져오기 함수 //
     const getActiveCommentListResponse = (responseBody: GetActiveCommentListResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '서버에 문제가 있습니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
+                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -354,9 +358,9 @@ export default function ActiveDetail() {
     const getActiveCommentUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null, commentId: number) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -371,9 +375,9 @@ export default function ActiveDetail() {
     const getActiveTagUserResponse = async (responseBody: GetSignInResponseDto | ResponseDto | null, tagId: string) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -391,9 +395,9 @@ export default function ActiveDetail() {
 
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 작성!';
+                responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 작성!';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -562,8 +566,16 @@ export default function ActiveDetail() {
             return;
         }
 
+        if (isAlreadyReported) {
+            alert("이미 신고한 글입니다.");
+            return;
+        }
+
         const requestBody: PostActiveReportRequestDto = { content: reportContent };
         PostActiveReportRequest(requestBody, accessToken, activePostId).then(postActiveReportResponse);
+    
+        setIsReportModalOpen(false);
+        return;
     }
 
     // event handler: 신고 모달 취소 버튼 클릭 시 이벤트 처리 //
@@ -678,7 +690,7 @@ export default function ActiveDetail() {
                                         <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제하기</button>
                                     </>
                                 )}
-                                {!isAuthor || !signInUser && (
+                                {!isAuthor && (
                                     <>
                                         <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
                                     </>
@@ -748,18 +760,18 @@ export default function ActiveDetail() {
                     <div className='line'></div>
                     <div className='comments'>
                         {signInUser &&
-                        <div className='commentUserInfoWrite'>
-                            <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
-                            <div className='commentUserInfo-right'>
-                                <div className='activeCommentWriter'>{signInUser?.userId}</div>
-                                <input placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
-                            </div>
-                            <div className='commentButton' onClick={onCommentPostButtonClick}>등록</div>
+                            <div className='commentUserInfoWrite'>
+                                <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
+                                <div className='commentUserInfo-right'>
+                                    <div className='activeCommentWriter'>{signInUser?.userId}</div>
+                                    <input placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
+                                </div>
+                                <div className='commentButton' onClick={onCommentPostButtonClick}>등록</div>
                             </div>
                         }
                         {viewList.map((activeComment, index) => (
-                            <div className='commentUserInfo'key={index}>
-                                <div className='profileImage' style={{ backgroundImage: `url(${commentProfileImage[activeComment.activeCommentId]})`, cursor: 'pointer'}} onClick={() => onProfileImageClick(activeComment.activeCommentWriter)}></div>
+                            <div className='commentUserInfo' key={index}>
+                                <div className='profileImage' style={{ backgroundImage: `url(${commentProfileImage[activeComment.activeCommentId]})`, cursor: 'pointer' }} onClick={() => onProfileImageClick(activeComment.activeCommentWriter)}></div>
                                 <TableRow activeComment={activeComment} getActiveCommentList={getActiveCommentList} />
                             </div>
                         ))}

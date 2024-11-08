@@ -401,6 +401,14 @@ export default function NavigationBar() {
         }
     };
 
+    // event handler: 로그인 키다운 이벤트 처리 //
+    const onSignInEnterHandler = (e: any) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            onSignInButtonHandler();
+        }
+    }
+
     // effect: 스크롤 이벤트 설정 // 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
@@ -455,6 +463,7 @@ export default function NavigationBar() {
                                         placeholder='아이디를 입력해주세요.'
                                         value={id}
                                         onChange={onIdChangeHandler}
+                                        onKeyDown={onSignInEnterHandler}
                                     />
                                 </div>
                                 <div className='sign-in-password'>
@@ -465,6 +474,7 @@ export default function NavigationBar() {
                                         placeholder='비밀번호를 입력해주세요.'
                                         value={password}
                                         onChange={onPasswordChangeHandler}
+                                        onKeyDown={onSignInEnterHandler}
                                     />
                                 </div>
                             </div>
