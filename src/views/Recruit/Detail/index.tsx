@@ -12,7 +12,7 @@ import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import RecruitWrite from './../Write/index';
 
 import { RecruitComment, RecruitPostList, SimpleUser } from 'src/types';
-import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, getRecruitScrapRequest, postRecruitScrapRequest, postRecruitCommentRequest, patchRecruitCommentRequest, deleteRecruitCommentRequest, getRecruitCommentUserInfoRequest, postRecruitLikeRequest, getRecruitLikeRequest, , getRecruitJoinUserInfoRequest } from 'src/apis';
+import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, getRecruitScrapRequest, postRecruitScrapRequest, postRecruitCommentRequest, patchRecruitCommentRequest, deleteRecruitCommentRequest, getRecruitCommentUserInfoRequest, postRecruitLikeRequest, getRecruitLikeRequest, getRecruitJoinUserInfoRequest } from 'src/apis';
 
 import axios from 'axios';
 import { deleteRecruitPostRequest, getRecruitPostRequest, getRecruitUserInfoRequest } from 'src/apis';
