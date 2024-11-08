@@ -127,6 +127,7 @@ function TableRow({ qnaComment, getQnaCommentList }: TableRowProps) {
         setContent(qnaComment.qnaCommentContent);
     }
 
+    console.log(qnaComment);
     return (
         <div className='commentUserInfo-right'>
             <div className='qnaCommentWriter'>{qnaComment.qnaCommentWriter}</div>
@@ -186,6 +187,7 @@ export default function QnADetail() {
 
     const [isPinned, setIsPinned] = useState<boolean>(false);
 
+    const isAdmin = signInUser?.isAdmin === true;
     const isAuthor = writer === signInUser?.userId;
 
     // variable: accessToken //
@@ -217,6 +219,7 @@ export default function QnADetail() {
         setTitle(qnaPostTitle);
         setContent(qnaPostContent);
         setWriter(qnaPostWriter);
+        setImage(qnaPostImage);
         setCreatedAt(qnaPostCreatedAt);
         setIsPinned(isPinned);
 
@@ -268,7 +271,8 @@ export default function QnADetail() {
             !responseBody ? '서버에 문제가 있습니다.' :
                 responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
                     responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 작성!';
+                        responseBody.code === 'NP' ? '권한이 없습니다.' :
+                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '댓글 작성!';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -327,6 +331,7 @@ export default function QnADetail() {
     useEffect(() => {
         if (!qnaPostId) return;
         getQnaPostRequest(qnaPostId).then(getQnaPostResponse);
+        getQnaCommentListRequest(qnaPostId).then(getQnaCommentListResponse);
     }, [qnaPostId]);
 
     // event handler: 클릭 시 옵션 항목을 보여주거나 숨기는 함수 //
@@ -350,6 +355,7 @@ export default function QnADetail() {
     const onPostUpdateButtonClick = () => {
         if (!writer) return;
         if (!qnaPostId) return;
+        if (isAuthor) navigator(QNA_UPDATE_PATH(qnaPostId));
         navigator(QNA_UPDATE_PATH(qnaPostId));
     }
 
@@ -375,6 +381,11 @@ export default function QnADetail() {
             return;
         }
 
+        if (!isAdmin) {
+            alert('관리자만 댓글을 작성할 수 있습니다.');
+            return;
+        }
+
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) return;
 
@@ -388,12 +399,8 @@ export default function QnADetail() {
     }
 
     const getQnaCommentList = () => {
-        const accessToken = cookies[ACCESS_TOKEN];
-        if (!accessToken) return;
-
         if (!qnaPostId) return;
-
-        getQnaCommentListRequest(qnaPostId, accessToken).then(getQnaCommentListResponse);
+        getQnaCommentListRequest(qnaPostId).then(getQnaCommentListResponse);
     };
 
     // event handler: 댓글 수정 이벤트 처리 //
@@ -404,11 +411,19 @@ export default function QnADetail() {
 
     // event handler: 댓글 작성 키다운 이벤트 처리 //
     const onCommentEnterHandler = (e: any) => {
+
+        if (!isAdmin) {
+            alert('관리자만 댓글을 작성할 수 있습니다.');
+            return;
+        }
+
         if (e.key === 'Enter') {
             e.preventDefault();
             onCommentPostButtonClick();
         }
     }
+
+
     // render: Q&A 게시판 Detail 컴포넌트 렌더링 //
     return (
         <div id="qna-detail-wrapper">
@@ -459,9 +474,17 @@ export default function QnADetail() {
                             <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
                             <div className='commentUserInfo-right'>
                                 <div className='qnaCommentWriter'>{signInUser?.userId}</div>
-                                <input placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
+                                {isAdmin ? (
+                                    <input placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler} />
+                                ) : (
+                                    <div className='disabledCommentInput'>관리자만 댓글 작성이 가능합니다.</div>
+                                )}
                             </div>
-                            <div className='commentButton' onClick={onCommentPostButtonClick}>등록</div>
+                            {isAdmin ? (
+                                <div className='commentButton' onClick={onCommentPostButtonClick}>등록</div>
+                            ) : (
+                                <div className='disableCommnetUpdate'></div>
+                            )}
                         </div>
                         {viewList.map((qnaComment, index) => (
                             <div className='commentUserInfo' key={index}>

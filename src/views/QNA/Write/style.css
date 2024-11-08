@@ -46,21 +46,37 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    
+
 
 }
-#qna-write-wrapper .userInfo-right .listButton{
-    width: 50px;
-        height: 30px;
-        background-color: #4CAF50;
-        color: white;
-        border-radius: 16px;
-        border: none;
-        cursor: pointer;
-        justify-content: center;
-        align-items: center;
-        display: flex;
-        text-align: center;
+
+#qna-write-wrapper .userInfo-right .listButton {
+    width: 90px;
+    height: 30px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    text-align: center;
+}
+
+#qna-write-wrapper .pinList {
+    display: flex;
+    align-items: center;
+}
+
+#qna-write-wrapper .pin-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pin-label input {
+    margin-right: 8px;
 }
 
 #qna-write-wrapper .profileImage {
@@ -74,8 +90,15 @@
 
 }
 
-#qna-write-wrapper .userInfo-right .name{
+#qna-write-wrapper .userInfo-right .name {
     cursor: pointer;
+}
+
+#qna-write-wrapper .title-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
 }
 
 #qna-write-wrapper .input-box {
@@ -93,7 +116,7 @@
     width: 1;
 }
 
-#qna-write-wrapper .react-datepicker{
+#qna-write-wrapper .react-datepicker {
     width: auto;
     height: auto;
 }
@@ -119,7 +142,7 @@
     position: relative;
 }
 
-#qna-write-wrapper  .react-datepicker {
+#qna-write-wrapper .react-datepicker {
     position: absolute;
     top: 0;
     left: 35%;
@@ -164,20 +187,20 @@
 }
 
 .image {
-    position: relative; 
+    position: relative;
 }
 
 .deleteImageButton {
-    position: absolute; 
-    top: 5px; 
+    position: absolute;
+    top: 5px;
     right: 5px;
     background-color: red;
     color: white;
     border: none;
-    border-radius: 50%; 
-    width: 30px; 
+    border-radius: 50%;
+    width: 30px;
     height: 30px;
-    display: flex; 
+    display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -206,11 +229,11 @@
     height: 300px;
 }
 
-#qna-write-wrapper .bottom{
+#qna-write-wrapper .bottom {
     display: flex;
     flex-direction: row;
     width: 100%;
     gap: 10px;
     justify-content: right;
-    
+
 }

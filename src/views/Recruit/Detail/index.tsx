@@ -11,7 +11,7 @@ import GetRecruitPostResponseDto from 'src/apis/dto/response/recruit/get-recruit
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import RecruitWrite from './../Write/index';
 import { RecruitPostList } from 'src/types';
-import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, getRecruitScrapRequest, postRecruitScrapRequest } from 'src/apis';
+import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, getRecruitScrapRequest, postRecruitScrapRequest, postRecruitLikeRequest } from 'src/apis';
 import axios from 'axios';
 import { deleteRecruitPostRequest, getRecruitPostRequest, getRecruitUserInfoRequest } from 'src/apis';
 
@@ -252,15 +252,12 @@ export default function RecruitDetail() {
               responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
                 responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
                   responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    const isSuccessed = responseBody !== null && (responseBody.code === 'LC' || responseBody.code === 'LUC');
     if (!isSuccessed) {
       alert(message);
       return;
     }
-
-    if (!customerNumber) return;
-    const accessToken = cookies[ACCESS_TOKEN];
-    if (!accessToken) return;
+    setIsLiked(!isLiked);
   };
 
   // function: post recruit scrap response 처리 함수 //
@@ -456,10 +453,6 @@ export default function RecruitDetail() {
     deleteRecruitPostRequest(recruitPostId, accessToken).then(deleteRecruitPostResponse)
   }
 
-  const toggleLikeHandler = () => {
-    setIsLiked(!isLiked);
-  }
-
   // event handler: 신고 내역 입력 시 처리 //
   const onreportContentHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setReportContent(event.target.value);
@@ -507,7 +500,16 @@ export default function RecruitDetail() {
 
   // event handler: 좋아요 버튼 클릭 이벤트 처리 //
   const onLikeButtonClickHandler = () => {
-
+    if (!signInUser?.userId) {
+      alert("로그인을 해주세요.");
+      return;
+    }
+    if (!recruitPostId) {
+      alert("유효한 recruitPostId가 필요합니다.");
+      return;
+    }
+    
+    postRecruitLikeRequest(recruitPostId, accessToken).then(postRecruitLikeResponse);
   }
 
   // event handler: 스크랩 버튼 클릭 이벤트 처리 //
@@ -729,10 +731,9 @@ export default function RecruitDetail() {
                 : ''}
             </div>
             <div className='right'>
-              <div
-                className={`like ${isLiked ? 'liked' : ''}`}  // liked 클래스를 동적으로 추가
-                onClick={toggleLikeHandler}
-              ></div>
+              {signInUser &&
+              <div className={`like ${isLiked ? 'liked' : ''}`} onClick={onLikeButtonClickHandler}></div>
+              }
               {signInUser &&
               <div className={`scrap ${isScraped ? 'scraped' : ''}`} onClick={onScrapButtonClickHandler}></div>
               }
