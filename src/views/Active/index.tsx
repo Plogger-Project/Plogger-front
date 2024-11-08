@@ -10,7 +10,7 @@ import Pagination from "src/components/pagination";
 import useGifticonPagination from "src/hooks/gifticon.pagination.hook";
 import { Box, Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
 import { Favorite, Visibility } from "@mui/icons-material";
-import { useSignInUserStore } from "src/stores";
+import { useSearchStore, useSignInUserStore } from "src/stores";
 import { GetSignInResponseDto } from "src/apis/dto/response/auth";
 
 // TableRowProps interface 수정
@@ -87,6 +87,10 @@ function TableRow({ activePost, profileImage, getActiveList }: TableRowProps) {
 }
 
 export default function Active() {
+
+  // state: 검색어 상태 가져오기 //
+  const { searchWord } = useSearchStore();
+
   const [originalList, setOriginalList] = useState<ActivePost[]>([]);
   const [profileImage, setProfileImage] = useState<{ [key: string]: string | null }>({});
 
@@ -147,6 +151,13 @@ export default function Active() {
   useEffect(() => {
     getActivePostList();
   }, []);
+
+  // effect: 검색어가 바뀔 시 새 리스트 불러오기 함수 //
+  useEffect(() => {
+    const searchedActiveList = originalList.filter(post => post.activePostTitle.includes(searchWord));
+      setTotalList(searchedActiveList);
+      initViewList(searchedActiveList);
+  }, [searchWord]);
 
   return (
     <>

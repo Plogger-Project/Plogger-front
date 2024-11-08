@@ -12,7 +12,7 @@ import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import RecruitWrite from './../Write/index';
 
 import { RecruitComment, RecruitPostList, SimpleUser } from 'src/types';
-import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, getRecruitScrapRequest, postRecruitScrapRequest, postRecruitCommentRequest, patchRecruitCommentRequest, deleteRecruitCommentRequest, getRecruitCommentUserInfoRequest, postRecruitLikeRequest, getRecruitJoinUserInfoRequest } from 'src/apis';
+import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, getRecruitScrapRequest, postRecruitScrapRequest, postRecruitCommentRequest, patchRecruitCommentRequest, deleteRecruitCommentRequest, getRecruitCommentUserInfoRequest, postRecruitLikeRequest, getRecruitLikeRequest, , getRecruitJoinUserInfoRequest } from 'src/apis';
 
 import axios from 'axios';
 import { deleteRecruitPostRequest, getRecruitPostRequest, getRecruitUserInfoRequest } from 'src/apis';
@@ -23,7 +23,7 @@ import PostRecruitReportRequestDto from 'src/apis/dto/request/recruit/post-recru
 import RecruitCommentList from 'src/types/recruit-comment-list.interface';
 
 import useRecruitCommentPagination from 'src/hooks/recruit-comment.pagination.hook';
-import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto, GetRecruitScrapResponseDto, GetRecruitJoinListResponseDto } from 'src/apis/dto/response/recruit';
+import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto, GetRecruitScrapResponseDto, GetRecruitJoinListResponseDto, GetRecruitLikeResponseDto } from 'src/apis/dto/response/recruit';
 import { PatchRecruitCommentRequestDto, PatchRecruitIsCompletedRequestDto, PostRecruitCommentRequestDto } from 'src/apis/dto/request/recruit';
 import { differenceInDays, parseISO } from 'date-fns';
 import { Avatar, Box, Popover, Typography } from '@mui/material';
@@ -393,6 +393,31 @@ export default function RecruitDetail() {
       return;
     }
     setIsLiked(!isLiked);
+  };
+
+  // function : get recruit like response 처리 함수 //
+  const getRecruitLikeResponse = (responseBody: GetRecruitLikeResponseDto | ResponseDto | null) => {
+    
+    const message = !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+    
+    const { userIds } = responseBody as GetRecruitLikeResponseDto;
+
+    if (Array.isArray(userIds)) {
+      const isUserLiked = userIds.some(userId => userId === signInUser?.userId);
+      setIsLiked(isUserLiked);
+    } else {
+      setIsLiked(false);
+    }
+
   };
 
   // function: post recruit scrap response 처리 함수 //
@@ -806,6 +831,7 @@ export default function RecruitDetail() {
   useEffect(() => {
     if (!recruitPostId) return;
     getRecruitScrapRequest(recruitPostId).then(getRecruitScrapResponse);
+    getRecruitLikeRequest(recruitPostId).then(getRecruitLikeResponse);
     getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
     getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
 

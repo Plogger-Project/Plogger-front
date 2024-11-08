@@ -1,9 +1,9 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { useNavigate, useParams } from 'react-router-dom'
-import { deleteActiveCommentRequest, deleteActivePostRequest, getActiveCommentListRequest, getActiveCommentUserInfoRequest, getActivePostRequest, getActiveTagUserInfoRequest, getActiveUserInfoRequest, getSignInRequest, patchActiveCommentRequest, postActiveCommentRequest, PostActiveReportRequest } from 'src/apis';
+import { deleteActiveCommentRequest, deleteActivePostRequest, getActiveCommentListRequest, getActiveCommentUserInfoRequest, getActiveLikeRequest, getActivePostRequest, getActiveTagUserInfoRequest, getActiveUserInfoRequest, getSignInRequest, patchActiveCommentRequest, postActiveCommentRequest, postActiveLikeRequest, PostActiveReportRequest } from 'src/apis';
 import { ResponseDto } from 'src/apis/dto/response';
-import { GetActiveCommentListResponseDto, GetActivePostResponseDto } from 'src/apis/dto/response/active';
+import { GetActiveCommentListResponseDto, GetActiveLikeResponseDto, GetActivePostResponseDto } from 'src/apis/dto/response/active';
 import { ACCESS_TOKEN, ACTIVE_DETAIL_PATH, ACTIVE_PATH, ACTIVE_UPDATE_PATH, MYPAGE_PATH } from 'src/constants';
 import { useKakaoLoader } from 'src/hooks';
 import { useSignInUserStore } from 'src/stores';
@@ -408,10 +408,55 @@ export default function ActiveDetail() {
         window.location.href = ACTIVE_DETAIL_PATH(activePostId);
     }
 
+    // function: post active like response 처리 함수 //
+  const postActiveLikeResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NP' ? '권한이 없습니다.' :
+              responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+                responseBody.code === 'NAP' ? '해당 활동 게시글이 없습니다.' :
+                  responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+    const isSuccessed = responseBody !== null && (responseBody.code === 'LC' || responseBody.code === 'LUC');
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+    setIsLiked(!isLiked);
+  };
+
+  // function : get active like response 처리 함수 //
+  const getActiveLikeResponse = (responseBody: GetActiveLikeResponseDto | ResponseDto | null) => {
+    
+    const message = !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+    
+    const { userIds } = responseBody as GetActiveLikeResponseDto;
+    console.log(userIds);
+
+    if (Array.isArray(userIds)) {
+      const isUserLiked = userIds.some(userId => userId === signInUser?.userId);
+      setIsLiked(isUserLiked);
+    } else {
+      setIsLiked(false);
+    }
+
+  };
+
     // effect: 게시글 상세 보기 요청 함수 //
     useEffect(() => {
         if (!activePostId) return;
         getActivePostRequest(activePostId).then(getActivePostResponse);
+        getActiveLikeRequest(activePostId).then(getActiveLikeResponse);
     }, [activePostId]);
 
     // effect: 좌표로 주소 정보 요청 함수 //
@@ -438,9 +483,18 @@ export default function ActiveDetail() {
         displayAddressInfo(lat, lng);
     }, [lat, lng]);
 
-    // event handler: 좋아요 클릭 이벤트 처리 //
-    const toggleLikeHandler = () => {
+    // event handler: 좋아요 버튼 클릭 이벤트 처리 //
+  const onLikeButtonClickHandler = () => {
+    if (!signInUser?.userId) {
+      alert("로그인을 해주세요.");
+      return;
     }
+    if (!activePostId) {
+      alert("유효한 activePostId가 필요합니다.");
+      return;
+    }
+    postActiveLikeRequest(activePostId, accessToken).then(postActiveLikeResponse);
+  }
 
     // event handler: 클릭 시 옵션 항목을 보여주거나 숨기는 함수 //
     const toggleOptionsHandler = () => {
@@ -698,10 +752,9 @@ export default function ActiveDetail() {
                             </Popover>
                         </div>
                         <div className='right'>
-                            <div
-                                className={`like ${isLiked ? 'liked' : ''}`}
-                                onClick={toggleLikeHandler}
-                            ></div>
+                            {signInUser &&
+                            <div className={`like ${isLiked ? 'liked' : ''}`} onClick={onLikeButtonClickHandler}></div>
+                            }
                         </div>
                     </div>
                     <div className='line'></div>
