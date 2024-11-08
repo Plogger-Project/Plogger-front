@@ -121,7 +121,6 @@
     background-size: contain;
     background-position: 50% 50%;
     background-repeat: no-repeat;
-
 }
 
 #active-detail-wrapper .kakaomap {
@@ -166,18 +165,6 @@
     transition: background-color 0.3s; 
 }
 
-#active-detail-wrapper .postInfo .left .isCompleted {
-    color: white;
-    width: 50px;
-    height: 25px;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 10px;
-    text-align: center;
-    cursor: pointer;
-    line-height: 165%;
-
-}
-
 #active-detail-wrapper .postInfo .right {
     display: flex;
     flex-direction: row;
@@ -197,71 +184,42 @@
     background-image: url(/public/images/full-heart.png);
 }
 
-#active-detail-wrapper .postInfo .right .scrap {
-    width: 25px;
-    height: 25px;
-    background-size: contain;
-    background-image: url(/public/images/empty-scrap.png);
-    background-position: 50% 50%;
-    cursor: pointer;
-}
-
-#active-detail-wrapper .postInfo .right .scrap.scraped {
-    background-image: url(/public/images/full-scrap.png);
-}
-
-/* 하단 정보 및 댓글 섹션 */
 #active-detail-wrapper .postBottom {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-
-#active-detail-wrapper .postBottom .line {
-    width: 100%;
-    text-align: center;
-}
-
 #active-detail-wrapper .postBottom .comments {
     display: flex;
     flex-direction: column; 
-    gap: 10px;
+    gap: 15px;
 }
 
-#active-detail-wrapper .postBottom .comments input {
-    border: 0;
-    flex-grow: 1; 
-    width: 550px;
-    margin-right: 10px;
-}
-
-#active-detail-wrapper .postBottom .comments .commentButton {
-    width: 80px;
-    height: 30px;
-    background-color: #4CAF50;
+#active-detail-wrapper .commentButton {
+    background-color: #007bff;
     color: white;
-    border-radius: 16px;
-    border: none;
+    padding: 25px 20px;
+    border-radius: 8px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-weight: bold;
 }
 
 #active-detail-wrapper .commentUserInfo {
     display: flex;
     align-items: center; 
-    gap: 15px;
+    gap: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid rgba(25, 25, 25, 0.3); 
 }
 
 #active-detail-wrapper .commentUserInfoWrite {
     display: flex;
-    align-items: center;
-    gap: 15px; 
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+    align-items: flex-start;
+    width: 100%;
+    gap: 13px; 
+    background-color: #f9f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    margin-top: 10px;
 }
 
 #active-detail-wrapper .profileImage {
@@ -270,21 +228,56 @@
     border-radius: 50%;
     background-position: center;
     background-size: cover; 
+    margin-left: 10px;
+}
+
+#active-detail-wrapper .commentInput {
+    border: 0;
+    width: 100%;
+    height: 80px;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-right: 10px;
+    box-sizing: border-box;
+}
+
+#active-detail-wrapper .commentUserInfo-left {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 14px;
 }
 
 #active-detail-wrapper .commentUserInfo-right {
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
+    width: 100%; 
 }
+
+#active-deatil-wrapper .icon
 
 #active-detail-wrapper .activeCommentWriter,
 #active-detail-wrapper .activeCommentCreatedAt {
-    font-size: 12px;
+    font-size: 14px;
+}
+
+#active-detail-wrapper .activeCommentWriter {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
 }
 
 #active-detail-wrapper .bottom {
     padding: 15px;
     width: 100%;
+}
+
+#active-detail-wrapper .icon-buttons {
+    display: flex;
+    margin-left: auto;
 }
 
 #active-detail-wrapper .options {
@@ -436,3 +429,4 @@
     background-color: #000000;
     color:white;
 }
+
