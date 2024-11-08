@@ -9,6 +9,7 @@ import { QNA_DETAIL_PATH, QNA_WRITE_PATH } from "src/constants";
 import { getQnaPostListRequest } from './../../apis/index';
 import Pagination from "src/components/pagination";
 import PushPinIcon from '@mui/icons-material/PushPin';
+import { useSearchStore } from "src/stores";
 
 // interface: QnA 게시글 리스트 컴포넌트 Properties //
 interface TableRowProps {
@@ -58,6 +59,9 @@ export default function QnaPost() {
   const [showPosts, setShowPosts] = useState(false); // 게시글 표시 상태
   const [originalList, setOriginalList] = useState<QnaPostList[]>([]);
   const [filter, setFilter] = useState<'all' | 'qna' | 'notice' >('all');
+
+  // state: 검색어 상태 가져오기 //
+  const { searchWord } = useSearchStore();
 
   // state: 페이징 관련 상태 //
   const { currentPage, totalPage, totalCount, viewList, setTotalList, initViewList, ...paginationProps } = useQnaPagination<QnaPostList>();
@@ -114,6 +118,13 @@ export default function QnaPost() {
     getQnaPostList();
 
   }, []);
+
+  // effect: 검색어가 바뀔 시 새 리스트 불러오기 함수 //
+  useEffect(() => {
+    const searchedActiveList = originalList.filter(post => post.qnaPostTitle.includes(searchWord));
+      setTotalList(searchedActiveList);
+      initViewList(searchedActiveList);
+  }, [searchWord]);
 
   // event handler: 글쓰기 버튼 클릭 이벤트 처리 //
   const onWriteButtonClickHandler = () => {

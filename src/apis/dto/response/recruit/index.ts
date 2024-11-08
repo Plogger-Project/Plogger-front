@@ -4,6 +4,7 @@ import GetRecruitCommentListResponseDto from './get_recruit-comment-list.respons
 import GetRecruitScrapListResponseDto from './get-recruit-scrap-list.response.dto';
 import GetRecruitScrapResponseDto from './get-recruit-scrap.response.dto';
 import GetRecruitJoinListResponseDto from './get-recruit-join-list.response.dto';
+import GetRecruitLikeResponseDto from './get-recruit-like.response.dto';
 
 export type {
     GetRecruitPostListResponseDto,
@@ -11,5 +12,6 @@ export type {
     GetRecruitCommentListResponseDto,
     GetRecruitScrapListResponseDto,
     GetRecruitScrapResponseDto,
-    GetRecruitJoinListResponseDto
+    GetRecruitJoinListResponseDto,
+    GetRecruitLikeResponseDto
 }
