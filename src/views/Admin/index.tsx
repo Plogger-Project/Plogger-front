@@ -5,7 +5,7 @@ import InputBox from '../../components/InputBox';
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
 import { ActiveReportList, Follow, RecruitPostList, User } from 'src/types';
-import { GetActiveReportListRequest, getRecruitPostListRequest, GetRecruitReportListRequest, getSignInFolloweeListRequest, getSignInFollowerListRequest, getUserListRequest, patchCommentRequest } from 'src/apis';
+import { GetActiveReportListRequest, getRecruitPostListRequest, GetRecruitReportListRequest, getUserListRequest, patchCommentRequest } from 'src/apis';
 import { GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';

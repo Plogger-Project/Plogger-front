@@ -78,6 +78,7 @@ const POST_ACTIVE_POST_API_URL = (recruitId: number | string) => `${ACTIVE_MODUL
 const PATCH_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 const DELETE_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 const GET_ACTIVE_USER_INFO_API_URL = (activePostWriter: string) => `${GET_SIGN_IN_API_URL}/${activePostWriter}`;
+const GET_ACTIVE_USER_LIST_INFO_API_URL = (activePostWriter: string) => `${GET_SIGN_IN_API_URL}/${activePostWriter}`;
 
 const ACTIVE_COMMENT_MODULE_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`
 const QNA_COMMENT_MODULE_URL = (qnaId: number | string) => `${QNA_MODULE_URL}/${qnaId}`
@@ -717,6 +718,14 @@ export const getRecruitJoinListRequest = async (recruitPostId: string | number, 
 // function : active post user Info 요청 함수 //
 export const getActiveUserInfoRequest = async (activePostWriter: string) => {
     const responseBody = await axios.get(GET_ACTIVE_USER_INFO_API_URL(activePostWriter))
+        .then(responseDataHandler<GetSignInResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function : active post list user info 요청 함수 //
+export const getActiveUserListInfoRequest = async (activePostWriter: string) => {
+    const responseBody = await axios.get(GET_ACTIVE_USER_LIST_INFO_API_URL(activePostWriter))
         .then(responseDataHandler<GetSignInResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
