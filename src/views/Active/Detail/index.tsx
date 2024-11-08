@@ -129,6 +129,8 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
         setContent(activeComment.activeCommentContent);
     }
 
+
+    
     return (
         <div className='commentUserInfo-right'>
             <div className='activeCommentWriter'>{activeComment.activeCommentWriter}</div>

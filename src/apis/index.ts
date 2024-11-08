@@ -111,7 +111,7 @@ const PATCH_QNA_POST_API_URL = (qnaId: number | string) => `${QNA_MODULE_URL}/${
 const DELETE_QNA_POST_API_URL = (qnaId: number | string) => `${QNA_MODULE_URL}/${qnaId}`;
 const GET_QNA_USER_INFO_API_URL = (qnaPostWriter: string) => `${GET_SIGN_IN_API_URL}/${qnaPostWriter}`;
 
-const GET_QNA_COMMENT_LIST_API_URL = (qnaPostId: string | number) => `${QNA_MODULE_URL}/${qnaPostId}/comments`;
+const GET_QNA_COMMENT_LIST_API_URL = (qnaId: string | number) => `${QNA_COMMENT_MODULE_URL(qnaId)}/comments`;
 const PATCH_QNA_COMMENT_API_URL = (qnaId: number | string, commentId: number | string) => `${QNA_COMMENT_MODULE_URL(qnaId)}/comments/${commentId}`;
 const POST_QNA_COMMENT_API_URL = (qnaId: number | string) => `${QNA_COMMENT_MODULE_URL(qnaId)}/comments`;
 const DELETE_QNA_COMMENT_API_URL = (qnaId: number | string, commentId: number | string) => `${QNA_COMMENT_MODULE_URL(qnaId)}/comments/${commentId}`;
@@ -468,8 +468,8 @@ export const postQnaCommentRequest = async (requestBody: PostQnaCommentRequestDt
 }
 
 // function: qna 게시글 댓글 가져오기 요청 함수 //
-export const getQnaCommentListRequest = async (qnaId: string | number, accessToken: string) => {
-    const responseBody = await axios.get(GET_QNA_COMMENT_LIST_API_URL(qnaId), bearerAuthorization(accessToken))
+export const getQnaCommentListRequest = async (qnaId: string | number) => {
+    const responseBody = await axios.get(GET_QNA_COMMENT_LIST_API_URL(qnaId))
         .then(responseDataHandler<GetQnaCommentListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;

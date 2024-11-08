@@ -16,6 +16,9 @@ export default function QnaWrite() {
   // state: 로그인 유저 상태 //
   const { signInUser } = useSignInUserStore();
 
+  // state: 이미지 입력 참조 //
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+
   // state: cookie 상태 //
   const [cookies] = useCookies();
 
@@ -29,8 +32,6 @@ export default function QnaWrite() {
   const [qnaId, setQnaId] = useState<number>(0);
   const [isPinned, setIsPinned] = useState<boolean>(false);
 
-  const imageInputRef = useRef<HTMLInputElement | null>(null);
-
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
@@ -38,9 +39,9 @@ export default function QnaWrite() {
   const postQnaPostResponse = (responseBody: ResponseDto | null) => {
     const message =
       !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'VF' ? '모두 입력해주세요.' :
-      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        responseBody.code === 'VF' ? '모두 입력해주세요.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
@@ -96,24 +97,25 @@ export default function QnaWrite() {
 
   // event handler: 등록 버튼 이벤트 처리 함수 //
   const onPostButtonClickHandler = async () => {
-    if (!title || !content ) {
+    if (!title || !content) {
       alert('제목, 내용은 필수입력 항목입니다.'); return;
     }
-  
+
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
-  
+
     let url: string | null = defaultImageUrl;
     if (imageFile) {
       const formData = new FormData();
       formData.append('file', imageFile);
       url = await fileUploadRequest(formData);
     }
-  
+    url = url ? url : '';
+
     const requestBody: PostQnaPostRequestDto = {
-      qnaPostTitle: title, qnaPostContent: content, qnaPostImage: image, isPinned
+      qnaPostTitle: title, qnaPostContent: content, qnaPostImage: url, isPinned
     };
-  
+
     postQnaPostRequest(requestBody, accessToken).then(postQnaPostResponse);
   };
 
@@ -139,7 +141,21 @@ export default function QnaWrite() {
             <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }}></div>
             <div className='userInfo-right'>
               <div className='name'>{signInUser?.userId}</div>
-              <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
+              <div className='pinList'>
+                {signInUser?.isAdmin && (  // 관리자인 경우에만 체크박스와 설명 표시
+                  <div className='title-box'>
+                    <label className="pin-label">
+                      <input
+                        type='checkbox'
+                        checked={isPinned}
+                        onChange={() => setIsPinned(!isPinned)}
+                      />
+                      상단고정
+                    </label>
+                  </div>
+                )}
+                <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
+              </div>
             </div>
           </div>
         </div>
@@ -151,10 +167,11 @@ export default function QnaWrite() {
           <div className='input-label'>내용</div>
           <textarea className='textarea' style={{ height: '200px' }} value={content} placeholder='내용을 입력해주세요.' onChange={onContentChangeHandler} />
         </div>
+
         <div className='input-box'>
           <div className='input-label'>이미지</div>
           <div className={`image ${image ? 'uploaded' : 'preview'}`} onClick={onImageClickHandler}>
-          {image ? (
+            {image ? (
               <div className='image-box'>
                 <img src={image} alt='미리보기 이미지' />
                 <button className='deleteImageButton' onClick={onDeleteImageClickHandler}>

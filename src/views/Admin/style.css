@@ -300,6 +300,7 @@
     align-content: center;
     justify-content: space-between;
     gap: 1rem;
+
     width: 1500px;
     height: 40px;
     border-top: 2px solid rgba(0, 0, 0, 1);
@@ -310,37 +311,25 @@
     font-size: 30px;
 }
 
-.line-right {
-    border-right: 2px solid rgba(0, 0, 0, 1);
-}
-
 .recruit-report,
 .active-report,
 .user-list {
-    cursor: pointer;
     width: 200px;
     text-align: center;
+    padding: 0px 90px;
+    color: black;
 }
 
-.recruit-report span:hover,
-.active-report span:hover,
-.user-list span:hover {
+.table-contents .recruit-report:hover,
+.table-contents .active-report:hover,
+.table-contents .user-list:hover {
     cursor: pointer;
     font-weight: 600;
     color: rgba(0, 0, 0, 1);
 }
 
-.recruit-report span:active,
-.active-report span:active,
-.user-list span:active {
-    color: rgba(0, 95, 65, 1);
-    font-weight: 600;
-}
-
-.recruit-report,
-.active-report,
-.user-list {
-    padding: 0px 90px;
+.line-right {
+    border-right: 2px solid rgba(0, 0, 0, 1);
 }
 
 #recruit-report-wrapper {
