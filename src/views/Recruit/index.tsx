@@ -6,7 +6,7 @@ import { CustomOverlayMap, Map, MapMarker, MarkerClusterer } from "react-kakao-m
 import { useKakaoLoader } from "src/hooks";
 import { url } from "inspector";
 import { RecruitPostList } from "src/types";
-import { useSignInUserStore } from "src/stores";
+import { useSearchStore, useSignInUserStore } from "src/stores";
 import { useCookies } from "react-cookie";
 import { ResponseDto } from "src/apis/dto/response";
 import { GetRecruitPostListResponseDto } from "src/apis/dto/response/recruit";
@@ -54,11 +54,11 @@ function MarkerOverlay({ recruitPostId, getRecruitList }: recruitPostTableRow) {
       <div className="marker-overlay-title">{recruitPostId.recruitPostTitle}</div>
       <div className="marker-overlay-image"style={{ backgroundImage: `url(${recruitPostId.recruitPostImage || defaultImage})` }}></div>
       <div className="marker-overlay-bottom">
-        <div className="marker-overlay-isCompleted">{recruitPostId.isCompleted ? '마감됨' : '모집중'}</div>
-        <div className="marker-overlay-people">{recruitPostId.currentPeople}/{recruitPostId.minPeople}</div>
+        {/* <div className="marker-overlay-isCompleted">{recruitPostId.isCompleted ? '마감됨' : '모집중'}</div> */}
+        <div className="marker-overlay-people">모집 현황 : {recruitPostId.currentPeople}/{recruitPostId.minPeople}</div>
         </div>
         <div className="marker-overlay-navigator" onClick={onDetailButtonClickHandler}>글로 이동</div>
-      </div>
+    </div>
       
     </>
   )
@@ -68,6 +68,9 @@ function MarkerOverlay({ recruitPostId, getRecruitList }: recruitPostTableRow) {
 function TableRow({ recruitPostId, getRecruitList }: TableRowProps) {
 
   const [dday, setDday] = useState<string>('');
+
+  // state: 검색어 상태 가져오기 //
+  const { searchWord } = useSearchStore();
 
   //function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -140,6 +143,9 @@ export default function RecruitPost() {
 
   // state: 로그인 유저 상태 //
   const { signInUser } = useSignInUserStore();
+
+  // state: 검색어 상태 가져오기 //
+  const { searchWord } = useSearchStore();
 
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
   const [scrollY, setScrollY] = useState(0); // 스크롤 위치
@@ -327,6 +333,13 @@ export default function RecruitPost() {
     }
   }, []);
 
+  // effect: 검색어가 바뀔 시 새 리스트 불러오기 함수 //
+  useEffect(() => {
+      const searchedActiveList = originalList.filter(post => post.recruitPostTitle.includes(searchWord));
+        setTotalList(searchedActiveList);
+        initViewList(searchedActiveList);
+    }, [searchWord]);
+
 // 컴포넌트 로드시 게시글 리스트 불러오기 함수 //
 useEffect(() => {
   getRecruitPostList();
@@ -357,7 +370,9 @@ useEffect(() => {
           <MarkerClusterer
             averageCenter={true} minLevel={6}
           >
-            {positions.map((pos) => (
+            {positions
+              .filter(pos => !pos.isCompleted)
+              .map((pos) => (
               <div key={`${pos.id}-${pos.lat}-${pos.lng}`}>
                 <MapMarker
                   key={`${pos.id}-marker`}

@@ -18,6 +18,7 @@ import QnaComment from "./qna-comment.interface";
 import RecruitScrapList from "./recruit-scrap-list.interface";
 import RecruitJoinList from './recruit-join.interface';
 import AddressPostCount from "./recruit-address-count.interface";
+import SimpleUser from "./simple-user.interface";
 
 export type {
     User,
@@ -39,5 +40,6 @@ export type {
     QnaComment,
     RecruitScrapList,
     RecruitJoinList,
-    AddressPostCount
+    AddressPostCount,
+    SimpleUser
 }

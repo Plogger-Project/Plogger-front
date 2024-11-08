@@ -4,7 +4,7 @@ import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SignUpRe
 import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
-import { GetRecruitCommentListResponseDto, GetRecruitJoinListResponseDto, GetRecruitPostListResponseDto, GetRecruitReportListResponseDto, GetRecruitScrapListResponseDto, GetRecruitScrapResponseDto } from "./dto/response/recruit";
+import { GetRecruitCommentListResponseDto, GetRecruitJoinListResponseDto, GetRecruitLikeResponseDto, GetRecruitPostListResponseDto, GetRecruitReportListResponseDto, GetRecruitScrapListResponseDto, GetRecruitScrapResponseDto } from "./dto/response/recruit";
 import { GetQnaPostListResponseDto } from "./dto/response/qna";
 import { PatchCommentRequestDto, PatchUserRequestDto } from "./dto/request/user";
 import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
@@ -20,7 +20,7 @@ import { PatchActiveCommentRequestDto, PatchActivePostRequestDto, PostActiveComm
 import PostRecruitReportRequestDto from "./dto/request/recruit/post-recruit-report-request.dto";
 import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from "./dto/response/follow";
 import { GetMileageListResponseDto } from "./dto/response/mileage";
-import { GetActiveCommentListResponseDto, GetActivePostListResponseDto, GetActivePostResponseDto, GetActiveReportListResponseDto, GetMyRecruitReponseDto } from "./dto/response/active";
+import { GetActiveCommentListResponseDto, GetActiveLikeResponseDto, GetActivePostListResponseDto, GetActivePostResponseDto, GetActiveReportListResponseDto, GetMyRecruitReponseDto } from "./dto/response/active";
 import { GetUserListResponseDto } from "./dto/response/mypage";
 import { PatchQnaCommentRequestDto, PatchQnaPostRequestDto, PostQnaPostRequestDto } from "./dto/request/qna";
 import GetQnaPostResponseDto from "./dto/response/qna/get-qna-post.response.dto";
@@ -42,6 +42,7 @@ const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`
 const QNA_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/qna`
 const REPORT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/report`
 const ALERT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/alert`;
+const ADMIN_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/admin`;
 
 const ID_CHECK_API_URL = `${AUTH_MODULE_URL}/id-check`;
 const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
@@ -68,6 +69,8 @@ const POST_RECRUIT_POST_API_URL = `${RECRUIT_MODULE_URL}`
 const POST_RECRUIT_JOIN_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/join/${recruitPostId}`;
 const GET_RECRUIT_JOIN_LIST_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/join/${recruitPostId}`;
 
+const GET_RECRUIT_LIKE_API_URL = (recruitPostId: number | string) => `${RECRUIT_MODULE_URL}/like/${recruitPostId}`;
+
 const RECRUIT_COMMENT_MODULE_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/${recruitId}`
 
 const POST_RECRUIT_COMMENT_API_URL = (recruitId: number | string) => `${RECRUIT_COMMENT_MODULE_URL(recruitId)}/comments`;
@@ -86,6 +89,9 @@ const PATCH_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODUL
 const DELETE_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 const GET_ACTIVE_USER_INFO_API_URL = (activePostWriter: string) => `${GET_SIGN_IN_API_URL}/${activePostWriter}`;
 const GET_ACTIVE_USER_LIST_INFO_API_URL = (activePostWriter: string) => `${GET_SIGN_IN_API_URL}/${activePostWriter}`;
+
+const POST_ACTIVE_LIKE_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/like/${activeId}`;
+const GET_ACTIVE_LIKE_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/like/${activeId}`;
 
 const ACTIVE_COMMENT_MODULE_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`
 const QNA_COMMENT_MODULE_URL = (qnaId: number | string) => `${QNA_MODULE_URL}/${qnaId}`
@@ -144,6 +150,9 @@ const PURCHASE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_M
 
 const POST_RECRUIT_REPORT_API_URL = (recruitId: number | string) => `${RECRUIT_REPORT_API_URL}/${recruitId}`;
 const POST_ACTIVE_REPORT_API_URL = (activeId: number | string) => `${ACTIVE_REPORT_API_URL}/${activeId}`;
+
+const DELETE_RECRUIT_REPORT_API_URL = (recruitId: number | string) => `${ADMIN_MODULE_URL}/${recruitId}`;
+const DELETE_ACTIVE_REPORT_API_URL = (activeId: number | string) => `${ADMIN_MODULE_URL}/${activeId}`;
 
 const FOLLOW_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/follow`;
 
@@ -673,6 +682,30 @@ export const postRecruitLikeRequest = async (recruitId: number | string, accessT
     return responseBody;
 };
 
+// function: get recruit like 요청 함수 //
+export const getRecruitLikeRequest = async (recruitPostId: number | string) => {
+    const responseBody = await axios.get(GET_RECRUIT_LIKE_API_URL(recruitPostId))
+        .then(responseDataHandler<GetRecruitLikeResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: active like & unlike 요청 함수 //
+export const postActiveLikeRequest = async (activeId: number | string, accessToken: string) => {
+    const responseBody = await axios.post(POST_ACTIVE_LIKE_API_URL(activeId), {}, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: get active like 요청 함수 //
+export const getActiveLikeRequest = async (activeId: number | string) => {
+    const responseBody = await axios.get(GET_ACTIVE_LIKE_API_URL(activeId))
+        .then(responseDataHandler<GetActiveLikeResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
 
 // function: get alert list 요청 함수 //
 export const getAlertListRequest = async (accesstoken: string) => {
@@ -742,6 +775,14 @@ export const getRecruitUserInfoRequest = async (recruitPostWriter: string) => {
 // function : recruit comment user Info 요청 함수 //
 export const getRecruitCommentUserInfoRequest = async (recruitCommentWriter: string) => {
     const responseBody = await axios.get(GET_RECRUIT_USER_INFO_API_URL(recruitCommentWriter))
+        .then(responseDataHandler<GetSignInResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function : recruit join user Info 요청 함수 //
+export const getRecruitJoinUserInfoRequest = async (recruitJoinUserId: string) => {
+    const responseBody = await axios.get(GET_RECRUIT_USER_INFO_API_URL(recruitJoinUserId))
         .then(responseDataHandler<GetSignInResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
@@ -882,3 +923,19 @@ export const postChatMessageRequest = async (requestBody: PostChatMessageRequest
         .catch(responseErrorHandler);
     return responseBody;
 }
+
+// function: delete recruit report 요청 함수 //
+export const deleteRecruitReportRequest = async (recruitId: number | string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_RECRUIT_REPORT_API_URL(recruitId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: delete active report 요청 함수 //
+export const deleteActiveReportRequest = async (activeId: number | string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_ACTIVE_REPORT_API_URL(activeId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
