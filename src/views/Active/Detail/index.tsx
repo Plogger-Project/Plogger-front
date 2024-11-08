@@ -15,7 +15,10 @@ import { PatchActiveCommentRequestDto, PostActiveCommentRequestDto, PostActiveRe
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
-import { Box, Popover, Typography } from '@mui/material';
+import { Box, IconButton, Popover, Tooltip, Typography } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SendIcon from '@mui/icons-material/Send';
 
 interface TableRowProps {
     activeComment: ActiveComment;
@@ -40,6 +43,7 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
 
     // 댓글 작성자와 로그인한 유저가 같은지 확인 //
     const isAuthor = activeComment.activeCommentWriter === signInUser?.userId;
+    const isAdmin = signInUser?.isAdmin;
 
     // function: 활동 게시판 댓글 삭제 함수 //
     const deleteActiveCommentResponse = (responseBody: ResponseDto | null) => {
@@ -133,28 +137,38 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
 
     // render: active comment list 아이템 컴포넌트 렌더링 //
     return (
-        <div className='commentUserInfo-right'>
-            <div className='activeCommentWriter'>{activeComment.activeCommentWriter}</div>
-            {isEdit ? (
-                <div>
-                    <textarea value={content} onChange={onContentChangeHandler} />
-                    <button onClick={onUpdateButtonClickHandler}>저장</button>
-                    <button onClick={onCancelButtonClickHandler}>취소</button>
-                </div>
-            ) : (
-                <div>
-                    <div className='activeCommentContent'>{activeComment.activeCommentContent}</div>
-                    <div className='activeCommentCreatedAt'>{activeComment.activeCommentCreatedAt}</div>
-                    {isAuthor && (
-                        <div>
-                            <button onClick={onEditButtonClickHandler}>수정</button>
-                            <button onClick={onDeleteButtonClickHandler}>삭제</button>
-                        </div>
-                    )}
+        <div className='commentUserInfo'>
+            <div className='commentUserInfo-right'>
+                <div className='activeCommentWriter'>{activeComment.activeCommentWriter}</div>
+                {isEdit ? (
+                    <div className='editCommentWrapper'>
+                        <textarea value={content} onChange={onContentChangeHandler} />
+                        <button onClick={onUpdateButtonClickHandler}>저장</button>
+                        <button onClick={onCancelButtonClickHandler}>취소</button>
+                    </div>
+                ) : (
+                    <div>
+                        <div className='activeCommentContent'>{activeComment.activeCommentContent}</div>
+                        <div className='activeCommentCreatedAt'>{activeComment.activeCommentCreatedAt}</div>
+                    </div>
+                )}
+            </div>
+            {!isEdit && (isAuthor || isAdmin) && (
+                <div className='commentUserInfo-buttons'>
+                    <Tooltip title="수정">
+                        <IconButton onClick={onEditButtonClickHandler}>
+                            <EditIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="삭제">
+                        <IconButton onClick={onDeleteButtonClickHandler}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
                 </div>
             )}
         </div>
-    )
+    );
 }
 
 // component: 활동 게시글 상세 보기 컴포넌트 //
@@ -203,6 +217,7 @@ export default function ActiveDetail() {
     const mapRef = useRef<HTMLDivElement | null>(null);
 
     const isAuthor = writer === signInUser?.userId;
+    const isAdmin = signInUser?.isAdmin;
 
     const open = Boolean(anchorEl);
     const id = open ? 'tag-list-popover' : undefined;
@@ -618,13 +633,13 @@ export default function ActiveDetail() {
                                     left: optionPosition.left + 'px'
                                 }}
                             >
-                                {isAuthor && (
+                                {(isAuthor || isAdmin) && (
                                     <>
                                         <button className="editButton" onClick={onPostUpdateButtonClick}>수정하기</button>
                                         <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제하기</button>
                                     </>
                                 )}
-                                {!isAuthor || !signInUser && (
+                                {(!isAuthor || !signInUser) && (
                                     <>
                                         <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
                                     </>
@@ -678,7 +693,7 @@ export default function ActiveDetail() {
                                     <Typography variant="subtitle1">함께 활동한 유저들</Typography>
                                     {activePeople.map((tagUser, index) => (
                                         <Box key={index} display="flex" alignItems="center" mb={1}>
-                                            <Avatar src={tagProfileImage[tagUser]} sx={{ width: 24, height: 24, mr: 1 }} />
+                                            <Avatar src={tagProfileImage[tagUser]} sx={{ width: 24, height: 24, mr: 1 }} onClick={() => onProfileImageClick(tagUser)} style={{ cursor: 'pointer' }} />
                                             <Typography variant="body2">{tagUser}</Typography>
                                         </Box>
                                     ))}
@@ -696,13 +711,17 @@ export default function ActiveDetail() {
                     <div className='comments'>
                         {signInUser &&
                         <div className='commentUserInfoWrite'>
-                            <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
-                            <div className='commentUserInfo-right'>
+                            <div className='commentUserInfo-left'>
+                                <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
                                 <div className='activeCommentWriter'>{signInUser?.userId}</div>
-                                <input placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
                             </div>
-                            <div className='commentButton' onClick={onCommentPostButtonClick}>등록</div>
+                            <div className='commentUserInfo-right'>
+                                <input className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
                             </div>
+                            <div className="commentButton" onClick={onCommentPostButtonClick}>
+                                <SendIcon />
+                            </div>
+                        </div>
                         }
                         {viewList.map((activeComment, index) => (
                             <div className='commentUserInfo'key={index}>
