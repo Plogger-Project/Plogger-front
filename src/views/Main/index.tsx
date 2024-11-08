@@ -11,6 +11,8 @@ import Typography from '@mui/material/Typography';
 import { useSpringCarousel } from 'react-spring-carousel';
 
 import './style.css';
+import { GetActivePostResponseDto } from '@/apis/dto/response/active';
+import { ResponseDto } from '@/apis/dto/response';
 
 // component : 한국 지도 컴포넌트 //
 function KoreaMap() {
@@ -108,39 +110,53 @@ function KoreaMap() {
 
 function SlideComponent() {
 
-    // 슬라이드 소스 //
-    const mockedItems = [
-      { id: '1', color: 'lightblue', title: 'Slide 1' },
-      { id: '2', color: 'lightcoral', title: 'Slide 2' },
-      { id: '3', color: 'lightgreen', title: 'Slide 3' },
-      { id: '4', color: 'lightgreen', title: 'Slide 4' }
-    ];
-  
-    const CarouselItem: React.FC<{ color: string; width: number; children?: ReactNode, image?: string }> = ({ color, width, image, children }) => (
-      <div
-        style={{
-          backgroundColor: color,
-          width: `${width}px`,
-          height: '300px',
-          display: 'flex',
-          margin: '20px',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        {children}
-      </div>
-    );
+  const [carouselItems, setCarouselItems] = useState([
+    { id: '1', color: 'lightblue', title: 'Loading...', image: '' },
+    { id: '2', color: 'lightcoral', title: 'Loading...', image: '' },
+    { id: '3', color: 'lightgreen', title: 'Loading...', image: '' },
+    { id: '4', color: 'lightgreen', title: 'Loading...', image: '' }
+  ]);
 
-  const { 
-    carouselFragment
-  } = useSpringCarousel({
+  const getActivePostResponse = (responseBody: GetActivePostResponseDto | ResponseDto | null) => {
+    const message = 
+      !responseBody ? '서버에 문제가 있습니다.' : 
+      responseBody.code === 'AF' ? '잘못된 접근입니다.' : 
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' : 
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+    
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+  }
+
+  // CarouselItem 컴포넌트
+  const CarouselItem: React.FC<{ color: string; width: number; children?: React.ReactNode, image?: string }> = ({ color, width, image, children }) => (
+    <div
+      style={{
+        backgroundColor: color,
+        width: `${width}px`,
+        height: '300px',
+        display: 'flex',
+        margin: '20px',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {image && <img src={image} alt="슬라이드 이미지" style={{ width: '100%', height: 'auto', objectFit: 'cover' }} />}
+      {children}
+    </div>
+  );
+
+  // Carousel 초기화
+  const { carouselFragment } = useSpringCarousel({
     slideType: 'fluid',
     withLoop: true,
-    items: mockedItems.map((i) => ({
+    items: carouselItems.map((i) => ({
       id: i.id,
       renderItem: (
-        <CarouselItem color={i.color} width={300}>
+        <CarouselItem color={i.color} width={300} image={i.image}>
           {i.title}
         </CarouselItem>
       ),
@@ -188,16 +204,16 @@ export default function Main() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // state: 텍스트 관련 상태 //
-  const [isTextVisible, setIsTextVisible] 
-  = useState([false, false, false, false, false, false]);
+  const [isTextVisible, setIsTextVisible]
+    = useState([false, false, false, false, false, false]);
 
   const textRefs = [
-    useRef<HTMLDivElement>(null), 
-    useRef<HTMLDivElement>(null), 
-    useRef<HTMLDivElement>(null), 
-    useRef<HTMLDivElement>(null), 
-    useRef<HTMLDivElement>(null), 
-    useRef<HTMLDivElement>(null), 
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
     useRef<HTMLDivElement>(null)
   ];
 
@@ -238,7 +254,7 @@ export default function Main() {
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.src = videoSources[currentVideoIndex];
-      
+
       setTimeout(() => {
         videoRef.current?.play()
       }, 100);
@@ -260,11 +276,11 @@ export default function Main() {
       },
       { threshold: 0.5 }
     );
-  
+
     textRefs.forEach((ref) => {
       if (ref.current) observer.observe(ref.current);
     });
-  
+
     return () => {
       textRefs.forEach((ref) => {
         if (ref.current) observer.unobserve(ref.current);
@@ -286,17 +302,17 @@ export default function Main() {
       window.removeEventListener('wheel', handleWheel);
     };
   }, [isMouseOverStepper]);
-  
+
 
   // render: 메인페이지 컴포넌트 렌더링 //
   return (
     <div id='main-wrapper'>
       <div className="video-section">
         <video ref={videoRef} autoPlay loop muted playsInline className="background-video">
-        <source src={videoSources[currentVideoIndex]} type="video/mp4" />
+          <source src={videoSources[currentVideoIndex]} type="video/mp4" />
         </video>
         <div className="video-controls">
-        <div className='button-previous' onClick={handlePrevVideo}>&lt;</div>          
+          <div className='button-previous' onClick={handlePrevVideo}>&lt;</div>
           <div className='button-next' onClick={handleNextVideo}>&gt;</div>
         </div>
       </div>
@@ -321,11 +337,11 @@ export default function Main() {
             <div className='description-box'>
               <div className='environment-box'>
                 <div className='text-title'>환경</div>
-                <div className='test-content'>쓰레기를 주워 환경 오염을 줄이고,<br/> 분리수거를 통해 쓰레기를 처리하면서 <br/>발생하는 탄소 배출량을<br/>낮출 수 있습니다.</div>
+                <div className='test-content'>쓰레기를 주워 환경 오염을 줄이고,<br /> 분리수거를 통해 쓰레기를 처리하면서 <br />발생하는 탄소 배출량을<br />낮출 수 있습니다.</div>
               </div>
               <div className='health-box'>
-              <div className='text-title'>건강</div>
-              <div className='test-content'>쓰레기를 줍기 위해 허리를<br/>굽히거나 앉았다 일어나는 동작으로<br/>여러 근육이 사용되면서<br/>운동 효과가 커집니다.</div>
+                <div className='text-title'>건강</div>
+                <div className='test-content'>쓰레기를 줍기 위해 허리를<br />굽히거나 앉았다 일어나는 동작으로<br />여러 근육이 사용되면서<br />운동 효과가 커집니다.</div>
               </div>
             </div>
           </div>
@@ -369,7 +385,7 @@ export default function Main() {
                       }}
                     >
                       {steps.map((step, index) => (
-                        <Step  key={step.label}>
+                        <Step key={step.label}>
                           <StepLabel>{step.label}</StepLabel>
                           <StepContent>
                             <Typography>{step.description}</Typography>
@@ -386,9 +402,9 @@ export default function Main() {
                 </div>
                 <div className='main-right'>
                   <div className='location-box'>
-                  <div className='location-title'>지역 <span className='point-word'>활</span>성도</div>
+                    <div className='location-title'>지역 <span className='point-word'>활</span>성도</div>
                     <KoreaMap />
-                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -399,13 +415,13 @@ export default function Main() {
       <div id='fourth-content-wrapper'>
         <div className='fourth-container'>
           <div className='main-container'>
-          <div className='main-top'>
-            <div className='top-text'>당신이 채워나갈 이야기를 응원합니다!</div>
-          </div>
-          <div className='main-middle'>
-            <SlideComponent />
-            <SlideComponent />
-          </div>
+            <div className='main-top'>
+              <div className='top-text'>당신이 채워나갈 이야기를 응원합니다!</div>
+            </div>
+            <div className='main-middle'>
+              <SlideComponent />
+              <SlideComponent />
+            </div>
           </div>
         </div>
       </div>

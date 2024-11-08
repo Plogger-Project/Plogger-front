@@ -78,7 +78,7 @@ export default function QnaUpdate() {
     setTitle(qnaPostTitle);
     setContent(qnaPostContent);
     setImage(qnaPostImage);
-    setIsPinned(isPinned);  
+    setIsPinned(isPinned);
   }
 
   // function: QNA 게시글 수정 함수 //
@@ -148,18 +148,24 @@ export default function QnaUpdate() {
   // event handler: 등록 버튼 이벤트 처리 함수 //
   const onPostButtonClickHandler = async () => {
     if (!title || !content ) {
-      alert('제목, 내용을 필수 입력입니다.'); return;
+      alert('제목과 내용은 필수 입력입니다.'); return;
     }
 
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
 
-    console.log(qnaPostId);
+    let url: string | null = defaultImageUrl;
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append('file', imageFile);
+      url = await fileUploadRequest(formData);
+    }
+    url = url ? url : '';
 
     if (!qnaPostId) return;
 
     const requestBody: PatchQnaPostRequestDto = {
-      qnaPostTitle: title, qnaPostContent: content, qnaPostImage: image, isPinned
+      qnaPostTitle: title, qnaPostContent: content, qnaPostImage: url, isPinned
     };
 
 
