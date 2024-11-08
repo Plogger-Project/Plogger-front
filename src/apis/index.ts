@@ -29,6 +29,7 @@ import PostChatMessageRequestDto from "./dto/request/chat/post-chat-message.requ
 import { GetMessageListResponseDto, GetRoomListResponseDto } from "./dto/response/chat";
 import PostQnaCommentRequestDto from "./dto/request/qna/post-qna-comment.request.dto";
 import GetQnaCommentListResponseDto from "./dto/response/qna/get-qna-comment-list.response.dto";
+import { PostFollowRequestDto } from "./dto/request/follow";
 
 
 
@@ -83,6 +84,7 @@ const POST_ACTIVE_POST_API_URL = (recruitId: number | string) => `${ACTIVE_MODUL
 const PATCH_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 const DELETE_ACTIVE_POST_API_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`;
 const GET_ACTIVE_USER_INFO_API_URL = (activePostWriter: string) => `${GET_SIGN_IN_API_URL}/${activePostWriter}`;
+const GET_ACTIVE_USER_LIST_INFO_API_URL = (activePostWriter: string) => `${GET_SIGN_IN_API_URL}/${activePostWriter}`;
 
 const ACTIVE_COMMENT_MODULE_URL = (activeId: number | string) => `${ACTIVE_MODULE_URL}/${activeId}`
 const QNA_COMMENT_MODULE_URL = (qnaId: number | string) => `${QNA_MODULE_URL}/${qnaId}`
@@ -116,7 +118,7 @@ const PATCH_QNA_POST_API_URL = (qnaId: number | string) => `${QNA_MODULE_URL}/${
 const DELETE_QNA_POST_API_URL = (qnaId: number | string) => `${QNA_MODULE_URL}/${qnaId}`;
 const GET_QNA_USER_INFO_API_URL = (qnaPostWriter: string) => `${GET_SIGN_IN_API_URL}/${qnaPostWriter}`;
 
-const GET_QNA_COMMENT_LIST_API_URL = (qnaPostId: string | number) => `${QNA_MODULE_URL}/${qnaPostId}/comments`;
+const GET_QNA_COMMENT_LIST_API_URL = (qnaId: string | number) => `${QNA_COMMENT_MODULE_URL(qnaId)}/comments`;
 const PATCH_QNA_COMMENT_API_URL = (qnaId: number | string, commentId: number | string) => `${QNA_COMMENT_MODULE_URL(qnaId)}/comments/${commentId}`;
 const POST_QNA_COMMENT_API_URL = (qnaId: number | string) => `${QNA_COMMENT_MODULE_URL(qnaId)}/comments`;
 const DELETE_QNA_COMMENT_API_URL = (qnaId: number | string, commentId: number | string) => `${QNA_COMMENT_MODULE_URL(qnaId)}/comments/${commentId}`;
@@ -148,7 +150,9 @@ const GET_SIGN_IN_FOLLOWER_LIST_API_URL = `${FOLLOW_MODULE_URL}/follower`;
 const GET_SIGN_IN_FOLLOWEE_LIST_API_URL = `${FOLLOW_MODULE_URL}/followee`;
 const GET_FOLLOWER_LIST_API_URL = (followeeId: string) => `${FOLLOW_MODULE_URL}/follower/${followeeId}`;
 const GET_FOLLOWEE_LIST_API_URL = (followerId: string) => `${FOLLOW_MODULE_URL}/followee/${followerId}`;
-const DELETE_FOLLOWEE_API_URL = (followeeId: string) => `${GIFTICON_MODULE_URL}/${followeeId}`;
+const DELETE_FOLLOWEE_API_URL = (followeeId: string) => `${FOLLOW_MODULE_URL}/${followeeId}`;
+const GET_FOLLOW_INFO_API_URL = (followeeId: string) => `${GET_SIGN_IN_API_URL}/${followeeId}`;
+
 
 const GET_MILEAGE_LIST_API_URL = `${PLOGGER_API_DOMAIN}/api/v1/mileage`
 
@@ -504,8 +508,8 @@ export const postQnaCommentRequest = async (requestBody: PostQnaCommentRequestDt
 }
 
 // function: qna 게시글 댓글 가져오기 요청 함수 //
-export const getQnaCommentListRequest = async (qnaId: string | number, accessToken: string) => {
-    const responseBody = await axios.get(GET_QNA_COMMENT_LIST_API_URL(qnaId), bearerAuthorization(accessToken))
+export const getQnaCommentListRequest = async (qnaId: string | number) => {
+    const responseBody = await axios.get(GET_QNA_COMMENT_LIST_API_URL(qnaId))
         .then(responseDataHandler<GetQnaCommentListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
@@ -651,8 +655,8 @@ export const GetActiveReportListRequest = async (accessToken: string) => {
 }
 
 // function: recruit like & unlike 요청 함수 //
-export const postRecruitLikeRequest = async (recruitId: number | string) => {
-    const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId))
+export const postRecruitLikeRequest = async (recruitId: number | string, accessToken: string) => {
+    const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId), {}, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
@@ -675,14 +679,14 @@ export const deleteAlertListRequest = async (id: string | number, accessToken: s
     return resopnseBody;
 }
 
+// function: get recruit comment list 요청 함수 //
+export const getRecruitCommentListRequest = async (recruitPostId: number | string, accessToken: string) => {
+    const responseBody = await axios.get(GET_RECRUIT_COMMENT_LIST_API_URL(recruitPostId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetRecruitCommentListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 
-// function: post follow 요청 함수 //
-// export const postFollowRequest = async ( requestBody: PostGifticonRequestDto, accessToken: string ) => {
-//     const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId))
-//         .then(responseDataHandler<ResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// };
 
 // // function: get sign in follower list 요청 함수 //
 // export const getSignInFollowerListRequest = async (accessToken: string) => {
@@ -702,6 +706,22 @@ export const deleteAlertListRequest = async (id: string | number, accessToken: s
 //     return responseBody;
 // };
 
+// function : post follow 요청 함수 //
+export const postFollowRequest = async (requestBody:PostFollowRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_FOLLOW_API_URL, requestBody , bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: get follow 요청 함수 //
+export const getFollowRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_SIGN_IN_FOLLOWEE_LIST_API_URL, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
 // function: get follower list 요청 함수 //
 export const getFollowerListRequest = async (followeeId: string) => {
     const responseBody = await axios.get(GET_FOLLOWER_LIST_API_URL(followeeId))
@@ -717,6 +737,15 @@ export const getFolloweeListRequest = async (followerId: string) => {
         .catch(responseErrorHandler);
     return responseBody;
 };
+
+// function: delete follow 요청 함수 //
+export const deleteFollowRequest = async (followeeId: string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_FOLLOWEE_API_URL(followeeId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+        console.log("팔로위 아이디" + followeeId);
+    return responseBody;
+}
 
 // function : get recruit post user Info 요청 함수 //
 export const getRecruitUserInfoRequest = async (recruitPostWriter: string) => {
@@ -758,6 +787,14 @@ export const getActiveUserInfoRequest = async (activePostWriter: string) => {
     return responseBody;
 }
 
+// function : active post list user info 요청 함수 //
+export const getActiveUserListInfoRequest = async (activePostWriter: string) => {
+    const responseBody = await axios.get(GET_ACTIVE_USER_LIST_INFO_API_URL(activePostWriter))
+        .then(responseDataHandler<GetSignInResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
 // function : active comment user Info 요청 함수 //
 export const getActiveCommentUserInfoRequest = async (activeCommentWriter: string) => {
     const responseBody = await axios.get(GET_ACTIVE_USER_INFO_API_URL(activeCommentWriter))
@@ -782,6 +819,14 @@ export const getQnaUserInfoRequest = async (qnaPostWriter: string) => {
     return responseBody;
 }
 
+// function : follow post user Info 요청 함수 //
+export const getFollowUserInfoRequest = async (followeeId: string) => {
+    const responseBody = await axios.get(GET_FOLLOW_INFO_API_URL(followeeId))
+        .then(responseDataHandler<GetSignInResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
 // function : post recruit scrap 요청 함수 //
 export const postRecruitScrapRequest = async (recruitPostId: number | string, accessToken: string) => {
     const responseBody = await axios.post(POST_RECRUIT_SCRAP_API_URL(recruitPostId), {}, bearerAuthorization(accessToken))
@@ -793,7 +838,7 @@ export const postRecruitScrapRequest = async (recruitPostId: number | string, ac
 // function: get recruit scrap list 요청 함수 //
 export const getRecruitScrapListRequest = async (accessToken: string) => {
     const responseBody = await axios.get(GET_RECRUIT_SCRAP_LIST_API_URL, bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetRecruitScrapListResponseDto>)
+        .then(responseDataHandler<GetRecruitPostListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 };

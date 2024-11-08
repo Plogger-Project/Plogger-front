@@ -5,7 +5,7 @@ import InputBox from '../../components/InputBox';
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
 import { ActiveReportList, Follow, RecruitPostList, User } from 'src/types';
-import { GetActiveReportListRequest, getRecruitPostListRequest, GetRecruitReportListRequest, getSignInFolloweeListRequest, getSignInFollowerListRequest, getUserListRequest, patchCommentRequest } from 'src/apis';
+import { GetActiveReportListRequest, getRecruitPostListRequest, GetRecruitReportListRequest, getUserListRequest, patchCommentRequest } from 'src/apis';
 import { GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
@@ -182,7 +182,7 @@ export default function Admin() {
 
     // render: 게시글 리스트 렌더링 //
     return (
-      <div className="tr" key={recruitreportPostId.reportId}>
+      <div className="tr" key={recruitreportPostId.reportId} onClick={() => onRecruitReportDeleteHandler(recruitreportPostId.reportId)}>
         <div className="td-report-reportid">{recruitreportPostId.reportId}</div>
         <div className="td-report-writer">{recruitreportPostId.userId}</div>
         <div className="td-report-number">{recruitreportPostId.recruitId}</div>
@@ -356,6 +356,14 @@ export default function Admin() {
     getRecruitReportPostList();
   };
 
+  // event handler: 구인 신고글 삭제 이벤트 처리 //
+  const onRecruitReportDeleteHandler = (reportId: number) => {
+    const confirmed = window.confirm("이 게시글을 삭제하시겠습니까?");
+    if (confirmed) {
+      // deleteRecruitReport(reportId);
+    }
+  }
+
   // event handler: active report 클릭 이벤트 처리 //
   const onActiveReportClickHandler = () => {
     setShowActiveReports([]);
@@ -405,7 +413,7 @@ export default function Admin() {
         </div>
         <div className='adminpage-bottom'>
           <div className='table-contents'>
-            <div className={`recruit-report ${isRecruit ? 'active' : ''}` }onClick={onRecruitReportClickHandler}><span>구인 신고글</span></div>
+            <div className={`recruit-report ${isRecruit  ? 'active' : ''}` }onClick={onRecruitReportClickHandler}><span>구인 신고글</span></div>
             <div className='line'>
               <div className={`active-report ${isActive ? 'active' : ''}` }onClick={onActiveReportClickHandler}><span>활동 신고글</span></div>
             </div>
@@ -489,3 +497,4 @@ export default function Admin() {
     </>
   )
 }
+

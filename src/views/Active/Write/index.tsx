@@ -86,10 +86,10 @@ export default function ActiveWrite() {
   const getMyRecruitPostResponse = (responseBody: GetMyRecruitReponseDto | ResponseDto | null) => {
     const message =
       !responseBody ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NRP' ? '존재하지 않는 게시글입니다.' :
-              responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+      responseBody.code === 'NRP' ? '존재하지 않는 게시글입니다.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
@@ -217,12 +217,14 @@ export default function ActiveWrite() {
       setRecruitId(selectedPostId);
       setLat(postLat);
       setLng(postLng);
+      setAddress(myRecruitPost.recruitAddress);
       setLocation(myRecruitPost.recruitLocation);
       setActivePeople(myRecruitPost.recruitJoinPeople);
     } else {
       setRecruitId(0);
       setLat(0);
       setLng(0);
+      setAddress('');
       setLocation('');
       setActivePeople([]);
     }
@@ -239,7 +241,7 @@ export default function ActiveWrite() {
   };
 
   const onCancleButtonClickHandler = () => {
-    const isConfirm = window.confirm('정말로 삭제하시겠습니까?');
+    const isConfirm = window.confirm('작성을 취소하시겠습니까?');
     if (!isConfirm) return;
 
     navigator(ACTIVE_PATH);
@@ -277,7 +279,7 @@ export default function ActiveWrite() {
   
     if (!recruitId) return;
   
-    let url: string | null = defaultImageUrl;
+    let url: string | null = '';
     if (imageFile) {
       const formData = new FormData();
       formData.append('file', imageFile);
@@ -288,7 +290,7 @@ export default function ActiveWrite() {
   
     const requestBody: PostActivePostRequestDto = {
       activePostTitle: title, activePostContent: content, activePostImage: url,
-      activeEndDate: endDate, activeStartDate: startDate,
+      activeEndDate: endDate, activeStartDate: startDate, activeAddress: address,
       activeLocation: location, activePeople
     };
   
@@ -310,29 +312,6 @@ export default function ActiveWrite() {
 
     getUserListRequest(accessToken).then(getUserListResponse);
   }
-
-  // effect: 좌표로 주소 정보 요청 함수 //
-  useEffect(() => {
-    const { kakao } = window;
-    if (!kakao) return;
-    const geocoder = new kakao.maps.services.Geocoder();
-
-    // 지정된 좌표의 주소를 가져오는 함수
-    const displayAddressInfo = (lat: number, lng: number) => {
-      geocoder.coord2RegionCode(lng, lat, (result: string | any[], status: any) => {
-        if (status === kakao.maps.services.Status.OK) {
-          for (let i = 0; i < result.length; i++) {
-            if (result[i].region_type === 'H') {
-              setAddress(result[i].address_name);  // address 주소 문자열 저장
-              break;
-            }
-          }
-        }
-      });
-    };
-    // 좌표에 따른 주소 요청 함수 호출
-    displayAddressInfo(lat, lng);
-  }, [lat, lng]);
 
   useEffect(() => {
     setProfileImage(signInUser?.profileImage || null);

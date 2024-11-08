@@ -6,22 +6,26 @@ import InputBox from '../../components/InputBox';
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
 import { ActivePost, Follow, Mileage, RecruitPostList, RecruitScrapList } from 'src/types';
-import { getActivePostListRequest, getGifticonRequest, getMileageListRequest, getRecruitPostListRequest, getRecruitPostRequest, getRecruitScrapListRequest, getRecruitUserInfoRequest, getFollowerListRequest, getFolloweeListRequest, patchCommentRequest } from 'src/apis';
+
+import { getActivePostListRequest, getGifticonRequest, getMileageListRequest, getRecruitPostListRequest, getRecruitPostRequest, getRecruitScrapListRequest, getRecruitUserInfoRequest, getFollowerListRequest, getFolloweeListRequest, patchCommentRequest, postFollowRequest, deleteFollowRequest, getFollowUserInfoRequest } from 'src/apis';
+
 import { GetRecruitPostListResponseDto, GetRecruitScrapListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
 import { ACCESS_TOKEN, ACTIVE_DETAIL_ABSOLUTE_PATE, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';
 import { PatchCommentRequestDto } from 'src/apis/dto/request/user';
 import { useCookies } from 'react-cookie';
-import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from 'src/apis/dto/response/follow';
+import { GetFolloweeListResponseDto, GetFollowerListResponseDto, GetFollowResponseDto } from 'src/apis/dto/response/follow';
 import useFollowPagination from 'src/hooks/follow.pagination.hook';
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import { GetMileageListResponseDto } from 'src/apis/dto/response/mileage';
 import { GetGifticonResponseDto } from 'src/apis/dto/response/gifticon';
 import { GetActivePostListResponseDto } from '@/apis/dto/response/active';
 import useGifticonPagination from '@/hooks/gifticon.pagination.hook';
-
+import GetRecruitPostResponseDto from '@/apis/dto/response/recruit/get-recruit.response.dto';
 import SavingsTwoToneIcon from '@mui/icons-material/SavingsTwoTone';
+
+import { PostFollowRequestDto } from '@/apis/dto/request/follow';
 
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
@@ -31,25 +35,25 @@ declare global {
   }
 }
 
+
 // interface: 팔로워&팔로위 리스트 컴포넌트 Properties //
 interface FollowTableRowProps {
   follow: Follow;
-  getFollowList: () => void;
   mode: 'follower' | 'followee';
 }
 
 // component: 팔로워&팔로위 리스트 아이템 컴포넌트 //
-function FollowTableRow({ follow, getFollowList, mode }: FollowTableRowProps) {
+function FollowTableRow({ follow, mode }: FollowTableRowProps) {
 
   // state: 팔로워&팔로위 정보 상태 //
   const [profileImage, setprofileImage] = useState<string | null>('');
 
-  // function : get recruit post user response 처리 함수 //
-  const getRecruitPostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
+  // function : get follower info response 처리 함수 //
+  const getFollowInfoResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
     
     const message = !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'VF' ? '잘못된 vf접근입니다.' :
-        responseBody.code === 'AF' ? '잘못된 af접근입니다.' :
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
@@ -63,7 +67,7 @@ function FollowTableRow({ follow, getFollowList, mode }: FollowTableRowProps) {
   };
 
   const displayedId = mode === 'follower' ? follow.followerId : follow.followeeId;
-  getRecruitUserInfoRequest(displayedId).then(getRecruitPostUserResponse);
+  getFollowUserInfoRequest(displayedId).then(getFollowInfoResponse);
 
   // render : 팔로워&팔로위 게시글 리스트 렌더링 //
   return (
@@ -138,6 +142,9 @@ export default function Mypage() {
 
   // state: 내 스크랩 목록 상태 //
   const [scrapContents, setScrapContents] = useState<RecruitScrapList[]>([]);
+
+  // state: 팔로잉 상태 //
+  const [isFollow, setIsFollow] = useState(false);
 
   // state: 팔로워 모달 팝업 상태 //
   const [followerModalOpen, setFollowerModalOpen] = useState<boolean>(false);
@@ -271,7 +278,7 @@ export default function Mypage() {
           fetchUserDataFromApi();
         }
       }
-    }, [followId, userId, signInUser]);
+    }, [userId]);
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -354,11 +361,8 @@ export default function Mypage() {
       if (!isSuccessed) { alert(message); return; }
   
       const scrapPosts = (responseBody as GetRecruitScrapListResponseDto).scraps || [];
-      console.log(scrapPosts);
-      const myPosts = scrapPosts.filter(post => post.userId === signInUser?.userId);
-      console.log(myPosts)
-      setTotalList4(myPosts);
-      setScrapContents(myPosts);
+      setTotalList4(scrapPosts);
+      setScrapContents(scrapPosts);
     };
 
 
@@ -379,6 +383,43 @@ export default function Mypage() {
       return;
     }
   }
+
+    // function: post mypage follow response 처리 함수 //
+    const postFollowResponse = (responseBody: ResponseDto | null) => {
+      const message =
+        !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'NP' ? '권한이 없습니다.' :
+        responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+      const isSuccessed = responseBody !== null && (responseBody.code === 'SU');
+      if (!isSuccessed) {
+        alert(message);
+        return;
+      }
+      setIsFollow(true);
+    };
+
+        // function: delete mypage follow response 처리 함수 //
+        const deleteFollowResponse = (responseBody: ResponseDto | null) => {
+          const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NP' ? '권한이 없습니다.' :
+            responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+          const isSuccessed = responseBody !== null && (responseBody.code === 'SU');
+          if (!isSuccessed) {
+            alert(message);
+            return;
+          }
+          setIsFollow(false);
+        };
+
+    // function: 팔로잉 유무 확인 함수 //
+    const isFollowing = followerList.some(follower => follower.followerId === signInUser?.userId);
 
   // interface: 구인 게시글 리스트 컴포넌트 Properties //
   interface TableRowProps {
@@ -436,7 +477,6 @@ export default function Mypage() {
 
     //function: 네비게이터 함수 //
     const navigator = useNavigate();
-    useKakaoLoader();
 
     // function : 날짜 포맷팅 함수 //
     const formatDate = (dateString: string) => {
@@ -446,38 +486,6 @@ export default function Mypage() {
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     };
-
-    // function: 지정된 좌표의 주소를 가져오는 함수 //
-    useEffect(() => {
-      const { kakao } = window;
-      if (!kakao) {
-        console.error("Kakao Maps API is not loaded.");
-        return;
-      };
-      if (!kakao || !kakao.maps || !kakao.maps.services) return;
-      const geocoder = new kakao.maps.services.Geocoder();
-  
-      // 지정된 좌표의 주소를 가져오는 함수
-      const displayAddressInfo = (lat: number, lng: number) => {
-        geocoder.coord2RegionCode(lng, lat, (result: string | any[], status: any) => {
-          if (status === kakao.maps.services.Status.OK) {
-            for (let i = 0; i < result.length; i++) {
-              if (result[i].region_type === 'H') {
-                setLocation(result[i].address_name);  // address 주소 문자열 저장
-                break;
-              }
-            }
-          }
-        });
-      };
-      // 좌표에 따른 주소 요청 함수 호출
-
-      if(activePostId.activeLocation) {
-        const [lat, lng] = (activePostId.activeLocation).split(", ").map(coord => (Math.floor(Number(coord.trim()) * 1000000) / 1000000));
-        console.log(lat, lng);
-        displayAddressInfo(lat, lng);
-      }
-    }, []);
 
     // event handler: 구인 게시글 상세 정보 보기 버튼 클릭 이벤트 처리 함수 //
     const onDetailButtonClickHandler = () => {
@@ -489,7 +497,7 @@ export default function Mypage() {
       <div className="tr" key={activePostId.activePostId}>
         <div className="td-active-number">{activePostId.activePostId}</div>
         <div className="td-active-title" onClick={onDetailButtonClickHandler}>{activePostId.activePostTitle}</div>
-        <div className="td-active-location">{location}</div>
+        <div className="td-active-location">{activePostId.activeAddress}</div>
         <div className="td-active-view">{activePostId.activeView}</div>
         <div className="td-active-date">{formatDate(activePostId.activePostCreatedAt)}</div>
       </div>
@@ -517,18 +525,20 @@ export default function Mypage() {
       return `${year}-${month}-${day}`;
     };
 
-    getRecruitPostRequest(scrapId.recruitId).then();
-    
 
     // event handler: 구인 게시글 상세 정보 보기 버튼 클릭 이벤트 처리 함수 //
     const onDetailButtonClickHandler = () => {
-      navigator(RECRUIT_DETAIL_ABSOLUTE_PATH(scrapId.recruitId));
+      navigator(RECRUIT_DETAIL_ABSOLUTE_PATH(scrapId.recruitPostId));
     };
 
     // render : 게시글 리스트 렌더링 //
     return (
-      <div className="tr" key={scrapId.recruitId}>
-        <div className="td-recruit-number" onClick={onDetailButtonClickHandler}>{scrapId.recruitId}</div>
+      <div className="tr" key={scrapId.recruitPostId}>
+        <div className="td-scrap-number">{scrapId.recruitPostId}</div>
+        <div className="td-scrap-title" onClick={onDetailButtonClickHandler}>{scrapId.recruitPostTitle}</div>
+        <div className="td-scrap-writer">{scrapId.recruitPostWriter}</div>
+        <div className="td-scrap-location">{scrapId.recruitAddress}</div>
+        <div className="td-scrap-date">{scrapId.recruitEndDate}</div>
       </div>
     )
   }
@@ -584,8 +594,6 @@ export default function Mypage() {
     const onMileageButtonClickHandler = () => {
       navigator(ACTIVE_DETAIL_ABSOLUTE_PATE(mileageId.activeId));
     };
-
-    console.log(gifticonName);
 
     // render : 게시글 리스트 렌더링 //
     return (
@@ -718,6 +726,43 @@ export default function Mypage() {
     setScrapContents([]);
     getMileagePostList();
   };
+  
+
+    // event handler: 팔로우 버튼 클릭 이벤트 처리 //
+    const onFollowButtonClickHandler = async() => {
+      if (!signInUser?.userId) {
+        alert("로그인을 해주세요.");
+        return;
+      }
+      if (!userId) {
+        alert("유효한 userId가 필요합니다.");
+        return;
+      }
+      const reqeustBody: PostFollowRequestDto = {
+        followeeId : userId
+      };
+      await postFollowRequest(reqeustBody, accessToken).then(postFollowResponse);
+    window.location.reload();
+    }
+
+    // event handler: 팔로우 취소 버튼 클릭 이벤트 처리 //
+    const onUnfollowButtonClickHandler = async() => {
+      if (!signInUser?.userId) {
+        alert("로그인을 해주세요.");
+        return;
+      }
+      if (!userId) {
+        alert("유효한 userId가 필요합니다.");
+        return;
+      }
+    
+      const accessToken = cookies[ACCESS_TOKEN];
+      if (!accessToken) return;
+
+      await deleteFollowRequest(userId, accessToken).then(deleteFollowResponse);
+      window.location.reload();
+    };
+
 
   // event handler: 팔로워 모달 버튼 클릭 이벤트 처리 함수 //
   const onFollowerOpenHandler = () => {
@@ -729,11 +774,16 @@ export default function Mypage() {
     setFolloweeModalOpen(!followeeModalOpen);
   };
 
-  // effect: 컴포넌트 로드 시 팔로워 리스트 불러오기 함수 //
-  useEffect(getFollowerList, []);
+  // effect: 컴포넌트 로드 시 팔로워, 팔로이 리스트 불러오기 함수 //
+  useEffect(() => {
+    getFollowerList();
+    getFolloweeList();
+  }, [userId]);
 
-  // effect: 컴포넌트 로드 시 팔로위 리스트 불러오기 함수 //
-  useEffect(getFolloweeList, []);
+  useEffect(() => {
+    if (!isFollowing) return;
+
+  }, [isFollowing]);
 
   return (
     <>
@@ -776,8 +826,11 @@ export default function Mypage() {
                 <div className='mileage-score'>{isOwner?.mileage}</div>
               </div>
               {
-              signInUser?.userId === user?.userId ? <div className='button-mileage' onClick={onGiftClickHandler}>기프티콘 바로가기</div> 
-              : <div className='button-follow'>팔로잉</div>
+              signInUser?.userId === user?.userId 
+              ? <div className='button-mileage' onClick={onGiftClickHandler}>기프티콘 바로가기</div> 
+              : !isFollowing 
+              ? <div className='button-follow' onClick={onFollowButtonClickHandler}>팔로잉</div>
+              : <div className='button-follow followed' onClick={onUnfollowButtonClickHandler}>팔로잉 취소</div>
               }
             </div>
           </div>
@@ -849,7 +902,11 @@ export default function Mypage() {
               <div className="main">
                 <div className="table">
                   <div className="th">
-                    <div className="td-active-number">번호</div>
+                    <div className="td-scrap-number">번호</div>
+                    <div className="td-scrap-title">제목</div>
+                    <div className="td-scrap-writer">작성자</div>
+                    <div className="td-scrap-location">위치</div>
+                    <div className="td-scrap-date">마감 날짜</div>
                   </div>
                   {
                     viewList4.map((scrapId, index) => (
@@ -895,7 +952,7 @@ export default function Mypage() {
           <div style={{marginTop:"30px"}}>
             {
               followerList.map( (follow, index)=> (
-                <FollowTableRow key={index} follow={follow} getFollowList={() => getFollowerList} mode='follower'/>
+                <FollowTableRow key={index} follow={follow} mode='follower'/>
               ))}
           </div>
           <div className='modal-bottom'>
@@ -912,7 +969,7 @@ export default function Mypage() {
           <div style={{marginTop:"30px"}}>
             {
               followeeList.map( (follow, index)=> (
-                <FollowTableRow key={index} follow={follow} getFollowList={() => getFolloweeList} mode='followee'/>
+                <FollowTableRow key={index} follow={follow} mode='followee'/>
               ))}
           </div>
           <div className='modal-bottom'>

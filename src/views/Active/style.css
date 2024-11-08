@@ -1,65 +1,57 @@
-/* 활동 게시판 wrapper */
 #active-post-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: 1134px; /* 화면 크기에 따라 유동적으로 조정 */
+    max-width: 1134px;
     overflow: hidden;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f9f8f0; /* 자연을 연상시키는 밝은 베이지색 배경 */
-    border-radius: 10px;
+    background-color: #f9f8f0;
 }
 
-/* 빈 공간 스타일 */
 #active-post-wrapper .active-blank {
     width: 100%;
     height: 40px;
 }
 
-/* 상단 빈 공간 */
 .active-top-blank {
     width: 100%;
     height: 90px;
 }
 
-/* 활동 게시판 헤더 */
 .active-post-header {
     background-image: url(/public/images/active-post-header.jpg);
     width: 100%;
     height: 300px;
     background-position: center;
-    background-size: cover; /* 이미지 크기 조정 */
+    background-size: cover;
     display: flex;
     justify-content: flex-start;
     align-items: center;
 }
 
-/* 헤더 텍스트 스타일 */
 .active-post-header .header-text {
-    color: white; /* 배경과 대비되는 흰색 텍스트 */
+    color: white;
     font-size: 40px;
     font-weight: bold;
     margin-left: 50px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* 텍스트 그림자 추가로 가독성 강화 */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 }
 
-/* 페이지 번호 스타일 */
 #active-post-wrapper .active-post-page-number {
     text-align: left;
     margin: 16px 0;
     margin-left: 20px;
     width: 100%;
     font-weight: normal;
-    color: #5a5a5a; /* 부드러운 회색 텍스트 */
+    color: #5a5a5a;
     font-size: 1rem;
 }
 
-/* 추가적인 카드와 버튼 스타일 */
 #active-post-wrapper button {
-    background-color: #4caf50; /* 초록색 배경 */
+    background-color: #4caf50;
     color: white;
     padding: 10px 20px;
     font-size: 1rem;
@@ -70,7 +62,7 @@
 }
 
 #active-post-wrapper button:hover {
-    background-color: #388e3c; /* 버튼 색상 어두워지기 */
+    background-color: #388e3c;
 }
 
 /* 페이지네이션 스타일 */
@@ -87,4 +79,24 @@
 #active-post-wrapper .pagination .MuiPaginationItem-root.Mui-selected {
     background-color: #388e3c;
     color: white;
+}
+
+#active-post-wrapper .active-write-button {
+    cursor: pointer;
+    width: 100px;
+    height: 40px;
+    
+    text-align: center;
+    border: 0.1px solid rgb(103, 141, 129);
+    border-radius: 8px;
+
+    font-size: 18px;
+    color: rgba(0, 95, 65, 1);
+    justify-content: center;
+    align-content: center;
+}
+
+#active-post-wrapper .active-write-button:hover {
+    background-color: rgba(0, 95, 65, 1);
+    color: rgba(255, 255, 255, 1);
 }

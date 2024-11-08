@@ -5,5 +5,6 @@ export default interface PostActivePostRequestDto {
     activeStartDate: string;
     activeEndDate: string;
     activeLocation: string;
+    activeAddress: string;
     activePeople: string[];
 }
