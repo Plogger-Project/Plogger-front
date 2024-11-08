@@ -9,7 +9,7 @@ import SignInRequestDto from '../../apis/dto/request/auth/sign-in.request.dto';
 import { deleteAlertListRequest, getAlertListRequest, getSignInRequest, signInRequest } from '../../apis';
 import { ACTIVE_PATH, QNA_PATH, RECRUIT_PATH } from '../../constants';
 import { useCookies } from 'react-cookie';
-import { useSignInUserStore } from 'src/stores';
+import { useSearchStore, useSignInUserStore } from 'src/stores';
 import { AlertList } from 'src/types';
 
 import GetAlertListResponseDto from 'src/apis/dto/response/alert/get-alert-list.response.dto';
@@ -100,11 +100,12 @@ function TableRow({ alerts, getAlertList }: TableRowProps) {
     )
 }
 
-// component: Navigation Ba 컴포넌트 //
+// component: Navigation Bar 컴포넌트 //
 export default function NavigationBar() {
 
     // state: 로그인 유저 정보 상태 //
     const { signInUser, setSignInUser } = useSignInUserStore();
+    const { searchWord, setSearchWord } = useSearchStore();
 
     // state: 페이징 관련 상태 //
     const { currentPage, totalPage, totalCount, viewList, setTotalList, initViewList, ...paginationProps } = useAlertPagination<AlertList>();
@@ -135,24 +136,6 @@ export default function NavigationBar() {
     // state: scroll 상태 //
     const [isScrolled, setIsScrolled] = useState(false);
 
-    // // function: get recruit post list response 처리 함수 //
-    // const getAlertListResponse = (responseBody: GetAlertListResponseDto | ResponseDto | null) => {
-
-    //     const message =
-    //         !responseBody ? '서버에 문제가 있습니다.' :
-    //         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-    //         responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-
-    //     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    //     if (!isSuccessed) { alert(message); return; }
-
-    //     const Alerts = (responseBody as GetAlertListResponseDto).Alerts || [];
-    //     const myAlerts = Alerts.filter(get => get.userId === signInUser?.userId);
-    //     setTotalList(myAlerts);
-    //     setOriginalList(myAlerts);
-
-    // };
-
 
     // function: alert list 불러오기 함수 //
     const getAlertList = () => {
@@ -178,6 +161,13 @@ export default function NavigationBar() {
         setTotalList(alerts);
         setOriginalList(alerts);
     }
+
+    // event handler: 검색어 키다운 이벤트 처리 //
+    const onSearchWordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+        setSearchWord(value);
+    }
+
     useEffect(() => {
         if (signInUser) {
             getAlertList();
@@ -432,7 +422,7 @@ export default function NavigationBar() {
                 <div className={`manu-qna ${isQnA ? 'active' : ''}`} onClick={onQnaClickHandler}>Q&A</div>
             </div>
             {location.pathname !== '/' && location.pathname !== (signInUser && MYPAGE_PATH(signInUser?.userId)) &&
-                <input className='input-box' placeholder='검색어를 입력하세요.' />
+                <input className='input-box' value={searchWord} placeholder='검색어를 입력하세요.' onChange={onSearchWordChangeHandler} />
             }
             <div className='button-box'>
                 {!signInUser ?
