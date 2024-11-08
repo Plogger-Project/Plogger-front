@@ -185,7 +185,7 @@ export default function RecruitPost() {
 
   // function: geolocation //
   const geoLocation = useGeolocation();
-
+  
   //function: 네비게이터 함수 //
   const navigator = useNavigate();
 
@@ -290,8 +290,8 @@ export default function RecruitPost() {
   // effect : geolocation //
   useEffect(() => {
     if (geoLocation.loaded && geoLocation.coordinates) {
-      // const lat = geoLocation.coordinates.lat.toString();
-      // const lng = geoLocation.coordinates.lng.toString();
+      const lat = geoLocation.coordinates.lat.toString();
+      const lng = geoLocation.coordinates.lng.toString();
 
       setCenter({
         lat: geoLocation.coordinates.lat,
@@ -359,7 +359,8 @@ useEffect(() => {
           >
             {positions.map((pos) => (
               <div key={`${pos.id}-${pos.lat}-${pos.lng}`}>
-              <MapMarker
+                <MapMarker
+                  key={`${pos.id}-marker`}
                   position={{ lat: pos.lat, lng: pos.lng }}
                   onClick={() => {
                     setIsOpen(pos.id)
@@ -376,7 +377,7 @@ useEffect(() => {
             ))}
           </MarkerClusterer>
           {positions.map(pos =>
-            <>
+            <React.Fragment key={`${pos.id}-overlay` }>
               {isOpen === pos.id && (
                 <CustomOverlayMap
                   position={{ lat: pos.lat, lng: pos.lng }}
@@ -415,7 +416,7 @@ useEffect(() => {
                 </CustomOverlayMap>
 
               )}
-            </>
+            </React.Fragment>
           )}
         </Map>
         

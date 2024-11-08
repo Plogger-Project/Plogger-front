@@ -679,33 +679,6 @@ export const deleteAlertListRequest = async (id: string | number, accessToken: s
     return resopnseBody;
 }
 
-// function: get recruit comment list 요청 함수 //
-export const getRecruitCommentListRequest = async (recruitPostId: number | string, accessToken: string) => {
-    const responseBody = await axios.get(GET_RECRUIT_COMMENT_LIST_API_URL(recruitPostId), bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetRecruitCommentListResponseDto>)
-        .catch(responseErrorHandler);
-    return responseBody;
-};
-
-
-// // function: get sign in follower list 요청 함수 //
-// export const getSignInFollowerListRequest = async (accessToken: string) => {
-//     const responseBody = await axios.get(GET_SIGN_IN_FOLLOWER_LIST_API_URL, bearerAuthorization(accessToken))
-//         .then(responseDataHandler<GetFollowerListResponseDto>)
-//         .catch(responseErrorHandler);
-//     console.log(responseBody);
-//     return responseBody;
-// };
-
-// // function: get sign in followee list 요청 함수 //
-// export const getSignInFolloweeListRequest = async (accessToken: string) => {
-//     const responseBody = await axios.get(GET_SIGN_IN_FOLLOWEE_LIST_API_URL, bearerAuthorization(accessToken))
-//         .then(responseDataHandler<GetFolloweeListResponseDto>)
-//         .catch(responseErrorHandler);
-//     console.log(responseBody);
-//     return responseBody;
-// };
-
 // function : post follow 요청 함수 //
 export const postFollowRequest = async (requestBody:PostFollowRequestDto, accessToken: string) => {
     const responseBody = await axios.post(POST_FOLLOW_API_URL, requestBody , bearerAuthorization(accessToken))
