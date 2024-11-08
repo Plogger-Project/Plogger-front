@@ -24,14 +24,6 @@ import useGifticonPagination from '@/hooks/gifticon.pagination.hook';
 import SavingsTwoToneIcon from '@mui/icons-material/SavingsTwoTone';
 import GetRecruitPostResponseDto from '@/apis/dto/response/recruit/get-recruit.response.dto';
 
-
-// kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
-declare global {
-  interface Window {
-    kakao: any;
-  }
-}
-
 // interface: 팔로워&팔로위 리스트 컴포넌트 Properties //
 interface FollowTableRowProps {
   follow: Follow;
@@ -433,7 +425,6 @@ export default function Mypage() {
 
     //function: 네비게이터 함수 //
     const navigator = useNavigate();
-    useKakaoLoader();
 
     // function : 날짜 포맷팅 함수 //
     const formatDate = (dateString: string) => {
@@ -443,38 +434,6 @@ export default function Mypage() {
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     };
-
-    // function: 지정된 좌표의 주소를 가져오는 함수 //
-    useEffect(() => {
-      const { kakao } = window;
-      if (!kakao) {
-        console.error("Kakao Maps API is not loaded.");
-        return;
-      };
-      if (!kakao || !kakao.maps || !kakao.maps.services) return;
-      const geocoder = new kakao.maps.services.Geocoder();
-  
-      // 지정된 좌표의 주소를 가져오는 함수
-      const displayAddressInfo = (lat: number, lng: number) => {
-        geocoder.coord2RegionCode(lng, lat, (result: string | any[], status: any) => {
-          if (status === kakao.maps.services.Status.OK) {
-            for (let i = 0; i < result.length; i++) {
-              if (result[i].region_type === 'H') {
-                setLocation(result[i].address_name);  // address 주소 문자열 저장
-                break;
-              }
-            }
-          }
-        });
-      };
-      // 좌표에 따른 주소 요청 함수 호출
-
-      if(activePostId.activeLocation) {
-        const [lat, lng] = (activePostId.activeLocation).split(", ").map(coord => (Math.floor(Number(coord.trim()) * 1000000) / 1000000));
-        console.log(lat, lng);
-        displayAddressInfo(lat, lng);
-      }
-    }, []);
 
     // event handler: 구인 게시글 상세 정보 보기 버튼 클릭 이벤트 처리 함수 //
     const onDetailButtonClickHandler = () => {
@@ -486,7 +445,7 @@ export default function Mypage() {
       <div className="tr" key={activePostId.activePostId}>
         <div className="td-active-number">{activePostId.activePostId}</div>
         <div className="td-active-title" onClick={onDetailButtonClickHandler}>{activePostId.activePostTitle}</div>
-        <div className="td-active-location">{location}</div>
+        <div className="td-active-location">{activePostId.activeAddress}</div>
         <div className="td-active-view">{activePostId.activeView}</div>
         <div className="td-active-date">{formatDate(activePostId.activePostCreatedAt)}</div>
       </div>
@@ -846,7 +805,11 @@ export default function Mypage() {
               <div className="main">
                 <div className="table">
                   <div className="th">
-                    <div className="td-active-number">번호</div>
+                    <div className="td-scrap-number">번호</div>
+                    <div className="td-scrap-title">제목</div>
+                    <div className="td-scrap-writer">작성자</div>
+                    <div className="td-scrap-location">위치</div>
+                    <div className="td-scrap-date">마감 날짜</div>
                   </div>
                   {
                     viewList4.map((scrapId, index) => (

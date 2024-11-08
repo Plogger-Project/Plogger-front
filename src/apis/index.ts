@@ -617,8 +617,8 @@ export const GetActiveReportListRequest = async (accessToken: string) => {
 }
 
 // function: recruit like & unlike 요청 함수 //
-export const postRecruitLikeRequest = async (recruitId: number | string) => {
-    const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId))
+export const postRecruitLikeRequest = async (recruitId: number | string, accessToken: string) => {
+    const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId), {}, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
