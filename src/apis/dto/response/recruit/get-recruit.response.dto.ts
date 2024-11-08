@@ -8,6 +8,7 @@ export default interface GetRecruitPostResponseDto extends ResponseDto {
     recruitPostImage: string | null;
     recruitPostWriter: string;
     recruitLocation: string;
+    recruitAddress: string;
     recruitPostCreatedAt: string;
     recruitEndDate: string;
     minPeople: number;

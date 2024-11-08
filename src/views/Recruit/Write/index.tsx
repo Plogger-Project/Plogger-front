@@ -22,8 +22,6 @@ declare global {
     kakao: any;
   }
 }
-// variable : 카카오 맵 키 //
-// const appkey = process.env.REACT_APP_KAKAO_MAP_KEY;
 
 
 
@@ -49,6 +47,7 @@ export default function RecruitWrite() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [endDate, setEndDate] = useState<string>('');
   const [location, setLocation] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date()); // 날짜 상태 추가
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false); // 달력 열기 상태 추가
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
@@ -75,14 +74,14 @@ export default function RecruitWrite() {
   const geoLocation = useGeolocation();
 
 
-  const [lat, setLat] = useState<string | null>(null);
-  const [lng, setLng] = useState<string | null>(null);
+  const [lng, setLng] = useState<number>(0);
+  const [lat, setLat] = useState<number>(0);
   const [center, setCenter] = useState<{ lat: number; lng: number }>({
     lat: 35.152170407376424, // 기본 값 설정
     lng: 129.05979624585217,
   });
 
-
+  // effect: 현재 위치 좌표 정보 요청 함수 //
   useEffect(() => {
     if (geoLocation.loaded && geoLocation.coordinates) {
       // const lat = geoLocation.coordinates.lat.toString();
@@ -96,6 +95,31 @@ export default function RecruitWrite() {
       setWriterProfileImage(signInUser?.profileImage || null);
     }
   }, [geoLocation]);
+
+  // effect: 좌표로 주소 정보 요청 함수 //
+  useEffect(() => {
+    const { kakao } = window;
+    if (!kakao || !kakao.maps || !kakao.maps.services) return;
+    const geocoder = new kakao.maps.services.Geocoder();
+
+
+    // 지정된 좌표의 주소를 가져오는 함수
+    const displayAddressInfo = (lat: number, lng: number) => {
+      geocoder.coord2RegionCode(lng, lat, (result: string | any[], status: any) => {
+        if (status === kakao.maps.services.Status.OK) {
+          for (let i = 0; i < result.length; i++) {
+            if (result[i].region_type === 'H') {
+              setAddress(result[i].address_name);  // address 주소 문자열 저장
+              break;
+            }
+          }
+        }
+      });
+    };
+
+    // 좌표에 따른 주소 요청 함수 호출
+    displayAddressInfo(lat, lng);
+  }, [lat,lng]);
 
 
 
@@ -220,9 +244,12 @@ export default function RecruitWrite() {
       minPeople: parseInt(people),
       recruitEndDate: endDate,
       recruitLocation: location,
+      recruitAddress: address
     };
     postRecruitPostRequest(requestBody, accessToken).then(postRecruitPostResponse);
   };
+
+  
 
   
 
@@ -303,7 +330,8 @@ export default function RecruitWrite() {
                 const latlng = MouseEvent.latLng;
                 const lat = latlng.getLat();
                 const lng = latlng.getLng();
-
+                setLat(lat);
+                setLng(lng);
                 setPosition({ lat, lng });
                 setLocation(`${lat}, ${lng}`); // 문자열로 저장
 

@@ -18,7 +18,7 @@ const useRecruitCommentPagination = <T>() => {
 
     // function: 전체 리스트 변경 함수 //
     const init = (totalList: T[]) => {
-        const totalCount = totalList.length;
+        const totalCount = (totalList || []).length;
         setTotalCount(totalCount);
         const totalPage = Math.ceil(totalCount / ITEMS_PER_PAGE);
         setTotalPage(totalPage);
@@ -32,8 +32,8 @@ const useRecruitCommentPagination = <T>() => {
     };
 
     // function: 페이지 변경 함수 //
-    const initViewList = (totalList: T[]) => {
-        const totalCount = totalList.length;
+    const initViewList = (totalList: T[] = []) => {
+        const totalCount = (totalList || []).length;
         const startIndex = ITEMS_PER_PAGE * (currentPage - 1);
         let endIndex = startIndex + ITEMS_PER_PAGE;
         if (endIndex > totalCount) endIndex = totalCount;

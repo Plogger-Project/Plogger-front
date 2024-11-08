@@ -22,6 +22,7 @@ interface TableRowProps {
     getActiveCommentList: () => void;
 }
 
+// component: active comment list 아이템 컴포넌트 //
 function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
 
     // state: 게시글 번호 경로 변수 상태 //
@@ -130,7 +131,7 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
     }
 
 
-    
+    // render: active comment list 아이템 컴포넌트 렌더링 //
     return (
         <div className='commentUserInfo-right'>
             <div className='activeCommentWriter'>{activeComment.activeCommentWriter}</div>
@@ -156,6 +157,7 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
     )
 }
 
+// component: 활동 게시글 상세 보기 컴포넌트 //
 export default function ActiveDetail() {
 
     // state: 게시글 번호 경로 변수 상태 //
@@ -187,7 +189,7 @@ export default function ActiveDetail() {
     const [view, setView] = useState<number>(0);
     const [address, setAddress] = useState<string>('');
     const [activePeople, setActivePeople] = useState<string[]>([]);
-    const [commentConent, setCommentContent] = useState<string>('');
+    const [commentContent, setCommentContent] = useState<string>('');
     const [anchorEl, setAnchorEl] = useState(null);
 
     const [lng, setLng] = useState<number>(0);
@@ -522,7 +524,7 @@ export default function ActiveDetail() {
 
     // event handler: 댓글 등록 버튼 클릭 이벤트 처리 //
     const onCommentPostButtonClick = () => {
-        if (!commentConent) {
+        if (!commentContent) {
             alert('댓글 입력해주세요.');
             return;
         }
@@ -533,7 +535,7 @@ export default function ActiveDetail() {
         if (!activePostId) return;
 
         const requestBody: PostActiveCommentRequestDto = {
-            activeCommentContent: commentConent
+            activeCommentContent: commentContent
         }
 
         postActiveCommentRequest(requestBody, activePostId, accessToken).then(postActiveCommentResponse);
@@ -622,7 +624,7 @@ export default function ActiveDetail() {
                                         <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제하기</button>
                                     </>
                                 )}
-                                {!isAuthor && (
+                                {!isAuthor || !signInUser && (
                                     <>
                                         <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
                                     </>
@@ -692,6 +694,7 @@ export default function ActiveDetail() {
                     </div>
                     <div className='line'></div>
                     <div className='comments'>
+                        {signInUser &&
                         <div className='commentUserInfoWrite'>
                             <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
                             <div className='commentUserInfo-right'>
@@ -699,7 +702,8 @@ export default function ActiveDetail() {
                                 <input placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
                             </div>
                             <div className='commentButton' onClick={onCommentPostButtonClick}>등록</div>
-                        </div>
+                            </div>
+                        }
                         {viewList.map((activeComment, index) => (
                             <div className='commentUserInfo'key={index}>
                                 <div className='profileImage' style={{ backgroundImage: `url(${commentProfileImage[activeComment.activeCommentId]})`, cursor: 'pointer'}} onClick={() => onProfileImageClick(activeComment.activeCommentWriter)}></div>
