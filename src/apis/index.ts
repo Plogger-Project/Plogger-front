@@ -29,6 +29,7 @@ import PostChatMessageRequestDto from "./dto/request/chat/post-chat-message.requ
 import { GetMessageListResponseDto, GetRoomListResponseDto } from "./dto/response/chat";
 import PostQnaCommentRequestDto from "./dto/request/qna/post-qna-comment.request.dto";
 import GetQnaCommentListResponseDto from "./dto/response/qna/get-qna-comment-list.response.dto";
+import { PostFollowRequestDto } from "./dto/request/follow";
 
 
 
@@ -143,7 +144,7 @@ const GET_SIGN_IN_FOLLOWER_LIST_API_URL = `${FOLLOW_MODULE_URL}/follower`;
 const GET_SIGN_IN_FOLLOWEE_LIST_API_URL = `${FOLLOW_MODULE_URL}/followee`;
 const GET_FOLLOWER_LIST_API_URL = (followeeId: string) => `${FOLLOW_MODULE_URL}/follower/${followeeId}`;
 const GET_FOLLOWEE_LIST_API_URL = (followerId: string) => `${FOLLOW_MODULE_URL}/followee/${followerId}`;
-const DELETE_FOLLOWEE_API_URL = (followeeId: string) => `${GIFTICON_MODULE_URL}/${followeeId}`;
+const DELETE_FOLLOWEE_API_URL = (followeeId: string) => `${FOLLOW_MODULE_URL}/${followeeId}`;
 
 const GET_MILEAGE_LIST_API_URL = `${PLOGGER_API_DOMAIN}/api/v1/mileage`
 
@@ -640,14 +641,6 @@ export const deleteAlertListRequest = async (id: string | number, accessToken: s
 }
 
 
-// function: post follow 요청 함수 //
-// export const postFollowRequest = async ( requestBody: PostGifticonRequestDto, accessToken: string ) => {
-//     const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId))
-//         .then(responseDataHandler<ResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// };
-
 // function: get recruit comment list 요청 함수 //
 export const getRecruitCommentListRequest = async (recruitPostId: number | string, accessToken: string) => {
     const responseBody = await axios.get(GET_RECRUIT_COMMENT_LIST_API_URL(recruitPostId), bearerAuthorization(accessToken))
@@ -674,6 +667,22 @@ export const getRecruitCommentListRequest = async (recruitPostId: number | strin
 //     return responseBody;
 // };
 
+// function : post follow 요청 함수 //
+export const postFollowRequest = async (requestBody:PostFollowRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_FOLLOW_API_URL, requestBody , bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: get follow 요청 함수 //
+export const getFollowRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_SIGN_IN_FOLLOWEE_LIST_API_URL, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
 // function: get follower list 요청 함수 //
 export const getFollowerListRequest = async (followeeId: string) => {
     const responseBody = await axios.get(GET_FOLLOWER_LIST_API_URL(followeeId))
@@ -689,6 +698,15 @@ export const getFolloweeListRequest = async (followerId: string) => {
         .catch(responseErrorHandler);
     return responseBody;
 };
+
+// function: delete follow 요청 함수 //
+export const deleteFollowRequest = async (followeeId: string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_FOLLOWEE_API_URL(followeeId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+        console.log("팔로위 아이디" + followeeId);
+    return responseBody;
+}
 
 // function : get recruit post user Info 요청 함수 //
 export const getRecruitUserInfoRequest = async (recruitPostWriter: string) => {
