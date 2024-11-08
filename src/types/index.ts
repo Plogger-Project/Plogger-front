@@ -17,6 +17,7 @@ import ActiveReportList from "./activereport.interface";
 import QnaComment from "./qna-comment.interface";
 import RecruitScrapList from "./recruit-scrap-list.interface";
 import RecruitJoinList from './recruit-join.interface';
+import SimpleUser from "./simple-user.interface";
 
 export type {
     User,
@@ -37,5 +38,6 @@ export type {
     ActiveReportList,
     QnaComment,
     RecruitScrapList,
-    RecruitJoinList
+    RecruitJoinList,
+    SimpleUser
 }

@@ -307,7 +307,8 @@ export default function MyPageUpdate() {
   }
 
   const onUpdateCancelButtonClickHandler = () => {
-    navigator(MYPAGE_PATH);
+    if (!signInUser) return;
+    navigator(MYPAGE_PATH(signInUser?.userId));
   }
 
   useEffect(() => {

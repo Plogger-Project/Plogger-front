@@ -54,11 +54,11 @@ function MarkerOverlay({ recruitPostId, getRecruitList }: recruitPostTableRow) {
       <div className="marker-overlay-title">{recruitPostId.recruitPostTitle}</div>
       <div className="marker-overlay-image"style={{ backgroundImage: `url(${recruitPostId.recruitPostImage || defaultImage})` }}></div>
       <div className="marker-overlay-bottom">
-        <div className="marker-overlay-isCompleted">{recruitPostId.isCompleted ? '마감됨' : '모집중'}</div>
-        <div className="marker-overlay-people">{recruitPostId.currentPeople}/{recruitPostId.minPeople}</div>
+        {/* <div className="marker-overlay-isCompleted">{recruitPostId.isCompleted ? '마감됨' : '모집중'}</div> */}
+        <div className="marker-overlay-people">모집 현황 : {recruitPostId.currentPeople}/{recruitPostId.minPeople}</div>
         </div>
         <div className="marker-overlay-navigator" onClick={onDetailButtonClickHandler}>글로 이동</div>
-      </div>
+    </div>
       
     </>
   )
@@ -357,7 +357,9 @@ useEffect(() => {
           <MarkerClusterer
             averageCenter={true} minLevel={6}
           >
-            {positions.map((pos) => (
+            {positions
+              .filter(pos => !pos.isCompleted)
+              .map((pos) => (
               <div key={`${pos.id}-${pos.lat}-${pos.lng}`}>
                 <MapMarker
                   key={`${pos.id}-marker`}
