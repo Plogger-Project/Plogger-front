@@ -8,6 +8,7 @@ import { ResponseDto } from "src/apis/dto/response";
 import { QNA_DETAIL_PATH, QNA_WRITE_PATH } from "src/constants";
 import { getQnaPostListRequest } from './../../apis/index';
 import Pagination from "src/components/pagination";
+import PushPinIcon from '@mui/icons-material/PushPin';
 
 // interface: QnA 게시글 리스트 컴포넌트 Properties //
 interface TableRowProps {
@@ -39,7 +40,11 @@ function TableRow({ qnaPostId, getQnaList }: TableRowProps) {
   // render: 게시글 리스트 렌더링 //
   return (
     <div className="tr" key={qnaPostId.qnaPostId}>
-      <div className="td-qna-number">{qnaPostId.qnaPostId}</div>
+      <div className="td-qna-number">{qnaPostId.isPinned ? (
+          <PushPinIcon className="pin-style" style={{ color: '#FF0000' }} /> // Pin 아이콘 표시 
+        ) : (
+          qnaPostId.qnaPostId
+        )}</div>
       <div className="td-qna-title" onClick={onDetailButtonClickHandler}>{qnaPostId.qnaPostTitle}</div>
       <div className="td-qna-writer">{qnaPostId.qnaPostWriter}</div>
       <div className="td-qna-create-date">{formatDate(qnaPostId.qnaPostCreatedAt)}</div>
@@ -47,7 +52,7 @@ function TableRow({ qnaPostId, getQnaList }: TableRowProps) {
   )
 }
 
-
+// component: QnA 게시글 리스트 컴포넌트 //
 export default function QnaPost() {
 
   const [showPosts, setShowPosts] = useState(false); // 게시글 표시 상태
