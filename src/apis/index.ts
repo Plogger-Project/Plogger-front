@@ -740,6 +740,14 @@ export const getRecruitCommentUserInfoRequest = async (recruitCommentWriter: str
     return responseBody;
 }
 
+// function : recruit join user Info 요청 함수 //
+export const getRecruitJoinUserInfoRequest = async (recruitJoinUserId: string) => {
+    const responseBody = await axios.get(GET_RECRUIT_USER_INFO_API_URL(recruitJoinUserId))
+        .then(responseDataHandler<GetSignInResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
 // function : post recruit post join 요청 함수 //
 export const postRecruitJoinRequest = async (recruitPostId: string | number, accessToken: string) => {
     const responseBody = await axios.post(POST_RECRUIT_JOIN_API_URL(recruitPostId), {}, bearerAuthorization(accessToken))

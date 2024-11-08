@@ -11,8 +11,8 @@ import GetRecruitPostResponseDto from 'src/apis/dto/response/recruit/get-recruit
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import RecruitWrite from './../Write/index';
 
-import { RecruitComment, RecruitPostList } from 'src/types';
-import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, getRecruitScrapRequest, postRecruitScrapRequest, postRecruitCommentRequest, patchRecruitCommentRequest, deleteRecruitCommentRequest, getRecruitCommentUserInfoRequest, postRecruitLikeRequest } from 'src/apis';
+import { RecruitComment, RecruitPostList, SimpleUser } from 'src/types';
+import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, getRecruitScrapRequest, postRecruitScrapRequest, postRecruitCommentRequest, patchRecruitCommentRequest, deleteRecruitCommentRequest, getRecruitCommentUserInfoRequest, postRecruitLikeRequest, getRecruitJoinUserInfoRequest } from 'src/apis';
 
 import axios from 'axios';
 import { deleteRecruitPostRequest, getRecruitPostRequest, getRecruitUserInfoRequest } from 'src/apis';
@@ -26,6 +26,7 @@ import useRecruitCommentPagination from 'src/hooks/recruit-comment.pagination.ho
 import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto, GetRecruitScrapResponseDto, GetRecruitJoinListResponseDto } from 'src/apis/dto/response/recruit';
 import { PatchRecruitCommentRequestDto, PatchRecruitIsCompletedRequestDto, PostRecruitCommentRequestDto } from 'src/apis/dto/request/recruit';
 import { differenceInDays, parseISO } from 'date-fns';
+import { Avatar, Box, Popover, Typography } from '@mui/material';
 
 
 
@@ -55,7 +56,9 @@ function TableRow({ recruitComment, getRecruitCommentList }: TableRowProps) {
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
   // 댓글 작성자와 로그인한 유저가 같은지 확인 //
-  const isAuthor = recruitComment.recruitCommentWriter === signInUser?.userId;
+  const isAuthor = recruitComment.recruitCommentWriter === signInUser?.userId; 
+
+  const isAdmin = signInUser?.isAdmin;
 
   // function: 구인 게시판 댓글 삭제 함수 //
   const deleteRecruitCommentResponse = (responseBody: ResponseDto | null) => {
@@ -161,7 +164,7 @@ function TableRow({ recruitComment, getRecruitCommentList }: TableRowProps) {
         <div>
           <div className='recruitCommentContent'>{recruitComment.recruitCommentContent}</div>
           <div className='recruitCommentCreatedAt'>{recruitComment.recruitCommentCreatedAt}</div>
-          {isAuthor && (
+            {(isAuthor || isAdmin) && (
             <div>
               <button onClick={onEditButtonClickHandler}>수정</button>
               <button onClick={onDeleteButtonClickHandler}>삭제</button>
@@ -226,7 +229,7 @@ export default function RecruitDetail() {
   const [optionPosition, setOptionPosition] = useState({ top: 0, left: 0 });  // 옵션 항목 위치
   const optionBoxRef = useRef<HTMLDivElement | null>(null);  // optionBox 참조
   const mapRef = useRef<HTMLDivElement | null>(null); // 지도를 렌더링할 div의 참조
-  const [joinList, setJoinList] = useState<string[]>([]);
+  const [joinList, setJoinList] = useState<SimpleUser[]>([]);
 
   const [lng, setLng] = useState<number>(0);
   const [lat, setLat] = useState<number>(0);
@@ -234,6 +237,10 @@ export default function RecruitDetail() {
   const [commentContent, setCommentContent] = useState<string>('');
   const [anchorEl, setAnchorEl] = useState(null);
   const [commentProfileImage, setCommentProfileImage] = useState<{ [key: number]: string | null }>({});
+  const [joinProfileImage, setJoinProfileImage] = useState<{ [key: string]: string | undefined }>({});
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'tag-list-popover' : undefined;
 
   // variable: 작성자 여부 //
   const isWriter = writer === signInUser?.userId;
@@ -366,6 +373,7 @@ export default function RecruitDetail() {
 
     const { joins } = responseBody as GetRecruitJoinListResponseDto;
     setJoinList(joins);
+
   }
 
 
@@ -509,7 +517,7 @@ export default function RecruitDetail() {
     const { profileImage } = responseBody as GetSignInResponseDto;
     setCommentProfileImage(prev => ({ ...prev, [commentId]: profileImage }));
   };
-
+  
   // function : post recruit join response 처리 함수 //
   const postRecruitJoinResponse = (responseBody: ResponseDto | null) => {
     const message =
@@ -528,6 +536,7 @@ export default function RecruitDetail() {
     }
 
     if (!recruitPostId) return;
+
     getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
   }
 
@@ -707,12 +716,11 @@ export default function RecruitDetail() {
       alert("이미 모집 종료된 글입니다.")
       return;
     }
-    if ((signInUser && joinList.includes(signInUser.userId))) {
+    if ((signInUser && joinList.some(user => user.userId === signInUser.userId))) {
       const isConfirm = window.confirm('참여 취소 하시겠습니까?')
       if (!isConfirm) return;
-
     }
-    if (!(signInUser && joinList.includes(signInUser.userId))) {
+    if (!(signInUser && joinList.some(user => user.userId === signInUser.userId))) {
       const isConfirm = window.confirm('정말로 참여 하시겠습니까?')
       if (!isConfirm) return;
     }
@@ -797,11 +805,11 @@ export default function RecruitDetail() {
   // effect: recruit 변경 시 recruit comment 함수 //
   useEffect(() => {
     if (!recruitPostId) return;
-    const accessToken = cookies[ACCESS_TOKEN];
     getRecruitScrapRequest(recruitPostId).then(getRecruitScrapResponse);
     getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
-    if (!accessToken) return;
     getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
+
+    
   }, [recruitPostId]);
 
 
@@ -815,6 +823,14 @@ export default function RecruitDetail() {
     getRecruitCommentList();
 
   }, [recruitPostId]);
+
+  const handleClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
 
 
@@ -912,10 +928,35 @@ export default function RecruitDetail() {
           <div className='postInfo'>
             <div className='left'>
               <div className='endDate'>모집 종료일 : {endDate}</div>
-              <div className='members'>모집 인원 : {(joinList.length) + 1}/{people}</div>
+              <div className='members' onClick={handleClick}>모집 인원 : {(joinList.length) + 1}/{people}</div>
+
+              <Popover
+                id={id}
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+              >
+                <Box sx={{ padding: 2 }}>
+                  <Typography variant="subtitle1">참여한 유저</Typography>
+                  {joinList.map((joinUser, index) => (
+                    <Box key={index} display="flex" alignItems="center" mb={1}>
+                      <Avatar src={joinUser.profileImage} sx={{ width: 24, height: 24, mr: 1 }} />
+                      <Typography variant="body2">{joinUser.userId}</Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </Popover>
               <div className='isCompleted'>{isCompleted ? "마감됨" : "모집중"}</div>
               {signInUser?.userId === writer ? '' :
-                <div className='accession' onClick={onAccessionButtonClickHandler}>{isCompleted ? "모집완료" : (signInUser && joinList.includes(signInUser.userId)) ? "참여완료" : "참여"}</div>
+                <div className='accession' onClick={onAccessionButtonClickHandler}>{isCompleted ? "모집완료" : (signInUser && joinList.some(user => user.userId === signInUser.userId)) ? "참여완료" : "참여"}</div>
               }
               {signInUser?.userId === writer ?
                 <div className='end' onClick={onEndButtonClickHandler}>{isCompleted ? "종료 취소" : "모집 종료"}</div>
