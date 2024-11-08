@@ -209,16 +209,35 @@
     height: 40px;
     text-align: center;
     border-radius: 8px;
-    border: 0.1px solid rgba(221, 114, 114, 0.8);
+    border: 0.1px solid rgb(180, 185, 245);
     font-size: 20px;
-    color: rgb(255, 0, 0);
+    color: rgb(61, 90, 252);
     justify-content: center;
     align-content: center;
 }
 
 #mypage .button-follow:hover {
-    background-color: #da3e3e !important;
+    background-color: rgb(61, 90, 252) !important;
     color: rgba(255, 255, 255, 1) !important;
+}
+
+#mypage .button-follow.followed {
+    user-select: none;
+    cursor: pointer;
+    width: 160px;
+    height: 40px;
+    text-align: center;
+    border-radius: 8px;
+    background-color: rgb(61, 90, 252);
+    font-size: 20px;
+    color: rgba(255, 255, 255, 1);
+    justify-content: center;
+    align-content: center;
+}
+
+#mypage .button-followed:hover {
+    border: 0.1px solid rgb(180, 185, 245) !important;
+    color: rgb(61, 90, 252) !important;
 }
 
 #mypage .modal {
