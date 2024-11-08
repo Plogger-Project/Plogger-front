@@ -1,6 +1,5 @@
-export default interface RecruitCommentList {
+export default interface RecruitComment {
     recruitCommentId: number;
-    recruitId: number;
     recruitCommentWriter: string;
     recruitCommentCreatedAt: string;
     recruitCommentContent: string;

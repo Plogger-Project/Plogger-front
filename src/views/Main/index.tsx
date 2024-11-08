@@ -7,7 +7,7 @@ import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-
+import simplemapsCountryMapData from 'src/components/locationMap';
 import { useSpringCarousel } from 'react-spring-carousel';
 
 import './style.css';

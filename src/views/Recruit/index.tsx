@@ -163,9 +163,10 @@ export default function RecruitPost() {
 }[]>([]);
   const [lat, setLat] = useState<string | null>(null);
   const [lng, setLng] = useState<string | null>(null);
-  const [center, setCenter] = useState<{ lat: number; lng: number }>({
-    lat: 35.152170407376424, // 기본 값 설정
-    lng: 129.05979624585217,
+  const [center, setCenter] = useState({
+    lat: 0,
+    lng: 0,
+    isPanto: false,
   });
   const [isOpen, setIsOpen] = useState<number | null>(null);
 
@@ -295,6 +296,7 @@ export default function RecruitPost() {
       setCenter({
         lat: geoLocation.coordinates.lat,
         lng: geoLocation.coordinates.lng,
+        isPanto: false
       });
 
 
@@ -344,6 +346,7 @@ useEffect(() => {
     <div id="recruit-post-wrapper">
       <div className="kakaomap" style={{ opacity: showPosts ? 0 : 1 }} ref={mapRef}>
         <Map
+          isPanto={center.isPanto}
           className="kakao-map"
           center={ center }
           style={{ width: "100%" }}
@@ -360,7 +363,8 @@ useEffect(() => {
                   position={{ lat: pos.lat, lng: pos.lng }}
                   onClick={() => {
                     setIsOpen(pos.id)
-                    setCenter({ lat: pos.lat, lng: pos.lng }
+                    setCenter({ lat: pos.lat, lng: pos.lng, isPanto:true },
+                      
                   )
                   }
                   }

@@ -4,6 +4,7 @@ export default interface PostRecruitRequestDto {
     recruitPostContent: string;
     recruitPostImage: string | null;
     recruitLocation: string;
+    recruitAddress: string;
     recruitEndDate: string;
     minPeople: number;
 

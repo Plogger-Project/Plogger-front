@@ -1,6 +1,6 @@
-import RecruitCommentList from "src/types/recruit-comment-list.interface";
 import ResponseDto from "../response.dto";
+import RecruitComment from "src/types/recruit-comment-list.interface";
 
 export default interface GetRecruitCommentListResponseDto extends ResponseDto{
-    recruitComments: RecruitCommentList[];
+    recruitComments: RecruitComment[];
 }
