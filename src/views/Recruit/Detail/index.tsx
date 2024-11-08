@@ -147,7 +147,6 @@ function TableRow({ recruitComment, getRecruitCommentList  }: TableRowProps) {
   }
 
 
-  console.log(recruitComment.recruitCommentWriter);
   // render: recruit comment list 아이템 컴포넌트 렌더링 //
   return (
     <div className='commentUserInfo-right'>
@@ -776,7 +775,6 @@ export default function RecruitDetail() {
   }
 
   const onProfileImageClick = (commentWriter: string) => {
-    console.log(commentWriter);
     navigator(MYPAGE_PATH(commentWriter));
   }
 
