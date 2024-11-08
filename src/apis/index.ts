@@ -30,6 +30,7 @@ import { GetMessageListResponseDto, GetRoomListResponseDto } from "./dto/respons
 import PostQnaCommentRequestDto from "./dto/request/qna/post-qna-comment.request.dto";
 import GetQnaCommentListResponseDto from "./dto/response/qna/get-qna-comment-list.response.dto";
 import { PostFollowRequestDto } from "./dto/request/follow";
+import GetRecruitAddressCountResponseDto from "./dto/response/recruit/get-recruit-address-count.response.dto";
 
 
 
@@ -110,6 +111,7 @@ const POST_RECRUIT_LIKE_API_URL = (recruitId: number | string) => `${RECRUIT_MOD
 const POST_RECRUIT_SCRAP_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/scrap/${recruitId}`;
 const GET_RECRUIT_SCRAP_LIST_API_URL = `${RECRUIT_MODULE_URL}/scrap`;
 const GET_RECRUIT_SCRAP_API_URL = (recruitId: number | string) => `${RECRUIT_MODULE_URL}/scrap/${recruitId}`;
+const GET_RECRUIT_ADDRESS_COUNT_API_URL = `${RECRUIT_MODULE_URL}/cityPostCounts`;
 
 const GET_QNA_POST_LIST_API_URL = `${QNA_MODULE_URL}`;
 const POST_QNA_POST_API_URL = `${QNA_MODULE_URL}`;
@@ -637,6 +639,15 @@ export const GetRecruitReportListRequest = async (accessToken: string) => {
         .catch(responseErrorHandler);
     return responseBody;
 }
+
+// function: get recruit addoress count 요청 함수 //
+export const GetRecruitAddressCountRequest = async () => {
+    const responseBody = await axios.get(GET_RECRUIT_ADDRESS_COUNT_API_URL)
+        .then(responseDataHandler<GetRecruitAddressCountResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
 
 //function: post active report 요청 함수 //
 export const PostActiveReportRequest = async (requestBody: PostActiveReportRequestDto, accessToken: string, activePostId: number | string) => {

@@ -449,24 +449,24 @@ body {
     cursor: pointer;
 }
 
-#third-content-wrapper .Busan:hover,
-#third-content-wrapper .Daegu:hover,
-#third-content-wrapper .Daejeon:hover,
-#third-content-wrapper .Gangwon:hover,
-#third-content-wrapper .Gwangju:hover,
-#third-content-wrapper .Gyeonggi:hover,
-#third-content-wrapper .Incheon:hover,
-#third-content-wrapper .Jeju:hover,
-#third-content-wrapper .North-Chungcheong:hover,
-#third-content-wrapper .North-Gyeongsang:hover,
-#third-content-wrapper .North-Jeolla:hover,
-#third-content-wrapper .Sejong:hover,
-#third-content-wrapper .Seoul:hover,
-#third-content-wrapper .South-Chungcheong:hover,
-#third-content-wrapper .South-Gyeongsang:hover,
-#third-content-wrapper .South-Jeolla:hover,
-#third-content-wrapper .Ulsan:hover{
-    fill: #e2aea7;
+#third-content-wrapper .Busan.active,
+#third-content-wrapper .Daegu.active,
+#third-content-wrapper .Daejeon.active,
+#third-content-wrapper .Gangwon.active,
+#third-content-wrapper .Gwangju.active,
+#third-content-wrapper .Gyeonggi.active,
+#third-content-wrapper .Incheon.active,
+#third-content-wrapper .Jeju.active,
+#third-content-wrapper .North-Chungcheong.active,
+#third-content-wrapper .North-Gyeongsang.active,
+#third-content-wrapper .North-Jeolla.active,
+#third-content-wrapper .Sejong.active,
+#third-content-wrapper .Seoul.active,
+#third-content-wrapper .South-Chungcheong.active,
+#third-content-wrapper .South-Gyeongsang.active,
+#third-content-wrapper .South-Jeolla.active,
+#third-content-wrapper .Ulsan.active{
+    fill: #e08e83;
 }
 
 #fourth-content-wrapper {
