@@ -5,7 +5,7 @@ import InputBox from '../../components/InputBox';
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
 import { ActiveReportList, Follow, RecruitPostList, User } from 'src/types';
-import { GetActiveReportListRequest, getRecruitPostListRequest, GetRecruitReportListRequest, getUserListRequest, patchCommentRequest } from 'src/apis';
+import { deleteActiveReportRequest, deleteRecruitReportRequest, GetActiveReportListRequest, getRecruitPostListRequest, GetRecruitReportListRequest, getUserListRequest, patchCommentRequest } from 'src/apis';
 import { GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
@@ -17,6 +17,7 @@ import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from 'src/apis
 import { GetActiveReportListResponseDto } from 'src/apis/dto/response/active';
 import useActivePagination from 'src/hooks/active.pagination.hook';
 import { GetUserListResponseDto } from '@/apis/dto/response/mypage';
+import { access } from 'fs';
 
 export default function Admin() {
   // state: 페이징 관련 상태 //
@@ -63,7 +64,7 @@ export default function Admin() {
   const [showUserList, setShowUserList] = useState<User[]>([]);
 
   // variable: 경로 이름 //
-  const path = pathname.startsWith(ADMIN) ? '관리자페이지': '';
+  const path = pathname.startsWith(ADMIN) ? '관리자페이지' : '';
 
   // variable: Token //
   const accessToken = cookies[ACCESS_TOKEN];
@@ -103,6 +104,25 @@ export default function Admin() {
 
   };
 
+  // function: 구인 신고글 삭제 함수 //
+  const deleteRecruitReportResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+              responseBody.code === 'NP' ? '권한이 없습니다.' :
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    getRecruitReportPostList();
+  }
+
   // function: 활동 신고글 list 불러오기 함수 //
   const getActiveReportPostList = () => { GetActiveReportListRequest(accessToken).then(getActiveReportListResponse); };
 
@@ -122,6 +142,25 @@ export default function Admin() {
     setShowActiveReports(reports);
   }
 
+    // function: 활동 신고글 삭제 함수 //
+    const deleteActiveReportResponse = (responseBody: ResponseDto | null) => {
+      const message =
+        !responseBody ? '서버에 문제가 있습니다.' :
+          responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+              responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+                responseBody.code === 'NP' ? '권한이 없습니다.' :
+                  responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+  
+      const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+      if (!isSuccessed) {
+        alert(message);
+        return;
+      }
+  
+      getActiveReportPostList();
+    }
+
   // function: 유저 list 불러오기 함수 //
   const getUserList = () => { getUserListRequest(accessToken).then(getUserListResponse); };
 
@@ -134,7 +173,7 @@ export default function Admin() {
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    if (!isSuccessed) { alert(message);}
+    if (!isSuccessed) { alert(message); }
 
     const lists = (responseBody as GetUserListResponseDto).users;
     setTotalList3(lists);
@@ -182,7 +221,7 @@ export default function Admin() {
 
     // render: 게시글 리스트 렌더링 //
     return (
-      <div className="tr" key={recruitreportPostId.reportId} onClick={() => onRecruitReportDeleteHandler(recruitreportPostId.reportId)}>
+      <div className="tr" key={recruitreportPostId.recruitId} onClick={() => onRecruitReportDeleteHandler(recruitreportPostId.recruitId)}>
         <div className="td-report-reportid">{recruitreportPostId.reportId}</div>
         <div className="td-report-writer">{recruitreportPostId.userId}</div>
         <div className="td-report-number">{recruitreportPostId.recruitId}</div>
@@ -215,7 +254,7 @@ export default function Admin() {
 
     // render: 게시글 리스트 렌더링 //
     return (
-      <div className="tr" key={activeReportId.reportId}>
+      <div className="tr" key={activeReportId.reportId} onClick={() => onActiveReportDeleteHandler(activeReportId.activeId)}>
         <div className="td-report-reportid">{activeReportId.reportId}</div>
         <div className="td-report-writer">{activeReportId.userId}</div>
         <div className="td-report-number">{activeReportId.activeId}</div>
@@ -239,42 +278,16 @@ export default function Admin() {
 
     // render: 유저 리스트 렌더링 //
     return (
-    <div className="tr" key={userListId.userId}>
-      <div className="td-user-userId">{userListId.userId}</div>
-      <div className="td-user-address">{userListId.address}</div>
-      <div className="td-user-name">{userListId.name}</div>
-      <div className="td-user-TelNumber">{userListId.telNumber}</div>
-      <div className="td-user-score">{userListId.ecoScore}</div>
-      <div className="td-user-mileage">{userListId.mileage}</div>
-      <div className="td-user-joinpath">{userListId.joinPath}</div>
-    </div>
+      <div className="tr" key={userListId.userId}>
+        <div className="td-user-userId">{userListId.userId}</div>
+        <div className="td-user-address">{userListId.address}</div>
+        <div className="td-user-name">{userListId.name}</div>
+        <div className="td-user-TelNumber">{userListId.telNumber}</div>
+        <div className="td-user-score">{userListId.ecoScore}</div>
+        <div className="td-user-mileage">{userListId.mileage}</div>
+        <div className="td-user-joinpath">{userListId.joinPath}</div>
+      </div>
     )
-  }
-
-  // event handler: 정보 수정 관련 이벤트 처리//
-  const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setName(value)
-  }
-
-  const onPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setPassword(value);
-  }
-
-  const onChkPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setChkPassword(value);
-  }
-
-  const onTelNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setTelNumber(value);
-  }
-
-  const onAuthNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setAuthNumber(value);
   }
 
   // event handler: comment 변경 이벤트 처리 //
@@ -290,28 +303,7 @@ export default function Admin() {
   const onGiftClickHandler = () => {
     navigator('/mileage');
   };
-
-  // event handler: 이미지 버튼 변환 이벤트 처리 //
-  const onImageInputChangeHandler = () => {
-    const { current } = imageInputRef;
-    if (!current) return;
-    if (!current.files) return;
-
-    const file = current.files[0];
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file);
-    fileReader.onloadend = () => {
-      setImageUrl(fileReader.result as string);
-    };
-  };
-
-  // event handler: 이미지 버튼 클릭 이벤트 처리 //
-  const onImageButtonClickHandler = () => {
-    const { current } = imageInputRef;
-    if (!current) return;
-    current.click();
-  };
-
+  
   // event handler: sentence 버튼 클릭 이벤트 처리 //
   const onCommentButtonClickHandler = () => {
 
@@ -347,7 +339,6 @@ export default function Admin() {
     }
   };
 
-
   // event handler: recruit report 클릭 이벤트 처리 // 
   const onRecruitReportClickHandler = () => {
     setShowRecruitReports([]);
@@ -355,14 +346,6 @@ export default function Admin() {
     setShowUserList([]);
     getRecruitReportPostList();
   };
-
-  // event handler: 구인 신고글 삭제 이벤트 처리 //
-  const onRecruitReportDeleteHandler = (reportId: number) => {
-    const confirmed = window.confirm("이 게시글을 삭제하시겠습니까?");
-    if (confirmed) {
-      // deleteRecruitReport(reportId);
-    }
-  }
 
   // event handler: active report 클릭 이벤트 처리 //
   const onActiveReportClickHandler = () => {
@@ -380,6 +363,25 @@ export default function Admin() {
     getUserList();
   }
 
+  // event handler: 구인 신고글 삭제 이벤트 처리 //
+  const onRecruitReportDeleteHandler = (recruitId: number) => {
+    if (!recruitId) return;
+
+    const confirmed = window.confirm("이 게시글을 삭제하시겠습니까?");
+    if (confirmed) {
+      deleteRecruitReportRequest(recruitId, accessToken).then(deleteRecruitReportResponse);
+    }
+  }
+
+  // event handler: 활동 신고글 삭제 이벤트 처리 //
+  const onActiveReportDeleteHandler = (activeId: number) => {
+    if (!activeId) return;
+
+    const confirmed = window.confirm("이 게시글을 삭제하시겠습니까?");
+    if (confirmed) {
+      deleteActiveReportRequest(activeId, accessToken).then(deleteActiveReportResponse);
+    }
+  }
   return (
     <>
       <div id='adminpage'>
@@ -413,11 +415,11 @@ export default function Admin() {
         </div>
         <div className='adminpage-bottom'>
           <div className='table-contents'>
-            <div className={`recruit-report ${isRecruit  ? 'active' : ''}` }onClick={onRecruitReportClickHandler}><span>구인 신고글</span></div>
+            <div className={`recruit-report ${isRecruit ? 'active' : ''}`} onClick={onRecruitReportClickHandler}><span>구인 신고글</span></div>
             <div className='line'>
-              <div className={`active-report ${isActive ? 'active' : ''}` }onClick={onActiveReportClickHandler}><span>활동 신고글</span></div>
+              <div className={`active-report ${isActive ? 'active' : ''}`} onClick={onActiveReportClickHandler}><span>활동 신고글</span></div>
             </div>
-            <div className={`user-list ${isUser ? 'active' : ''}` } onClick={onUserListClickHandler}><span>유저 리스트</span></div>
+            <div className={`user-list ${isUser ? 'active' : ''}`} onClick={onUserListClickHandler}><span>유저 리스트</span></div>
           </div>
           <div className='table'>
             {showRecruitReports.length > 0 &&
