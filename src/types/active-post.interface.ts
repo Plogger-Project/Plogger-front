@@ -5,6 +5,7 @@ export default interface ActivePost {
     activePostWriterId: string;
     activePostCreatedAt: string;
     activeLocation: string;
+    activeAddress: string;
     activeStartDate: string;
     activeEndDate: string;
     activeView: number;

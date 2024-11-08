@@ -145,6 +145,7 @@ const GET_SIGN_IN_FOLLOWEE_LIST_API_URL = `${FOLLOW_MODULE_URL}/followee`;
 const GET_FOLLOWER_LIST_API_URL = (followeeId: string) => `${FOLLOW_MODULE_URL}/follower/${followeeId}`;
 const GET_FOLLOWEE_LIST_API_URL = (followerId: string) => `${FOLLOW_MODULE_URL}/followee/${followerId}`;
 const DELETE_FOLLOWEE_API_URL = (followeeId: string) => `${GIFTICON_MODULE_URL}/${followeeId}`;
+const GET_FOLLOW_INFO_API_URL = (followeeId: string) => `${GET_SIGN_IN_API_URL}/${followeeId}`;
 
 const GET_MILEAGE_LIST_API_URL = `${PLOGGER_API_DOMAIN}/api/v1/mileage`
 
@@ -616,8 +617,8 @@ export const GetActiveReportListRequest = async (accessToken: string) => {
 }
 
 // function: recruit like & unlike 요청 함수 //
-export const postRecruitLikeRequest = async (recruitId: number | string) => {
-    const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId))
+export const postRecruitLikeRequest = async (recruitId: number | string, accessToken: string) => {
+    const responseBody = await axios.post(POST_RECRUIT_LIKE_API_URL(recruitId), {}, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
@@ -755,6 +756,14 @@ export const getQnaUserInfoRequest = async (qnaPostWriter: string) => {
     return responseBody;
 }
 
+// function : follow post user Info 요청 함수 //
+export const getFollowUserInfoRequest = async (followeeId: string) => {
+    const responseBody = await axios.get(GET_FOLLOW_INFO_API_URL(followeeId))
+        .then(responseDataHandler<GetSignInResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
 // function : post recruit scrap 요청 함수 //
 export const postRecruitScrapRequest = async (recruitPostId: number | string, accessToken: string) => {
     const responseBody = await axios.post(POST_RECRUIT_SCRAP_API_URL(recruitPostId), {}, bearerAuthorization(accessToken))
@@ -766,7 +775,7 @@ export const postRecruitScrapRequest = async (recruitPostId: number | string, ac
 // function: get recruit scrap list 요청 함수 //
 export const getRecruitScrapListRequest = async (accessToken: string) => {
     const responseBody = await axios.get(GET_RECRUIT_SCRAP_LIST_API_URL, bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetRecruitScrapListResponseDto>)
+        .then(responseDataHandler<GetRecruitPostListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 };

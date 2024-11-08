@@ -7,6 +7,7 @@ export default interface GetActivePostResponseDto extends ResponseDto {
     activePostWriterId: string;
     activePostCreatedAt: string;
     activeLocation: string;
+    activeAddress: string;
     activeStartDate: string;
     activeEndDate: string;
     activeView: number;
