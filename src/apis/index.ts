@@ -41,6 +41,7 @@ const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`
 const QNA_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/qna`
 const REPORT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/report`
 const ALERT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/alert`;
+const ADMIN_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/admin`;
 
 const ID_CHECK_API_URL = `${AUTH_MODULE_URL}/id-check`;
 const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
@@ -142,6 +143,9 @@ const PURCHASE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_M
 
 const POST_RECRUIT_REPORT_API_URL = (recruitId: number | string) => `${RECRUIT_REPORT_API_URL}/${recruitId}`;
 const POST_ACTIVE_REPORT_API_URL = (activeId: number | string) => `${ACTIVE_REPORT_API_URL}/${activeId}`;
+
+const DELETE_RECRUIT_REPORT_API_URL = (recruitId: number | string) => `${ADMIN_MODULE_URL}/${recruitId}`;
+const DELETE_ACTIVE_REPORT_API_URL = (activeId: number | string) => `${ADMIN_MODULE_URL}/${activeId}`;
 
 const FOLLOW_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/follow`;
 
@@ -879,3 +883,19 @@ export const postChatMessageRequest = async (requestBody: PostChatMessageRequest
         .catch(responseErrorHandler);
     return responseBody;
 }
+
+// function: delete recruit report 요청 함수 //
+export const deleteRecruitReportRequest = async (recruitId: number | string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_RECRUIT_REPORT_API_URL(recruitId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: delete active report 요청 함수 //
+export const deleteActiveReportRequest = async (activeId: number | string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_ACTIVE_REPORT_API_URL(activeId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};

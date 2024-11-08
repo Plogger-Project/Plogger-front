@@ -1,12 +1,12 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react'
 import "./style.css";
-import {  useNavigate, useParams } from 'react-router-dom';
-import { ACCESS_TOKEN, MYPAGE_PATH, RECRUIT_ABSOLUTE_PATH,  RECRUIT_DETAIL_ABSOLUTE_PATH,  RECRUIT_DETAIL_PATH,  RECRUIT_UPDATE_ABSOLUTE_PATH } from '../../../constants';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ACCESS_TOKEN, MYPAGE_PATH, RECRUIT_ABSOLUTE_PATH, RECRUIT_DETAIL_ABSOLUTE_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_ABSOLUTE_PATH } from '../../../constants';
 import { useKakaoLoader } from 'src/hooks';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { useSignInUserStore } from 'src/stores';
 import { useCookies } from 'react-cookie';
-import {  ResponseDto } from 'src/apis/dto/response';
+import { ResponseDto } from 'src/apis/dto/response';
 import GetRecruitPostResponseDto from 'src/apis/dto/response/recruit/get-recruit.response.dto';
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import RecruitWrite from './../Write/index';
@@ -38,7 +38,7 @@ interface TableRowProps {
 }
 
 // component: recruit comment list 아이템 컴포넌트 //
-function TableRow({ recruitComment, getRecruitCommentList  }: TableRowProps) {
+function TableRow({ recruitComment, getRecruitCommentList }: TableRowProps) {
   // state: 로그인 유저 상태 //
   const { signInUser } = useSignInUserStore();
 
@@ -117,7 +117,7 @@ function TableRow({ recruitComment, getRecruitCommentList  }: TableRowProps) {
     setIsEdit(false);
   }
 
-  // event handler: 활동 게시판 댓글 삭제 이벤트 핸들러 //
+  // event handler: 구인 게시판 댓글 삭제 이벤트 핸들러 //
   const onDeleteButtonClickHandler = () => {
     if (signInUser?.userId !== recruitComment.recruitCommentWriter) return;
 
@@ -132,13 +132,13 @@ function TableRow({ recruitComment, getRecruitCommentList  }: TableRowProps) {
     deleteRecruitCommentRequest(recruitPostId, recruitComment.recruitCommentId, accessToken).then(deleteRecruitCommentResponse);
   }
 
-  // event handler: 활동 게시판 수정 클릭 이벤트 핸들러 //
+  // event handler: 구인 게시판 수정 클릭 이벤트 핸들러 //
   const onEditButtonClickHandler = () => {
     setIsEdit(true);
     setContent(recruitComment.recruitCommentContent);
   }
 
-  // event handler: 활동 게시판 댓글 수정 취소 클릭 이벤트 핸들러 //
+  // event handler: 구인 게시판 댓글 수정 취소 클릭 이벤트 핸들러 //
   const onCancelButtonClickHandler = () => {
     setIsEdit(false);
     setContent(recruitComment.recruitCommentContent);
@@ -174,7 +174,7 @@ function TableRow({ recruitComment, getRecruitCommentList  }: TableRowProps) {
       )}
     </div>
   )
-} 
+}
 
 
 
@@ -185,7 +185,7 @@ export default function RecruitDetail() {
   const {
     currentPage, totalPage, totalCount, viewList,
     setTotalList, initViewList, ...paginationProps
-} = useRecruitCommentPagination<RecruitCommentList>();
+  } = useRecruitCommentPagination<RecruitCommentList>();
 
   // state: 게시글 번호 경로 변수 상태 //
   const { recruitPostId } = useParams();
@@ -246,6 +246,9 @@ export default function RecruitDetail() {
   const isWriter = writer === signInUser?.userId;
   // state: 신고 내역 작성창 오픈 여부 상태 //
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
+
+  // state: 신고된 글 여부 상태 //
+  const [isAlreadyReported, setIsAlreadyReported] = useState<boolean>(false);
 
   // state: 신고 내역 내용 상태 //
   const [reportContent, setReportContent] = useState<string>("");
@@ -310,16 +313,16 @@ export default function RecruitDetail() {
     setIsCompleted(isCompleted);
 
     const [postLat, postLng] = recruitLocation.split(',').map(coord => parseFloat(coord.trim()));
-    
+
     setLat(postLat);
     setLng(postLng);
-    
+
     getRecruitUserInfoRequest(recruitPostWriter).then(getRecruitPostUserResponse);
   };
 
   // function : get recruit post user response 처리 함수 //
   const getRecruitPostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
-    
+
     const message = !responseBody ? '서버에 문제가 있습니다.' :
       responseBody.code === 'VF' ? '잘못된 접근입니다.' :
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
@@ -331,28 +334,29 @@ export default function RecruitDetail() {
       navigator(RECRUIT_ABSOLUTE_PATH);
       return;
     }
-    
+
     const { profileImage } = responseBody as GetSignInResponseDto;
     setWriterProfileImage(profileImage);
   };
-  
-    // function: post recruit report response 처리 함수 //
-    const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
-      const message =
-    !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'VF' ? '내역을 입력해주세요.' :
-        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
-      alert("신고가 완료 되었습니다.");
+  // function: post recruit report response 처리 함수 //
+  const postRecruitReportResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '내역을 입력해주세요.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+              responseBody.code === 'DR' ? '이미 신고한 글입니다.' : '';
 
-      const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-      if (!isSuccessed) {
-        alert(message);
-        return;
-      }
-    };
-  
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    alert("신고가 완료 되었습니다.");
+  };
+
   // function : get recruit join list response 처리 함수 //
   const getRecruitJoinResponse = (responseBody: GetRecruitJoinListResponseDto | ResponseDto | null) => {
     const message =
@@ -360,7 +364,7 @@ export default function RecruitDetail() {
         responseBody.code === 'VF' ? '내역을 입력해주세요.' :
           responseBody.code === 'AF' ? '잘못된 접근입니다.' :
             responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-    
+
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
       alert(message);
@@ -412,7 +416,7 @@ export default function RecruitDetail() {
 
   // function : get recruit scrap response 처리 함수 //
   const getRecruitScrapResponse = (responseBody: GetRecruitScrapResponseDto | ResponseDto | null) => {
-    
+
     const message = !responseBody ? '서버에 문제가 있습니다.' :
       responseBody.code === 'VF' ? '잘못된 접근입니다.' :
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
@@ -424,7 +428,7 @@ export default function RecruitDetail() {
       alert(message);
       return;
     }
-    
+
     const { userIds } = responseBody as GetRecruitScrapResponseDto;
 
     if (Array.isArray(userIds)) {
@@ -440,10 +444,10 @@ export default function RecruitDetail() {
   const deleteRecruitPostResponse = (responseBody: ResponseDto | null) => {
     const message = !responseBody ? '서버에 문제가 있습니다.' :
       responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-        responseBody.code === 'NRP' ? '게시글이 없습니다.':
-        responseBody.code === 'DBE'? '서버에 문제가 있습니다.' : '';
+        responseBody.code === 'NRP' ? '게시글이 없습니다.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    
+
     if (!isSuccessed) {
       alert(message);
       return;
@@ -458,7 +462,7 @@ export default function RecruitDetail() {
         responseBody.code === 'AF' ? '잘못된 접근입니다!' :
           responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
             responseBody.code === 'NRP' ? '존재하지 않는 글입니다.' : '';
-    
+
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
       alert(message);
@@ -471,17 +475,17 @@ export default function RecruitDetail() {
 
   // function: get recruit comment list response 처리 함수 //
   const getRecruitCommentListResponse = (responseBody: GetRecruitCommentListResponseDto | ResponseDto | null) => {
-    const message = 
-        !responseBody ? '서버에 문제가 있습니다.' : 
-        responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' : 
-        responseBody.code === 'AF' ? '잘못된 접근입니다.' : 
-        responseBody.code === 'NP' ? '권한이 없습니다.' :
-        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-    
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NP' ? '권한이 없습니다.' :
+              responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
-        alert(message);
-        return;
+      alert(message);
+      return;
     }
 
     const { recruitComments } = responseBody as GetRecruitCommentListResponseDto;
@@ -524,7 +528,7 @@ export default function RecruitDetail() {
               responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
                 responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
                   responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-    
+
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
       alert(message);
@@ -536,7 +540,7 @@ export default function RecruitDetail() {
     getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
   }
 
-  
+
 
 
   // function : 한국 시간 //
@@ -554,7 +558,7 @@ export default function RecruitDetail() {
     const end = parseISO(endDate);
 
     // D-day 계산
-    const daysBetween = differenceInDays(end, start)+1;
+    const daysBetween = differenceInDays(end, start) + 1;
 
     if (daysBetween > 0) {
       return `D-${daysBetween}`;
@@ -584,11 +588,11 @@ export default function RecruitDetail() {
 
     window.location.href = RECRUIT_DETAIL_PATH(recruitPostId);
   }
-  
+
 
   // event handler: 목록 버튼 클릭 이벤트 처리 //
   const onListButtonClickHandler = () => {
-  navigator(RECRUIT_ABSOLUTE_PATH);
+    navigator(RECRUIT_ABSOLUTE_PATH);
   };
 
   // event handler: 수정 버튼 클릭 이벤트 처리 //
@@ -602,9 +606,7 @@ export default function RecruitDetail() {
     event.stopPropagation();
 
 
-    if (!(writer || isAdmin === signInUser?.userId))
-
-    {
+    if (!(writer || isAdmin === signInUser?.userId)) {
       alert("작성자만 삭제할 수 있습니다.");
       return;
     }
@@ -619,7 +621,7 @@ export default function RecruitDetail() {
 
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
-    
+
     deleteRecruitPostRequest(recruitPostId, accessToken).then(deleteRecruitPostResponse)
   }
 
@@ -658,9 +660,16 @@ export default function RecruitDetail() {
       return;
     }
 
+    if (isAlreadyReported) {
+      alert("이미 신고한 글입니다.");
+      return;
+    }
+
     const requestBody: PostRecruitReportRequestDto = { content: reportContent };
     PostRecruitReportRequest(requestBody, accessToken, recruitPostId).then(postRecruitReportResponse);
 
+    setIsReportModalOpen(false);
+    return;
   }
 
   // event handler: 신고 모달 취소 버튼 클릭 시 이벤트 처리 //
@@ -678,7 +687,7 @@ export default function RecruitDetail() {
       alert("유효한 recruitPostId가 필요합니다.");
       return;
     }
-    
+
     postRecruitLikeRequest(recruitPostId, accessToken).then(postRecruitLikeResponse);
   }
 
@@ -692,7 +701,7 @@ export default function RecruitDetail() {
       alert("유효한 recruitPostId가 필요합니다.");
       return;
     }
-    
+
     postRecruitScrapRequest(recruitPostId, accessToken).then(postRecruitScrapResponse);
   }
 
@@ -702,7 +711,7 @@ export default function RecruitDetail() {
       alert("로그인을 해주세요.");
       return;
     }
-    
+
     if (isCompleted) {
       alert("이미 모집 종료된 글입니다.")
       return;
@@ -718,7 +727,7 @@ export default function RecruitDetail() {
     if (!recruitPostId) return;
     postRecruitJoinRequest(recruitPostId, accessToken).then(postRecruitJoinResponse);
   }
-  
+
   // event handler : 모집종료 버튼 클릭 이벤트 처리
   const onEndButtonClickHandler = () => {
     if (!signInUser?.userId) {
@@ -729,23 +738,23 @@ export default function RecruitDetail() {
       alert("유효한 recruitPostId가 필요합니다.");
       return;
     }
-      const isConfirm = window.confirm(isCompleted ? '모집중으로 바꾸시겠습니까?' : '정말로 모집종료 하시겠습니까?')
-      if (!isConfirm) return;
+    const isConfirm = window.confirm(isCompleted ? '모집중으로 바꾸시겠습니까?' : '정말로 모집종료 하시겠습니까?')
+    if (!isConfirm) return;
 
-      setIsCompleted(!isCompleted);
+    setIsCompleted(!isCompleted);
 
-      
+
     const requestBody: PatchRecruitIsCompletedRequestDto = {
-        isCompleted: !isCompleted
-      };
+      isCompleted: !isCompleted
+    };
 
-      patchRecruitRequest(requestBody, recruitPostId, accessToken)
-        .then(PatchRecruitResponse)
-        .catch(error => {
-          alert("모집 상태 변경에 실패했습니다.");
-          console.error(error);
-          setIsCompleted(isCompleted); // 실패 시 상태를 원래대로 복구
-        });
+    patchRecruitRequest(requestBody, recruitPostId, accessToken)
+      .then(PatchRecruitResponse)
+      .catch(error => {
+        alert("모집 상태 변경에 실패했습니다.");
+        console.error(error);
+        setIsCompleted(isCompleted); // 실패 시 상태를 원래대로 복구
+      });
   };
   const onProfileImageClickButtonHandler = () => {
     navigator(MYPAGE_PATH(writer));
@@ -756,7 +765,7 @@ export default function RecruitDetail() {
       e.preventDefault();
       onCommentPostButtonClick();
     }
-    
+
   }
   // event handler: 댓글 내용 변경 이벤트 처리 //
   const onCommentContentChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -812,7 +821,7 @@ export default function RecruitDetail() {
   // effect: 댓글 리스트 불러오기
   useEffect(() => {
     getRecruitCommentList();
-    
+
   }, [recruitPostId]);
 
   const handleClick = (event: any) => {
@@ -877,13 +886,13 @@ export default function RecruitDetail() {
                   left: optionPosition.left + 'px'
                 }}
               >
-                {signInUser?.userId === writer || signInUser?.isAdmin ? 
+                {signInUser?.userId === writer || signInUser?.isAdmin ?
                   <>
-                <button className="editButton" onClick={onEditButtonClickHandler}>수정하기</button>
+                    <button className="editButton" onClick={onEditButtonClickHandler}>수정하기</button>
                     <button className="deleteButton" onClick={onDeleteButtonClickHandler}>삭제하기</button>
                   </>
                   : ''}
-                
+
                 {(signInUser?.userId === writer) || !signInUser ? '' :
                   <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
                 }
@@ -894,8 +903,8 @@ export default function RecruitDetail() {
         <div className='postDetail'>
           <div className='postTitle'>{title}</div>
           <div className='postContents'>{contents}</div>
-          {image === '' ?  
-          ''
+          {image === '' ?
+            ''
             : <div className='postImage' style={{ backgroundImage: `url(${image})` }}></div>}
           {lat && lng ? (
             <div className="kakaomap" ref={mapRef} >
@@ -904,10 +913,10 @@ export default function RecruitDetail() {
                 style={{ width: "100%", height: "360px" }}
               >
                 <MapMarker position={{ lat, lng }}>
-                  {}
+                  { }
                   {
-                  <div className='marker-info' >
-                    여기서 모여요!
+                    <div className='marker-info' >
+                      여기서 모여요!
                     </div>
                   }
                 </MapMarker>
@@ -949,30 +958,30 @@ export default function RecruitDetail() {
               {signInUser?.userId === writer ? '' :
                 <div className='accession' onClick={onAccessionButtonClickHandler}>{isCompleted ? "모집완료" : (signInUser && joinList.some(user => user.userId === signInUser.userId)) ? "참여완료" : "참여"}</div>
               }
-              {signInUser?.userId === writer ? 
+              {signInUser?.userId === writer ?
                 <div className='end' onClick={onEndButtonClickHandler}>{isCompleted ? "종료 취소" : "모집 종료"}</div>
                 : ''}
             </div>
             <div className='right'>
               {signInUser &&
-              <div className={`like ${isLiked ? 'liked' : ''}`} onClick={onLikeButtonClickHandler}></div>
+                <div className={`like ${isLiked ? 'liked' : ''}`} onClick={onLikeButtonClickHandler}></div>
               }
               {signInUser &&
-              <div className={`scrap ${isScraped ? 'scraped' : ''}`} onClick={onScrapButtonClickHandler}></div>
+                <div className={`scrap ${isScraped ? 'scraped' : ''}`} onClick={onScrapButtonClickHandler}></div>
               }
             </div>
           </div>
-          
+
           <div className='line'></div>
           <div className='comments'>
-            {signInUser && 
-            <div className='commentUserInfoWrite'>
-              <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
-              <div className='commentUserInfo-right'>
-                <div className='recruitCommentWriter'>{signInUser?.userId}</div>
-                <input placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
-              </div>
-              <div className='commentButton' onClick={onCommentPostButtonClick}>등록</div>
+            {signInUser &&
+              <div className='commentUserInfoWrite'>
+                <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
+                <div className='commentUserInfo-right'>
+                  <div className='recruitCommentWriter'>{signInUser?.userId}</div>
+                  <input placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
+                </div>
+                <div className='commentButton' onClick={onCommentPostButtonClick}>등록</div>
               </div>
             }
             {viewList.map((recruitComment, index) => (
@@ -982,7 +991,7 @@ export default function RecruitDetail() {
               </div>
             ))}
           </div>
-          
+
         </div>
         <div className='bottom'></div>
       </div>
