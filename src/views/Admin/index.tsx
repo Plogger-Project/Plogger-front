@@ -9,14 +9,14 @@ import { deleteActiveReportRequest, deleteRecruitReportRequest, GetActiveReportL
 import { GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
-import { ACCESS_TOKEN, ADMIN, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';
+import { ACCESS_TOKEN, ACTIVE_DETAIL_ABSOLUTE_PATE, ADMIN, RECRUIT_DETAIL_ABSOLUTE_PATH, RECRUIT_DETAIL_PATH } from 'src/constants';
 import { PatchCommentRequestDto } from 'src/apis/dto/request/user';
 import { Cookies, useCookies } from 'react-cookie';
 import RecruitReportList from 'src/types/recruitreport.interface';
 import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from 'src/apis/dto/response/follow';
 import { GetActiveReportListResponseDto } from 'src/apis/dto/response/active';
 import useActivePagination from 'src/hooks/active.pagination.hook';
-import { GetUserListResponseDto } from '@/apis/dto/response/mypage';
+import { GetUserListResponseDto } from 'src/apis/dto/response/mypage';
 import { access } from 'fs';
 
 export default function Admin() {
@@ -32,14 +32,6 @@ export default function Admin() {
   // state: 프로필 상태 //
   const [input, onInput] = useState<boolean>(false);
   const [comment, setComment] = useState<string>('');
-
-  // state: 회원가입 상태 //
-  const [name, setName] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [chkpassword, setChkPassword] = useState<string>('');
-  const [telNumber, setTelNumber] = useState<string>('');
-  const [authNumber, setAuthNumber] = useState<string>('');
-  const [address, setAddress] = useState<string>('');
 
   // state: 로그인 유저 정보 //
   const { signInUser, setSignInUser } = useSignInUserStore();
@@ -104,25 +96,6 @@ export default function Admin() {
 
   };
 
-  // function: 구인 신고글 삭제 함수 //
-  const deleteRecruitReportResponse = (responseBody: ResponseDto | null) => {
-    const message =
-      !responseBody ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
-              responseBody.code === 'NP' ? '권한이 없습니다.' :
-                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-
-    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    if (!isSuccessed) {
-      alert(message);
-      return;
-    }
-
-    getRecruitReportPostList();
-  }
-
   // function: 활동 신고글 list 불러오기 함수 //
   const getActiveReportPostList = () => { GetActiveReportListRequest(accessToken).then(getActiveReportListResponse); };
 
@@ -142,24 +115,25 @@ export default function Admin() {
     setShowActiveReports(reports);
   }
 
-    // function: 활동 신고글 삭제 함수 //
-    const deleteActiveReportResponse = (responseBody: ResponseDto | null) => {
-      const message =
-        !responseBody ? '서버에 문제가 있습니다.' :
-          responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-              responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
-                responseBody.code === 'NP' ? '권한이 없습니다.' :
-                  responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-  
-      const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-      if (!isSuccessed) {
-        alert(message);
-        return;
-      }
-  
-      getActiveReportPostList();
+  // function: 활동 신고글 삭제 함수 //
+  const deleteActiveReportResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+              responseBody.code === 'NP' ? '권한이 없습니다.' :
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
     }
+
+    getActiveReportPostList();
+
+  }
 
   // function: 유저 list 불러오기 함수 //
   const getUserList = () => { getUserListRequest(accessToken).then(getUserListResponse); };
@@ -200,12 +174,12 @@ export default function Admin() {
 
   // interface: 구인 신고글 리스트 컴포넌트 Properties //
   interface TableRowProps {
-    recruitreportPostId: RecruitReportList;
+    recruitPostId: RecruitReportList;
     getRecruitReportList: () => void;
   }
 
   // component: 구인 신고글 리스트 아이템 컴포넌트 //
-  function RecruitTableRow({ recruitreportPostId, getRecruitReportList }: TableRowProps) {
+  function RecruitTableRow({ recruitPostId, getRecruitReportList }: TableRowProps) {
 
     //function: 네비게이터 함수 //
     const navigator = useNavigate();
@@ -219,26 +193,31 @@ export default function Admin() {
       return `${year}-${month}-${day}`;
     };
 
+    // event handler: 구인 신고글 상세 게시글 이동 이벤트 처리 //
+    const onRecruitReportClickHandler = () => {
+      navigator(RECRUIT_DETAIL_ABSOLUTE_PATH(recruitPostId.recruitId));
+    }
+
     // render: 게시글 리스트 렌더링 //
     return (
-      <div className="tr" key={recruitreportPostId.recruitId} onClick={() => onRecruitReportDeleteHandler(recruitreportPostId.recruitId)}>
-        <div className="td-report-reportid">{recruitreportPostId.reportId}</div>
-        <div className="td-report-writer">{recruitreportPostId.userId}</div>
-        <div className="td-report-number">{recruitreportPostId.recruitId}</div>
-        <div className="td-report-content">{recruitreportPostId.content}</div>
-        <div className="td-report-create-date">{formatDate(recruitreportPostId.createdAt)}</div>
+      <div className="tr" key={recruitPostId.recruitId}>
+        <div className="td-report-reportid">{recruitPostId.reportId}</div>
+        <div className="td-report-writer">{recruitPostId.userId}</div>
+        <div className="td-report-number">{recruitPostId.recruitId}</div>
+        <div className="td-report-content" onClick={onRecruitReportClickHandler}>{recruitPostId.content}</div>
+        <div className="td-report-create-date">{formatDate(recruitPostId.createdAt)}</div>
       </div>
     )
   }
 
   // interface: 활동 신고글 리스트 컴포넌트 Properties//
   interface ActiveTableRowProps {
-    activeReportId: ActiveReportList;
+    activePostId: ActiveReportList;
     getActiveReportList: () => void;
   }
 
   // component: 활동 신고글 리스트 아이템 컴포넌트 //
-  function ActiveTableRow({ activeReportId, getActiveReportList }: ActiveTableRowProps) {
+  function ActiveTableRow({ activePostId, getActiveReportList }: ActiveTableRowProps) {
 
     //function: 네비게이터 함수 //
     const navigator = useNavigate();
@@ -252,14 +231,19 @@ export default function Admin() {
       return `${year}-${month}-${day}`;
     };
 
+    // event handler: 활동 신고글 삭제 이벤트 처리 //
+    const onActiveReportDeleteHandler = () => {
+      navigator(ACTIVE_DETAIL_ABSOLUTE_PATE(activePostId.activeId));
+    }
+
     // render: 게시글 리스트 렌더링 //
     return (
-      <div className="tr" key={activeReportId.reportId} onClick={() => onActiveReportDeleteHandler(activeReportId.activeId)}>
-        <div className="td-report-reportid">{activeReportId.reportId}</div>
-        <div className="td-report-writer">{activeReportId.userId}</div>
-        <div className="td-report-number">{activeReportId.activeId}</div>
-        <div className="td-report-content">{activeReportId.content}</div>
-        <div className="td-report-create-date">{formatDate(activeReportId.createdAt)}</div>
+      <div className="tr" key={activePostId.activeId}>
+        <div className="td-report-reportid">{activePostId.reportId}</div>
+        <div className="td-report-writer">{activePostId.userId}</div>
+        <div className="td-report-number">{activePostId.activeId}</div>
+        <div className="td-report-content" onClick={onActiveReportDeleteHandler}>{activePostId.content}</div>
+        <div className="td-report-create-date">{formatDate(activePostId.createdAt)}</div>
       </div>
     )
   }
@@ -276,6 +260,13 @@ export default function Admin() {
     //function: 네비게이터 함수 //
     const navigator = useNavigate();
 
+    // function: 유저 삭제 버튼 클릭 함수 //
+    const onUserDeleteHandler = (userId: string) => {
+      if (window.confirm('정말 이 유저를 삭제하시겠습니까?')) {
+
+      }
+    }
+
     // render: 유저 리스트 렌더링 //
     return (
       <div className="tr" key={userListId.userId}>
@@ -286,6 +277,9 @@ export default function Admin() {
         <div className="td-user-score">{userListId.ecoScore}</div>
         <div className="td-user-mileage">{userListId.mileage}</div>
         <div className="td-user-joinpath">{userListId.joinPath}</div>
+        <div className="td-user-delete">
+          <button className="user-delete" onClick={() => onUserDeleteHandler(userListId.userId)}>삭제</button>
+        </div>
       </div>
     )
   }
@@ -303,7 +297,7 @@ export default function Admin() {
   const onGiftClickHandler = () => {
     navigator('/mileage');
   };
-  
+
   // event handler: sentence 버튼 클릭 이벤트 처리 //
   const onCommentButtonClickHandler = () => {
 
@@ -363,25 +357,6 @@ export default function Admin() {
     getUserList();
   }
 
-  // event handler: 구인 신고글 삭제 이벤트 처리 //
-  const onRecruitReportDeleteHandler = (recruitId: number) => {
-    if (!recruitId) return;
-
-    const confirmed = window.confirm("이 게시글을 삭제하시겠습니까?");
-    if (confirmed) {
-      deleteRecruitReportRequest(recruitId, accessToken).then(deleteRecruitReportResponse);
-    }
-  }
-
-  // event handler: 활동 신고글 삭제 이벤트 처리 //
-  const onActiveReportDeleteHandler = (activeId: number) => {
-    if (!activeId) return;
-
-    const confirmed = window.confirm("이 게시글을 삭제하시겠습니까?");
-    if (confirmed) {
-      deleteActiveReportRequest(activeId, accessToken).then(deleteActiveReportResponse);
-    }
-  }
   return (
     <>
       <div id='adminpage'>
@@ -437,7 +412,7 @@ export default function Admin() {
                     </div>
                     {
                       viewList.map((recruitPostId, index) => (
-                        <RecruitTableRow key={index} recruitreportPostId={recruitPostId} getRecruitReportList={getRecruitReportPostList} />
+                        <RecruitTableRow key={index} recruitPostId={recruitPostId} getRecruitReportList={getRecruitReportPostList} />
                       ))}
                   </div>
                   <div className="pagination">
@@ -458,8 +433,8 @@ export default function Admin() {
                       <div className="td-active-create-date">신고한 날짜</div>
                     </div>
                     {
-                      viewList2.map((activeReportId, index) => (
-                        <ActiveTableRow key={index} activeReportId={activeReportId} getActiveReportList={getActiveReportPostList} />
+                      viewList2.map((activePostId, index) => (
+                        <ActiveTableRow key={index} activePostId={activePostId} getActiveReportList={getActiveReportPostList} />
                       ))}
                   </div>
 
@@ -481,6 +456,7 @@ export default function Admin() {
                       <div className="td-user-score">에코 스코어</div>
                       <div className="td-user-mileage">마일리지</div>
                       <div className="td-user-joinpath">가입 경로</div>
+                      <div className="td-user-delete">유저 관리</div>
                     </div>
                     {
                       viewList3.map((userId, index) => (

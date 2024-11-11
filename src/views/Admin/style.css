@@ -590,7 +590,8 @@
 #adminpage .td-user-address,
 #adminpage .td-user-score,
 #adminpage .td-user-mileage,
-#adminpage .td-user-joinpath {
+#adminpage .td-user-joinpath,
+#adminpage .td-user-delete {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -623,6 +624,13 @@
 
     gap: 15px;
 
+}
+
+#adminpage .user-delete {
+    background-color: red;
+    color: white;
+    text-align: center;
+    border-radius: 3px;
 }
 
 #adminpage .pagination .active {
