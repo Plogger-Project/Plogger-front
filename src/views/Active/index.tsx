@@ -154,7 +154,9 @@ export default function Active() {
 
   // effect: 검색어가 바뀔 시 새 리스트 불러오기 함수 //
   useEffect(() => {
-    const searchedActiveList = originalList.filter(post => post.activePostTitle.includes(searchWord));
+    const searchedActiveList = originalList.filter(post => 
+      post.activePostTitle.includes(searchWord) || post.activePostWriterId.includes(searchWord) || post.activePostId.toString().includes(searchWord)
+    );
       setTotalList(searchedActiveList);
       initViewList(searchedActiveList);
   }, [searchWord]);

@@ -846,10 +846,14 @@ export default function Mypage() {
               </div>
             </div>
             <div className='mileage-container'>
-              <div className='mileage-box'>
-                <SavingsTwoToneIcon sx={{ fontSize: 45 }}  />
-                <div className='mileage-score'>{isOwner?.mileage}</div>
-              </div>
+              {
+                signInUser?.userId === user?.userId
+                ? <div className='mileage-box'>
+                  <SavingsTwoToneIcon sx={{ fontSize: 45 }}  />
+                  <div className='mileage-score'>{isOwner?.mileage}</div>
+                </div>
+                : <></>
+              }
               {
               signInUser?.userId === user?.userId 
               ? <div className='button-mileage' onClick={onGiftClickHandler}>기프티콘 바로가기</div> 
@@ -922,7 +926,7 @@ export default function Mypage() {
               </div>
             )}
 
-            {scrapContents.length > 0 &&
+            {scrapContents.length > 0 && signInUser?.userId === user?.userId &&
               (
               <div className="main">
                 <div className="table">
@@ -945,7 +949,7 @@ export default function Mypage() {
               </div>
             )}
 
-            {mileageContents.length > 0 &&
+            {mileageContents.length > 0 && signInUser?.userId === user?.userId  &&
               (
               <div className="main">
                 <div className="table">

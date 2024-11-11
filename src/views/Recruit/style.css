@@ -182,13 +182,15 @@
 #recruit-post-wrapper .middle-top .pages {
     flex: 10;
     text-align: left;
+    font-size: 15px;
+    margin-left: 5px;
+    margin-bottom: 10px;
 }
 
 #recruit-post-wrapper .button {
     cursor: pointer;
-    width: 40px;
-    height: 25px;
-    padding: 8px 24px;
+    width: 100px;
+    height: 40px;
     
     text-align: center;
     border: 0.1px solid rgb(103, 141, 129);
@@ -198,6 +200,7 @@
     color: rgba(0, 95, 65, 1);
     justify-content: center;
     align-content: center;
+    margin-right: 5px;
 }
 
 #recruit-post-wrapper .button:hover {
@@ -231,6 +234,8 @@
 #recruit-post-wrapper .middle-top .post-filter .Recruiting,
 #recruit-post-wrapper .middle-top .post-filter .Recruited {
     cursor: pointer;
+    font-size: 17px;
+    margin-bottom: 10px;
 }
 
 /* 비활성화된 버튼에 대한 스타일 */
