@@ -53,9 +53,9 @@
 #qna-write-wrapper .userInfo-right .listButton {
     width: 90px;
     height: 30px;
-    background-color: #4CAF50;
+    background-color: rgba(156, 153, 153, 0.2);
     color: white;
-    border-radius: 16px;
+    border-radius: 8px;
     border: none;
     cursor: pointer;
     justify-content: center;
@@ -236,4 +236,28 @@
     gap: 10px;
     justify-content: right;
 
+}
+
+#qna-write-wrapper .bottom .button {
+    cursor: pointer;
+    width: 100px;
+    height: 40px;
+    
+    text-align: center;
+    border-radius: 8px;
+
+    font-size: 15px;
+    justify-content: center;
+    align-content: center;
+    margin-right: 5px;
+}
+
+#qna-write-wrapper .bottom .primary:hover {
+    background-color: var(--primary-10-color);
+    color: var(--primary-color);
+}
+
+#qna-write-wrapper .bottom .disable:hover {
+    background-color: var(--dark-gray-color);
+    color: rgba(255, 255, 255, 1);
 }

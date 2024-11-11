@@ -8,7 +8,7 @@
     --default-color: rgba(35, 45, 66, 1);
 }
 
-.button {
+#mg-wrapper .button {
     border-radius: 6px;
     padding: 8px 24px;
   
@@ -20,16 +20,16 @@
     color: rgba(255, 255, 255, 1);
 }
 
-.button.primary {
+#mg-wrapper .button.primary {
 background-color: var(--primary-color);
 }
 
-.button.second {
+#mg-wrapper .button.second {
     background-color: var(--primary-10-color);
     color: var(--primary-color);
 }
 
-.button.error {
+#mg-wrapper .button.error {
     background-color: var(--error-color);
 }
 

@@ -12,7 +12,7 @@ import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import RecruitWrite from './../Write/index';
 
 import { RecruitComment, RecruitPostList, SimpleUser } from 'src/types';
-import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, getRecruitScrapRequest, postRecruitScrapRequest, postRecruitCommentRequest, patchRecruitCommentRequest, deleteRecruitCommentRequest, getRecruitCommentUserInfoRequest, postRecruitLikeRequest, getRecruitLikeRequest } from 'src/apis';
+import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, getRecruitScrapRequest, postRecruitScrapRequest, postRecruitCommentRequest, patchRecruitCommentRequest, deleteRecruitCommentRequest, getRecruitCommentUserInfoRequest, postRecruitLikeRequest, getRecruitLikeRequest, getRecruitJoinUserInfoRequest, postAlertRequest } from 'src/apis';
 
 import axios from 'axios';
 import { deleteRecruitPostRequest, getRecruitPostRequest, getRecruitUserInfoRequest } from 'src/apis';
@@ -26,7 +26,8 @@ import useRecruitCommentPagination from 'src/hooks/recruit-comment.pagination.ho
 import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto, GetRecruitScrapResponseDto, GetRecruitJoinListResponseDto, GetRecruitLikeResponseDto } from 'src/apis/dto/response/recruit';
 import { PatchRecruitCommentRequestDto, PatchRecruitIsCompletedRequestDto, PostRecruitCommentRequestDto } from 'src/apis/dto/request/recruit';
 import { differenceInDays, parseISO } from 'date-fns';
-import { Avatar, Box, Popover, Typography } from '@mui/material';
+import { Avatar, Box, Popover, Typography, useRadioGroup } from '@mui/material';
+import { PostAlertRequestDto } from '@/apis/dto/request/alert';
 
 
 
@@ -614,6 +615,23 @@ export default function RecruitDetail() {
     window.location.href = RECRUIT_DETAIL_PATH(recruitPostId);
   }
 
+    // function: post alert response 처리 함수 //
+    const postAlertResponse = (responseBody: ResponseDto | null) => {
+      const message =
+        !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'NP' ? '권한이 없습니다.' :
+        responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+        responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
+        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+      const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+      if (!isSuccessed) {
+        alert(message);
+        return;
+      }
+    };
+
 
   // event handler: 목록 버튼 클릭 이벤트 처리 //
   const onListButtonClickHandler = () => {
@@ -713,7 +731,14 @@ export default function RecruitDetail() {
       return;
     }
 
+    const message: PostAlertRequestDto = {
+      userId: writer,
+      message: writer === signInUser?.userId ? "본인의 글을 좋아요 하셨습니다." : signInUser?.userId + "(이)가 고객님의 글을 좋아요 하셨습니다.",
+      recruitPostId
+    }
+
     postRecruitLikeRequest(recruitPostId, accessToken).then(postRecruitLikeResponse);
+    postAlertRequest(message, accessToken).then(postAlertResponse);
   }
 
   // event handler: 스크랩 버튼 클릭 이벤트 처리 //
@@ -727,7 +752,14 @@ export default function RecruitDetail() {
       return;
     }
 
+    const message: PostAlertRequestDto = {
+      userId: writer,
+      message: writer === signInUser?.userId ? "본인의 글을 스크랩하셨습니다." : signInUser?.userId + "(이)가 고객님의 글을 스크랩하셨습니다.",
+      recruitPostId
+    }
+
     postRecruitScrapRequest(recruitPostId, accessToken).then(postRecruitScrapResponse);
+    postAlertRequest(message, accessToken).then(postAlertResponse);
   }
 
   // event handler : 참여하기 버튼 클릭 이벤트 처리
@@ -773,6 +805,14 @@ export default function RecruitDetail() {
       isCompleted: !isCompleted
     };
 
+    // const message: PostAlertRequestDto = {
+    //   userId: joinList.map(user => user.userId),
+    //   message: writer === signInUser?.userId ? "게시글을 모집종료하셨습니다." 
+    //   : joinList.some(user => user.userId === signInUser.userId) + "회원님이 참가신청 하신 공고가 모집종료 되었습니다.",
+    //   recruitPostId
+    // }
+    // postAlertRequest(message, accessToken).then(postAlertResponse);
+
     patchRecruitRequest(requestBody, recruitPostId, accessToken)
       .then(PatchRecruitResponse)
       .catch(error => {
@@ -812,8 +852,14 @@ export default function RecruitDetail() {
     const requestBody: PostRecruitCommentRequestDto = {
       recruitCommentContent: commentContent
     }
-
+    
+    const message: PostAlertRequestDto = {
+      userId: writer,
+      message: writer === signInUser?.userId ? "본인의 글에 댓글을 달았습니다." : signInUser?.userId + "(이)가 고객님의 글에 댓글을 달았습니다.",
+      recruitPostId
+    }
     postRecruitCommentRequest(requestBody, recruitPostId, accessToken).then(postRecruitCommentResponse);
+    postAlertRequest(message, accessToken).then(postAlertResponse);
   }
 
   const onProfileImageClick = (commentWriter: string) => {
