@@ -471,7 +471,6 @@ export default function ActiveDetail() {
         } else {
         setIsLiked(false);
         }
-
     };
 
     // effect: 게시글 상세 보기 요청 함수 //
@@ -506,17 +505,17 @@ export default function ActiveDetail() {
     }, [lat, lng]);
 
     // event handler: 좋아요 버튼 클릭 이벤트 처리 //
-  const onLikeButtonClickHandler = () => {
-    if (!signInUser?.userId) {
-      alert("로그인을 해주세요.");
-      return;
+    const onLikeButtonClickHandler = () => {
+        if (!signInUser?.userId) {
+            alert("로그인을 해주세요.");
+            return;
+        }
+        if (!activePostId) {
+            alert("유효한 activePostId가 필요합니다.");
+            return;
+        }
+        postActiveLikeRequest(activePostId, accessToken).then(postActiveLikeResponse);
     }
-    if (!activePostId) {
-      alert("유효한 activePostId가 필요합니다.");
-      return;
-    }
-    postActiveLikeRequest(activePostId, accessToken).then(postActiveLikeResponse);
-  }
 
     // event handler: 클릭 시 옵션 항목을 보여주거나 숨기는 함수 //
     const toggleOptionsHandler = () => {
@@ -599,7 +598,7 @@ export default function ActiveDetail() {
 
         const requestBody: PostActiveReportRequestDto = { content: reportContent };
         PostActiveReportRequest(requestBody, accessToken, activePostId).then(postActiveReportResponse);
-    
+
         setIsReportModalOpen(false);
         return;
     }
@@ -779,25 +778,25 @@ export default function ActiveDetail() {
                         </div>
                         <div className='right'>
                             {signInUser &&
-                            <div className={`like ${isLiked ? 'liked' : ''}`} onClick={onLikeButtonClickHandler}></div>
+                                <div className={`like ${isLiked ? 'liked' : ''}`} onClick={onLikeButtonClickHandler}></div>
                             }
                         </div>
                     </div>
                     <div className='line'></div>
                     <div className='comments'>
                         {signInUser &&
-                        <div className='commentUserInfoWrite'>
-                            <div className='commentUserInfo-left'>
-                                <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
-                                <div className='activeCommentWriter'>{signInUser?.userId}</div>
+                            <div className='commentUserInfoWrite'>
+                                <div className='commentUserInfo-left'>
+                                    <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
+                                    <div className='activeCommentWriter'>{signInUser?.userId}</div>
+                                </div>
+                                <div className='commentUserInfo-right'>
+                                    <input className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
+                                </div>
+                                <div className="commentButton" onClick={onCommentPostButtonClick}>
+                                    <SendIcon />
+                                </div>
                             </div>
-                            <div className='commentUserInfo-right'>
-                                <input className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
-                            </div>
-                            <div className="commentButton" onClick={onCommentPostButtonClick}>
-                                <SendIcon />
-                            </div>
-                        </div>
                         }
                         {viewList.map((activeComment, index) => (
                             <div className='commentUserInfo' key={index}>

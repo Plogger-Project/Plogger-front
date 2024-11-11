@@ -153,8 +153,8 @@ const PURCHASE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_M
 const POST_RECRUIT_REPORT_API_URL = (recruitId: number | string) => `${RECRUIT_REPORT_API_URL}/${recruitId}`;
 const POST_ACTIVE_REPORT_API_URL = (activeId: number | string) => `${ACTIVE_REPORT_API_URL}/${activeId}`;
 
-const DELETE_RECRUIT_REPORT_API_URL = (recruitId: number | string) => `${ADMIN_MODULE_URL}/${recruitId}`;
-const DELETE_ACTIVE_REPORT_API_URL = (activeId: number | string) => `${ADMIN_MODULE_URL}/${activeId}`;
+const DELETE_RECRUIT_REPORT_API_URL = (recruitId: number | string) => `${ADMIN_MODULE_URL}/recruit/${recruitId}`;
+const DELETE_ACTIVE_REPORT_API_URL = (activeId: number | string) => `${ADMIN_MODULE_URL}/active/${activeId}`;
 
 const FOLLOW_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/follow`;
 
