@@ -186,22 +186,21 @@
 .button-mileage {
     user-select: none;
     cursor: pointer;
-
     width: 160px;
     height: 40px;
-
     text-align: center;
-
     border-radius: 8px;
-    background-color: #84A264;
+    border: 0.1px solid rgb(103, 141, 129);
     font-size: 20px;
-    color: rgba(255, 255, 255, 1);
+    color: rgba(0, 95, 65, 1);
+    background-color:white;
     justify-content: center;
     align-content: center;
 }
 
 .button-mileage:hover {
-    background-color: #6b8f5c;
+    background-color: rgba(0, 95, 65, 1);
+    color: rgba(255, 255, 255, 1);
 }
 
 #adminpage .modal {
@@ -590,7 +589,8 @@
 #adminpage .td-user-address,
 #adminpage .td-user-score,
 #adminpage .td-user-mileage,
-#adminpage .td-user-joinpath {
+#adminpage .td-user-joinpath,
+#adminpage .td-user-delete {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -623,6 +623,13 @@
 
     gap: 15px;
 
+}
+
+#adminpage .user-delete {
+    background-color: red;
+    color: white;
+    text-align: center;
+    border-radius: 3px;
 }
 
 #adminpage .pagination .active {

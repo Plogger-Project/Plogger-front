@@ -4,14 +4,14 @@ import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SignUpRe
 import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
-import { GetRecruitCommentListResponseDto, GetRecruitJoinListResponseDto, GetRecruitLikeResponseDto, GetRecruitPostListResponseDto, GetRecruitReportListResponseDto, GetRecruitScrapListResponseDto, GetRecruitScrapResponseDto } from "./dto/response/recruit";
+import { GetRecruitCommentListResponseDto, GetRecruitJoinListResponseDto, GetRecruitLikeResponseDto, GetRecruitPostListResponseDto, GetRecruitReportListResponseDto, GetRecruitScrapResponseDto } from "./dto/response/recruit";
 import { GetQnaPostListResponseDto } from "./dto/response/qna";
 import { PatchCommentRequestDto, PatchUserRequestDto } from "./dto/request/user";
 import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
 import PatchTelAuthCheckRequestDto from "./dto/request/user/patch-tel-auth-check.request.dto";
 import PatchPasswordRequestDto from "./dto/request/user/patch-password.request.dto";
 import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from "./dto/request/gifticon";
-import { FindPasswordResponseDto, GetSignInResponseDto } from "./dto/response/auth";
+import { GetSignInResponseDto } from "./dto/response/auth";
 import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
 import { PatchRecruitCommentRequestDto, PatchRecruitIsCompletedRequestDto, PatchRecruitRequestDto, PostRecruitCommentRequestDto, PostRecruitRequestDto } from "./dto/request/recruit";
 import GetRecruitPostResponseDto from "./dto/response/recruit/get-recruit.response.dto";
@@ -31,6 +31,7 @@ import PostQnaCommentRequestDto from "./dto/request/qna/post-qna-comment.request
 import GetQnaCommentListResponseDto from "./dto/response/qna/get-qna-comment-list.response.dto";
 import { PostFollowRequestDto } from "./dto/request/follow";
 import GetRecruitAddressCountResponseDto from "./dto/response/recruit/get-recruit-address-count.response.dto";
+import { PostAlertRequestDto } from "./dto/request/alert";
 
 
 
@@ -106,6 +107,7 @@ const ACTIVE_TAG_MODULE_URL = (activeId: number | string) => `${ACTIVE_MODULE_UR
 const POST_ACTIVE_TAG_API_URL = (activeId: number | string, recruitId: number | string) => `${ACTIVE_TAG_MODULE_URL(activeId)}/${recruitId}`;
 const DELETE_ACTIVE_TAG_API_URL = (activeId: number | string, recruitId: number | string, tagId: string) => `${ACTIVE_TAG_MODULE_URL(activeId)}/${recruitId}/${tagId}`;
 
+const POST_ALERT_API_URL = `${ALERT_MODULE_URL}`;
 const GET_ALERT_LIST_API_URL = `${ALERT_MODULE_URL}`;
 const DELETE_ALERT_LIST_API_URL = (id: number | string) => `${ALERT_MODULE_URL}/${id}`;
 
@@ -151,8 +153,8 @@ const PURCHASE_GIFTICON_API_URL = (gifticonId: number | string) => `${GIFTICON_M
 const POST_RECRUIT_REPORT_API_URL = (recruitId: number | string) => `${RECRUIT_REPORT_API_URL}/${recruitId}`;
 const POST_ACTIVE_REPORT_API_URL = (activeId: number | string) => `${ACTIVE_REPORT_API_URL}/${activeId}`;
 
-const DELETE_RECRUIT_REPORT_API_URL = (recruitId: number | string) => `${ADMIN_MODULE_URL}/${recruitId}`;
-const DELETE_ACTIVE_REPORT_API_URL = (activeId: number | string) => `${ADMIN_MODULE_URL}/${activeId}`;
+const DELETE_RECRUIT_REPORT_API_URL = (recruitId: number | string) => `${ADMIN_MODULE_URL}/recruit/${recruitId}`;
+const DELETE_ACTIVE_REPORT_API_URL = (activeId: number | string) => `${ADMIN_MODULE_URL}/active/${activeId}`;
 
 const FOLLOW_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/follow`;
 
@@ -706,6 +708,13 @@ export const getActiveLikeRequest = async (activeId: number | string) => {
     return responseBody;
 };
 
+// function: post alert 요청 함수 //
+export const postAlertRequest = async (requestBody: PostAlertRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_ALERT_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 
 // function: get alert list 요청 함수 //
 export const getAlertListRequest = async (accesstoken: string) => {
@@ -885,7 +894,7 @@ export const getMileageListRequest = async (accessToken: string) => {
 };
 
 // function: 채팅방 만들기 요청 함수 //
-export const postChatRoomRequeset = async (requestBody: PostChatRoomRequestDto, accessToken: string) => {
+export const postChatRoomRequest = async (requestBody: PostChatRoomRequestDto, accessToken: string) => {
     const responseBody = await axios.post(POST_CHAT_ROOM_API_URL, requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);

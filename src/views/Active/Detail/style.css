@@ -83,18 +83,18 @@
 }
 
 #active-detail-wrapper .postTop .postBox .listButton {
-    width: 50px;
+    width: 65px;
     height: 30px;
-    background-color: #4CAF50;
+    background-color: rgba(156, 153, 153, 0.2);
     color: white;
-    border-radius: 16px;
+    border-radius: 8px;
     border: none;
     cursor: pointer;
     justify-content: center;
     align-items: center;
     display: flex;
     text-align: center;
-
+    
 }
 
 #active-detail-wrapper .postDetail {
