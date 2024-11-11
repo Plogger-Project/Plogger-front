@@ -85,7 +85,9 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
 
     // event handler: 활동 게시판 댓글 수정 이벤트 핸들러 //
     const onUpdateButtonClickHandler = () => {
-        if (signInUser?.userId !== activeComment.activeCommentWriter) return;
+
+        if ((signInUser?.userId !== activeComment.activeCommentWriter) && !signInUser?.isAdmin)return;
+
 
         if (!content) {
             alert('댓글 입력해주세요.');
@@ -94,17 +96,13 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
 
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) return;
-
         if (!activePostId) return;
-
         const isConfirm = window.confirm('댓글을 수정하시겠습니까?');
         if (!isConfirm) return;
         
 
         const reqeustBody: PatchActiveCommentRequestDto = { activeCommentContent: content };
-
         patchActiveCommentRequest(reqeustBody, activePostId, activeComment.activeCommentId, accessToken).then(patchActiveCommentResponse);
-
         setIsEdit(false);
     }
 
@@ -143,23 +141,26 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
 
     // render: active comment list 아이템 컴포넌트 렌더링 //
     return (
-        <div className='commentUserInfo'>
-            <div className='commentUserInfo-right'>
+        <div className='tableCommentUserInfo'>
+            <div className='activeComment-Left'>
                 <div className='activeCommentWriter'>{activeComment.activeCommentWriter}</div>
+                <div className='activeCommentCreatedAt'>{activeComment.activeCommentCreatedAt}</div>
+            </div>
+            <div className='commentUserInfo-right'>
                 {isEdit ? (
                     <div className='editCommentWrapper'>
-                        <textarea value={content} onChange={onContentChangeHandler} />
-                        <button onClick={onUpdateButtonClickHandler}>저장</button>
-                        <button onClick={onCancelButtonClickHandler}>취소</button>
+                        <textarea className='editCommentContent'  value={content} onChange={onContentChangeHandler} />
+                        <button className='save' onClick={onUpdateButtonClickHandler}>저장</button>
+                        <button className='cancel' onClick={onCancelButtonClickHandler}>취소</button>
                     </div>
                 ) : (
-                    <div>
+                    <div className='viewCommentWrapper'>
                         <div className='activeCommentContent'>{activeComment.activeCommentContent}</div>
-                        <div className='activeCommentCreatedAt'>{activeComment.activeCommentCreatedAt}</div>
                     </div>
+                        
                 )}
             </div>
-            {!isEdit && (isAuthor || isAdmin) && (
+            {!isEdit && (isAuthor || isAdmin) ? (
                 <div className='commentUserInfo-buttons'>
                     <Tooltip title="수정">
                         <IconButton onClick={onEditButtonClickHandler}>
@@ -172,7 +173,9 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
                         </IconButton>
                     </Tooltip>
                 </div>
-            )}
+            ) :
+                <div className='commentUserInfo-buttons-blank'></div>
+            }
         </div>
     );
 }
@@ -737,7 +740,12 @@ export default function ActiveDetail() {
                                 level={3}
                             >
                                 <MapMarker position={{ lat, lng }}>
-                                    <div style={{ color: "#000" }}>장소</div>
+                                    { }
+                                    {
+                                        <div className='marker-info' >
+                                            활동 장소
+                                        </div>
+                                    }
                                 </MapMarker>
                             </Map>
                         </div>
