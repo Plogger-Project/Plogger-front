@@ -1,8 +1,7 @@
 export default interface ChatMessage {
     chatId: number;
     senderId: string;
-    receiverId: string;
-    roomId: number;
+    roomId: number | string;
     message: string;
     sentAt: string;
 }
