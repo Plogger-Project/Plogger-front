@@ -4,9 +4,9 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { GetSignInResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
-import { ACCESS_TOKEN, FIND_ID, FIND_PASSWORD, MYPAGE_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH } from '../../constants';
+import { ACCESS_TOKEN, ACTIVE_DETAIL_PATH, FIND_ID, FIND_PASSWORD, MYPAGE_PATH, RECRUIT_DETAIL_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH } from '../../constants';
 import SignInRequestDto from '../../apis/dto/request/auth/sign-in.request.dto';
-import { deleteAlertListRequest, getAlertListRequest, getSignInRequest, signInRequest } from '../../apis';
+import { deleteAlertListRequest, getAlertListRequest, getSignInRequest, postAlertRequest, signInRequest } from '../../apis';
 import { ACTIVE_PATH, QNA_PATH, RECRUIT_PATH } from '../../constants';
 import { useCookies } from 'react-cookie';
 import { useSearchStore, useSignInUserStore } from 'src/stores';
@@ -41,6 +41,10 @@ function TableRow({ alerts, getAlertList }: TableRowProps) {
     // state: alert 상태 //
     const [alertMessage, setAlertMessage] = useState<String>('');
     const [alertTime, setAlertTime] = useState<String>('');
+    const [recruitPostId, setRecruitPostId] = useState<number>(0);
+    const [activePostId, setActivePostId] = useState<number>(0);
+
+    
 
 
     // effect: 알람이 변경되면 state에 반영 // 
@@ -48,8 +52,13 @@ function TableRow({ alerts, getAlertList }: TableRowProps) {
         if (alerts) {
             setAlertMessage(alerts.message);
             setAlertTime(alerts.createdAt);
+            setRecruitPostId(alerts.recruitPostId);
+            setActivePostId(alerts.activePostId);
         }
     }, [alerts]);
+
+    // function: 네비게이터 함수 //
+    const navigator = useNavigate();
 
     // function: delete alert response 처리 함수 //
     const deleteAlertListResponse = (responseBody: ResponseDto | null) => {
@@ -74,6 +83,22 @@ function TableRow({ alerts, getAlertList }: TableRowProps) {
     // effect: 컴포넌트 로드시 알람 리스트 불러오기 함수 //
     useEffect(getAlertList, []);
 
+    // event handler: alert message 클릭 이벤트 처리 //
+    const onAlertMessageClickHandler = () => {
+        if (recruitPostId) {
+            const path = RECRUIT_DETAIL_PATH(recruitPostId);
+
+            navigator(path);
+        } else if (activePostId) {
+            const path = ACTIVE_DETAIL_PATH(activePostId);
+
+            navigator(path);
+        } 
+        else if (signInUser) {
+            navigator(MYPAGE_PATH(signInUser?.userId));
+        }
+    };
+
     // event handler: 삭제 버튼 클릭 이벤트 처리 //
     const onDeleteAlertClickHandler = (id: string | number) => {
 
@@ -92,7 +117,7 @@ function TableRow({ alerts, getAlertList }: TableRowProps) {
     return (
         <div className='alert-box'>
             <div className='alert-text'>
-                <div className='alert-message'>{alerts.message}</div>
+                <div className='alert-message' onClick={onAlertMessageClickHandler}>{alerts.message}</div>
                 <div className='alert-time'>{alerts.createdAt}</div>
             </div>
             <div className='alert-close' onClick={() => onDeleteAlertClickHandler(alerts.id)}>x</div>
