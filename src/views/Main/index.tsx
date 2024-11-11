@@ -64,7 +64,7 @@ useEffect(() => {
 const getCityClassName = (city: string) => {
   const cityData = addressPostCounts.find(a => a.city === city);
   console.log(`City: ${city}, Data:`, cityData);
-  return cityData && cityData.postCount >= 5 ? 'active' : '';
+  return cityData && cityData.postCount >= 3 ? 'active2' : cityData && cityData.postCount >= 1 ? 'active' : '';
 };
 
   // render: 한국 지도 컴포넌트 렌더링 //
