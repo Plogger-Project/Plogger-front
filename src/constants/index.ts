@@ -51,7 +51,7 @@ export const QNA_DETAIL_ABSOLUTE_PATH = QNA_DETAIL_PATH;
 export const QNA_WRITE_ABSOLUTE_PATH = QNA_WRITE_PATH;
 
 export const CHAT_PATH = '/chat';
-export const CHAT_DETAIL_PATH = (roomId: string | number) => `${ACTIVE_PATH}/${roomId}`;
+export const CHAT_DETAIL_PATH = (roomId: string | number) => `${CHAT_PATH}/${roomId}`;
 
 // variable: HTTP BEARER TOKEN COOKIE NAME //
 export const ACCESS_TOKEN = 'accessToken';

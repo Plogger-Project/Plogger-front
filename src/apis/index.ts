@@ -4,14 +4,14 @@ import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SignUpRe
 import SignInRequestDto from "./dto/request/auth/sign-in.request.dto";
 import SignInResponseDto from "./dto/response/auth/sign-in.response.dto";
 import { GetGifticonListResponseDto, GetGifticonResponseDto } from "./dto/response/gifticon";
-import { GetRecruitCommentListResponseDto, GetRecruitJoinListResponseDto, GetRecruitLikeResponseDto, GetRecruitPostListResponseDto, GetRecruitReportListResponseDto, GetRecruitScrapListResponseDto, GetRecruitScrapResponseDto } from "./dto/response/recruit";
+import { GetRecruitCommentListResponseDto, GetRecruitJoinListResponseDto, GetRecruitLikeResponseDto, GetRecruitPostListResponseDto, GetRecruitReportListResponseDto, GetRecruitScrapResponseDto } from "./dto/response/recruit";
 import { GetQnaPostListResponseDto } from "./dto/response/qna";
 import { PatchCommentRequestDto, PatchUserRequestDto } from "./dto/request/user";
 import PatchTelAuthRequestDto from "./dto/request/user/patch-tel-auth.request.dto";
 import PatchTelAuthCheckRequestDto from "./dto/request/user/patch-tel-auth-check.request.dto";
 import PatchPasswordRequestDto from "./dto/request/user/patch-password.request.dto";
 import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from "./dto/request/gifticon";
-import { FindPasswordResponseDto, GetSignInResponseDto } from "./dto/response/auth";
+import { GetSignInResponseDto } from "./dto/response/auth";
 import FindIdRequestDto from "./dto/request/auth/find-id-request.dto";
 import { PatchRecruitCommentRequestDto, PatchRecruitIsCompletedRequestDto, PatchRecruitRequestDto, PostRecruitCommentRequestDto, PostRecruitRequestDto } from "./dto/request/recruit";
 import GetRecruitPostResponseDto from "./dto/response/recruit/get-recruit.response.dto";
@@ -894,7 +894,7 @@ export const getMileageListRequest = async (accessToken: string) => {
 };
 
 // function: 채팅방 만들기 요청 함수 //
-export const postChatRoomRequeset = async (requestBody: PostChatRoomRequestDto, accessToken: string) => {
+export const postChatRoomRequest = async (requestBody: PostChatRoomRequestDto, accessToken: string) => {
     const responseBody = await axios.post(POST_CHAT_ROOM_API_URL, requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
