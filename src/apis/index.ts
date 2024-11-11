@@ -31,6 +31,7 @@ import PostQnaCommentRequestDto from "./dto/request/qna/post-qna-comment.request
 import GetQnaCommentListResponseDto from "./dto/response/qna/get-qna-comment-list.response.dto";
 import { PostFollowRequestDto } from "./dto/request/follow";
 import GetRecruitAddressCountResponseDto from "./dto/response/recruit/get-recruit-address-count.response.dto";
+import { PostAlertRequestDto } from "./dto/request/alert";
 
 
 
@@ -106,6 +107,7 @@ const ACTIVE_TAG_MODULE_URL = (activeId: number | string) => `${ACTIVE_MODULE_UR
 const POST_ACTIVE_TAG_API_URL = (activeId: number | string, recruitId: number | string) => `${ACTIVE_TAG_MODULE_URL(activeId)}/${recruitId}`;
 const DELETE_ACTIVE_TAG_API_URL = (activeId: number | string, recruitId: number | string, tagId: string) => `${ACTIVE_TAG_MODULE_URL(activeId)}/${recruitId}/${tagId}`;
 
+const POST_ALERT_API_URL = `${ALERT_MODULE_URL}`;
 const GET_ALERT_LIST_API_URL = `${ALERT_MODULE_URL}`;
 const DELETE_ALERT_LIST_API_URL = (id: number | string) => `${ALERT_MODULE_URL}/${id}`;
 
@@ -706,6 +708,13 @@ export const getActiveLikeRequest = async (activeId: number | string) => {
     return responseBody;
 };
 
+// function: post alert 요청 함수 //
+export const postAlertRequest = async (requestBody: PostAlertRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_ALERT_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 
 // function: get alert list 요청 함수 //
 export const getAlertListRequest = async (accesstoken: string) => {

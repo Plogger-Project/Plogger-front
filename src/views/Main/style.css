@@ -466,7 +466,27 @@ body {
 #third-content-wrapper .South-Gyeongsang.active,
 #third-content-wrapper .South-Jeolla.active,
 #third-content-wrapper .Ulsan.active{
-    fill: #e08e83;
+    fill: #e0a49c;
+}
+
+#third-content-wrapper .Busan.active2,
+#third-content-wrapper .Daegu.active2,
+#third-content-wrapper .Daejeon.active2,
+#third-content-wrapper .Gangwon.active2,
+#third-content-wrapper .Gwangju.active2,
+#third-content-wrapper .Gyeonggi.active2,
+#third-content-wrapper .Incheon.active2,
+#third-content-wrapper .Jeju.active2,
+#third-content-wrapper .North-Chungcheong.active2,
+#third-content-wrapper .North-Gyeongsang.active2,
+#third-content-wrapper .North-Jeolla.active2,
+#third-content-wrapper .Sejong.active2,
+#third-content-wrapper .Seoul.active2,
+#third-content-wrapper .South-Chungcheong.active2,
+#third-content-wrapper .South-Gyeongsang.active2,
+#third-content-wrapper .South-Jeolla.active2,
+#third-content-wrapper .Ulsan.active2{
+    fill: #e06f60;
 }
 
 #fourth-content-wrapper {

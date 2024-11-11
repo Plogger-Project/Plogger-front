@@ -4,4 +4,6 @@ export default interface AlertList{
     message: String;
     isRead: boolean;
     createdAt: String;
+    recruitPostId: number;
+    activePostId: number;
 }
