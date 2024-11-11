@@ -7,7 +7,7 @@ import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
 import { ActivePost, Follow, Mileage, RecruitPostList, RecruitScrapList } from 'src/types';
 
-import { getActivePostListRequest, getGifticonRequest, getMileageListRequest, getRecruitPostListRequest, getRecruitPostRequest, getRecruitScrapListRequest, getRecruitUserInfoRequest, getFollowerListRequest, getFolloweeListRequest, patchCommentRequest, postFollowRequest, deleteFollowRequest, getFollowUserInfoRequest } from 'src/apis';
+import { getActivePostListRequest, getGifticonRequest, getMileageListRequest, getRecruitPostListRequest, getRecruitPostRequest, getRecruitScrapListRequest, getRecruitUserInfoRequest, getFollowerListRequest, getFolloweeListRequest, patchCommentRequest, postFollowRequest, deleteFollowRequest, getFollowUserInfoRequest, postAlertRequest } from 'src/apis';
 
 import { GetRecruitPostListResponseDto, GetRecruitScrapListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
@@ -26,6 +26,7 @@ import GetRecruitPostResponseDto from '@/apis/dto/response/recruit/get-recruit.r
 import SavingsTwoToneIcon from '@mui/icons-material/SavingsTwoTone';
 
 import { PostFollowRequestDto } from '@/apis/dto/request/follow';
+import { PostAlertRequestDto } from '@/apis/dto/request/alert';
 
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
@@ -418,6 +419,23 @@ export default function Mypage() {
           setIsFollow(false);
         };
 
+      // function: post alert response 처리 함수 //
+    const postAlertResponse = (responseBody: ResponseDto | null) => {
+      const message =
+        !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'NP' ? '권한이 없습니다.' :
+        responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+        responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
+        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+      const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+      if (!isSuccessed) {
+        alert(message);
+        return;
+      }
+    };
+
     // function: 팔로잉 유무 확인 함수 //
     const isFollowing = followerList.some(follower => follower.followerId === signInUser?.userId);
 
@@ -741,7 +759,14 @@ export default function Mypage() {
       const reqeustBody: PostFollowRequestDto = {
         followeeId : userId
       };
+
+      const message: PostAlertRequestDto = {
+        userId,
+        message: signInUser?.userId + "(이)가 고객님을 팔로우 했습니다.",
+      }
+
       await postFollowRequest(reqeustBody, accessToken).then(postFollowResponse);
+      postAlertRequest(message, accessToken).then(postAlertResponse);
     window.location.reload();
     }
 
@@ -821,10 +846,14 @@ export default function Mypage() {
               </div>
             </div>
             <div className='mileage-container'>
-              <div className='mileage-box'>
-                <SavingsTwoToneIcon sx={{ fontSize: 45 }}  />
-                <div className='mileage-score'>{isOwner?.mileage}</div>
-              </div>
+              {
+                signInUser?.userId === user?.userId
+                ? <div className='mileage-box'>
+                  <SavingsTwoToneIcon sx={{ fontSize: 45 }}  />
+                  <div className='mileage-score'>{isOwner?.mileage}</div>
+                </div>
+                : <></>
+              }
               {
               signInUser?.userId === user?.userId 
               ? <div className='button-mileage' onClick={onGiftClickHandler}>기프티콘 바로가기</div> 
@@ -897,7 +926,7 @@ export default function Mypage() {
               </div>
             )}
 
-            {scrapContents.length > 0 &&
+            {scrapContents.length > 0 && signInUser?.userId === user?.userId &&
               (
               <div className="main">
                 <div className="table">
@@ -920,7 +949,7 @@ export default function Mypage() {
               </div>
             )}
 
-            {mileageContents.length > 0 &&
+            {mileageContents.length > 0 && signInUser?.userId === user?.userId  &&
               (
               <div className="main">
                 <div className="table">
