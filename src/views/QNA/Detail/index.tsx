@@ -6,13 +6,17 @@ import { useSignInUserStore } from 'src/stores';
 import { useCookies } from 'react-cookie';
 import { ResponseDto } from 'src/apis/dto/response';
 import { getQnaPostRequest, deleteQnaPostRequest, patchQnaCommentRequest, deleteQnaCommentRequest, postQnaCommentRequest, getQnaCommentListRequest, getQnaCommentUserInfoRequest, getQnaUserInfoRequest } from 'src/apis';
-import { ACCESS_TOKEN, QNA_DETAIL_PATH, QNA_PATH, QNA_UPDATE_PATH } from 'src/constants';
+import { ACCESS_TOKEN, MYPAGE_PATH, QNA_DETAIL_PATH, QNA_PATH, QNA_UPDATE_PATH } from 'src/constants';
 import { PatchQnaCommentRequestDto } from 'src/apis/dto/request/qna';
 import usePagination from 'src/hooks/pagination.hook';
 import GetQnaPostResponseDto from 'src/apis/dto/response/qna/get-qna-post.response.dto';
 import PostQnaCommentRequestDto from 'src/apis/dto/request/qna/post-qna-comment.request.dto';
 import GetQnaCommentListResponseDto from 'src/apis/dto/response/qna/get-qna-comment-list.response.dto';
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
+import SendIcon from '@mui/icons-material/Send';
+import { IconButton, Tooltip } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 // interface: Qna 댓글 인터페이스 //
 interface TableRowProps {
@@ -126,30 +130,46 @@ function TableRow({ qnaComment, getQnaCommentList }: TableRowProps) {
         setIsEdit(false);
         setContent(qnaComment.qnaCommentContent);
     }
-
-    console.log(qnaComment);
+    
+    // render //
     return (
-        <div className='commentUserInfo-right'>
-            <div className='qnaCommentWriter'>{qnaComment.qnaCommentWriter}</div>
-            {isEdit ? (
-                <div>
-                    <textarea value={content} onChange={onContentChangeHandler} />
-                    <button onClick={onUpdateButtonClickHandler}>저장</button>
-                    <button onClick={onCancelButtonClickHandler}>취소</button>
-                </div>
-            ) : (
-                <div>
-                    <div className='qnaCommentContent'>{qnaComment.qnaCommentContent}</div>
-                    <div className='qnaCommentCreatedAt'>{qnaComment.qnaCommentCreatedAt}</div>
-                    {isAuthor && (
-                        <div>
-                            <button onClick={onEditButtonClickHandler}>수정</button>
-                            <button onClick={onDeleteButtonClickHandler}>삭제</button>
-                        </div>
-                    )}
-                </div>
-            )}
-        </div>
+        <div className='tableCommentUserInfo'>
+            <div className='qnaComment-Left'>
+                <div className='qnaCommentWriter'>{qnaComment.qnaCommentWriter}</div>
+                <div className='qnaCommentCreatedAt'>{qnaComment.qnaCommentCreatedAt}</div>
+            </div>
+            <div className='commentUserInfo-right'>
+                {isEdit ? (
+                    <div className='editCommentWrapper'>
+                        <textarea className='editCommentContent' value={content} onChange={onContentChangeHandler} />
+                        <button className='save' onClick={onUpdateButtonClickHandler}>저장</button>
+                        <button className='cancel' onClick={onCancelButtonClickHandler}>취소</button>
+                    </div>
+                ) : (
+                    <div className='viewCommentWrapper'>
+                            <div className='qnaCommentContent'>{qnaComment.qnaCommentContent}</div>
+                    </div>
+
+                )}
+            </div>
+                {!isEdit && (isAuthor) ? (
+                    <div className='commentUserInfo-buttons'>
+                        <Tooltip title="수정">
+                            <IconButton onClick={onEditButtonClickHandler}>
+                                <EditIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="삭제">
+                            <IconButton onClick={onDeleteButtonClickHandler}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
+                ) :
+                    <div className='commentUserInfo-buttons-blank'></div>
+                }
+            </div>
+        
     )
 }
 
@@ -327,6 +347,11 @@ export default function QnADetail() {
         setCommentProfileImage(prev => ({ ...prev, [commentId]: profileImage }));
     };
 
+    // function:프로필 사진 클릭하여 마이페이지 이동 //
+    const onProfileImageClickButtonHandler = () => {
+        navigator(MYPAGE_PATH(writer));
+    }
+
     // effect: 게시글 상세 보기 요청 함수 //
     useEffect(() => {
         if (!qnaPostId) return;
@@ -432,7 +457,7 @@ export default function QnADetail() {
                 <div className='postTop'>
                     <div className='userInfo'>
                         <div className='userInfo-left'>
-                            <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }}></div>
+                            <div className='profileImage' onClick={onProfileImageClickButtonHandler} style={{ backgroundImage: `url(${profileImage})` }}></div>
                             <div className='userInfo-right'>
                                 <div className='name'>{writer}</div>
                                 <div className='date'>{createdAt}</div>
@@ -471,17 +496,21 @@ export default function QnADetail() {
                     <div className='line'></div>
                     <div className='comments'>
                         <div className='commentUserInfoWrite'>
+                            <div className='commentUserInfo-left'>
                             <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
-                            <div className='commentUserInfo-right'>
                                 <div className='qnaCommentWriter'>{signInUser?.userId}</div>
+                            </div>
+                            <div className='commentUserInfo-right'>
                                 {isAdmin ? (
-                                    <input placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler} />
+                                    <input className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler} />
                                 ) : (
                                     <div className='disabledCommentInput'>관리자만 댓글 작성이 가능합니다.</div>
                                 )}
                             </div>
                             {isAdmin ? (
-                                <div className='commentButton' onClick={onCommentPostButtonClick}>등록</div>
+                                <div className="commentButton" onClick={onCommentPostButtonClick}>
+                                    <SendIcon />
+                                </div>
                             ) : (
                                 <div className='disableCommnetUpdate'></div>
                             )}

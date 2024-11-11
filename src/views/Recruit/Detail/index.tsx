@@ -12,7 +12,7 @@ import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import RecruitWrite from './../Write/index';
 
 import { RecruitComment, RecruitPostList, SimpleUser } from 'src/types';
-import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, getRecruitScrapRequest, postRecruitScrapRequest, postRecruitCommentRequest, patchRecruitCommentRequest, deleteRecruitCommentRequest, getRecruitCommentUserInfoRequest, postRecruitLikeRequest, getRecruitLikeRequest, , getRecruitJoinUserInfoRequest } from 'src/apis';
+import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, getRecruitScrapRequest, postRecruitScrapRequest, postRecruitCommentRequest, patchRecruitCommentRequest, deleteRecruitCommentRequest, getRecruitCommentUserInfoRequest, postRecruitLikeRequest, getRecruitLikeRequest,  getRecruitJoinUserInfoRequest } from 'src/apis';
 
 import axios from 'axios';
 import { deleteRecruitPostRequest, getRecruitPostRequest, getRecruitUserInfoRequest } from 'src/apis';
@@ -27,6 +27,13 @@ import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto, GetRec
 import { PatchRecruitCommentRequestDto, PatchRecruitIsCompletedRequestDto, PostRecruitCommentRequestDto } from 'src/apis/dto/request/recruit';
 import { differenceInDays, parseISO } from 'date-fns';
 import { Avatar, Box, Popover, Typography } from '@mui/material';
+
+
+import AvatarGroup from '@mui/material/AvatarGroup';
+import {  IconButton,  Tooltip } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SendIcon from '@mui/icons-material/Send';
 
 
 
@@ -100,32 +107,24 @@ function TableRow({ recruitComment, getRecruitCommentList }: TableRowProps) {
 
   // event handler: 구인 게시판 댓글 수정 이벤트 핸들러 //
   const onUpdateButtonClickHandler = () => {
-    if (signInUser?.userId !== recruitComment.recruitCommentWriter) return;
-
+    if ((signInUser?.userId !== recruitComment.recruitCommentWriter) && !signInUser?.isAdmin) return;
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
-
     if (!recruitPostId) return;
-
     const isConfirm = window.confirm('댓글을 수정하시겠습니까?');
     if (!isConfirm) return;
 
     const requestBody: PatchRecruitCommentRequestDto = { recruitCommentContent: content };
-
     patchRecruitCommentRequest(requestBody, recruitPostId, recruitComment.recruitCommentId, accessToken).then(patchRecruitCommentResponse);
-
     setIsEdit(false);
   }
 
   // event handler: 구인 게시판 댓글 삭제 이벤트 핸들러 //
   const onDeleteButtonClickHandler = () => {
     if (signInUser?.userId !== recruitComment.recruitCommentWriter) return;
-
     if (!recruitPostId) return;
-
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
-
     const isConfirm = window.confirm('정말로 삭제하시겠습니까?');
     if (!isConfirm) return;
 
@@ -152,28 +151,43 @@ function TableRow({ recruitComment, getRecruitCommentList }: TableRowProps) {
 
   // render: recruit comment list 아이템 컴포넌트 렌더링 //
   return (
-    <div className='commentUserInfo-right'>
-      <div className='recruitCommentWriter'>{recruitComment.recruitCommentWriter}</div>
+    <div className='tableCommentUserInfo'>
+        <div className='recruitComment-Left'>
+            <div className='recruitCommentWriter'>{recruitComment.recruitCommentWriter}</div>
+            <div className='recruitCommentCreatedAt'>{recruitComment.recruitCommentCreatedAt}</div>
+        </div>
+      <div className='commentUserInfo-right'>
       {isEdit ? (
-        <div>
-          <textarea value={content} onChange={onContentChangeHandler} />
-          <button onClick={onUpdateButtonClickHandler}>저장</button>
-          <button onClick={onCancelButtonClickHandler}>취소</button>
+          <div className='editCommentWrapper'>
+          <textarea className='editCommentContent' value={content} onChange={onContentChangeHandler} />
+          <button className='save' onClick={onUpdateButtonClickHandler}>저장</button>
+          <button className='cancel' onClick={onCancelButtonClickHandler}>취소</button>
         </div>
       ) : (
-        <div>
-          <div className='recruitCommentContent'>{recruitComment.recruitCommentContent}</div>
-          <div className='recruitCommentCreatedAt'>{recruitComment.recruitCommentCreatedAt}</div>
-            {(isAuthor || isAdmin) && (
-            <div>
-              <button onClick={onEditButtonClickHandler}>수정</button>
-              <button onClick={onDeleteButtonClickHandler}>삭제</button>
+            <div className='viewCommentWrapper'>
+              <div className='recruitCommentContent'>{recruitComment.recruitCommentContent}</div>
             </div>
-          )}
+
+        )}
+      </div>
+      {!isEdit && (isAuthor || isAdmin) ? (
+        <div className='commentUserInfo-buttons'>
+          <Tooltip title="수정">
+            <IconButton onClick={onEditButtonClickHandler}>
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="삭제">
+            <IconButton onClick={onDeleteButtonClickHandler}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
         </div>
-      )}
+      ) :
+        <div className='commentUserInfo-buttons-blank'></div>
+      }
     </div>
-  )
+  );
 }
 
 
@@ -1002,12 +1016,16 @@ export default function RecruitDetail() {
           <div className='comments'>
             {signInUser &&
               <div className='commentUserInfoWrite'>
-                <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
-                <div className='commentUserInfo-right'>
+                <div className='commentUserInfo-left'>
+                  <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
                   <div className='recruitCommentWriter'>{signInUser?.userId}</div>
-                  <input placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
                 </div>
-                <div className='commentButton' onClick={onCommentPostButtonClick}>등록</div>
+                <div className='commentUserInfo-right'>
+                  <input className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
+                </div>
+                <div className="commentButton" onClick={onCommentPostButtonClick}>
+                  <SendIcon />
+                </div>
               </div>
             }
             {viewList.map((recruitComment, index) => (
@@ -1019,8 +1037,8 @@ export default function RecruitDetail() {
           </div>
 
         </div>
-        <div className='bottom'></div>
       </div>
+      <div className='bottom'></div>
     </div>
   );
 }

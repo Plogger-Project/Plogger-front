@@ -236,74 +236,174 @@
 #recruit-detail-wrapper .postBottom .comments {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
 }
 
-#recruit-detail-wrapper .postBottom .comments input {
-    border: 0px;
-    flex-grow: 1;
-    width: 550px;
-    margin-right: 10px;
-
-}
-
-#recruit-detail-wrapper .postBottom .comments .commentButton {
-
-    width: 80px;
-    height: 30px;
-    background-color: #4CAF50;
+#recruit-detail-wrapper .commentButton {
+    background-color: #007bff;
     color: white;
-    border-radius: 16px;
-    border: none;
+    padding: 25px 20px;
+    border-radius: 8px;
     cursor: pointer;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    text-align: center;
-}
-
-#recruit-detail-wrapper .postBottom .profileImage {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    cursor: pointer;
-    background-image: url(/public/images/img.png);
-    background-position: 50% 50%;
-    background-size: cover;
-
+    font-weight: bold;
 }
 
 #recruit-detail-wrapper .commentUserInfo {
     display: flex;
-    flex-direction: row;
-    gap: 15px;
+    align-items: center; 
+    justify-content: space-between;
+    /* gap: 10px; */
+    /* padding-bottom: 10px; */
+    width: 100%;
+    /* height: 70px; */
+}
+
+#recruit-detail-wrapper .tableCommentUserInfo{
+    display: flex;
+    align-items: center;
+    /* gap: 10px; */
     padding-bottom: 10px;
-    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+    
+}
+
+#recruit-detail-wrapper .tableCommentUserInfo  .recruitComment-Left{
+    display: flex;
+    flex-direction: column;
+}
+#recruit-detail-wrapper .tableCommentUserInfo .recruitComment-Left .recruitCommentCreatedAt{
+    font-size: 12px;
 }
 
 #recruit-detail-wrapper .commentUserInfoWrite {
     display: flex;
-    flex-direction: row;
-    gap: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(25, 25, 25, 0.3);
+    align-items: flex-start;
+    width: 100%;
+    gap: 13px; 
+    background-color: #f9f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    
+}
+#recruit-detail-wrapper .profileImage {
+    width: 50px;
+    height: 50px; 
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover; 
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
 
+#recruit-detail-wrapper .commentInput {
+    flex-grow: 1;
+    border: 0;
+    width: 100%;
+    height: 80px;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-right: 10px;
+    box-sizing: border-box;
+    
+}
+
+#recruit-detail-wrapper .commentUserInfo-left {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-
+    font-size: 14px;
 }
 
 
 
 #recruit-detail-wrapper .commentUserInfo-right {
     display: flex;
-    flex-direction: column;
+    width: 100%;
+    flex-grow: 1;
+    align-items: center;
+}
+#recruit-detail-wrapper .commentUserInfo-right .viewCommentWrapper{
+    width: 530px;
+    
+}
+#recruit-detail-wrapper .commentUserInfo-right .editCommentWrapper{
+    width: 530px;
+    
+}
+
+#recruit-detail-wrapper .commentUserInfo-right .editCommentWrapper .editCommentContent{
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    max-width: 90%;
+    width: 100%; /* 가로 폭을 상위 div에 맞춤 */
+    height: 100px; /* 기본 높이 설정 */
+    line-height: 1.5; /* 줄 간격 */
+    resize: none; /* 크기 조정 불가능하도록 설정 */
+    background-color: white;
+    
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+#recruit-detail-wrapper .commentUserInfo-right .editCommentWrapper button{
+    cursor: pointer;
+    width: 60px;
+    height: 25px;
+    /* padding: 8px 24px; */
+    background-color: white;
+    text-align: center;
+    
+    border-radius: 8px;
+
+    font-size: 15px;
+    
+    justify-content: center;
+    align-content: center;
+    
+
+}
+
+#recruit-detail-wrapper .commentUserInfo-right .editCommentWrapper .save{
+color: rgba(0, 95, 65, 1);
+border: 0.1px solid rgb(103, 141, 129);
+margin-right: 10px;
+}
+
+#recruit-detail-wrapper .commentUserInfo-right .editCommentWrapper .cancel{
+color: rgb(95, 0, 0);
+border: 0.1px solid rgb(141, 103, 103);
+    
+}
+
+#recruit-detail-wrapper .recruitCommentContent{
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    max-width: 90%;
+    font-weight: 500;
+
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+
+    white-space: pre-wrap; /* 줄 바꿈을 유지하면서 줄이 길면 자동으로 줄 바꿈 */
+    word-wrap: break-word; /* 단어가 너무 길면 자동으로 줄 바꿈 */
+    overflow-wrap: break-word; /* 모든 브라우저에서 단어 단위로 줄 바꿈을 강제 */
+    overflow: hidden; /* 넘치는 내용이 보이지 않도록 설정 */
+    text-overflow: ellipsis; /* 넘치는 텍스트를 줄임표로 표시 */
 }
 
 #recruit-detail-wrapper .recruitCommentWriter,
 #recruit-detail-wrapper .recruitCommentCreatedAt {
-    font-size: 12px;
+    width: 70px;
+    font-size: 14px;
 }
 
+#recruit-detail-wrapper .recruitCommentWriter {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+}
 
 #recruit-detail-wrapper .bottom {
     padding: 15px;
@@ -323,6 +423,21 @@
 
     overflow-y: auto;
 }
+
+#recruit-detail-wrapper .commentUserInfo-buttons {
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+#recruit-detail-wrapper .commentUserInfo-buttons-blank {
+    display: flex;
+    margin-left: auto;
+    width: 40px;
+    height: 80px;
+}
+
+
 
 #recruit-detail-wrapper .editButton,
 #recruit-detail-wrapper .deleteButton,
