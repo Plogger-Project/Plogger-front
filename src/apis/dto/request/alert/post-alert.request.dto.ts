@@ -3,4 +3,5 @@ export default interface PostAlertRequestDto {
     message: string;
     recruitPostId?: string | number | null;
     activePostId?: string | number | null;
+    qnaPostId?: string | number | null;
 }

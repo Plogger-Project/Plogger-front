@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { GetSignInResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
-import { ACCESS_TOKEN, ACTIVE_DETAIL_PATH, FIND_ID, FIND_PASSWORD, MYPAGE_PATH, RECRUIT_DETAIL_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH } from '../../constants';
+import { ACCESS_TOKEN, ACTIVE_DETAIL_PATH, FIND_ID, FIND_PASSWORD, MYPAGE_PATH, QNA_DETAIL_PATH, RECRUIT_DETAIL_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH } from '../../constants';
 import SignInRequestDto from '../../apis/dto/request/auth/sign-in.request.dto';
 import { deleteAlertListRequest, getAlertListRequest, getSignInRequest, postAlertRequest, signInRequest } from '../../apis';
 import { ACTIVE_PATH, QNA_PATH, RECRUIT_PATH } from '../../constants';
@@ -43,6 +43,7 @@ function TableRow({ alerts, getAlertList }: TableRowProps) {
     const [alertTime, setAlertTime] = useState<String>('');
     const [recruitPostId, setRecruitPostId] = useState<number>(0);
     const [activePostId, setActivePostId] = useState<number>(0);
+    const [qnaPostId, setQnaPostId] = useState<number>(0);
 
     
 
@@ -54,6 +55,7 @@ function TableRow({ alerts, getAlertList }: TableRowProps) {
             setAlertTime(alerts.createdAt);
             setRecruitPostId(alerts.recruitPostId);
             setActivePostId(alerts.activePostId);
+            setQnaPostId(alerts.qnaPostId);
         }
     }, [alerts]);
 
@@ -91,6 +93,10 @@ function TableRow({ alerts, getAlertList }: TableRowProps) {
             navigator(path);
         } else if (activePostId) {
             const path = ACTIVE_DETAIL_PATH(activePostId);
+
+            navigator(path);
+        } else if (qnaPostId) {
+            const path = QNA_DETAIL_PATH(qnaPostId);
 
             navigator(path);
         } 
@@ -462,7 +468,7 @@ export default function NavigationBar() {
                     <div className='button sign-in' onClick={onModelOpenHandler}>로그인</div> :
                     <div className='mypage-button-container'>
                         <div className='mypage-button' style={{ backgroundImage: `url(${signInUser.profileImage})` }} onClick={onMyPageClickHandler}></div>
-                        <Badge color="success" badgeContent={viewList.length > 0 ? viewList.length : 0}>
+                        <Badge color="success" overlap="circular" badgeContent={viewList.length > 0 ? viewList.length : 0}>
                             <MailIcon sx={{ fontSize: 30 }} className='mypage-alert-button' onClick={onAlertModelOpenHandler} />
                         </Badge>
                     </div>

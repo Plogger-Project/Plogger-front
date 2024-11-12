@@ -362,7 +362,7 @@
 #navigation-bar .alert-box {
     display: flex;
     gap: 20px;
-    width: 230px;
+    width: 300px;
     min-height: 40px;
 
     font-size: 15px;
@@ -381,7 +381,7 @@
 }
 
 #navigation-bar .alert-text {
-    width: 200px;
+    width: 300px;
 }
 
 #navigation-bar .alert-close {

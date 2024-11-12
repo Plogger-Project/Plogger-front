@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { useNavigate, useParams } from 'react-router-dom'
-import { deleteActiveCommentRequest, deleteActivePostRequest, getActiveCommentListRequest, getActiveCommentUserInfoRequest, getActiveLikeRequest, getActivePostRequest, getActiveTagUserInfoRequest, getActiveUserInfoRequest, patchActiveCommentRequest, postActiveCommentRequest, postActiveLikeRequest, PostActiveReportRequest } from 'src/apis';
+import { deleteActiveCommentRequest, deleteActivePostRequest, getActiveCommentListRequest, getActiveCommentUserInfoRequest, getActiveLikeRequest, getActivePostRequest, getActiveTagUserInfoRequest, getActiveUserInfoRequest, patchActiveCommentRequest, postActiveCommentRequest, postActiveLikeRequest, PostActiveReportRequest, postAlertRequest } from 'src/apis';
 import { ResponseDto } from 'src/apis/dto/response';
 import { GetActiveCommentListResponseDto, GetActiveLikeResponseDto, GetActivePostResponseDto } from 'src/apis/dto/response/active';
 import { ACCESS_TOKEN, ACTIVE_DETAIL_PATH, ACTIVE_PATH, ACTIVE_UPDATE_PATH, MYPAGE_PATH } from 'src/constants';
@@ -19,6 +19,7 @@ import { Box, IconButton, Popover, Tooltip, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
+import { PostAlertRequestDto } from '@/apis/dto/request/alert';
 
 interface TableRowProps {
     activeComment: ActiveComment;
@@ -476,6 +477,23 @@ export default function ActiveDetail() {
         }
     };
 
+    // function: post alert response 처리 함수 //
+    const postAlertResponse = (responseBody: ResponseDto | null) => {
+        const message =
+        !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'NP' ? '권한이 없습니다.' :
+        responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+        responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
+        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+    };
+
     // effect: 게시글 상세 보기 요청 함수 //
     useEffect(() => {
         if (!activePostId) return;
@@ -518,6 +536,15 @@ export default function ActiveDetail() {
             return;
         }
         postActiveLikeRequest(activePostId, accessToken).then(postActiveLikeResponse);
+
+        const message: PostAlertRequestDto = {
+            userId: writer,
+            message: signInUser?.userId + "(이)가 고객님의 글을 좋아요 하셨습니다.",
+            activePostId
+        };
+
+        if(signInUser?.userId !== writer)
+        postAlertRequest(message, accessToken).then(postAlertResponse);
     }
 
     // event handler: 클릭 시 옵션 항목을 보여주거나 숨기는 함수 //
@@ -633,6 +660,14 @@ export default function ActiveDetail() {
         }
 
         postActiveCommentRequest(requestBody, activePostId, accessToken).then(postActiveCommentResponse);
+
+        const message: PostAlertRequestDto = {
+            userId: writer,
+            message: signInUser?.userId + "(이)가 고객님의 글에 댓글을 달았습니다.",
+            activePostId
+        }
+        if(signInUser?.userId !== writer)
+        postAlertRequest(message, accessToken).then(postAlertResponse);
     }
 
     const onProfileImageClick = (commentWriter: string) => {

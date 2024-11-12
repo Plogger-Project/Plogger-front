@@ -11,12 +11,12 @@
 #mg-wrapper .button {
     border-radius: 6px;
     padding: 8px 24px;
-  
+
     font-size: 16px;
     font-weight: 400;
     line-height: 175%;
     text-align: center;
-  
+
     color: rgba(255, 255, 255, 1);
 }
 
@@ -75,17 +75,16 @@ background-color: var(--primary-color);
     width: 250px;
     height: 350px;
     text-align: center;
-    /* background-color: rgba(89, 148, 104, 0.2);
-    border: 2px solid rgba(89, 148, 104, 0.3); */
-    background-color: rgba(156, 153, 153, 0.2);
-    border: 2px solid rgba(0, 0, 0, 0.3);
-    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(212, 212, 212, 0.3);
+    border-radius: 8px;
+
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3);
 }
 
 .item:hover {
-    background-color: rgba(89, 148, 104, 0.2);
-    /* background-color: rgba(238, 238, 238, 1);
-    border: 2px solid rgba(156, 153, 153, 0.2); */
+
+    transform: scale(1.05);
 }
 
 .item .item-image{

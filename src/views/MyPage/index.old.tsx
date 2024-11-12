@@ -28,6 +28,7 @@ import SavingsTwoToneIcon from '@mui/icons-material/SavingsTwoTone';
 import { PostFollowRequestDto } from '@/apis/dto/request/follow';
 import { PostAlertRequestDto } from '@/apis/dto/request/alert';
 
+
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
   interface Window {
@@ -94,7 +95,7 @@ interface AnotherUser {
 }
 
 // component: 마이페이지 컴포넌트 //
-export default function Mypage() {
+export default function Mypage2() {
   // state: 페이징 관련 상태 //
   const { currentPage, totalPage, totalCount, viewList, setTotalList, initViewList, ...paginationProps } = useRecruitPagination<RecruitPostList>();
 
@@ -154,13 +155,6 @@ export default function Mypage() {
 
   const [followerList, setFollowerList] = useState<Follow[]>([]);
   const [followeeList, setFolloweeList] = useState<Follow[]>([]);
-
-  const [clickRecruit, isClickReruit] = useState<boolean>(false);
-  const [clickActive, isClickActive] = useState<boolean>(false);
-  const [clickMileage, isClickMileage]= useState<boolean>(false);
-  const [clickScrap, isClickScrap] = useState<boolean>(false);
-
-
 
   // variable: accessToken
   const accessToken = cookies[ACCESS_TOKEN];
@@ -477,6 +471,7 @@ export default function Mypage() {
         <div className="td-recruit-number">{recruitPostId.recruitPostId}</div>
         <div className="td-recruit-isCompleted">{recruitPostId.isCompleted ? '마감됨' : '모집중'}</div>
         <div className="td-recruit-title" onClick={onDetailButtonClickHandler}>{recruitPostId.recruitPostTitle}</div>
+        <div className="td-recruit-writer">{recruitPostId.recruitPostWriter}</div>
         <div className="td-recruit-like-count">{recruitPostId.recruitPostLike}</div>
         <div className="td-recruit-view-count">{recruitPostId.recruitView}</div>
         <div className="td-recruit-people">{recruitPostId.currentPeople}/{recruitPostId.minPeople}</div>
@@ -724,34 +719,22 @@ export default function Mypage() {
     setMileageContents([]);
     setScrapContents([]);
     getRecruitPostList();
-    isClickReruit(true);
-    isClickActive(false);
-    isClickMileage(false);
-    isClickScrap(false);
   };
 
-  // event handler: my active 클릭 이벤트 처리 // 
+  // event handler: my recruit 클릭 이벤트 처리 // 
   const onMyActiveClickHandler = () => {
     setRecruitContents([]);
     setMileageContents([]);
     setScrapContents([]);
     getActivePostList();
-    isClickReruit(false);
-    isClickActive(true);
-    isClickMileage(false);
-    isClickScrap(false);
   };
 
-  // event handler: my scrap 클릭 이벤트 처리 // 
+  // event handler: my recruit 클릭 이벤트 처리 // 
   const onMyScrapClickHandler = () => {
     setRecruitContents([]);
     setActiveContents([]);
     setMileageContents([]);
     getScrapPostList();
-    isClickReruit(false);
-    isClickActive(false);
-    isClickMileage(false);
-    isClickScrap(true);
   };
 
   // event handler: my mileage 클릭 이벤트 처리 // 
@@ -760,10 +743,6 @@ export default function Mypage() {
     setActiveContents([]);
     setScrapContents([]);
     getMileagePostList();
-    isClickReruit(false);
-    isClickActive(false);
-    isClickMileage(true);
-    isClickScrap(false);
   };
   
 
@@ -832,75 +811,70 @@ export default function Mypage() {
   }, [isFollowing]);
 
   return (
-    <div id='mypage-wrapper'>
-      <div className='mypage'>
-        <div className='mypage-container'>
-
-          <div className='mypage-top'>
-            <div className='profile-container'>
-              <div className='profile-image' style={{ backgroundImage: `url(${isOwner?.profileImage})` }}></div>
-              <div className='profile-box'>
-                <div className='profile-name-box'>
-                  <div className='profile-name'>{isOwner?.name}</div>
-                  <div className='change' onClick={onMypageUpdateOpenHandler}></div>
-                </div>
-                <div className='profile-address'>{isOwner?.address}</div>
-                <div className='profile-comment-box'>
+    <>
+      <div id='mypage'>
+        <div className='top'>
+          <div className='profile-container'>
+            <div className='image' style={{ backgroundImage: `url(${isOwner?.profileImage})` }}></div>
+            <div className='profile-box'>
+              <div className='name-box'>
+                <div className='name'>{isOwner?.name}</div>
+                <div className='change' onClick={onMypageUpdateOpenHandler}></div>
+              </div>
+              <div className='address'>{isOwner?.address}</div>
+              <div className='sentence-box'>
                 {input ?
-                  <input className='comment-input' type='text' value={comment} onChange={onCommentChangeHandler} placeholder='30글자 내로 입력하세요.' onKeyDown={onCommentKeydownHandler}
+                  <input className='input' type='text' value={comment} onChange={onCommentChangeHandler} placeholder='30글자 내로 입력하세요.' onKeyDown={onCommentKeydownHandler}
                     autoFocus />
-                  : <div className='profile-comment'>{comment}</div>
+                  : <div className='sentence'>{comment}</div>
                 }
-                  <div className='comment-change' onClick={onCommentButtonClickHandler}></div>
-                </div>
-
+                <div className='sentence-change' onClick={onCommentButtonClickHandler}></div>
               </div>
             </div>
+          </div>
+          <div className='activity-container'>
             <div className='score-container'>
-              <div className='top-box'>
+              <div className='line'>
                 <div className='follower-box' onClick={onFollowerOpenHandler}>
                   <div className='follower-name'>팔로우</div>
                   <div className='follower-score'>{followerList.length}</div>
                 </div>
-                <div className='followee-box' onClick={onFolloweeOpenHandler}>
-                  <div className='followee-name'>팔로잉</div>
-                  <div className='followee-score'>{followeeList.length}</div>
-                </div>
               </div>
-              <div className='bottom-box'>
-                {
-                  signInUser?.userId === user?.userId
-                    ? <div className='mileage-box'>
-                      <SavingsTwoToneIcon sx={{ fontSize: 45 }} />
-                      <div className='mileage-score'>{isOwner?.mileage}</div>
-                    </div>
-                    : <></>
-                }
-                {
-                  signInUser?.userId === user?.userId
-                    ? <div className='gift-button' onClick={onGiftClickHandler}>기프티콘 바로가기</div>
-                    : !isFollowing
-                      ? <div className='button-follow' onClick={onFollowButtonClickHandler}>팔로잉</div>
-                      : <div className='button-follow followed' onClick={onUnfollowButtonClickHandler}>팔로잉 취소</div>
-                }
+              <div className='followee-box' onClick={onFolloweeOpenHandler}>
+                <div className='followee-name'>팔로잉</div>
+                <div className='followee-score'>{followeeList.length}</div>
               </div>
             </div>
-          </div>
-          
-          <div className='mypage-middle'>
-            <div className='my-recruit'><span className={`my-point ${clickRecruit ? 'active' : ''}`} onClick={onMyRecruitClickHandler}>구인 게시글</span></div>
-            <div className='my-active'><span className={`my-point ${clickActive ? 'active' : ''}`} onClick={onMyActiveClickHandler}>활동 게시글</span></div>
-            {
-              signInUser?.userId === user?.userId
-                ? <>
-                  <div className='my-mileage'><span className={`my-point ${clickMileage ? 'active' : ''}`} onClick={onMyMileageClickHandler}>마일리지 내역</span></div>
-                  <div className='my-scrap'><span className={`my-point ${clickScrap ? 'active' : ''}`} onClick={onMyScrapClickHandler}>스크랩 글</span></div>
-                </>
+            <div className='mileage-container'>
+              {
+                signInUser?.userId === user?.userId
+                ? <div className='mileage-box'>
+                  <SavingsTwoToneIcon sx={{ fontSize: 45 }}  />
+                  <div className='mileage-score'>{isOwner?.mileage}</div>
+                </div>
                 : <></>
-            }
+              }
+              {
+              signInUser?.userId === user?.userId 
+              ? <div className='button-mileage' onClick={onGiftClickHandler}>기프티콘 바로가기</div> 
+              : !isFollowing 
+              ? <div className='button-follow' onClick={onFollowButtonClickHandler}>팔로잉</div>
+              : <div className='button-follow followed' onClick={onUnfollowButtonClickHandler}>팔로잉 취소</div>
+              }
+            </div>
           </div>
-
-          <div className='mypage-bottom'>
+        </div>
+        <div className='mypage-bottom'>
+          <div className='table-contents'>
+            <div className='my-recruit' onClick={onMyRecruitClickHandler}><span>구인 게시글</span></div>
+            <div className='line'>
+              <div className='my-active' onClick={onMyActiveClickHandler}><span>활동 게시글</span></div>
+            </div>
+            <div className='line-right'>
+              <div className='my-mileage' onClick={onMyMileageClickHandler}><span>마일리지 내역</span></div>
+            </div>
+            <div className='my-scrap' onClick={onMyScrapClickHandler}><span>스크랩 글</span></div>
+          </div>
           <div className='table'>
             {recruitContents.length > 0 &&
               (
@@ -910,6 +884,7 @@ export default function Mypage() {
                     <div className="td-recruit-number">번호</div>
                     <div className="td-recruit-isCompleted">마감유무</div>
                     <div className="td-recruit-title">제목</div>
+                    <div className="td-recruit-writer">작성자</div>
                     <div className="td-recruit-like-count">추천수</div>
                     <div className="td-recruit-view-count">조회수</div>
                     <div className="td-recruit-people">모집인원</div>
@@ -997,9 +972,9 @@ export default function Mypage() {
               </div>
             )}
           </div>
-          </div>
         </div>
-              {/* 팔로워 모달 */}
+      </div>
+      {/* 팔로워 모달 */}
       {followerModalOpen &&
       <div className='modal'>
         <div className='modal-box'>
@@ -1010,7 +985,7 @@ export default function Mypage() {
               ))}
           </div>
           <div className='modal-bottom'>
-            <div className='button-close' style={{marginTop:"10px"}} onClick={onFollowerOpenHandler}>닫기</div>
+            <div className='button second' style={{marginTop:"10px"}} onClick={onFollowerOpenHandler}>닫기</div>
           </div>
         </div>
       </div>
@@ -1027,12 +1002,11 @@ export default function Mypage() {
               ))}
           </div>
           <div className='modal-bottom'>
-            <div className='button-close' style={{marginTop:"10px"}} onClick={onFolloweeOpenHandler}>닫기</div>
+            <div className='button second' style={{marginTop:"10px"}} onClick={onFolloweeOpenHandler}>닫기</div>
           </div>
         </div>
       </div>
     }
-      </div>
-    </div>
+    </>
   )
 }
