@@ -27,7 +27,7 @@ import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto, GetRec
 import { PatchRecruitCommentRequestDto, PatchRecruitIsCompletedRequestDto, PostRecruitCommentRequestDto } from 'src/apis/dto/request/recruit';
 import { differenceInDays, parseISO } from 'date-fns';
 import { Avatar, Box, Popover, Typography, useRadioGroup } from '@mui/material';
-import { PostAlertRequestDto } from '@/apis/dto/request/alert';
+import { PostAlertRequestDto } from 'src/apis/dto/request/alert';
 
 
 import AvatarGroup from '@mui/material/AvatarGroup';

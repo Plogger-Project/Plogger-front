@@ -15,10 +15,10 @@ import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from 'src/apis
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import { GetMileageListResponseDto } from 'src/apis/dto/response/mileage';
 import { GetGifticonResponseDto } from 'src/apis/dto/response/gifticon';
-import { GetActivePostListResponseDto } from '@/apis/dto/response/active';
+import { GetActivePostListResponseDto } from 'src/apis/dto/response/active';
 import SavingsTwoToneIcon from '@mui/icons-material/SavingsTwoTone';
-import { PostFollowRequestDto } from '@/apis/dto/request/follow';
-import { PostAlertRequestDto } from '@/apis/dto/request/alert';
+import { PostFollowRequestDto } from 'src/apis/dto/request/follow';
+import { PostAlertRequestDto } from 'src/apis/dto/request/alert';
 
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
@@ -26,54 +26,6 @@ declare global {
   interface Window {
     kakao: any;
   }
-}
-
-// interface: 팔로워&팔로위 리스트 컴포넌트 Properties //
-interface FollowTableRowProps {
-  follow: Follow;
-  mode: 'follower' | 'followee';
-}
-
-// component: 팔로워&팔로위 리스트 아이템 컴포넌트 //
-function FollowTableRow({ follow, mode }: FollowTableRowProps) {
-
-  // state: 팔로워&팔로위 정보 상태 //
-  const [profileImage, setprofileImage] = useState<string | null>('');
-
-  // event handler:  팔로워&팔로위 클릭 이벤트 처리 //
-  const onProfileImageClick = (displayedId: string) => {
-    window.location.href = (MYPAGE_PATH(displayedId));
-}
-
-  // function : get follower info response 처리 함수 //
-  const getFollowInfoResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
-    
-    const message = !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-
-    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    if (!isSuccessed) {
-      alert(message);
-      return;
-    }
-    
-    const { profileImage } = responseBody as GetSignInResponseDto;
-    setprofileImage(profileImage);
-  };
-
-  const displayedId = mode === 'follower' ? follow.followerId : follow.followeeId;
-  getFollowUserInfoRequest(displayedId).then(getFollowInfoResponse);
-
-  // render : 팔로워&팔로위 게시글 리스트 렌더링 //
-  return (
-    <div className="follow-table" key={follow.followId}>
-      <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }} onClick={() => onProfileImageClick(displayedId)} ></div>
-      <div className='follow-text' onClick={() => onProfileImageClick(displayedId)}>{displayedId}</div>
-    </div>
-  )
-  
 }
 
 // interface: another user 정보 //
@@ -420,6 +372,8 @@ export default function Mypage() {
             return;
           }
           setIsFollow(false);
+          getFollowerList();
+          getFolloweeList();
         };
 
       // function: post alert response 처리 함수 //
@@ -437,6 +391,8 @@ export default function Mypage() {
         alert(message);
         return;
       }
+      getFollowerList();
+      getFolloweeList();
     };
 
     // function: 팔로잉 유무 확인 함수 //
@@ -628,6 +584,58 @@ export default function Mypage() {
     )
   }
 
+  // interface: 팔로워&팔로위 리스트 컴포넌트 Properties //
+  interface FollowTableRowProps {
+    follow: Follow;
+    mode: 'follower' | 'followee';
+  }
+
+  // component: 팔로워&팔로위 리스트 아이템 컴포넌트 //
+  function FollowTableRow({ follow, mode }: FollowTableRowProps) {
+
+    // state: 팔로워&팔로위 정보 상태 //
+    const [profileImage, setprofileImage] = useState<string | null>('');
+
+    const navigator = useNavigate();
+
+    // event handler:  팔로워&팔로위 클릭 이벤트 처리 //
+    const onProfileImageClick = (displayedId: string) => {
+      navigator(MYPAGE_PATH(displayedId));
+      setFolloweeModalOpen(false);
+      setFollowerModalOpen(false);
+    }
+
+    // function : get follower info response 처리 함수 //
+    const getFollowInfoResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
+
+      const message = !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+      const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+      if (!isSuccessed) {
+        alert(message);
+        return;
+      }
+
+      const { profileImage } = responseBody as GetSignInResponseDto;
+      setprofileImage(profileImage);
+    };
+
+    const displayedId = mode === 'follower' ? follow.followerId : follow.followeeId;
+    getFollowUserInfoRequest(displayedId).then(getFollowInfoResponse);
+
+    // render : 팔로워&팔로위 게시글 리스트 렌더링 //
+    return (
+      <div className="follow-table" key={follow.followId}>
+        <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }} onClick={() => onProfileImageClick(displayedId)} ></div>
+        <div className='follow-text' onClick={() => onProfileImageClick(displayedId)}>{displayedId}</div>
+      </div>
+    )
+
+  }
+
   // event handler: 정보 수정 관련 이벤트 처리//
   const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -785,7 +793,6 @@ export default function Mypage() {
 
       await postFollowRequest(reqeustBody, accessToken).then(postFollowResponse);
       postAlertRequest(message, accessToken).then(postAlertResponse);
-    window.location.reload();
     }
 
     // event handler: 팔로우 취소 버튼 클릭 이벤트 처리 //
@@ -803,7 +810,6 @@ export default function Mypage() {
       if (!accessToken) return;
 
       await deleteFollowRequest(userId, accessToken).then(deleteFollowResponse);
-      window.location.reload();
     };
 
 
@@ -829,14 +835,14 @@ export default function Mypage() {
   }, [isFollowing]);
 
   useEffect(() => {
-      if (!signInUser) {
-          alert("로그인이 필요합니다.");
-          navigator('/sign-up'); 
-      }
-  }, [signInUser]);
+    if (!signInUser) {
+      alert("로그인이 필요합니다.");
+      navigator('/sign-up'); 
+    }
+  }, []);
 
   if (!signInUser) {
-      return null; // 리다이렉트 전까지 UI를 숨김
+    return null; 
   }
 
   return (

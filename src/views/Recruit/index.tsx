@@ -16,7 +16,7 @@ import useRecruitPagination from "src/hooks/recruit.pagination.hook";
 import Pagination from "src/components/pagination";
 import SignInUser from './../../types/sign-in-user.interface';
 import { differenceInDays, parseISO } from "date-fns";
-import RecruitPostMarkerOverlay from "@/types/recruitpost-markeroverlay";
+import RecruitPostMarkerOverlay from "src/types/recruitpost-markeroverlay";
 
 
 
@@ -57,7 +57,7 @@ function MarkerOverlay({ recruitPostId, getRecruitList }: recruitPostTableRow) {
         {/* <div className="marker-overlay-isCompleted">{recruitPostId.isCompleted ? '마감됨' : '모집중'}</div> */}
         <div className="marker-overlay-people">모집 현황 : {recruitPostId.currentPeople}/{recruitPostId.minPeople}</div>
         </div>
-        <div className="marker-overlay-navigator" onClick={onDetailButtonClickHandler}>글로 이동</div>
+        <div className="marker-overlay-navigator" onClick={onDetailButtonClickHandler}>이동</div>
     </div>
       
     </>

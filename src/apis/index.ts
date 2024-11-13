@@ -32,10 +32,10 @@ import GetQnaCommentListResponseDto from "./dto/response/qna/get-qna-comment-lis
 import { PostFollowRequestDto } from "./dto/request/follow";
 import GetRecruitAddressCountResponseDto from "./dto/response/recruit/get-recruit-address-count.response.dto";
 import { PostAlertRequestDto } from "./dto/request/alert";
-import { ADMIN } from "@/constants";
+import { ADMIN } from "src/constants";
 
 // variable: API URL 상수 //
-const PLOGGER_API_DOMAIN = "http://192.168.7.27:4000"
+const PLOGGER_API_DOMAIN = "http://localhost:4000"
 
 const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
 const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`

@@ -20,13 +20,13 @@ import useFollowPagination from 'src/hooks/follow.pagination.hook';
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import { GetMileageListResponseDto } from 'src/apis/dto/response/mileage';
 import { GetGifticonResponseDto } from 'src/apis/dto/response/gifticon';
-import { GetActivePostListResponseDto } from '@/apis/dto/response/active';
-import useGifticonPagination from '@/hooks/gifticon.pagination.hook';
-import GetRecruitPostResponseDto from '@/apis/dto/response/recruit/get-recruit.response.dto';
+import { GetActivePostListResponseDto } from 'src/apis/dto/response/active';
+import useGifticonPagination from 'src/hooks/gifticon.pagination.hook';
+import GetRecruitPostResponseDto from 'src/apis/dto/response/recruit/get-recruit.response.dto';
 import SavingsTwoToneIcon from '@mui/icons-material/SavingsTwoTone';
 
-import { PostFollowRequestDto } from '@/apis/dto/request/follow';
-import { PostAlertRequestDto } from '@/apis/dto/request/alert';
+import { PostFollowRequestDto } from 'src/apis/dto/request/follow';
+import { PostAlertRequestDto } from 'src/apis/dto/request/alert';
 
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //

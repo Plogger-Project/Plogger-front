@@ -65,17 +65,14 @@
 #recruit-post-wrapper .kakaomap .marker-info{
     
     width: 300px;
-    height: 200px;
+    height: 220px;
     text-align: center;
     justify-content: center;
     align-items: center;
     border-radius: 8px;
     border: 1px solid black;
 }
-#recruit-post-wrapper .kakaomap .marker-text {
-    padding: 5px;
 
-}
 
 #recruit-post-wrapper .kakaomap .marker-overlay{
     display: flex;
@@ -86,7 +83,7 @@
     background-color:white;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    /* gap: 5px; */
     
 }
 
@@ -98,21 +95,30 @@
 }
 
 #recruit-post-wrapper .marker-overlay-title{
-    margin-bottom: 5px;
+    width: 80%;
+    height: 20px;
+    white-space:nowrap;
+    overflow:hidden;  
+    text-overflow: ellipsis;
+    padding: 5px;
 }
 #recruit-post-wrapper .marker-overlay .marker-overlay-image{
-    width: 100%;
-    height: 100%;
+    width: 80%;
+    height: 80%;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    background-color: rgba(0, 0, 0, 1);
     
+}
+#recruit-post-wrapper .marker-overlay .marker-overlay-people{
+    padding: 5px;
 }
 #recruit-post-wrapper .marker-overlay .marker-overlay-bottom{
     
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    /* gap: 10px; */
 }
 
 
