@@ -227,6 +227,11 @@
     font-weight: 600;
 }
 
+#recruit-post-wrapper .middle-top .post-filter .filter-bar {
+    font-size: 17px;
+    margin-bottom: 10px;
+}
+
 #recruit-post-wrapper .middle-top .post-filter .all,
 #recruit-post-wrapper .middle-top .post-filter .Recruiting,
 #recruit-post-wrapper .middle-top .post-filter .Recruited {

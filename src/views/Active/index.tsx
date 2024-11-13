@@ -161,6 +161,7 @@ export default function Active() {
       initViewList(searchedActiveList);
   }, [searchWord]);
 
+  // render //
   return (
     <>
     <div className="active-top-blank"></div>

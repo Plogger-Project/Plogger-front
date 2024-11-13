@@ -566,7 +566,11 @@ export default function ActiveDetail() {
 
     // event handler: 게시글 삭제 버튼 클릭 이벤트 처리 //
     const onPostDeleteButtonClick = () => {
-        if (signInUser?.userId !== writer) return;
+
+        if (!(writer || isAdmin === signInUser?.userId)) {
+            alert("작성자만 삭제할 수 있습니다.");
+            return;
+        }
 
         if (!activePostId) return;
 
@@ -715,12 +719,12 @@ export default function ActiveDetail() {
                                     left: optionPosition.left + 'px'
                                 }}
                             >
-                                {(isAuthor || isAdmin) && (
+                                {signInUser?.userId === writer || signInUser?.isAdmin?
                                     <>
                                         <button className="editButton" onClick={onPostUpdateButtonClick}>수정하기</button>
                                         <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제하기</button>
                                     </>
-                                )}
+                                : ''}
                                 {(!isAuthor || !signInUser) && (
                                     <>
                                         <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>

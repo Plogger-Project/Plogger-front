@@ -223,7 +223,6 @@
     align-content: center;
     margin-right: 5px;
 }
-
 #recruit-update-wrapper .bottom .primary:hover {
     background-color: var(--primary-10-color);
     color: var(--primary-color);
