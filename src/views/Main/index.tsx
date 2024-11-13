@@ -12,12 +12,11 @@ import { GetActivePostListResponseDto } from 'src/apis/dto/response/active';
 import { ResponseDto } from 'src/apis/dto/response';
 import { getActivePostListRequest,  GetRecruitAddressCountRequest, getRecruitPostListRequest } from 'src/apis';
 import GetRecruitAddressCountResponseDto from 'src/apis/dto/response/recruit/get-recruit-address-count.response.dto';
-import { AddressPostCount } from 'src/types';
 import { ActivePost,  AddressPostCount } from 'src/types';
 import useGifticonPagination from 'src/hooks/gifticon.pagination.hook';
 import {  Typography } from '@mui/material';
 import { useSpringCarousel } from 'react-spring-carousel';
-import { GetRecruitPostListResponseDto } from '@/apis/dto/response/recruit';
+import { GetRecruitPostListResponseDto } from 'src/apis/dto/response/recruit';
 
 
 // component : 한국 지도 컴포넌트 //

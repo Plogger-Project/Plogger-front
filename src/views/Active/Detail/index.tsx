@@ -19,7 +19,7 @@ import { Box, IconButton, Popover, Tooltip, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
-import { PostAlertRequestDto } from '@/apis/dto/request/alert';
+import { PostAlertRequestDto } from 'src/apis/dto/request/alert';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { red } from '@mui/material/colors';

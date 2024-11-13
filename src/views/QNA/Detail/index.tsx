@@ -17,7 +17,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { IconButton, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { PostAlertRequestDto } from '@/apis/dto/request/alert';
+import { PostAlertRequestDto } from 'src/apis/dto/request/alert';
 
 // interface: Qna 댓글 인터페이스 //
 interface TableRowProps {
