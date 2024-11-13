@@ -154,7 +154,7 @@ export default function QnaUpdate() {
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
 
-    let url: string | null = defaultImageUrl;
+    let url: string | null = '';
     if (imageFile) {
       const formData = new FormData();
       formData.append('file', imageFile);
