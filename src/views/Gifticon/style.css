@@ -83,7 +83,6 @@ background-color: var(--primary-color);
 }
 
 .item:hover {
-
     transform: scale(1.05);
 }
 

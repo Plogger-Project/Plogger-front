@@ -146,6 +146,7 @@
 
 #mypage-wrapper .follower-name,
 #mypage-wrapper .followee-name {
+    cursor: pointer;
     border-bottom: 2px solid rgb(180, 180, 180);
     border-radius: 3px;
     font-size: 25px;
@@ -153,6 +154,7 @@
 
 #mypage-wrapper .follower-score,
 #mypage-wrapper .followee-score {
+    cursor: pointer;
     font-size: 20px;
 }
 
@@ -492,10 +494,12 @@
 }
 
 .follow-table .follow-text {
+    cursor: pointer;
     margin-top: 10px;
 }
 
 .follow-table .profileImage {
+    cursor: pointer;
     width: 50px;
     height: 50px;
     border-radius: 50%;

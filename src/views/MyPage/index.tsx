@@ -12,7 +12,7 @@ import { getActivePostListRequest, getGifticonRequest, getMileageListRequest, ge
 import { GetRecruitPostListResponseDto, GetRecruitScrapListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
-import { ACCESS_TOKEN, ACTIVE_DETAIL_ABSOLUTE_PATE, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';
+import { ACCESS_TOKEN, ACTIVE_DETAIL_ABSOLUTE_PATE, MYPAGE_PATH, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';
 import { PatchCommentRequestDto } from 'src/apis/dto/request/user';
 import { useCookies } from 'react-cookie';
 import { GetFolloweeListResponseDto, GetFollowerListResponseDto, GetFollowResponseDto } from 'src/apis/dto/response/follow';
@@ -48,6 +48,11 @@ function FollowTableRow({ follow, mode }: FollowTableRowProps) {
   // state: 팔로워&팔로위 정보 상태 //
   const [profileImage, setprofileImage] = useState<string | null>('');
 
+  // event handler:  팔로워&팔로위 클릭 이벤트 처리 //
+  const onProfileImageClick = (displayedId: string) => {
+    window.location.href = (MYPAGE_PATH(displayedId));
+}
+
   // function : get follower info response 처리 함수 //
   const getFollowInfoResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
     
@@ -72,8 +77,8 @@ function FollowTableRow({ follow, mode }: FollowTableRowProps) {
   // render : 팔로워&팔로위 게시글 리스트 렌더링 //
   return (
     <div className="follow-table" key={follow.followId}>
-      <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }} ></div>
-      <div className='follow-text'>{displayedId}</div>
+      <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }} onClick={() => onProfileImageClick(displayedId)} ></div>
+      <div className='follow-text' onClick={() => onProfileImageClick(displayedId)}>{displayedId}</div>
     </div>
   )
   
