@@ -9,7 +9,7 @@ import { QNA_DETAIL_PATH, QNA_WRITE_PATH } from "src/constants";
 import { getQnaPostListRequest } from './../../apis/index';
 import Pagination from "src/components/pagination";
 import PushPinIcon from '@mui/icons-material/PushPin';
-import { useSearchStore } from "src/stores";
+import { useSearchStore, useSignInUserStore } from "src/stores";
 
 // interface: QnA 게시글 리스트 컴포넌트 Properties //
 interface TableRowProps {
@@ -62,6 +62,9 @@ export default function QnaPost() {
 
   // state: 검색어 상태 가져오기 //
   const { searchWord } = useSearchStore();
+
+  // state: 로그인 유저 상태 //
+  const { signInUser } = useSignInUserStore();
 
   // state: 페이징 관련 상태 //
   const { currentPage, totalPage, totalCount, viewList, setTotalList, initViewList, ...paginationProps } = useQnaPagination<QnaPostList>();
@@ -168,9 +171,13 @@ export default function QnaPost() {
                 <TableRow key={index} qnaPostId={qnaPostId} getQnaList={getQnaPostList} />
               ))}
           </div>
-          <div className="pagination">
-            <Pagination currentPage={currentPage} {...paginationProps} />
-            <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>
+          <div className="bottom">
+            <div className="pagination">
+              <Pagination currentPage={currentPage} {...paginationProps} />
+            </div>
+            {signInUser == null ? 
+                <div className="button" onClick={onWriteButtonClickHandler} style={{visibility:"hidden"}}>글쓰기</div>
+                : <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>}
           </div>
         </div>
       </div>

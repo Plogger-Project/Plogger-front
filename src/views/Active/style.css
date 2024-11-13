@@ -32,6 +32,12 @@
     align-items: center;
 }
 
+.active-list-title {
+    white-space:nowrap;
+    overflow:hidden;  
+    text-overflow: ellipsis;
+}
+
 .active-post-header .header-text {
     color: white;
     font-size: 40px;

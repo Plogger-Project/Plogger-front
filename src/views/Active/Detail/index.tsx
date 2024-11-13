@@ -19,6 +19,9 @@ import { Box, IconButton, Popover, Tooltip, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { red } from '@mui/material/colors';
 
 interface TableRowProps {
     activeComment: ActiveComment;
@@ -790,7 +793,9 @@ export default function ActiveDetail() {
                         </div>
                         <div className='right'>
                             {signInUser &&
-                                <div className={`like ${isLiked ? 'liked' : ''}`} onClick={onLikeButtonClickHandler}></div>
+                                <div>
+                                    {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{color: red[500], fontSize: 30}}/> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{fontSize: 30}}/>}
+                                </div> 
                             }
                         </div>
                     </div>

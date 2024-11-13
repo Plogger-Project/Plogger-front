@@ -795,6 +795,17 @@ export default function Mypage() {
 
   }, [isFollowing]);
 
+  useEffect(() => {
+      if (!signInUser) {
+          alert("로그인이 필요합니다.");
+          navigator('/sign-up'); 
+      }
+  }, [signInUser]);
+
+  if (!signInUser) {
+      return null; // 리다이렉트 전까지 UI를 숨김
+  }
+
   return (
     <>
       <div id='mypage'>

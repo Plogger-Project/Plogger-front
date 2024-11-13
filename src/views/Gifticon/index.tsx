@@ -33,10 +33,10 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
 
   // state: 기프티콘 정보 상태 //
   const [gifticonId, setGifticonId] = useState<number>(gifticon.gifticonId);
-  const [gifticonName, setGifticonName] = useState<string>(gifticon.name);
+  const [gifticonName, setGifticonName] = useState<string>('');
   const [gifticonImageFile, setGifticonImageFile] = useState<File | null>(null);
-  const [gifticonImage, setGifticonImage] = useState<string>(gifticon.image);
-  const [mileageCost, setMileageCost] = useState<number>(gifticon.mileageCost);
+  const [gifticonImage, setGifticonImage] = useState<string>('');
+  const [mileageCost, setMileageCost] = useState<number>();
 
   // state: 구매 모달 팝업 상태 //
   const [purchaseModalOpen, setPurchaseModalOpen] = useState<boolean>(false);
@@ -245,18 +245,13 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
     // const newRequestBody: PatchGifticonRequestDto = {name:gifticonName, image: defaultImageUrl, mileageCost}
     // patchGifticonRequest(newRequestBody, gifticonId, accessToken).then(patchGifticonResponse);
 
-
-    if(!gifticonName && !mileageCost) return;
-
-    // if(gifticonName && !mileageCost) {
-    //   setMileageCost(gifticon.mileageCost);
-    // } 
-    
-    // if(!gifticonName && mileageCost) {
-    //   setGifticonName(gifticon.name);
-    // }
-
-    console.log(gifticonImageFile);
+    if(!gifticonName && !mileageCost && !gifticonImage){
+      alert("수정 취소 시 닫기 버튼을 눌러주세요.");
+      return;
+    }
+    const finalGifticonName = gifticonName || gifticon.name;
+    const finalMileageCost = mileageCost || gifticon.mileageCost;
+    const finalGifticonImage = gifticonImage || gifticon.image;
 
     const accessToken = cookies[ACCESS_TOKEN];
     if(!accessToken) return;
@@ -267,13 +262,15 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
       formData.append('file', gifticonImageFile);
       url = await fileUploadRequest(formData);
     }
-    url = url ? url : gifticonImage;
+    url = url || finalGifticonImage;
 
     console.log(url)
     console.log(gifticonButtonId);
 
     const requestBody: PatchGifticonRequestDto = {
-      image: url, name:gifticonName, mileageCost
+      image: url,
+      name: finalGifticonName,
+      mileageCost: finalMileageCost,
     };
     patchGifticonRequest(requestBody, gifticonButtonId, accessToken).then(patchGifticonResponse);
   };

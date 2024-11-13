@@ -67,18 +67,17 @@
 }
 
 #recruit-update-wrapper .postTop .postBox .listButton {
-    width: 50px;
+    width: 90px;
     height: 30px;
-    background-color: #4CAF50;
+    background-color: rgba(156, 153, 153, 0.2);
     color: white;
-    border-radius: 16px;
+    border-radius: 8px;
     border: none;
     cursor: pointer;
     justify-content: center;
     align-items: center;
     display: flex;
     text-align: center;
-
 }
 
 
@@ -211,10 +210,24 @@
     justify-content: right;
 }
 
+#recruit-update-wrapper .bottom .button {
+    cursor: pointer;
+    width: 100px;
+    height: 40px;
+    
+    text-align: center;
+    border-radius: 8px;
+
+    font-size: 15px;
+    justify-content: center;
+    align-content: center;
+    margin-right: 5px;
+}
 #recruit-update-wrapper .bottom .primary:hover {
     background-color: var(--primary-10-color);
     color: var(--primary-color);
 }
+
 #recruit-update-wrapper .bottom .disable:hover {
     background-color: var(--dark-gray-color);
     color: rgba(255, 255, 255, 1);
