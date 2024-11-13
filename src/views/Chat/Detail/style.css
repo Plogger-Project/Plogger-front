@@ -1,11 +1,12 @@
-/* 공간을 위한 여백 */
 .chat-blank {
     width: 100%;
     height: 100px;
 }
 
-/* 전체적인 레이아웃 */
 #chat-detail {
+    /* position: fixed;
+    right: 0;
+    bottom: 0; */
     width: 100%;
     max-width: 600px;
     margin: 0 auto;
@@ -15,10 +16,9 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* 채팅 메시지 영역 */
 .chat-messages {
     height: 400px;
-    overflow-y: scroll;
+    overflow-y: auto;
     margin-bottom: 20px;
     padding-right: 10px;
     display: flex;
@@ -26,7 +26,15 @@
     gap: 10px;
 }
 
-/* 메시지 스타일 */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+}
+
 .chat-messages .message {
     padding: 10px;
     border-radius: 10px;
@@ -34,32 +42,42 @@
     max-width: 80%;
 }
 
-/* 보낸 메시지 스타일 */
 .chat-messages .sent {
     background-color: #e1ffc7;
     align-self: flex-end;
-    border-radius: 10px;
 }
 
-/* 받은 메시지 스타일 */
 .chat-messages .received {
     background-color: #f1f1f1;
     align-self: flex-start;
-    border-radius: 10px;
 }
 
-/* 메시지 보내는 사람 스타일 */
 .chat-messages .sender {
     font-weight: bold;
     color: #007bff;
     margin-right: 5px;
 }
 
-/* 채팅 입력 영역 */
+.chat-messages .system-message {
+    text-align: center;
+    background-color: #ffeb3b;
+    color: #333;
+    padding: 8px 12px;
+    font-weight: bold;
+    border-radius: 10px;
+    max-width: 60%;
+    align-self: center;
+}
+
+.chat-messages .system-message .system-message-content {
+
+}
+
 .chat-input {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
 }
 
 .message-input {
@@ -69,6 +87,7 @@
     border: 1px solid #ddd;
     font-size: 14px;
     outline: none;
+    transition: border-color 0.3s;
 }
 
 .message-input:focus {
@@ -94,4 +113,65 @@
 
 .send-button:active {
     background-color: #003f8e;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    position: relative;
+}
+
+.modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    color: #333;
+    cursor: pointer;
+}
+
+.modal-close-button:hover {
+    color: #ff0000;
+}
+
+.user-list-dropdown {
+    display: flex;
+    flex-direction: column;  
+    max-height: 300px; 
+    overflow-y: auto; 
+}
+
+.user-list-dropdown label {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.user-list-dropdown input {
+    margin-right: 10px; 
+}
+
+@media (max-width: 500px) {
+    .message-input {
+        width: 70%;
+    }
+
+    .send-button {
+        width: 25%;
+    }
 }

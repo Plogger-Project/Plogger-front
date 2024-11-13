@@ -25,7 +25,7 @@ function ChatRoomList({ chatRoom, getChatRoomList }: ChatRoomListProps) {
     return (
         <div className="chat-room-container" onClick={onDetailButtonClickHandler}>
             <h4>{chatRoom.roomName}</h4>
-            <span>{new Date(chatRoom.createdAt).toLocaleString()}</span>
+            <span>{chatRoom.createdAt}</span>
         </div>
     );
 }

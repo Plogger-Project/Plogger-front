@@ -15,7 +15,7 @@ import { GetActivePostResponseDto } from 'src/apis/dto/response/active';
 import { ResponseDto } from 'src/apis/dto/response';
 import { GetRecruitAddressCountRequest } from 'src/apis';
 import GetRecruitAddressCountResponseDto from 'src/apis/dto/response/recruit/get-recruit-address-count.response.dto';
-import { AddressPostCount } from '@/types';
+import { AddressPostCount } from 'src/types';
 
 
 // component : 한국 지도 컴포넌트 //
