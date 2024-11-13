@@ -92,6 +92,11 @@
     font-weight: 600;
 }
 
+#qna-post-wrapper .middle-top .post-filter .filter-bar {
+    font-size: 17px;
+    margin-bottom: 10px;
+}
+
 #qna-post-wrapper .middle-top .post-filter .all,
 #qna-post-wrapper .middle-top .post-filter .notice,
 #qna-post-wrapper .middle-top .post-filter .qna {
