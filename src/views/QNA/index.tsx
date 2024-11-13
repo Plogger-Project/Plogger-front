@@ -9,7 +9,7 @@ import { QNA_DETAIL_PATH, QNA_WRITE_PATH } from "src/constants";
 import { getQnaPostListRequest } from './../../apis/index';
 import Pagination from "src/components/pagination";
 import PushPinIcon from '@mui/icons-material/PushPin';
-import { useSearchStore } from "src/stores";
+import { useSearchStore, useSignInUserStore } from "src/stores";
 
 // interface: QnA 게시글 리스트 컴포넌트 Properties //
 interface TableRowProps {
@@ -42,10 +42,10 @@ function TableRow({ qnaPostId, getQnaList }: TableRowProps) {
   return (
     <div className="tr" key={qnaPostId.qnaPostId}>
       <div className="td-qna-number">{qnaPostId.isPinned ? (
-          <PushPinIcon className="pin-style" style={{ color: '#FF0000' }} /> // Pin 아이콘 표시 
-        ) : (
-          qnaPostId.qnaPostId
-        )}</div>
+        <PushPinIcon className="pin-style" style={{ color: '#FF0000' }} /> // Pin 아이콘 표시 
+      ) : (
+        qnaPostId.qnaPostId
+      )}</div>
       <div className="td-qna-title" onClick={onDetailButtonClickHandler}>{qnaPostId.qnaPostTitle}</div>
       <div className="td-qna-writer">{qnaPostId.qnaPostWriter}</div>
       <div className="td-qna-create-date">{formatDate(qnaPostId.qnaPostCreatedAt)}</div>
@@ -58,10 +58,13 @@ export default function QnaPost() {
 
   const [showPosts, setShowPosts] = useState(false); // 게시글 표시 상태
   const [originalList, setOriginalList] = useState<QnaPostList[]>([]);
-  const [filter, setFilter] = useState<'all' | 'qna' | 'notice' >('all');
+  const [filter, setFilter] = useState<'all' | 'qna' | 'notice'>('all');
 
   // state: 검색어 상태 가져오기 //
   const { searchWord } = useSearchStore();
+
+  // state: 로그인 유저 상태 //
+  const { signInUser } = useSignInUserStore();
 
   // state: 페이징 관련 상태 //
   const { currentPage, totalPage, totalCount, viewList, setTotalList, initViewList, ...paginationProps } = useQnaPagination<QnaPostList>();
@@ -106,7 +109,7 @@ export default function QnaPost() {
     setTotalList(sorted); // 필터링된 리스트를 설정
   };
 
-  
+
 
   // effect: 필터 변경 시 필터링 및 페이징 //
   useEffect(() => {
@@ -121,11 +124,11 @@ export default function QnaPost() {
 
   // effect: 검색어가 바뀔 시 새 리스트 불러오기 함수 //
   useEffect(() => {
-    const searchedActiveList = originalList.filter(post => 
+    const searchedActiveList = originalList.filter(post =>
       post.qnaPostTitle.includes(searchWord) || post.qnaPostWriter.includes(searchWord) || post.qnaPostId.toString().includes(searchWord)
     );
-      setTotalList(searchedActiveList);
-      initViewList(searchedActiveList);
+    setTotalList(searchedActiveList);
+    initViewList(searchedActiveList);
   }, [searchWord]);
 
   // event handler: 글쓰기 버튼 클릭 이벤트 처리 //
@@ -134,10 +137,10 @@ export default function QnaPost() {
   };
 
   // event handler: 필터 버튼 클릭 핸들러 //
-  const handleFilterClick = (newFilter: 'all' | 'qna' | 'notice' ) => {
+  const handleFilterClick = (newFilter: 'all' | 'qna' | 'notice') => {
     setFilter(newFilter);
   };
-  
+
   // render: qna 게시판 컴포넌트 렌더링 //
   return (
     <div id="qna-post-wrapper">
@@ -149,8 +152,10 @@ export default function QnaPost() {
             </div>
             <div className="post-filter">
               <div className={`all ${filter === 'all' ? 'active' : ''}`} onClick={() => handleFilterClick('all')}>전체</div>
-              | <div className={`notice ${filter === 'notice' ? 'active' : ''}`} onClick={() => handleFilterClick('notice')}>공지</div>
-              | <div className={`qna ${filter === 'qna' ? 'active' : ''}`} onClick={() => handleFilterClick('qna')}>Q&A</div>
+              <div className='filter-bar'>|</div>
+              <div className={`notice ${filter === 'notice' ? 'active' : ''}`} onClick={() => handleFilterClick('notice')}>공지</div>
+              <div className='filter-bar'>|</div>
+              <div className={`qna ${filter === 'qna' ? 'active' : ''}`} onClick={() => handleFilterClick('qna')}>Q&A</div>
             </div>
           </div>
           <div className="table">
@@ -163,12 +168,16 @@ export default function QnaPost() {
             {
               // isPinned 값에 따라 정렬
               viewList.map((qnaPostId, index) => (
-                  <TableRow key={index} qnaPostId={qnaPostId} getQnaList={getQnaPostList} />
-                ))}
+                <TableRow key={index} qnaPostId={qnaPostId} getQnaList={getQnaPostList} />
+              ))}
           </div>
-          <div className="pagination">
-            <Pagination currentPage={currentPage} {...paginationProps} />
-            <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>
+          <div className="bottom">
+            <div className="pagination">
+              <Pagination currentPage={currentPage} {...paginationProps} />
+            </div>
+            {signInUser == null ? 
+                <div className="button" onClick={onWriteButtonClickHandler} style={{visibility:"hidden"}}>글쓰기</div>
+                : <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>}
           </div>
         </div>
       </div>

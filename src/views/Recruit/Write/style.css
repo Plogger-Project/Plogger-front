@@ -63,7 +63,9 @@
     text-align: center;
 }
 
-
+#recruit-write-wrapper .userInfo-right .listButton:hover {
+    border: 1px solid rgba(156, 153, 153, 0.2);
+}
 
 #recruit-write-wrapper .profileImage {
     width: 50px;
@@ -218,6 +220,7 @@
 #recruit-write-wrapper .bottom .primary:hover {
     background-color: var(--primary-10-color);
     color: var(--primary-color);
+    text-align: center;
 }
 
 #recruit-write-wrapper .bottom .disable:hover {

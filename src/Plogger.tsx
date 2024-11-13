@@ -45,6 +45,7 @@ import Mypage from './views/MyPage';
 
 
 
+
 // component: Sns Success 컴포넌트 //
 function SnsSuccess() {
 

@@ -18,10 +18,10 @@
 
 }
 
-.profile-container {
+.admin-profile-container {
     user-select: none;
     width: 800px;
-    height: 350px;
+    height: 300px;
     display: flex;
     align-items: center;
 }
@@ -193,7 +193,7 @@
     border: 0.1px solid rgb(103, 141, 129);
     font-size: 20px;
     color: rgba(0, 95, 65, 1);
-    background-color:white;
+    background-color: white;
     justify-content: center;
     align-content: center;
 }
@@ -524,6 +524,14 @@
 
 }
 
+#adminpage .td-report-delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    padding: 10px;
+}
+
 #adminpage .td-report-writer,
 #adminpage .td-report-number,
 #adminpage .td-report-create-date {
@@ -611,6 +619,7 @@
 #adminpage .td-user-TelNumber {
     width: 120px;
 }
+
 #adminpage .td-user-address {
     flex: auto;
     cursor: pointer;
@@ -626,8 +635,7 @@
 }
 
 #adminpage .user-delete {
-    background-color: red;
-    color: white;
+    color: gray;
     text-align: center;
     border-radius: 3px;
 }
@@ -637,4 +645,12 @@
 
     font-weight: bold;
 
+}
+
+.report-message {
+    justify-content: center;
+    text-align: center;
+    color: #666;
+    font-size: 30px;
+    padding-top: 170px;
 }

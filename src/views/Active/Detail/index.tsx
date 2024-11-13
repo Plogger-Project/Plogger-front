@@ -20,6 +20,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import { PostAlertRequestDto } from '@/apis/dto/request/alert';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { red } from '@mui/material/colors';
+
 
 interface TableRowProps {
     activeComment: ActiveComment;
@@ -590,7 +594,11 @@ export default function ActiveDetail() {
 
     // event handler: 게시글 삭제 버튼 클릭 이벤트 처리 //
     const onPostDeleteButtonClick = () => {
-        if (signInUser?.userId !== writer) return;
+
+        if (!(writer || isAdmin === signInUser?.userId)) {
+            alert("작성자만 삭제할 수 있습니다.");
+            return;
+        }
 
         if (!activePostId) return;
 
@@ -747,12 +755,12 @@ export default function ActiveDetail() {
                                     left: optionPosition.left + 'px'
                                 }}
                             >
-                                {(isAuthor || isAdmin) && (
+                                {signInUser?.userId === writer || signInUser?.isAdmin?
                                     <>
                                         <button className="editButton" onClick={onPostUpdateButtonClick}>수정하기</button>
                                         <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제하기</button>
                                     </>
-                                )}
+                                : ''}
                                 {(!isAuthor || !signInUser) && (
                                     <>
                                         <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
@@ -821,7 +829,9 @@ export default function ActiveDetail() {
                         </div>
                         <div className='right'>
                             {signInUser &&
-                                <div className={`like ${isLiked ? 'liked' : ''}`} onClick={onLikeButtonClickHandler}></div>
+                                <div>
+                                    {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{color: red[500], fontSize: 30}}/> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{fontSize: 30}}/>}
+                                </div> 
                             }
                         </div>
                     </div>

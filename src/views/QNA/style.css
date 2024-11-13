@@ -65,8 +65,22 @@
     color: rgba(255, 255, 255, 1);
 }
 
-#qna-post-wrapper .pagination .button {
-    margin-left: 380px;
+#qna-post-wrapper .bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    margin-top: 20px;
+}
+
+#qna-post-wrapper .bottom .pagination {
+    flex-grow: 1; 
+    display: flex;
+    justify-content: center; 
+}
+
+#qna-post-wrapper .bottom .button {
+    flex-shrink: 0;
 }
 
 
@@ -90,6 +104,11 @@
 
 #qna-post-wrapper .middle-top .post-filter .qna {
     font-weight: 600;
+}
+
+#qna-post-wrapper .middle-top .post-filter .filter-bar {
+    font-size: 17px;
+    margin-bottom: 10px;
 }
 
 #qna-post-wrapper .middle-top .post-filter .all,
@@ -184,14 +203,5 @@
 #qna-post-wrapper .td-qna-end-date,
 #qna-post-wrapper .td-qna-create-date {
     width: 80px;
-}
-
-#qna-post-wrapper .pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    margin-left: 430px;
-    gap: 45px;
-
 }
 

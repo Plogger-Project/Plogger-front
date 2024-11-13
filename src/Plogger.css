@@ -104,6 +104,10 @@ body {
   background-image: url(/public/images/naver-button.png);
 }
 
+.sns-button.google {
+  background-image: url(/public/images/google-button.png);
+}
+
 .icon-button {
   width: 24px;
   height: 24px;

@@ -1,32 +1,25 @@
 import React, { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react'
 import './style.css'
-import { useKakaoLoader } from 'src/hooks';
-import { useNavigate, useNavigation, useParams } from 'react-router-dom'
-import InputBox from '../../components/InputBox';
+import { useNavigate,  useParams } from 'react-router-dom'
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
 import { ActivePost, Follow, Mileage, RecruitPostList, RecruitScrapList } from 'src/types';
-
-import { getActivePostListRequest, getGifticonRequest, getMileageListRequest, getRecruitPostListRequest, getRecruitPostRequest, getRecruitScrapListRequest, getRecruitUserInfoRequest, getFollowerListRequest, getFolloweeListRequest, patchCommentRequest, postFollowRequest, deleteFollowRequest, getFollowUserInfoRequest, postAlertRequest } from 'src/apis';
-
+import { getActivePostListRequest, getGifticonRequest, getMileageListRequest, getRecruitPostListRequest,  getRecruitScrapListRequest,  getFollowerListRequest, getFolloweeListRequest, patchCommentRequest, postFollowRequest, deleteFollowRequest, getFollowUserInfoRequest, postAlertRequest } from 'src/apis';
 import { GetRecruitPostListResponseDto, GetRecruitScrapListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
 import { ACCESS_TOKEN, ACTIVE_DETAIL_ABSOLUTE_PATE, MYPAGE_PATH, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';
 import { PatchCommentRequestDto } from 'src/apis/dto/request/user';
 import { useCookies } from 'react-cookie';
-import { GetFolloweeListResponseDto, GetFollowerListResponseDto, GetFollowResponseDto } from 'src/apis/dto/response/follow';
-import useFollowPagination from 'src/hooks/follow.pagination.hook';
+import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from 'src/apis/dto/response/follow';
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import { GetMileageListResponseDto } from 'src/apis/dto/response/mileage';
 import { GetGifticonResponseDto } from 'src/apis/dto/response/gifticon';
 import { GetActivePostListResponseDto } from '@/apis/dto/response/active';
-import useGifticonPagination from '@/hooks/gifticon.pagination.hook';
-import GetRecruitPostResponseDto from '@/apis/dto/response/recruit/get-recruit.response.dto';
 import SavingsTwoToneIcon from '@mui/icons-material/SavingsTwoTone';
-
 import { PostFollowRequestDto } from '@/apis/dto/request/follow';
 import { PostAlertRequestDto } from '@/apis/dto/request/alert';
+
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
@@ -34,7 +27,6 @@ declare global {
     kakao: any;
   }
 }
-
 
 // interface: 팔로워&팔로위 리스트 컴포넌트 Properties //
 interface FollowTableRowProps {
@@ -835,6 +827,17 @@ export default function Mypage() {
     if (!isFollowing) return;
 
   }, [isFollowing]);
+
+  useEffect(() => {
+      if (!signInUser) {
+          alert("로그인이 필요합니다.");
+          navigator('/sign-up'); 
+      }
+  }, [signInUser]);
+
+  if (!signInUser) {
+      return null; // 리다이렉트 전까지 UI를 숨김
+  }
 
   return (
     <div id='mypage-wrapper'>

@@ -1,23 +1,22 @@
-import React, { ChangeEvent, KeyboardEvent, useEffect, useRef, useState, VoidFunctionComponent } from 'react'
+import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react'
 import './style.css'
-import { useLocation, useNavigate, useNavigation } from 'react-router-dom'
-import InputBox from '../../components/InputBox';
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
 import { ActiveReportList, Follow, RecruitPostList, User } from 'src/types';
-import { deleteActiveReportRequest, deleteRecruitReportRequest, GetActiveReportListRequest, getRecruitPostListRequest, GetRecruitReportListRequest, getUserListRequest, patchCommentRequest } from 'src/apis';
+import { deleteActiveReportRequest, deleteRecruitReportRequest, deleteUserRequest, GetActiveReportListRequest, getRecruitPostListRequest, GetRecruitReportListRequest, getUserListRequest, patchCommentRequest } from 'src/apis';
 import { GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
-import { ACCESS_TOKEN, ACTIVE_DETAIL_ABSOLUTE_PATE, ADMIN, RECRUIT_DETAIL_ABSOLUTE_PATH, RECRUIT_DETAIL_PATH } from 'src/constants';
+import { ACCESS_TOKEN, ACTIVE_DETAIL_ABSOLUTE_PATE, ADMIN, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';
 import { PatchCommentRequestDto } from 'src/apis/dto/request/user';
-import { Cookies, useCookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 import RecruitReportList from 'src/types/recruitreport.interface';
-import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from 'src/apis/dto/response/follow';
 import { GetActiveReportListResponseDto } from 'src/apis/dto/response/active';
-import useActivePagination from 'src/hooks/active.pagination.hook';
 import { GetUserListResponseDto } from 'src/apis/dto/response/mypage';
-import { access } from 'fs';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { IconButton } from '@mui/material';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 
 export default function Admin() {
   // state: 페이징 관련 상태 //
@@ -42,10 +41,6 @@ export default function Admin() {
   // state: path 상태 //
   const { pathname } = useLocation();
 
-  // state: 이미지 상태 //
-  const imageInputRef = useRef<HTMLInputElement>(null);
-  const [imageUrl, setImageUrl] = useState<string>('');
-
   // state: 구인 신고글 상태 //
   const [showRecruitReports, setShowRecruitReports] = useState<RecruitReportList[]>([]);
 
@@ -55,16 +50,13 @@ export default function Admin() {
   // state: 유저 리스트 상태 //
   const [showUserList, setShowUserList] = useState<User[]>([]);
 
-  // variable: 경로 이름 //
-  const path = pathname.startsWith(ADMIN) ? '관리자페이지' : '';
-
   // variable: Token //
   const accessToken = cookies[ACCESS_TOKEN];
 
   // variable: 특정 경로 여부 변수 //
-  const isRecruit = pathname.startsWith(ADMIN);
-  const isActive = pathname.startsWith(ADMIN);
-  const isUser = pathname.startsWith(ADMIN);
+  const [isRecruit, setIsRecruit] = useState<boolean>(false);
+  const [isActive, setIsActive] = useState<boolean>(false);
+  const [isUser, setIsUser] = useState<boolean>(false);
 
   // effect: 유저 정보가 변경되면 state에 반영 // 
   useEffect(() => {
@@ -95,6 +87,24 @@ export default function Admin() {
     setShowRecruitReports(reports);
 
   };
+
+  // function: 구인 신고글 삭제 함수 //
+  const deleteRecruitReportResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+              responseBody.code === 'NP' ? '권한이 없습니다.' :
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+    getRecruitReportPostList();
+  }
 
   // function: 활동 신고글 list 불러오기 함수 //
   const getActiveReportPostList = () => { GetActiveReportListRequest(accessToken).then(getActiveReportListResponse); };
@@ -172,6 +182,25 @@ export default function Admin() {
     }
   }
 
+  // function: 유저 삭제 함수 //
+  const deleteUserResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+              responseBody.code === 'NP' ? '권한이 없습니다.' :
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    getUserList();
+  }
+
   // interface: 구인 신고글 리스트 컴포넌트 Properties //
   interface TableRowProps {
     recruitPostId: RecruitReportList;
@@ -198,6 +227,17 @@ export default function Admin() {
       navigator(RECRUIT_DETAIL_ABSOLUTE_PATH(recruitPostId.recruitId));
     }
 
+    // event handler: 유저 삭제 버튼 클릭 함수 //
+    const onReportDeleteClickHandler = (recruitId: number) => {
+      const isConfirm = window.confirm('해당 신고내역을 삭제하시겠습니까?');
+      if (!isConfirm) return;
+
+      const accessToken = cookies[ACCESS_TOKEN];
+      if (!accessToken) return;
+
+      deleteRecruitReportRequest(recruitId, accessToken).then(deleteRecruitReportResponse);
+    }
+
     // render: 게시글 리스트 렌더링 //
     return (
       <div className="tr" key={recruitPostId.recruitId}>
@@ -206,6 +246,10 @@ export default function Admin() {
         <div className="td-report-number">{recruitPostId.recruitId}</div>
         <div className="td-report-content" onClick={onRecruitReportClickHandler}>{recruitPostId.content}</div>
         <div className="td-report-create-date">{formatDate(recruitPostId.createdAt)}</div>
+        <div className="td-report-delete">
+          <IconButton className="user-delete" onClick={() => onReportDeleteClickHandler(recruitPostId.recruitId)}>
+            <DeleteIcon />
+          </IconButton></div>
       </div>
     )
   }
@@ -231,9 +275,20 @@ export default function Admin() {
       return `${year}-${month}-${day}`;
     };
 
-    // event handler: 활동 신고글 삭제 이벤트 처리 //
-    const onActiveReportDeleteHandler = () => {
+    // event handler: 활동 신고글 클릭 이벤트 처리 //
+    const onActiveReportClickHandler = () => {
       navigator(ACTIVE_DETAIL_ABSOLUTE_PATE(activePostId.activeId));
+    }
+
+    // event handler: 유저 삭제 버튼 클릭 함수 //
+    const onReportDeleteClickHandler = (activeId: number) => {
+      const isConfirm = window.confirm('해당 신고내역을 삭제하시겠습니까?');
+      if (!isConfirm) return;
+
+      const accessToken = cookies[ACCESS_TOKEN];
+      if (!accessToken) return;
+
+      deleteActiveReportRequest(activeId, accessToken).then(deleteActiveReportResponse);
     }
 
     // render: 게시글 리스트 렌더링 //
@@ -242,8 +297,13 @@ export default function Admin() {
         <div className="td-report-reportid">{activePostId.reportId}</div>
         <div className="td-report-writer">{activePostId.userId}</div>
         <div className="td-report-number">{activePostId.activeId}</div>
-        <div className="td-report-content" onClick={onActiveReportDeleteHandler}>{activePostId.content}</div>
+        <div className="td-report-content" onClick={onActiveReportClickHandler}>{activePostId.content}</div>
         <div className="td-report-create-date">{formatDate(activePostId.createdAt)}</div>
+        <div className="td-report-delete">
+          <IconButton className="user-delete" onClick={() => onReportDeleteClickHandler(activePostId.activeId)}>
+            <DeleteIcon />
+          </IconButton>
+        </div>
       </div>
     )
   }
@@ -257,14 +317,18 @@ export default function Admin() {
   // component: 유저 리스트 컴포넌트 //
   function UserTableRow({ userListId, getUserList }: UserTableRowProps) {
 
-    //function: 네비게이터 함수 //
+    // function: 네비게이터 함수 //
     const navigator = useNavigate();
 
-    // function: 유저 삭제 버튼 클릭 함수 //
-    const onUserDeleteHandler = (userId: string) => {
-      if (window.confirm('정말 이 유저를 삭제하시겠습니까?')) {
+    // event handler: 유저 삭제 버튼 클릭 함수 //
+    const onUserDeleteClickHandler = (userId: string) => {
+      const isConfirm = window.confirm('정말로 해당 유저를 삭제하시겠습니까?');
+      if (!isConfirm) return;
 
-      }
+      const accessToken = cookies[ACCESS_TOKEN];
+      if (!accessToken) return;
+
+      deleteUserRequest(userId, accessToken).then(deleteUserResponse);
     }
 
     // render: 유저 리스트 렌더링 //
@@ -278,7 +342,9 @@ export default function Admin() {
         <div className="td-user-mileage">{userListId.mileage}</div>
         <div className="td-user-joinpath">{userListId.joinPath}</div>
         <div className="td-user-delete">
-          <button className="user-delete" onClick={() => onUserDeleteHandler(userListId.userId)}>삭제</button>
+          <IconButton className="user-delete" onClick={() => onUserDeleteClickHandler(userListId.userId)}>
+            <PersonRemoveIcon />
+          </IconButton>
         </div>
       </div>
     )
@@ -335,6 +401,10 @@ export default function Admin() {
 
   // event handler: recruit report 클릭 이벤트 처리 // 
   const onRecruitReportClickHandler = () => {
+    setIsRecruit(true);
+    setIsActive(false);
+    setIsUser(false);
+
     setShowRecruitReports([]);
     setShowActiveReports([]);
     setShowUserList([]);
@@ -343,6 +413,10 @@ export default function Admin() {
 
   // event handler: active report 클릭 이벤트 처리 //
   const onActiveReportClickHandler = () => {
+    setIsRecruit(false);
+    setIsActive(true);
+    setIsUser(false);
+
     setShowActiveReports([]);
     setShowRecruitReports([]);
     setShowUserList([]);
@@ -351,6 +425,10 @@ export default function Admin() {
 
   // event handler: user list 클릭 이벤트 처리 //
   const onUserListClickHandler = () => {
+    setIsRecruit(false);
+    setIsActive(false);
+    setIsUser(true);
+
     setShowUserList([]);
     setShowActiveReports([]);
     setShowRecruitReports([]);
@@ -361,7 +439,7 @@ export default function Admin() {
     <>
       <div id='adminpage'>
         <div className='top'>
-          <div className='profile-container'>
+          <div className='admin-profile-container'>
             <div className='image' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
             <div className='profile-box'>
               <div className='name-box'>
@@ -380,10 +458,6 @@ export default function Admin() {
           </div>
           <div className='activity-container'>
             <div className='mileage-container'>
-              <div className='mileage-box'>
-                <div className='mileage-button'>M</div>
-                <div className='mileage-score'>{signInUser?.mileage}</div>
-              </div>
               <div className='button-mileage' onClick={onGiftClickHandler}>기프티콘 바로가기</div>
             </div>
           </div>
@@ -397,7 +471,9 @@ export default function Admin() {
             <div className={`user-list ${isUser ? 'active' : ''}`} onClick={onUserListClickHandler}><span>유저 리스트</span></div>
           </div>
           <div className='table'>
-            {showRecruitReports.length > 0 &&
+            {isRecruit && showRecruitReports.length === 0 && (
+              <div className='report-message'>해당 데이터가 없습니다.</div>)}
+            {isRecruit && showRecruitReports.length > 0 &&
               (
                 <div className="main">
                   <div className="middle-top">
@@ -409,6 +485,7 @@ export default function Admin() {
                       <div className="td-report-number">글 번호</div>
                       <div className="td-report-content">신고내역</div>
                       <div className="td-report-create-date">신고한 날짜</div>
+                      <div className="td-report-delete">내역 관리</div>
                     </div>
                     {
                       viewList.map((recruitPostId, index) => (
@@ -420,8 +497,9 @@ export default function Admin() {
                   </div>
                 </div>
               )}
-
-            {showActiveReports.length > 0 &&
+            {isActive && showActiveReports.length === 0 && (
+              <div className='report-message'>해당 데이터가 없습니다.</div>)}
+            {isActive && showActiveReports.length > 0 &&
               (
                 <div className='active-main'>
                   <div className='active-table'>
@@ -431,6 +509,7 @@ export default function Admin() {
                       <div className="td-active-number">글 번호</div>
                       <div className="td-active-content">신고내역</div>
                       <div className="td-active-create-date">신고한 날짜</div>
+                      <div className="td-report-delete">내역 관리</div>
                     </div>
                     {
                       viewList2.map((activePostId, index) => (
@@ -443,8 +522,9 @@ export default function Admin() {
                   </div>
                 </div>
               )}
-
-            {showUserList.length > 0 &&
+            {isUser && showUserList.length === 0 && (
+              <div className='report-message'>가입한 사용자가 없습니다.</div>)}
+            {isUser && showUserList.length > 0 &&
               (
                 <div className='list-main'>
                   <div className='list-table'>

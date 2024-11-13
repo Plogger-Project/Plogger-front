@@ -450,8 +450,10 @@ useEffect(() => {
               {/* <div className="all">전체</div>
               | <div className="Recruiting">모집중</div> | <div className="Recruited">마감됨</div> */}
               <div className={`all ${filter === 'all' ? 'active' : ''}`} onClick={() => handleFilterClick('all')}>전체</div>
-              | <div className={`Recruiting ${filter === 'recruiting' ? 'active' : ''}`} onClick={() => handleFilterClick('recruiting')}>모집중</div>
-              | <div className={`Recruited ${filter === 'closed' ? 'active' : ''}`} onClick={() => handleFilterClick('closed')}>마감됨</div>
+              <div className='filter-bar'>|</div>
+              <div className={`Recruiting ${filter === 'recruiting' ? 'active' : ''}`} onClick={() => handleFilterClick('recruiting')}>모집중</div>
+              <div className='filter-bar'>|</div>
+              <div className={`Recruited ${filter === 'closed' ? 'active' : ''}`} onClick={() => handleFilterClick('closed')}>마감됨</div>
             </div>
             
           </div>
@@ -473,11 +475,15 @@ useEffect(() => {
               ))}
           </div>
           
-          <div className="pagination">
-            <Pagination currentPage={currentPage} {...paginationProps} />
-            {signInUser == null ? 
-              <div className="button" onClick={onWriteButtonClickHandler} style={{visibility:"hidden"}}>글쓰기</div>
-              : <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>}
+          <div className="bottom">
+            <div className="pagination">
+              <Pagination currentPage={currentPage} {...paginationProps} />
+            </div>
+            <div className="button">
+              {signInUser == null ? 
+                <div className="button" onClick={onWriteButtonClickHandler} style={{visibility:"hidden"}}>글쓰기</div>
+                : <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>}
+            </div>
           </div>
         </div>
       </div>

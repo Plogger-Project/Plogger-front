@@ -50,7 +50,7 @@ function TableRow({ activePost, profileImage, getActiveList }: TableRowProps) {
         />
         <CardContent sx={{ paddingBottom: '0px' }}> {/* CardContent 하단 여백 제거 */}
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant="h6" component="div" gutterBottom>
+            <Typography className="active-list-title" variant="h6" component="div" gutterBottom>
               {activePost.activePostTitle}
             </Typography>
             <Box display="flex" alignItems="center" gap={1}>
@@ -78,7 +78,7 @@ function TableRow({ activePost, profileImage, getActiveList }: TableRowProps) {
           backgroundSize: 'cover', backgroundPosition: 'center',
           marginRight: 8, cursor: 'pointer'
         }} onClick={() => onProfileImageClickHandler(activePost.activePostWriterId)} />
-        <Typography variant="body2" color="textSecondary">
+        <Typography variant="body2">
           {activePost.activePostWriterId}
         </Typography>
       </Box>
@@ -161,6 +161,7 @@ export default function Active() {
       initViewList(searchedActiveList);
   }, [searchWord]);
 
+  // render //
   return (
     <>
     <div className="active-top-blank"></div>

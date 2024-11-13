@@ -6,16 +6,18 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
 import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-import simplemapsCountryMapData from 'src/components/locationMap';
-import { useSpringCarousel } from 'react-spring-carousel';
 
 import './style.css';
-import { GetActivePostResponseDto } from 'src/apis/dto/response/active';
+import { GetActivePostListResponseDto } from 'src/apis/dto/response/active';
 import { ResponseDto } from 'src/apis/dto/response';
-import { GetRecruitAddressCountRequest } from 'src/apis';
+import { getActivePostListRequest,  GetRecruitAddressCountRequest, getRecruitPostListRequest } from 'src/apis';
 import GetRecruitAddressCountResponseDto from 'src/apis/dto/response/recruit/get-recruit-address-count.response.dto';
-import { AddressPostCount } from '@/types';
+import { AddressPostCount } from 'src/types';
+import { ActivePost,  AddressPostCount } from 'src/types';
+import useGifticonPagination from 'src/hooks/gifticon.pagination.hook';
+import {  Typography } from '@mui/material';
+import { useSpringCarousel } from 'react-spring-carousel';
+import { GetRecruitPostListResponseDto } from '@/apis/dto/response/recruit';
 
 
 // component : 한국 지도 컴포넌트 //
@@ -63,7 +65,7 @@ useEffect(() => {
 
 const getCityClassName = (city: string) => {
   const cityData = addressPostCounts.find(a => a.city === city);
-  console.log(`City: ${city}, Data:`, cityData);
+  // console.log(`City: ${city}, Data:`, cityData);
   return cityData && cityData.postCount >= 3 ? 'active2' : cityData && cityData.postCount >= 1 ? 'active' : '';
 };
 
@@ -160,34 +162,16 @@ const getCityClassName = (city: string) => {
   );
 }
 
-function SlideComponent() {
-
-  const [carouselItems, setCarouselItems] = useState([
-    { id: '1', color: 'lightblue', title: 'Loading...', image: '' },
-    { id: '2', color: 'lightcoral', title: 'Loading...', image: '' },
-    { id: '3', color: 'lightgreen', title: 'Loading...', image: '' },
-    { id: '4', color: 'lightgreen', title: 'Loading...', image: '' }
-  ]);
-
-  const getActivePostResponse = (responseBody: GetActivePostResponseDto | ResponseDto | null) => {
-    const message = 
-      !responseBody ? '서버에 문제가 있습니다.' : 
-      responseBody.code === 'AF' ? '잘못된 접근입니다.' : 
-      responseBody.code === 'VF' ? '잘못된 접근입니다.' : 
-      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-    
-    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    if (!isSuccessed) {
-      alert(message);
-      return;
-    }
-  }
+interface TableRowProps {
+  activePosts: { activePostId: number; activePostImage: string | null; }[]
+}
+// component: 슬라이드 컴포넌트 //
+function SlideComponent({ activePosts }: TableRowProps) {
 
   // CarouselItem 컴포넌트
-  const CarouselItem: React.FC<{ color: string; width: number; children?: React.ReactNode, image?: string }> = ({ color, width, image, children }) => (
+  const CarouselItem: React.FC<{ width: number; children?: React.ReactNode, image?: string }> = ({ width, image, children }) => (
     <div
       style={{
-        backgroundColor: color,
         width: `${width}px`,
         height: '300px',
         display: 'flex',
@@ -201,25 +185,68 @@ function SlideComponent() {
     </div>
   );
 
+  const maxSlides = 5;
+  const limitedPosts = activePosts.slice(0, maxSlides);
+
   // Carousel 초기화
   const { carouselFragment } = useSpringCarousel({
     slideType: 'fluid',
     withLoop: true,
-    items: carouselItems.map((i) => ({
-      id: i.id,
+    items: limitedPosts.map((i) => ({
+      id: i.activePostId + '',
       renderItem: (
-        <CarouselItem color={i.color} width={300} image={i.image}>
-          {i.title}
-        </CarouselItem>
+        <CarouselItem width={300} image={i.activePostImage ? i.activePostImage : 'default'}></CarouselItem>
       ),
     })),
   });
 
-  return (
-    <div>
-      {carouselFragment}
+
+  return <div>{carouselFragment}</div>
+
+}
+
+interface TableRowProps2 {
+  recruitPosts: { recruitPostId: number; recruitPostImage: string | null; }[]
+}
+
+// component: 슬라이드 컴포넌트 //
+function SlideComponent2({ recruitPosts }: TableRowProps2) {
+
+  // CarouselItem 컴포넌트
+  const CarouselItem: React.FC<{ width: number; children?: React.ReactNode, image?: string }> = ({ width, image, children }) => (
+    <div
+      style={{
+        width: `${width}px`,
+        height: '300px',
+        display: 'flex',
+        margin: '20px',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {image && <img src={image} alt="슬라이드 이미지" style={{ width: '100%', height: 'auto', objectFit: 'cover' }} />}
+      {children}
     </div>
   );
+
+  const maxSlides = 5;
+  const limitedPosts = recruitPosts.slice(0, maxSlides);
+
+  // Carousel 초기화
+  const { carouselFragment } = useSpringCarousel({
+    slideType: 'fluid',
+    withLoop: true,
+    items: limitedPosts.map((i) => ({
+      id: i.recruitPostId + '',
+      renderItem: (
+        <CarouselItem width={300} image={i.recruitPostImage ? i.recruitPostImage : 'default'}></CarouselItem>
+      ),
+    })),
+  });
+
+
+  return <div>{carouselFragment}</div>
+
 }
 
 // component: 메인페이지 컴포넌트 //
@@ -274,6 +301,80 @@ export default function Main() {
 
   // state: step 관련 마우스 상태 //
   const [isMouseOverStepper, setIsMouseOverStepper] = useState(false);
+  const [originalList, setOriginalList] = useState<ActivePost[]>([]);
+  const [profileImage, setProfileImage] = useState<{ [key: string]: string | null }>({});
+  const { currentPage, totalPage, totalCount, viewList, setTotalList, initViewList, ...paginationProps } = useGifticonPagination<ActivePost>();
+
+  const [activePosts, setActivePosts] = useState<{
+    activePostId: number; // 추가
+    activePostImage: string | null; // 추가
+  }[]>([]);
+
+  const [recruitPosts, setRecruitPosts] = useState<{
+    recruitPostId: number; // 추가
+    recruitPostImage: string | null; // 추가
+  }[]>([]);
+
+  // function : get active post list response //
+  const GetActivePostListResponse = (responseBody: GetActivePostListResponseDto | ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    const { activePosts } = responseBody as GetActivePostListResponseDto;
+
+    const newPosts = activePosts
+      .map((post) => ({
+        activePostId: post.activePostId,
+        activePostImage: post.activePostImage || null,
+      }))
+      .filter(post => post.activePostImage !== null);  // activePostImage가 null인 항목을 제외
+    setActivePosts(newPosts); 
+  };
+
+  // function : get recruit post list response //
+  const getRecruitPostListResponse = (responseBody: GetRecruitPostListResponseDto | ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    const { recruitPosts } = responseBody as GetRecruitPostListResponseDto;
+
+    const newPosts = recruitPosts
+      .map((post) => ({
+        recruitPostId: post.recruitPostId,
+        recruitPostImage: post.recruitPostImage || null,
+      }))
+      .filter(post => post.recruitPostImage !== null);  
+    setRecruitPosts(newPosts); 
+
+  }
+
+
+  // function : get active post //
+  const getActivePostList = () => {
+    getActivePostListRequest().then(GetActivePostListResponse);
+  };
+
+  // function : get recruit post //
+  const getRecruitPostList = () => {
+    getRecruitPostListRequest().then(getRecruitPostListResponse);
+  }
+
 
   // event handler: 비디오 다음 버튼 입력 시 처리 //
   const handleNextVideo = () => {
@@ -355,7 +456,12 @@ export default function Main() {
     };
   }, [isMouseOverStepper]);
 
+  useEffect(()=>{
+    getActivePostList();
+    getRecruitPostList();
+  }, [])
 
+  
   // render: 메인페이지 컴포넌트 렌더링 //
   return (
     <div id='main-wrapper'>
@@ -471,8 +577,8 @@ export default function Main() {
               <div className='top-text'>당신이 채워나갈 이야기를 응원합니다!</div>
             </div>
             <div className='main-middle'>
-              <SlideComponent />
-              <SlideComponent />
+              {activePosts.length !== 0 && <SlideComponent activePosts={activePosts} />}
+              {recruitPosts.length !== 0 && <SlideComponent2 recruitPosts={recruitPosts} />}
             </div>
           </div>
         </div>
