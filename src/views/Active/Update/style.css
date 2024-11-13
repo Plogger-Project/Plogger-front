@@ -48,11 +48,11 @@
 }
 
 #active-update-wrapper .userInfo-right .listButton {
-    width: 50px;
+    width: 65px;
     height: 30px;
-    background-color: #4CAF50;
+    background-color: var(--gray-color);
     color: white;
-    border-radius: 16px;
+    border-radius: 8px;
     border: none;
     cursor: pointer;
     justify-content: center;

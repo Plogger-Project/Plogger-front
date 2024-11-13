@@ -48,17 +48,7 @@
 }
 
 #qna-update-wrapper .userInfo-right .listButton {
-    width: 50px;
-    height: 30px;
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 16px;
-    border: none;
-    cursor: pointer;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    text-align: center;
+    background-color: var(--gray-color);
 }
 
 #qna-update-wrapper .profileImage {
@@ -228,22 +218,6 @@
     justify-content: space-between;
     padding: 10px;
 }
-
-#qna-update-wrapper .userInfo-right .listButton {
-    width: 50px;
-    height: 30px;
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 16px;
-    border: none;
-    cursor: pointer;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    text-align: center;
-}
-
-
 
 #qna-update-wrapper .profileImage {
     width: 50px;
@@ -423,22 +397,6 @@
 
 
 }
-
-#qna-update-wrapper .userInfo-right .listButton {
-    width: 50px;
-    height: 30px;
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 16px;
-    border: none;
-    cursor: pointer;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    text-align: center;
-}
-
-
 
 #qna-update-wrapper .profileImage {
     width: 50px;

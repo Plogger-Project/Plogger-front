@@ -85,7 +85,7 @@
 #active-detail-wrapper .postTop .postBox .listButton {
     width: 65px;
     height: 30px;
-    background-color: rgba(156, 153, 153, 0.2);
+    background-color: var(--gray-color);
     color: white;
     border-radius: 8px;
     border: none;

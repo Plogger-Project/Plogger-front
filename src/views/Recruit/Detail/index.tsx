@@ -35,9 +35,11 @@ import {  IconButton,  Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
-
-
-
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { red, yellow } from '@mui/material/colors';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 // interface: recruit comment list 아이템 컴포넌트 Properties //
 interface TableRowProps {
@@ -1042,7 +1044,7 @@ export default function RecruitDetail() {
               </Popover>
               <div className='isCompleted'>{isCompleted ? "마감됨" : "모집중"}</div>
               {signInUser?.userId === writer ? '' :
-                <div className='accession' onClick={onAccessionButtonClickHandler}>{isCompleted ? "모집완료" : (signInUser && joinList.some(user => user.userId === signInUser.userId)) ? "참여완료" : "참여"}</div>
+                <div className='accession' onClick={onAccessionButtonClickHandler}>{isCompleted ? "모집 완료" : (signInUser && joinList.some(user => user.userId === signInUser.userId)) ? "참여 취소" : "참여"}</div>
               }
               {signInUser?.userId === writer ?
                 <div className='end' onClick={onEndButtonClickHandler}>{isCompleted ? "종료 취소" : "모집 종료"}</div>
@@ -1050,10 +1052,16 @@ export default function RecruitDetail() {
             </div>
             <div className='right'>
               {signInUser &&
-                <div className={`like ${isLiked ? 'liked' : ''}`} onClick={onLikeButtonClickHandler}></div>
+                // <div className={`like ${isLiked ? 'liked' : ''}`} onClick={onLikeButtonClickHandler}></div>
+                <div>
+                  {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{color: red[500], fontSize: 30}}/> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{fontSize: 30}}/>}
+                </div>    
               }
               {signInUser &&
-                <div className={`scrap ${isScraped ? 'scraped' : ''}`} onClick={onScrapButtonClickHandler}></div>
+                // <div className={`scrap ${isScraped ? 'scraped' : ''}`} onClick={onScrapButtonClickHandler}></div>
+                <div>
+                  { isScraped ? <BookmarkIcon onClick={onScrapButtonClickHandler} sx={{color: yellow[600], fontSize: 30}}/> : <BookmarkBorderIcon onClick={onScrapButtonClickHandler} sx={{fontSize: 30}}/> }
+                </div>
               }
             </div>
           </div>

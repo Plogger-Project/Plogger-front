@@ -183,7 +183,6 @@
     flex: 10;
     text-align: left;
     font-size: 15px;
-    margin-left: 5px;
     margin-bottom: 10px;
 }
 
@@ -200,7 +199,6 @@
     color: rgba(0, 95, 65, 1);
     justify-content: center;
     align-content: center;
-    margin-right: 5px;
 }
 
 #recruit-post-wrapper .button:hover {
@@ -211,7 +209,6 @@
 #recruit-post-wrapper .middle-top .post-filter {
     flex: 5;
     justify-content: right;
-    margin-right: 15px;
     gap: 5px;
     display: flex;
     flex-direction: row;
@@ -361,16 +358,22 @@
     color: rgba(150, 150, 150, 1);
 }
 
-#recruit-post-wrapper .pagination {
+#recruit-post-wrapper .bottom {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
     margin-top: 20px;
-    gap: 15px;
-    margin-left: 400px;
 }
 
-#recruit-post-wrapper .pagination .button {
-    margin-left: 380px;
+#recruit-post-wrapper .bottom .pagination {
+    flex-grow: 1; 
+    display: flex;
+    justify-content: center; 
+}
+
+#recruit-post-wrapper .bottom .button {
+    flex-shrink: 0;
 }
 
 #recruit-post-wrapper .pagination .active {

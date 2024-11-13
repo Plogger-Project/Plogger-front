@@ -87,7 +87,7 @@
 #recruit-detail-wrapper .postTop .postBox .listButton {
     width: 65px;
     height: 30px;
-    background-color: rgba(156, 153, 153, 0.2);
+    background-color: var(--gray-color);
     color: white;
     border-radius: 8px;
     border: none;
@@ -171,22 +171,55 @@
     height: 25px;
     border-radius: 10px;
     text-align: center;
+
+    /* width: 65px;
+    height: 30px;
+    background-color: var(--gray-color);
+    color: white;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    text-align: center; */
 }
 #recruit-detail-wrapper .postInfo .left .accession {
-    width: 60px;
+    /* width: 60px;
     background-color: #4CAF50;
     text-align: center;
     color: white;
     border-radius: 8px;
+    cursor: pointer; */
+
     cursor: pointer;
-}
-#recruit-detail-wrapper .postInfo .left .end{
     width: 70px;
-    background-color: #4CAF50;
+    
     text-align: center;
-    color: white;
+    border: 0.1px solid rgb(111, 103, 141);
     border-radius: 8px;
+
+    font-size: 15px;
+    color: rgb(21, 0, 95);
+}
+
+#recruit-detail-wrapper .postInfo .left .accession:hover {
+    background-color: rgb(61, 53, 148);
+    color: rgba(255, 255, 255, 1);
+}
+
+#recruit-detail-wrapper .postInfo .left .end{
     cursor: pointer;
+    width: 70px;
+    
+    text-align: center;
+    border: 0.1px solid rgba(221, 114, 114, 1);
+    border-radius: 8px;
+
+    font-size: 15px;
+    color: rgba(255, 0, 0, 1);
+}
+
+#recruit-detail-wrapper .postInfo .left .end:hover {
+    background-color: rgb(163, 62, 62);
+    color: rgba(255, 255, 255, 1);
 }
 
 #recruit-detail-wrapper .postInfo .right {
