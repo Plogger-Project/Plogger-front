@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FaCalendarAlt } from 'react-icons/fa'; // 캘린더 아이콘을 위한 라이브러리
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { useKakaoLoader } from "src/hooks";
-import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH, RECRUIT_DETAIL_PATH, RECRUIT_MYPAGE_PATH } from "src/constants";
+import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH, RECRUIT_DETAIL_PATH, RECRUIT_MYPAGE_PATH, RECRUIT_PATH } from "src/constants";
 import { useSignInUserStore } from "src/stores";
 import { fileUploadRequest, getRecruitPostRequest, getRecruitUserInfoRequest, patchRecruitPostRequest, postRecruitPostRequest } from "src/apis";
 import { ResponseDto } from "src/apis/dto/response";
@@ -302,13 +302,22 @@ export default function RecruitUpdate() {
 
     patchRecruitPostRequest(requestBody, recruitPostId as string,  accessToken).then(patchRecruitPostResponse);
   };
-  // event handler : 삭제 이미지 클릭 핸들러 //
+
+  // event handler: 작성 취소 버튼 클릭 시 이벤트 처리 //
+  const onCancelButtonClickHandler = () => {
+    const isConfirm = window.confirm('작성을 취소하시겠습니까?');
+    if (!isConfirm) return;
+
+    navigator(RECRUIT_PATH);
+  }
+
+  // event handler: 삭제 이미지 클릭 핸들러 //
   const onDeleteImageClickHandler = (e: any) => {
     e.stopPropagation();
     setImage('');
   }
 
-  // effect : 구인 게시글 정보 가져오기 //
+  // effect: 구인 게시글 정보 가져오기 //
   useEffect(() => {
     if (!recruitPostId) return;
     getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
@@ -316,7 +325,7 @@ export default function RecruitUpdate() {
   }, [recruitPostId, writer]);
 
 
-  // effect : 맵 로딩 확인 //
+  // effect: 맵 로딩 확인 //
   useEffect(() => {
     if (lat !== 0 && lng !== 0) {
       setIsMapLoaded(true);
@@ -350,7 +359,7 @@ export default function RecruitUpdate() {
   }, [lat, lng]);
 
 
-  // render : 구인 게시판 작성 컴포넌트 렌더링 //
+  // render: 구인 게시판 작성 컴포넌트 렌더링 //
   return (
     <div id='recruit-update-wrapper'>
       <div className='navi'></div>
@@ -455,7 +464,7 @@ export default function RecruitUpdate() {
 
         <div className="bottom">
           <div className='button primary' onClick={onPatchButtonClickHandler}>수정</div>
-          <div className='button disable' >취소</div>
+          <div className='button disable' onClick={onCancelButtonClickHandler}>취소</div>
         </div>
       </div>
 

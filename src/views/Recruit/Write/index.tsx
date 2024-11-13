@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FaCalendarAlt } from 'react-icons/fa'; // 캘린더 아이콘을 위한 라이브러리
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { useKakaoLoader } from "src/hooks";
-import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH, RECRUIT_MYPAGE_PATH } from "src/constants";
+import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH, RECRUIT_MYPAGE_PATH, RECRUIT_PATH } from "src/constants";
 import { useSignInUserStore } from "src/stores";
 import { fileUploadRequest, postRecruitPostRequest } from "src/apis";
 import { ResponseDto } from "src/apis/dto/response";
@@ -249,11 +249,14 @@ export default function RecruitWrite() {
     postRecruitPostRequest(requestBody, accessToken).then(postRecruitPostResponse);
   };
 
-  
+  const onCancelButtonClickHandler = () => {
+    const isConfirm = window.confirm('작성을 취소하시겠습니까?');
+    if (!isConfirm) return;
 
-  
+    navigator(RECRUIT_PATH);
+  }
 
-  // render : 구인 게시판 작성 컴포넌트 렌더링 //
+  // render: 구인 게시판 작성 컴포넌트 렌더링 //
   return (
     <div id='recruit-write-wrapper'>
       <div className='navi'></div>
@@ -347,7 +350,7 @@ export default function RecruitWrite() {
 
         <div className="bottom">
           <div className='button primary' onClick={onPostButtonClickHandler}>등록</div>
-          <div className='button disable' >취소</div>
+          <div className='button disable' onClick={onCancelButtonClickHandler}>취소</div>
         </div>
       </div>
 

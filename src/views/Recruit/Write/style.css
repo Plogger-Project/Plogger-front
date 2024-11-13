@@ -218,6 +218,7 @@
 #recruit-write-wrapper .bottom .primary:hover {
     background-color: var(--primary-10-color);
     color: var(--primary-color);
+    text-align: center;
 }
 
 #recruit-write-wrapper .bottom .disable:hover {

@@ -32,6 +32,7 @@ import GetQnaCommentListResponseDto from "./dto/response/qna/get-qna-comment-lis
 import { PostFollowRequestDto } from "./dto/request/follow";
 import GetRecruitAddressCountResponseDto from "./dto/response/recruit/get-recruit-address-count.response.dto";
 import { PostAlertRequestDto } from "./dto/request/alert";
+import { ADMIN } from "@/constants";
 
 
 
@@ -135,6 +136,8 @@ const DELETE_QNA_COMMENT_API_URL = (qnaId: number | string, commentId: number | 
 const MYPAGE_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/mypage`;
 
 const GET_USER_LIST_API_URL = `${MYPAGE_MODULE_URL}`;
+const DELETE_USER_API_URL = (userId: string) => `${ADMIN_MODULE_URL}/${userId}`;
+
 const PATCH_MYPAGE_API_URL = `${MYPAGE_MODULE_URL}`;
 const PATCH_MYPAGE_COMMENT_API_URL = `${MYPAGE_MODULE_URL}/comment`;
 const PATCH_MYPAGE_TEL_AUTH_API_URL = `${MYPAGE_MODULE_URL}/tel-auth`;
@@ -580,6 +583,14 @@ export const patchCommentRequest = async (requestBody: PatchCommentRequestDto, a
 export const getUserListRequest = async (accessToken: string) => {
     const responseBody = await axios.get(GET_USER_LIST_API_URL, bearerAuthorization(accessToken))
         .then(responseDataHandler<GetUserListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 유저 삭제 요청 함수 //
+export const deleteUserRequest = async (userId: string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_USER_API_URL(userId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }
