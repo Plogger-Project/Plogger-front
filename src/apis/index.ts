@@ -34,10 +34,8 @@ import GetRecruitAddressCountResponseDto from "./dto/response/recruit/get-recrui
 import { PostAlertRequestDto } from "./dto/request/alert";
 import { ADMIN } from "@/constants";
 
-
-
 // variable: API URL 상수 //
-const PLOGGER_API_DOMAIN = "http://localhost:4000"
+const PLOGGER_API_DOMAIN = "http://192.168.7.27:4000"
 
 const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
 const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`
@@ -162,7 +160,6 @@ const DELETE_ACTIVE_REPORT_API_URL = (activeId: number | string) => `${ADMIN_MOD
 const FOLLOW_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/follow`;
 
 const POST_FOLLOW_API_URL = `${FOLLOW_MODULE_URL}`;
-const GET_SIGN_IN_FOLLOWER_LIST_API_URL = `${FOLLOW_MODULE_URL}/follower`;
 const GET_SIGN_IN_FOLLOWEE_LIST_API_URL = `${FOLLOW_MODULE_URL}/followee`;
 const GET_FOLLOWER_LIST_API_URL = (followeeId: string) => `${FOLLOW_MODULE_URL}/follower/${followeeId}`;
 const GET_FOLLOWEE_LIST_API_URL = (followerId: string) => `${FOLLOW_MODULE_URL}/followee/${followerId}`;
@@ -178,7 +175,6 @@ const POST_CHAT_ROOM_API_URL = `${CHAT_MODULE_URL}/rooms`;
 const GET_CHAT_ROOM_LIST_API_URL = `${CHAT_MODULE_URL}/rooms`;
 const POST_CHAT_MESSAGE_API_URL = (roomId: string | number) => `${CHAT_MODULE_URL}/rooms/${roomId}/messages`;
 const GET_CHAT_MESSAGE_LIST_API_URL = (roomId: string | number) => `${CHAT_MODULE_URL}/rooms/${roomId}/messages`;
-const POST_CHAT_ROOM_JOIN_API_URL = (roomId: string | number) => `${CHAT_MODULE_URL}/rooms/${roomId}/join`;
 
 // function: Authorizarion Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({ headers: { 'Authorization': `Bearer ${accessToken}` } })
@@ -907,14 +903,6 @@ export const getMileageListRequest = async (accessToken: string) => {
 // function: 채팅방 만들기 요청 함수 //
 export const postChatRoomRequest = async (requestBody: PostChatRoomRequestDto, accessToken: string) => {
     const responseBody = await axios.post(POST_CHAT_ROOM_API_URL, requestBody, bearerAuthorization(accessToken))
-        .then(responseDataHandler<ResponseDto>)
-        .catch(responseErrorHandler);
-    return responseBody;
-}
-
-// function: 채팅방 참여하기 함수 //
-export const joinChatRoomRequest = async (roomId: string | number, accessToken: string) => {
-    const responseBody = await axios.post(POST_CHAT_ROOM_JOIN_API_URL(roomId), bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;

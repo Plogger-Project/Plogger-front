@@ -1,7 +1,6 @@
-import React, { ChangeEvent, KeyboardEvent, useEffect, useRef, useState, VoidFunctionComponent } from 'react'
+import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react'
 import './style.css'
-import { useLocation, useNavigate, useNavigation } from 'react-router-dom'
-import InputBox from '../../components/InputBox';
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
 import { ActiveReportList, Follow, RecruitPostList, User } from 'src/types';
@@ -9,15 +8,12 @@ import { deleteActiveReportRequest, deleteRecruitReportRequest, deleteUserReques
 import { GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
-import { ACCESS_TOKEN, ACTIVE_DETAIL_ABSOLUTE_PATE, ADMIN, RECRUIT_DETAIL_ABSOLUTE_PATH, RECRUIT_DETAIL_PATH } from 'src/constants';
+import { ACCESS_TOKEN, ACTIVE_DETAIL_ABSOLUTE_PATE, ADMIN, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';
 import { PatchCommentRequestDto } from 'src/apis/dto/request/user';
-import { Cookies, useCookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 import RecruitReportList from 'src/types/recruitreport.interface';
-import { GetFolloweeListResponseDto, GetFollowerListResponseDto } from 'src/apis/dto/response/follow';
 import { GetActiveReportListResponseDto } from 'src/apis/dto/response/active';
-import useActivePagination from 'src/hooks/active.pagination.hook';
 import { GetUserListResponseDto } from 'src/apis/dto/response/mypage';
-import { access } from 'fs';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
@@ -45,10 +41,6 @@ export default function Admin() {
   // state: path 상태 //
   const { pathname } = useLocation();
 
-  // state: 이미지 상태 //
-  const imageInputRef = useRef<HTMLInputElement>(null);
-  const [imageUrl, setImageUrl] = useState<string>('');
-
   // state: 구인 신고글 상태 //
   const [showRecruitReports, setShowRecruitReports] = useState<RecruitReportList[]>([]);
 
@@ -57,9 +49,6 @@ export default function Admin() {
 
   // state: 유저 리스트 상태 //
   const [showUserList, setShowUserList] = useState<User[]>([]);
-
-  // variable: 경로 이름 //
-  const path = pathname.startsWith(ADMIN) ? '관리자페이지' : '';
 
   // variable: Token //
   const accessToken = cookies[ACCESS_TOKEN];
