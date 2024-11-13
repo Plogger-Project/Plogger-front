@@ -6,4 +6,5 @@ export default interface AlertList{
     createdAt: String;
     recruitPostId: number;
     activePostId: number;
+    qnaPostId: number;
 }

@@ -749,12 +749,15 @@ export default function RecruitDetail() {
 
     const message: PostAlertRequestDto = {
       userId: writer,
-      message: writer === signInUser?.userId ? "본인의 글을 좋아요 하셨습니다." : signInUser?.userId + "(이)가 고객님의 글을 좋아요 하셨습니다.",
+      message: signInUser?.userId + "(이)가 고객님의 글을 좋아요 하셨습니다.",
       recruitPostId
     }
 
+    if(signInUser?.userId !== writer)
+      postAlertRequest(message, accessToken).then(postAlertResponse);
+    
     postRecruitLikeRequest(recruitPostId, accessToken).then(postRecruitLikeResponse);
-    postAlertRequest(message, accessToken).then(postAlertResponse);
+
   }
 
   // event handler: 스크랩 버튼 클릭 이벤트 처리 //
@@ -768,14 +771,7 @@ export default function RecruitDetail() {
       return;
     }
 
-    const message: PostAlertRequestDto = {
-      userId: writer,
-      message: writer === signInUser?.userId ? "본인의 글을 스크랩하셨습니다." : signInUser?.userId + "(이)가 고객님의 글을 스크랩하셨습니다.",
-      recruitPostId
-    }
-
     postRecruitScrapRequest(recruitPostId, accessToken).then(postRecruitScrapResponse);
-    postAlertRequest(message, accessToken).then(postAlertResponse);
   }
 
   // event handler : 참여하기 버튼 클릭 이벤트 처리
@@ -799,7 +795,21 @@ export default function RecruitDetail() {
     }
     if (!recruitPostId) return;
     postRecruitJoinRequest(recruitPostId, accessToken).then(postRecruitJoinResponse);
+
+    if(signInUser && joinList.some(user => user.userId === signInUser.userId)) {
+      return;
+      
+  } else if(!(signInUser && joinList.some(user => user.userId === signInUser.userId))) {
+    const message: PostAlertRequestDto = {
+      userId: writer,
+      message: signInUser.userId + "(이)가 회원님의 글에 참가신청을 누르셨습니다.",
+      recruitPostId
+    };
+
+  postAlertRequest(message, accessToken).then(postAlertResponse);
   }
+  }
+console.log(joinList);
 
   // event handler : 모집종료 버튼 클릭 이벤트 처리
   const onEndButtonClickHandler = () => {
@@ -820,14 +830,38 @@ export default function RecruitDetail() {
     const requestBody: PatchRecruitIsCompletedRequestDto = {
       isCompleted: !isCompleted
     };
-
-    // const message: PostAlertRequestDto = {
-    //   userId: joinList.map(user => user.userId),
-    //   message: writer === signInUser?.userId ? "게시글을 모집종료하셨습니다." 
-    //   : joinList.some(user => user.userId === signInUser.userId) + "회원님이 참가신청 하신 공고가 모집종료 되었습니다.",
-    //   recruitPostId
-    // }
-    // postAlertRequest(message, accessToken).then(postAlertResponse);
+    if(!isCompleted) {
+    for (let i = 0; i < joinList.length; i++) {
+      const message: PostAlertRequestDto = {
+        userId: joinList[i].userId,
+        message: "회원님이 참가신청 하신 공고가 모집종료 되었습니다.",
+        recruitPostId
+      };
+    postAlertRequest(message, accessToken).then(postAlertResponse);
+    }
+      const message: PostAlertRequestDto = {
+        userId: writer,
+        message: "게시글을 모집종료하셨습니다.",
+        recruitPostId
+      };
+    postAlertRequest(message, accessToken).then(postAlertResponse);
+    }
+    else if(isCompleted) {
+      for (let i = 0; i < joinList.length; i++) {
+        const message: PostAlertRequestDto = {
+          userId: joinList[i].userId,
+          message: "회원님이 참가신청 하신 공고가 재모집 중입니다.",
+          recruitPostId
+        };
+      postAlertRequest(message, accessToken).then(postAlertResponse);
+      }
+        const message: PostAlertRequestDto = {
+          userId: writer,
+          message: "게시글을 재모집 하셨습니다.",
+          recruitPostId
+        };
+      postAlertRequest(message, accessToken).then(postAlertResponse);
+      }
 
     patchRecruitRequest(requestBody, recruitPostId, accessToken)
       .then(PatchRecruitResponse)
@@ -871,11 +905,15 @@ export default function RecruitDetail() {
     
     const message: PostAlertRequestDto = {
       userId: writer,
-      message: writer === signInUser?.userId ? "본인의 글에 댓글을 달았습니다." : signInUser?.userId + "(이)가 고객님의 글에 댓글을 달았습니다.",
+      message: signInUser?.userId + "(이)가 고객님의 글에 댓글을 달았습니다.",
       recruitPostId
     }
-    postRecruitCommentRequest(requestBody, recruitPostId, accessToken).then(postRecruitCommentResponse);
+
+    if(signInUser?.userId !== writer)
     postAlertRequest(message, accessToken).then(postAlertResponse);
+
+    postRecruitCommentRequest(requestBody, recruitPostId, accessToken).then(postRecruitCommentResponse);
+    
   }
 
   const onProfileImageClick = (commentWriter: string) => {

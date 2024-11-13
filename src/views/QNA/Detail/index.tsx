@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSignInUserStore } from 'src/stores';
 import { useCookies } from 'react-cookie';
 import { ResponseDto } from 'src/apis/dto/response';
-import { getQnaPostRequest, deleteQnaPostRequest, patchQnaCommentRequest, deleteQnaCommentRequest, postQnaCommentRequest, getQnaCommentListRequest, getQnaCommentUserInfoRequest, getQnaUserInfoRequest } from 'src/apis';
+import { getQnaPostRequest, deleteQnaPostRequest, patchQnaCommentRequest, deleteQnaCommentRequest, postQnaCommentRequest, getQnaCommentListRequest, getQnaCommentUserInfoRequest, getQnaUserInfoRequest, postAlertRequest } from 'src/apis';
 import { ACCESS_TOKEN, MYPAGE_PATH, QNA_DETAIL_PATH, QNA_PATH, QNA_UPDATE_PATH } from 'src/constants';
 import { PatchQnaCommentRequestDto } from 'src/apis/dto/request/qna';
 import usePagination from 'src/hooks/pagination.hook';
@@ -17,6 +17,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { IconButton, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { PostAlertRequestDto } from '@/apis/dto/request/alert';
 
 // interface: Qna 댓글 인터페이스 //
 interface TableRowProps {
@@ -352,6 +353,23 @@ export default function QnADetail() {
         navigator(MYPAGE_PATH(writer));
     }
 
+    // function: post alert response 처리 함수 //
+    const postAlertResponse = (responseBody: ResponseDto | null) => {
+        const message =
+        !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'NP' ? '권한이 없습니다.' :
+        responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+        responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
+        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+    };
+
     // effect: 게시글 상세 보기 요청 함수 //
     useEffect(() => {
         if (!qnaPostId) return;
@@ -420,7 +438,14 @@ export default function QnADetail() {
             qnaCommentContent: commentConent
         }
 
+        const message: PostAlertRequestDto = {
+            userId: writer,
+            message: "운영자가 고객님의 글에 댓글을 달았습니다.",
+            qnaPostId
+        }
+
         postQnaCommentRequest(requestBody, qnaPostId, accessToken).then(postQnaCommentResponse);
+        postAlertRequest(message, accessToken).then(postAlertResponse);
     }
 
     const getQnaCommentList = () => {
