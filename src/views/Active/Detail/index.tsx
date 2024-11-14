@@ -503,7 +503,7 @@ export default function ActiveDetail() {
         if (!activePostId) return;
         getActivePostRequest(activePostId).then(getActivePostResponse);
         getActiveLikeRequest(activePostId).then(getActiveLikeResponse);
-    }, [activePostId]);
+    }, [activePostId, signInUser]);
 
     // effect: 좌표로 주소 정보 요청 함수 //
     useEffect(() => {

@@ -183,6 +183,7 @@ export default function Mypage() {
       console.error("사용자 데이터 로드 실패", error);
     }
   };
+
   useEffect(() => {
     if (userId) {
       console.log("현재 userId:", userId); // 유저 ID 출력
@@ -835,13 +836,13 @@ export default function Mypage() {
   }, [isFollowing]);
 
   useEffect(() => {
-    if (!signInUser) {
+    if (!accessToken) {
       alert("로그인이 필요합니다.");
-      navigator('/sign-up'); 
+      navigator('/'); 
     }
   }, []);
 
-  if (!signInUser) {
+  if (!accessToken) {
     return null; 
   }
 

@@ -361,6 +361,9 @@
 #mypage-wrapper .td-mileage-description {
     flex: 1;
     cursor: pointer;
+    white-space:nowrap;
+    overflow:hidden;  
+    text-overflow: ellipsis;
 }
 
 #mypage-wrapper .td-recruit-number,
