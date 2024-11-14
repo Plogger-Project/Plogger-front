@@ -20,6 +20,7 @@ import RecruitJoinList from './recruit-join.interface';
 import AddressPostCount from "./recruit-address-count.interface";
 import SimpleUser from "./simple-user.interface";
 import RoomInvite from "./room-invite.interface";
+import LeaveRoom from "./leave-room.interface";
 
 export type {
     User,
@@ -43,5 +44,6 @@ export type {
     RecruitJoinList,
     AddressPostCount,
     SimpleUser,
-    RoomInvite
+    RoomInvite,
+    LeaveRoom
 }
