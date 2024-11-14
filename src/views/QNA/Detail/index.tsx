@@ -508,8 +508,8 @@ export default function QnADetail() {
                             >
                                 {isAuthor && (
                                     <>
-                                        <button className="editButton" onClick={onPostUpdateButtonClick}>수정하기</button>
-                                        <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제하기</button>
+                                        <button className="editButton" onClick={onPostUpdateButtonClick}>수정</button>
+                                        <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제</button>
                                     </>
                                 )}
                             </div>

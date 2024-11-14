@@ -11,6 +11,8 @@ import {  fileUploadRequest, getQnaPostRequest, patchQnaPostRequest} from 'src/a
 import { PatchQnaPostRequestDto } from 'src/apis/dto/request/qna';
 import { GetQnaPostResponseDto } from 'src/apis/dto/response/qna';
 
+import AddAPhotoSharpIcon from '@mui/icons-material/AddAPhotoSharp';
+
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
   interface Window {
@@ -182,9 +184,9 @@ export default function QnaUpdate() {
 
   // render: QNA 게시판 수정 컴포넌트 렌더링 //
   return (
-    <div id='qna-write-wrapper'>
+    <div id='qna-update-wrapper'>
       <div className='navi'></div>
-      <div id='qna-write-input-container'>
+      <div id='qna-update-input-container'>
         <div className='userInfo'>
           <div className='userInfo-left'>
             <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }}></div>
@@ -204,7 +206,7 @@ export default function QnaUpdate() {
         </div>
         <div className='input-box'>
           <div className='input-label'>이미지</div>
-          <div className={`image ${image ? 'uploaded' : 'preview'}`} onClick={onImageClickHandler}>
+          <div className={`image ${image ? 'uploaded' : ''}`} onClick={onImageClickHandler}>
             {image ? (
               <div className='image-box'>
                 <img src={image} alt='미리보기 이미지' />
@@ -213,14 +215,14 @@ export default function QnaUpdate() {
                 </button>
               </div>
             ) : (
-              <div></div>
+              <AddAPhotoSharpIcon style={{ fontSize: 40, cursor: "pointer" }} />
             )}
             <input ref={imageInputRef} style={{ display: 'none' }} type='file' accept='image/*' onChange={onImageInputChangeHandler} />
           </div>
         </div>
         <div className="bottom">
-          <div className='button primary' onClick={onPostButtonClickHandler}>수정</div>
-          <div className='button disable' onClick={onCancleButtonClickHandler}>취소</div>
+          <div className='button-update' onClick={onPostButtonClickHandler}>수정</div>
+          <div className='button-cancle' onClick={onCancleButtonClickHandler}>취소</div>
         </div>
       </div>
     </div>

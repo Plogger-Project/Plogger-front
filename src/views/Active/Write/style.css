@@ -244,12 +244,43 @@
     margin-right: 5px;
 }
 
-#active-write-wrapper .bottom .primary:hover {
-    background-color: var(--primary-10-color);
-    color: var(--primary-color);
+#active-write-wrapper .button-upload {
+    cursor: pointer;
+    width: 100px;
+    min-width: 70px;
+    height: 40px;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 18px;
+    justify-content: center;
+    align-content: center;
+    margin-right: 5px;
+    color: rgba(0, 95, 65, 1);
+    border: 0.1px solid rgb(103, 141, 129);
 }
-#active-write-wrapper .bottom .disable:hover {
-    background-color: var(--dark-gray-color);
+
+#active-write-wrapper .button-upload:hover {
+    background-color: rgba(0, 95, 65, 1);
+    color: rgba(255, 255, 255, 1);
+}
+
+#active-write-wrapper .button-cancle {
+    cursor: pointer;
+    width: 100px;
+    min-width: 70px;
+    height: 40px;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 18px;
+    justify-content: center;
+    align-content: center;
+    margin-right: 5px;
+    color: rgb(255, 0, 0);
+    border: 0.1px solid rgba(221, 114, 114, 0.8);
+}
+
+#active-write-wrapper .button-cancle:hover {
+    background-color: #da3e3e;
     color: rgba(255, 255, 255, 1);
 }
 

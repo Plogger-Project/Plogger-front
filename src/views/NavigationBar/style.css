@@ -82,6 +82,7 @@
     padding: 10px;
     margin-left: 10px;
     font-size: 15px;
+    min-height: 10px;
 }
 
 #navigation-bar .button-box {

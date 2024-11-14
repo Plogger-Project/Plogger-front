@@ -277,7 +277,7 @@ export default function Main() {
   ];
 
   // state: 비디오 관련 상태 //
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(Math.floor(Math.random() * videoSources.length));
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // state: 텍스트 관련 상태 //

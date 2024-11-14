@@ -1,7 +1,23 @@
+.form-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    max-height: 900px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .input-area {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
+}
+
+.input-box {
+    min-height: 100px;
 }
 
 .input-area input {
@@ -12,16 +28,28 @@
     box-sizing: border-box;
 }
 
+
 .label {
     display: block;
-    margin-bottom: 5px;
+    height: 15px;
     font-weight: bold;
+    
+}
+
+.message {
+    margin-top: -30px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: black;
 }
 
 .message.error {
-    margin: 4px 0 0;
+    margin-top: -30px;
+    margin-bottom: 10px;
+    font-size: 15px;
     color: red;
 }
+
 
 .input-area button {
     background-color: #84A264;
