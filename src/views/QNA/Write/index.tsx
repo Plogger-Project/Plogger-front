@@ -7,7 +7,6 @@ import { ACCESS_TOKEN, QNA_PATH } from 'src/constants';
 import { fileUploadRequest, postQnaPostRequest } from 'src/apis';
 import { PostQnaPostRequestDto } from 'src/apis/dto/request/qna';
 import { ResponseDto } from 'src/apis/dto/response';
-import { User } from 'src/types';
 
 import AddAPhotoSharpIcon from '@mui/icons-material/AddAPhotoSharp';
 
@@ -30,8 +29,6 @@ export default function QnaWrite() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [image, setImage] = useState<string>(''); // 이미지 미리보기
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [address, setAddress] = useState<string>('');
-  const [qnaId, setQnaId] = useState<number>(0);
   const [isPinned, setIsPinned] = useState<boolean>(false);
 
   // function: 네비게이터 함수 //
@@ -95,6 +92,7 @@ export default function QnaWrite() {
   const onDeleteImageClickHandler = (e: any) => {
     e.stopPropagation();
     setImage('');
+    setImageFile(null);
   }
 
   // event handler: 등록 버튼 이벤트 처리 함수 //

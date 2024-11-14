@@ -52,7 +52,7 @@
 #active-write-wrapper .userInfo-right .listButton{
     width: 90px;
     height: 30px;
-    background-color: rgba(156, 153, 153, 0.2);
+    background-color: var(--gray-color);
     color: white;
     border-radius: 8px;
     border: none;
@@ -61,6 +61,10 @@
     align-items: center;
     display: flex;
     text-align: center;
+}
+
+#active-write-wrapper .userInfo-right .listButton:hover {
+    border: 1px solid var(--gray-color);
 }
 
 #active-write-wrapper .profileImage {
@@ -87,10 +91,13 @@
 }
 
 #active-write-wrapper .input-box .input {
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 10px;
-    width: 1;
+    border: 2px solid rgba(255, 255, 255, 1); 
+    border-radius: 8px; /* 둥근 테두리 */
+    padding: 8px 12px; /* 내부 여백 */
+    outline: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
+    transition: border-color 0.3s, box-shadow 0.3s; /* 부드러운 애니메이션 */
+    font: inherit;
 }
 
 #active-write-wrapper .kakaomap .marker-info{
@@ -141,14 +148,14 @@
 }
 
 #active-write-wrapper .textarea {
-    width: 100%;
-    height: 200px;
-    padding: 10px;
-    font-size: 12px;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    box-sizing: border-box;
-    resize: none;
+    border: 2px solid rgba(255, 255, 255, 1); 
+    border-radius: 8px; /* 둥근 테두리 */
+    padding: 8px 12px; /* 내부 여백 */
+    font-size: 14px;
+    outline: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
+    transition: border-color 0.3s, box-shadow 0.3s; /* 부드러운 애니메이션 */
+    font: inherit;
 }
 
 .tagUser button {
@@ -275,4 +282,25 @@
 #active-write-wrapper .button-cancle:hover {
     background-color: #da3e3e;
     color: rgba(255, 255, 255, 1);
+}
+
+#active-write-wrapper .mentions-input {
+    border: 2px solid rgba(255, 255, 255, 1); 
+    border-radius: 8px; 
+    padding: 8px 12px; 
+    font-size: 14px;
+    outline: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    transition: border-color 0.3s, box-shadow 0.3s;
+    color: rgb(132, 125, 125);
+    font: inherit;
+}
+
+#active-write-wrapper .mentions-input textarea, 
+#active-write-wrapper .mentions-input input {
+  border: none !important; /* 기본 테두리 제거 */
+  outline: none !important; /* 기본 포커스 테두리 제거 */
+  background: transparent; /* 배경색 투명으로 설정 */
+  align-content: center;
+  font: inherit;
 }

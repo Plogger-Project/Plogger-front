@@ -4,13 +4,12 @@ import Gifticon from '../../types/gifticon.interface'
 import useGifticonPagination from '../../hooks/gifticon.pagination.hook';
 import { useSignInUserStore } from 'src/stores';
 import { useCookies } from 'react-cookie';
-import { ACCESS_TOKEN, GIFTICON_PATH, MYPAGE_PATH, ROOT_PATH } from 'src/constants';
+import { ACCESS_TOKEN} from 'src/constants';
 import { deleteGifticonRequest, fileUploadRequest, getGifticonListRequest, getSignInRequest, patchGifticonRequest, postGifticonRequest, purchaseGifticonRequest } from 'src/apis';
 import { GetGifticonListResponseDto } from 'src/apis/dto/response/gifticon';
 import { ResponseDto } from 'src/apis/dto/response';
 import { PatchGifticonRequestDto, PostGifticonRequestDto, PurchaseGifticonRequestDto } from 'src/apis/dto/request/gifticon';
 import Pagination from 'src/components/pagination';
-import { SignInUser } from 'src/types';
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { IconButton } from '@mui/material';
@@ -35,7 +34,6 @@ function TableRow({ gifticon, getGifticonList }: TableRowProps) {
   const { signInUser, setSignInUser } = useSignInUserStore();
 
   // state: 기프티콘 정보 상태 //
-  const [gifticonId, setGifticonId] = useState<number>(gifticon.gifticonId);
   const [gifticonName, setGifticonName] = useState<string>('');
   const [gifticonImageFile, setGifticonImageFile] = useState<File | null>(null);
   const [gifticonImage, setGifticonImage] = useState<string>('');

@@ -23,6 +23,7 @@ import { PostAlertRequestDto } from 'src/apis/dto/request/alert';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { red } from '@mui/material/colors';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 
 interface TableRowProps {
@@ -73,11 +74,11 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
     const patchActiveCommentResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NP' ? '권한이 없습니다.' :
-            responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
-            responseBody.code === 'NAC' ? '존재하지 않는 댓글입니다.' : '댓글 수정!';
+                responseBody.code === 'VF' ? '데이터가 유효하지 않습니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NP' ? '권한이 없습니다.' :
+                            responseBody.code === 'NAP' ? '존재하지 않는 게시글입니다.' :
+                                responseBody.code === 'NAC' ? '존재하지 않는 댓글입니다.' : '댓글 수정!';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -91,7 +92,7 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
     // event handler: 활동 게시판 댓글 수정 이벤트 핸들러 //
     const onUpdateButtonClickHandler = () => {
 
-        if ((signInUser?.userId !== activeComment.activeCommentWriter) && !signInUser?.isAdmin)return;
+        if ((signInUser?.userId !== activeComment.activeCommentWriter) && !signInUser?.isAdmin) return;
 
 
         if (!content) {
@@ -104,7 +105,7 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
         if (!activePostId) return;
         const isConfirm = window.confirm('댓글을 수정하시겠습니까?');
         if (!isConfirm) return;
-        
+
 
         const reqeustBody: PatchActiveCommentRequestDto = { activeCommentContent: content };
         patchActiveCommentRequest(reqeustBody, activePostId, activeComment.activeCommentId, accessToken).then(patchActiveCommentResponse);
@@ -154,7 +155,7 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
             <div className='commentUserInfo-right'>
                 {isEdit ? (
                     <div className='editCommentWrapper'>
-                        <textarea className='editCommentContent'  value={content} onChange={onContentChangeHandler} />
+                        <textarea className='editCommentContent' value={content} onChange={onContentChangeHandler} />
                         <button className='save' onClick={onUpdateButtonClickHandler}>저장</button>
                         <button className='cancel' onClick={onCancelButtonClickHandler}>취소</button>
                     </div>
@@ -162,7 +163,7 @@ function TableRow({ activeComment, getActiveCommentList }: TableRowProps) {
                     <div className='viewCommentWrapper'>
                         <div className='activeCommentContent'>{activeComment.activeCommentContent}</div>
                     </div>
-                        
+
                 )}
             </div>
             {!isEdit && (isAuthor || isAdmin) ? (
@@ -305,11 +306,11 @@ export default function ActiveDetail() {
     const deleteActivePostResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
-            responseBody.code === 'NP' ? '권한이 없습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+                            responseBody.code === 'NP' ? '권한이 없습니다.' :
+                                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -441,12 +442,12 @@ export default function ActiveDetail() {
     const postActiveLikeResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NP' ? '권한이 없습니다.' :
-            responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
-            responseBody.code === 'NAP' ? '해당 활동 게시글이 없습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NP' ? '권한이 없습니다.' :
+                            responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+                                responseBody.code === 'NAP' ? '해당 활동 게시글이 없습니다.' :
+                                    responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && (responseBody.code === 'LC' || responseBody.code === 'LUC');
         if (!isSuccessed) {
@@ -456,41 +457,41 @@ export default function ActiveDetail() {
         setIsLiked(!isLiked);
     };
 
-  // function : get active like response 처리 함수 //
+    // function : get active like response 처리 함수 //
     const getActiveLikeResponse = (responseBody: GetActiveLikeResponseDto | ResponseDto | null) => {
-    
+
         const message = !responseBody ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
-        alert(message);
-        return;
+            alert(message);
+            return;
         }
-    
+
         const { userIds } = responseBody as GetActiveLikeResponseDto;
         console.log(userIds);
 
         if (Array.isArray(userIds)) {
-        const isUserLiked = userIds.some(userId => userId === signInUser?.userId);
-        setIsLiked(isUserLiked);
+            const isUserLiked = userIds.some(userId => userId === signInUser?.userId);
+            setIsLiked(isUserLiked);
         } else {
-        setIsLiked(false);
+            setIsLiked(false);
         }
     };
 
     // function: post alert response 처리 함수 //
     const postAlertResponse = (responseBody: ResponseDto | null) => {
         const message =
-        !responseBody ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
-        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-        responseBody.code === 'NP' ? '권한이 없습니다.' :
-        responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
-        responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
-        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NP' ? '권한이 없습니다.' :
+                            responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+                                responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
+                                    responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
             alert(message);
@@ -547,8 +548,8 @@ export default function ActiveDetail() {
             activePostId
         };
 
-        if(signInUser?.userId !== writer)
-        postAlertRequest(message, accessToken).then(postAlertResponse);
+        if (signInUser?.userId !== writer)
+            postAlertRequest(message, accessToken).then(postAlertResponse);
     }
 
     // event handler: 클릭 시 옵션 항목을 보여주거나 숨기는 함수 //
@@ -674,8 +675,8 @@ export default function ActiveDetail() {
             message: signInUser?.userId + "(이)가 고객님의 글에 댓글을 달았습니다.",
             activePostId
         }
-        if(signInUser?.userId !== writer)
-        postAlertRequest(message, accessToken).then(postAlertResponse);
+        if (signInUser?.userId !== writer)
+            postAlertRequest(message, accessToken).then(postAlertResponse);
     }
 
     const onProfileImageClick = (commentWriter: string) => {
@@ -745,7 +746,11 @@ export default function ActiveDetail() {
                         <div className='detailCount'>조회수 : {view}</div>
                         |
                         <div className='detailCount'>좋아요 : {like}</div>
-                        <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}></div>
+                        <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}>
+                            <IconButton>
+                                <MoreVertIcon />
+                            </IconButton>
+                        </div>
                         {showOptions && (
                             <div
                                 className="options"
@@ -755,12 +760,12 @@ export default function ActiveDetail() {
                                     left: optionPosition.left + 'px'
                                 }}
                             >
-                                {signInUser?.userId === writer || signInUser?.isAdmin?
+                                {signInUser?.userId === writer || signInUser?.isAdmin ?
                                     <>
                                         <button className="editButton" onClick={onPostUpdateButtonClick}>수정</button>
                                         <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제</button>
                                     </>
-                                : ''}
+                                    : ''}
                                 {(signInUser?.userId === writer) || !signInUser ?
                                     <></>
                                     : <button className='reportButton' onClick={openReportModalHandler}>신고</button>
@@ -829,8 +834,8 @@ export default function ActiveDetail() {
                         <div className='right'>
                             {signInUser &&
                                 <div>
-                                    {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{color: red[500], fontSize: 30}}/> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{fontSize: 30}}/>}
-                                </div> 
+                                    {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{ color: red[500], fontSize: 30 }} /> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{ fontSize: 30 }} />}
+                                </div>
                             }
                         </div>
                     </div>
@@ -840,7 +845,7 @@ export default function ActiveDetail() {
                             <div className='commentUserInfoWrite'>
                                 <div className='commentUserInfo-left'>
                                     <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
-                                    <div className='activeCommentWriter' style={ { textAlign: "center" } }>{signInUser?.userId}</div>
+                                    <div className='activeCommentWriter' style={{ textAlign: "center" }}>{signInUser?.userId}</div>
                                 </div>
                                 <div className='commentUserInfo-right'>
                                     <textarea className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></textarea>

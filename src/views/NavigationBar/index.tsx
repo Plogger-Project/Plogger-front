@@ -6,7 +6,7 @@ import { GetSignInResponseDto, SignInResponseDto } from '../../apis/dto/response
 import { ResponseDto } from '../../apis/dto/response';
 import { ACCESS_TOKEN, ACTIVE_DETAIL_PATH, FIND_ID, FIND_PASSWORD, MYPAGE_PATH, QNA_DETAIL_PATH, RECRUIT_DETAIL_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH } from '../../constants';
 import SignInRequestDto from '../../apis/dto/request/auth/sign-in.request.dto';
-import { deleteAlertListRequest, getAlertListRequest, getSignInRequest, postAlertRequest, signInRequest } from '../../apis';
+import { deleteAlertListRequest, getAlertListRequest, getSignInRequest, signInRequest } from '../../apis';
 import { ACTIVE_PATH, QNA_PATH, RECRUIT_PATH } from '../../constants';
 import { useCookies } from 'react-cookie';
 import { useSearchStore, useSignInUserStore } from 'src/stores';
@@ -245,11 +245,6 @@ export default function NavigationBar() {
     // function: 네비게이터 함수 //
     const navigator = useNavigate();
 
-    // function: 로케이션 함수 //
-    const onLocationHref = () => {
-        window.location.href = ROOT_PATH;
-    }
-
     // function: local 함수 //
     const location = useLocation();
 
@@ -380,7 +375,7 @@ export default function NavigationBar() {
 
         setMessage('');
         onModelOpenHandler();
-        onLocationHref();
+        navigator(ROOT_ABSOLUTE_PATH);
     };
 
     // event handler: 아이디 입력 시 처리 //
@@ -419,7 +414,7 @@ export default function NavigationBar() {
     const onLogoutButtonClickHandler = () => {
         removeCookie('accessToken', { path: ROOT_PATH });
 
-        onLocationHref();
+        navigator(ROOT_ABSOLUTE_PATH);
     }
 
     // event handler: 스크롤 이벤트 핸들러 //

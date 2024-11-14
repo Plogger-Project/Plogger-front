@@ -7,14 +7,9 @@ import { User } from 'src/types';
 import { useKakaoLoader } from 'src/hooks';
 import { ACCESS_TOKEN, QNA_DETAIL_PATH, QNA_PATH } from 'src/constants';
 import { ResponseDto } from 'src/apis/dto/response';
-import { deleteTagRequest, fileUploadRequest, getQnaPostRequest, getUserListRequest, patchQnaPostRequest, postTagRequest } from 'src/apis';
+import {  fileUploadRequest, getQnaPostRequest, patchQnaPostRequest} from 'src/apis';
 import { PatchQnaPostRequestDto } from 'src/apis/dto/request/qna';
 import { GetQnaPostResponseDto } from 'src/apis/dto/response/qna';
-import { GetUserListResponseDto } from 'src/apis/dto/response/mypage';
-import { Mention, MentionsInput, SuggestionDataItem } from 'react-mentions';
-import DatePicker from 'react-datepicker';
-import { FaCalendarAlt } from 'react-icons/fa';
-import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import AddAPhotoSharpIcon from '@mui/icons-material/AddAPhotoSharp';
 
@@ -24,8 +19,6 @@ declare global {
     kakao: any;
   }
 }
-
-const defaultImageUrl = 'https://cdn.icon-icons.com/icons2/2348/PNG/512/add_icon_143118.png';
 
 // component: QNA 게시판 작성 컴포넌트 //
 export default function QnaUpdate() {
@@ -39,8 +32,6 @@ export default function QnaUpdate() {
   // state: cookie 상태 //
   const [cookies] = useCookies();
 
-  const [userList, setUserList] = useState<User[]>([]);
-  const [inputValue, setInputValue] = useState<string>('');
 
   // state: QNA 게시판 상태 //
   const [title, setTitle] = useState<string>('');
@@ -48,7 +39,6 @@ export default function QnaUpdate() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [image, setImage] = useState<string>(''); // 이미지 미리보기
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [recruitId, setRecruitId] = useState<number>(0);
   const [isPinned, setIsPinned] = useState<boolean>(false);
 
   const imageInputRef = useRef<HTMLInputElement | null>(null);
@@ -145,6 +135,7 @@ export default function QnaUpdate() {
   const onDeleteImageClickHandler = (e: any) => {
     e.stopPropagation();
     setImage('');
+    setImageFile(null);
   }
 
   // event handler: 등록 버튼 이벤트 처리 함수 //
@@ -156,13 +147,13 @@ export default function QnaUpdate() {
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
 
-    let url: string | null = '';
+    let url: string | null = image;
     if (imageFile) {
       const formData = new FormData();
       formData.append('file', imageFile);
       url = await fileUploadRequest(formData);
     }
-    url = url ? url : '';
+    url = url ? url : image;
 
     if (!qnaPostId) return;
 

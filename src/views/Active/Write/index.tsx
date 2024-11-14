@@ -257,6 +257,8 @@ export default function ActiveWrite() {
       setActivePeople((prev) => [...prev, tagUserId]);
       setInputValue((prev) => prev.replace(/@\w*$/, `@${tagUserId} `));
     }
+
+    setInputValue('');
   }
 
   // event handler: 태그된 인원을 삭제하는 이벤트 핸들러 //
@@ -337,7 +339,7 @@ export default function ActiveWrite() {
         </div>
         <div className='input-box'>
           <div className='input-label'>내가 쓴 구인 글 불러오기</div>
-          <select id="activePostSelect" onChange={onMyRecruitPostChangeHandler}>
+          <select id="activePostSelect" className="mentions-input" onChange={onMyRecruitPostChangeHandler}>
             <option value="">선택하세요</option>
             {selectedMyRecruit.map((myRecruitPost, index) => (
               <option key={index} value={myRecruitPost.recruitPostId}>
@@ -360,7 +362,7 @@ export default function ActiveWrite() {
               </span>))
             )}
           </div>
-          <MentionsInput value={inputValue} onChange={(e) => handleChange(e.target.value)} placeholder='@유저아이디를 입력해주세요'>
+          <MentionsInput className="mentions-input" value={inputValue} onChange={(e) => handleChange(e.target.value)} placeholder='@유저아이디를 입력해주세요'>
             <Mention trigger="@" data={userList.map(user => ({
               id: user.userId,
               display: user.userId,

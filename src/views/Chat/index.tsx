@@ -10,7 +10,7 @@ import { ResponseDto } from 'src/apis/dto/response';
 import PostChatRoomRequestDto from 'src/apis/dto/request/chat/post-chat-room.request.dto';
 import { IconButton } from '@mui/material';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { useRoomListStore, useSignInUserStore, useSocketStore } from 'src/stores';
+import { useMessageListStore, useRoomListStore, useSignInUserStore, useSocketStore } from 'src/stores';
 
 interface ChatRoomListProps {
     chatRoom: ChatRoom;
@@ -18,6 +18,10 @@ interface ChatRoomListProps {
 }
 
 function ChatRoomList({ chatRoom, onDelete }: ChatRoomListProps) {
+    const { messageList } = useMessageListStore();
+
+    const noReadCount = messageList.filter(message => message.roomId === chatRoom.roomId && !message.isRead && message.senderId !== 'system' && message.senderId !== 'system-invite').length;
+
     const navigator = useNavigate();
 
     const onDetailButtonClickHandler = () => {
@@ -26,7 +30,7 @@ function ChatRoomList({ chatRoom, onDelete }: ChatRoomListProps) {
 
     return (
         <div className="chat-room-container" onClick={onDetailButtonClickHandler}>
-            <h4>{chatRoom.roomName}</h4>
+            <h4>{chatRoom.roomName} <span>{noReadCount !== 0 && noReadCount}</span></h4>
             <span>{chatRoom.createdAt}</span>
             <IconButton onClick={(event) => onDelete(event, chatRoom.roomId)} className='leave-chat-room-btn'>
                 <ExitToAppIcon />
@@ -45,6 +49,7 @@ export default function Chat() {
     const accessToken = cookies[ACCESS_TOKEN];
 
     const postChatRoomResponse = (responseBody: ResponseDto | null) => {
+        
         const message = 
             !responseBody ? '서버에 문제가 있습니다.' : 
             responseBody.code === 'VF' ? '잘못된 접근입니다.' : 
@@ -56,7 +61,6 @@ export default function Chat() {
             alert(message);
             return;
         }
-
         getMyChatRoomListRequest(accessToken).then(getChatRoomListResponse);
     }
 
@@ -71,7 +75,7 @@ export default function Chat() {
     
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
-            alert(message);
+            alert("message");
             return;
         }
     

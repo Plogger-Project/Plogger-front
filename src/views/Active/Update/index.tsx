@@ -299,6 +299,7 @@ export default function ActiveUpdate() {
   const onDeleteImageClickHandler = (e: any) => {
     e.stopPropagation();
     setImage('');
+    setImageFile(null);
   }
 
   // event handler: 등록 버튼 이벤트 처리 함수 //
@@ -312,14 +313,14 @@ export default function ActiveUpdate() {
 
     if (!activePostId) return;
 
-    let url: string | null = '';
+    let url: string | null = image;
     if (imageFile) {
       const formData = new FormData();
       formData.append('file', imageFile);
       url = await fileUploadRequest(formData);
     }
 
-    url = url ? url : '';
+    url = url ? url : image;
 
     const requestBody: PatchActivePostRequestDto = {
       activePostTitle: title, activePostContent: content, activePostImage: url,

@@ -17,6 +17,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { IconButton, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { PostAlertRequestDto } from 'src/apis/dto/request/alert';
 
 // interface: Qna 댓글 인터페이스 //
@@ -491,7 +492,11 @@ export default function QnADetail() {
                     </div>
                     <div className='postBox'>
                         <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
-                        <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}></div>
+                        <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}>
+                            <IconButton>
+                                <MoreVertIcon />
+                            </IconButton>
+                        </div>
                         {showOptions && (
                             <div
                                 className="options"
