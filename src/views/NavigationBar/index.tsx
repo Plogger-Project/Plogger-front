@@ -245,11 +245,6 @@ export default function NavigationBar() {
     // function: 네비게이터 함수 //
     const navigator = useNavigate();
 
-    // function: 로케이션 함수 //
-    const onLocationHref = () => {
-        window.location.href = ROOT_PATH;
-    }
-
     // function: local 함수 //
     const location = useLocation();
 
@@ -380,7 +375,7 @@ export default function NavigationBar() {
 
         setMessage('');
         onModelOpenHandler();
-        onLocationHref();
+        navigator(ROOT_ABSOLUTE_PATH);
     };
 
     // event handler: 아이디 입력 시 처리 //
@@ -419,7 +414,7 @@ export default function NavigationBar() {
     const onLogoutButtonClickHandler = () => {
         removeCookie('accessToken', { path: ROOT_PATH });
 
-        onLocationHref();
+        navigator(ROOT_ABSOLUTE_PATH);
     }
 
     // event handler: 스크롤 이벤트 핸들러 //

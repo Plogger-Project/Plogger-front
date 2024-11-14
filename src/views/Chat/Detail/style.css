@@ -69,10 +69,6 @@
     align-self: center;
 }
 
-.chat-messages .system-message .system-message-content {
-
-}
-
 .chat-input {
     display: flex;
     justify-content: space-between;
@@ -164,6 +160,10 @@
 
 .user-list-dropdown input {
     margin-right: 10px; 
+}
+
+.back-arrow {
+    display: flex;
 }
 
 @media (max-width: 500px) {
