@@ -3,20 +3,27 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 1134px;
-    height: 900px;
+    width: 100%;
+    
     overflow: hidden;
     margin: 0 auto;
+    background-image: url(/public/images/frame-4822807_1920.png);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    
 }
 
-#recruit-post-wrapper .main {
-    min-width: 1130px;
 
+#recruit-post-wrapper .main {
+    min-width: 1134px;
+    background-color: white;
 }
 
 #recruit-post-wrapper .kakaomap {
     position: fixed;
-    top: 430px;
+    top: 500px;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 1134px;

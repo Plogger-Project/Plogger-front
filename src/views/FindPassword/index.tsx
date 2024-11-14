@@ -1,19 +1,16 @@
 import React, { ChangeEvent, useState } from 'react'
 import './style.css'
-import FindIdRequestDto from 'src/apis/dto/request/auth/find-id-request.dto';
-import { findIdRequest, findPasswordRequest, idCheckRequest, sendAuthRequest, sendPasswordAuthRequest, telAuthCheckRequest, telAuthRequest } from 'src/apis';
+import { findPasswordRequest,  sendPasswordAuthRequest, telAuthCheckRequest } from 'src/apis';
 import { ResponseDto } from 'src/apis/dto/response';
-import { FindIdResponseDto, FindPasswordResponseDto } from 'src/apis/dto/response/auth';
+import { FindPasswordResponseDto } from 'src/apis/dto/response/auth';
 import { useCookies } from 'react-cookie';
-import { ACCESS_TOKEN, FIND_ID, ROOT_PATH } from 'src/constants';
-import { FindPasswordRequestDto, IdCheckRequestDto, SendAuthRequestDto, SendPasswordAuthRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from 'src/apis/dto/request/auth';
-import { isMatch } from 'date-fns';
+import { ACCESS_TOKEN,  ROOT_PATH } from 'src/constants';
+import { FindPasswordRequestDto, SendPasswordAuthRequestDto, TelAuthCheckRequestDto } from 'src/apis/dto/request/auth';
 import { useNavigate } from 'react-router-dom';
 
 export default function FindId() {
 
     // state: 인증 상태 //
-    const [name, setName] = useState<string>('');
     const [userId, setUserId] = useState<string>('');
     const [message, setMessage] = useState<string>('');
     const [telNumber, setTelNumber] = useState<string>('');
@@ -21,9 +18,7 @@ export default function FindId() {
     const [idMessage, setIdMessage] = useState<string>('');
     const [telNumberMessage, setTelNumberMessage] = useState<string>('');
     const [authNumberMessage, setAuthNumberMessage] = useState<string>('');
-    const [isCheckedId, setCheckedId] = useState<boolean>(false);
     const [isCheckedAuthNumber, setCheckedAuthNumber] = useState<boolean>(false);
-    const [idMessageError, setIdMessageError] = useState<boolean>(false);
     const [authNumberMessageError, setAuthNumberMessageError] = useState<boolean>(false);
 
     // state: 입력값 검증 상태 //
@@ -41,7 +36,6 @@ export default function FindId() {
     const [telNumberMessageError, setTelNumberMessageError] = useState<boolean>(false);
 
     // state: cookie 상태 관리
-    const [cookies, setCookie] = useCookies([ACCESS_TOKEN]);
 
     // function: 네비게이터 함수 //
     const navigator = useNavigate();

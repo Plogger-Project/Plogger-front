@@ -296,6 +296,7 @@ export default function ActiveUpdate() {
   const onDeleteImageClickHandler = (e: any) => {
     e.stopPropagation();
     setImage('');
+    setImageFile(null);
   }
 
   // event handler: 등록 버튼 이벤트 처리 함수 //
