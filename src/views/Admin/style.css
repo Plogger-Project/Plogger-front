@@ -1,95 +1,91 @@
-#adminpage {
+#adminpage-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    height: 100%;
+    overflow: hidden;
+}
+
+#adminpage-wrapper .adminpage {
+    user-select: none;
+    width: 1134px;
+    height: 850px;
+    margin: 0 auto;
+    margin-top: 90px;
+
+}
+
+#adminpage-wrapper .adminpage-container {
     display: flex;
     flex-direction: column;
+    margin: 0 auto;
+}
+
+#adminpage-wrapper .adminpage-top {
+    display: flex;
+    width: 1134px;
+    height: 250px;
+    align-content: center;
     justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 700px;
-    margin-left: 70px;
+    gap: 30px;
 }
 
-#adminpage .top {
+#adminpage-wrapper .admin-profile-container {
+    padding-top: 40px;
     display: flex;
-    width: 1500px;
-    height: 380px;
-    justify-content: space-between;
-    margin-bottom: -80px;
-    margin-top: -120px;
-
-}
-
-.admin-profile-container {
-    user-select: none;
-    width: 800px;
-    height: 300px;
-    display: flex;
-    align-items: center;
-}
-
-#adminpage .image {
-    width: 200px;
+    width: 600px;
     height: 200px;
+    gap: 20px;
+}
+
+#adminpage-wrapper .profile-image {
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: cover;
+    background-position: center;
     background-image: url(/public/images/ploggerMin.png);
 }
 
-.profile-box {
+#adminpage-wrapper .profile-box {
     display: flex;
     flex-direction: column;
+    width: 350px;
+    height: 200px;
+    margin-left: 10px;
+
     align-content: center;
-    justify-items: center;
+    justify-content: center;
+    gap: 10px;
+}
 
+#adminpage-wrapper .profile-name-box {
+    display: flex;
+    gap: 10px;
+}
+
+#adminpage-wrapper .profile-name {
+    font-size: 20px;
+}
+
+#adminpage-wrapper .profile-address {
+    font-size: 15px;
+}
+
+#adminpage-wrapper .profile-comment-box {
+    display: flex;
+    margin-top: 30px;
+    align-content: center;
+}
+
+#adminpage-wrapper .profile-comment-box .comment-input {
     width: 300px;
-    height: 150px;
-    margin-left: 30px;
 }
 
-.name-box {
-    display: flex;
-}
-
-#adminpage .name {
-    font-size: 40px;
-
-}
-
-#adminpage .address {
-    font-size: 20px;
-}
-
-#adminpage .change {
+#adminpage-wrapper .comment-change {
     cursor: pointer;
-
-    width: 25px;
-    height: 25px;
-    background-image: url(/public/images/cogwheel.png);
-    background-repeat: no-repeat;
-    background-size: contain;
-    display: inline-block;
-}
-
-.sentence-box {
-    display: flex;
-    margin-top: 40px;
-}
-
-.sentence {
-    width: 270px;
-    height: 100px;
-    font-size: 20px;
-
-    overflow-wrap: break-word;
-}
-
-.sentence-box .input {
-    width: 230px;
-}
-
-.sentence-change {
-    cursor: pointer;
-
     width: 25px;
     height: 25px;
     background-image: url(/public/images/pen.png);
@@ -98,559 +94,235 @@
     display: inline-block;
 }
 
-.activity-container {
-    height: 400px;
+#adminpage-wrapper .profile-comment {
+    font-size: 18px;
+
     width: auto;
-    min-width: 800px;
-    user-select: none;
-    display: flex;
-    flex-direction: column;
+    max-width: 300px;
 
-    justify-content: center;
-    gap: 60px;
+    height: 30px;
+    max-height: 100px;
 
+    overflow-wrap: break-word;
 }
 
-.score-container {
-    display: flex;
-    font-size: 30px;
-
-    justify-content: center;
-
-    font-weight: 600;
-    gap: 90px;
-
-}
-
-.follower-box,
-.followee-box {
+#adminpage-wrapper .score-container {
     display: flex;
     flex-direction: column;
+    width: 300px;
+    height: 200px;
+    margin-top: 50px;
+    gap: 0px
+}
 
+#adminpage-wrapper .top-box {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+#adminpage-wrapper .bottom-box {
+    display: flex;
+    width: 320px;
+    height: 100px;
     align-items: center;
-
+    justify-content: space-around;
     gap: 20px
 }
 
-
-
-#adminpage .score {
-    font-size: 25px;
-    font-weight: normal;
-}
-
-#adminpage .line {
-    border-right: 2px solid rgba(0, 0, 0, 1);
-    border-left: 2px solid rgba(0, 0, 0, 1);
-
-    padding: 0px 90px;
-}
-
-.mileage-container {
-    display: flex;
-
-    justify-content: end;
-    gap: 100px;
-}
-
-.mileage-box {
-    width: 150px;
-    height: 45px;
+#adminpage-wrapper .mileage-box {
     display: flex;
     align-content: center;
-    justify-content: space-between;
-    gap: 10px;
+    justify-content: center;
 }
 
-.mileage-button {
-    margin-top: 5px;
-    user-select: none;
+#adminpage-wrapper .mileage-score {
+    font-size: 20px;
+}
+
+#adminpage-wrapper .gift-button {
     cursor: pointer;
-    font-size: 25px;
-    text-align: center;
-    width: 30px;
-    height: 30px;
-    border: 3px solid rgba(0, 0, 0, 1);
-    border-radius: 50%;
-}
-
-.mileage-score {
     align-content: center;
     height: auto;
-    width: 100px;
-    font-size: 25px;
+    width: 200px;
+    font-size: 18px;
+    text-align: center;
+    padding: 10px 0px;
 
+    border-radius: 8px;
+    border: 0.1px solid rgb(103, 141, 129);
+    color: rgba(0, 95, 65, 1);
+    background-color: white;
     overflow: auto;
 }
 
-.button-mileage {
-    user-select: none;
-    cursor: pointer;
-    width: 160px;
-    height: 40px;
-    text-align: center;
-    border-radius: 8px;
-    border: 0.1px solid rgb(103, 141, 129);
-    font-size: 20px;
-    color: rgba(0, 95, 65, 1);
-    background-color: white;
-    justify-content: center;
-    align-content: center;
-}
-
-.button-mileage:hover {
+#adminpage-wrapper .gift-button:hover {
     background-color: rgba(0, 95, 65, 1);
     color: rgba(255, 255, 255, 1);
 }
 
-#adminpage .modal {
-    position: fixed;
-
+#adminpage-wrapper .adminpage-middle {
     display: flex;
-    justify-content: center;
-    align-items: center;
-
-    width: 100vw;
-    height: 100vh;
-
-
-    background-color: rgba(0, 0, 0, 0.3);
-
-    z-index: 9999;
-}
-
-.change-profile {
-    position: relative;
-
-    box-sizing: border-box;
-    border: 1px solid rgba(238, 238, 238, 1);
-    border-radius: 8px;
-    padding: 24px;
-    width: 500px;
-    height: 760px;
-
-    background-color: rgba(255, 255, 255, 1);
-}
-
-.change-profile-box {
-    display: flex;
-    justify-content: center;
-}
-
-.change-profile-image {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-image: url(/public/images/ploggerMin.png);
-}
-
-.modal .change {
-    margin-left: -20px;
-}
-
-.modal-close {
-    cursor: pointer;
-    margin-top: -20px;
-    margin-left: 450px;
-    font-size: 20px;
-    font-weight: 700;
-}
-
-#adminpage .input-area button {
-    cursor: pointer;
-
-    background-color: #84A264;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    padding: 4px 0px;
-
-}
-
-.change-button {
-    width: 1;
-    padding: 10px 0px;
-    text-align: center;
-    border-radius: 10px;
-    background-color: #84A264;
-    color: white;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 50px;
-}
-
-#adminpage .input-area button:hover,
-.change-button:hover {
-    background-color: #6b8f5c;
-}
-
-.adminpage-bottom {
-    width: auto;
-    height: 100px;
-    padding-right: 140px;
-}
-
-.table-contents {
-    display: flex;
-    align-content: center;
-    justify-content: space-between;
-    gap: 1rem;
-
-    width: 1500px;
-    height: 40px;
-    border-top: 2px solid rgba(0, 0, 0, 1);
-    border-bottom: 2px solid rgba(0, 0, 0, 1);
-
-    padding: 5px 0px;
-
-    font-size: 30px;
-}
-
-.recruit-report,
-.active-report,
-.user-list {
-    width: 200px;
-    text-align: center;
-    padding: 0px 90px;
-    color: black;
-}
-
-.table-contents .recruit-report:hover,
-.table-contents .active-report:hover,
-.table-contents .user-list:hover {
-    cursor: pointer;
-    font-weight: 600;
-    color: rgba(0, 0, 0, 1);
-}
-
-.line-right {
-    border-right: 2px solid rgba(0, 0, 0, 1);
-}
-
-#recruit-report-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     width: 1134px;
-    height: 100vh;
-    overflow: hidden;
-    margin: 0 auto;
-}
-
-#recruit-report-wrapper .main {
-    min-width: 1130px;
-
-}
-
-/* #recruit-post-wrapper .middle {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    height: 50px;
+    font-size: 20px;
+    justify-content: space-around;
     align-items: center;
-    height: 100vh;
-    transform: translateY(100%);
-    transition: transform 0.5s ease;
-    z-index: 2;
+    padding: 10px;
+    border-top: 1px solid rgba(180, 180, 180);
+    border-bottom: 1px solid rgba(180, 180, 180);
 }
 
-#recruit-post-wrapper .middle.show {
-    transform: translateY(0);
-}
-
-#recruit-post-wrapper .middle.hidden {
-    display: none;
-} */
-
-#adminpage .middle-top {
-    display: flex;
-
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-
-    font-size: 12px;
-
-}
-
-#adminpage .middle-top .pages {
-    flex: 10;
-    text-align: left;
-}
-
-#adminpage .button {
-    cursor: pointer;
-    width: 40px;
-    height: 25px;
-
+#adminpage-wrapper .admin-recruit,
+#adminpage-wrapper .admin-active,
+#adminpage-wrapper .admin-user {
     text-align: center;
-
-    border-radius: 7px;
-    background-color: #84A264;
-    font-size: 15px;
-    color: rgba(255, 255, 255, 1);
-    justify-content: center;
-    align-content: center;
-}
-
-#adminpage .middle-top .post-filter {
-    flex: 5;
-    justify-content: right;
-    margin-right: 15px;
-    gap: 5px;
-    display: flex;
-    flex-direction: row;
-}
-
-
-#adminpage .middle-top .post-filter .all {
-    font-weight: 600;
-}
-
-#adminpage .middle-top .post-filter .Recruiting {
-    font-weight: 600;
-}
-
-#adminpage .middle-top .post-filter .Recruited {
-    font-weight: 600;
-}
-
-#adminpage .middle-top .post-filter .all,
-#adminpage .middle-top .post-filter .Recruiting,
-#adminpage .middle-top .post-filter .Recruited {
-    cursor: pointer;
-}
-
-/* 비활성화된 버튼에 대한 스타일 */
-#adminpage .middle-top .post-filter .all:not(.active),
-#adminpage .middle-top .post-filter .Recruiting:not(.active),
-#adminpage .middle-top .post-filter .Recruited:not(.active) {
-    font-weight: normal;
-}
-
-#adminpage .middle-top .write-button {
-
-    width: 60px;
-    height: 25px;
     flex: 1;
-    text-align: right;
-
-    border: 1px solid rgba(25, 25, 25, 1);
-    background-color: rgba(132, 162, 100, 1);
-    text-align: center;
-    cursor: pointer;
-    line-height: 175%;
 }
 
-#adminpage .table {
+#adminpage-wrapper .my-point:hover {
+    cursor: pointer;
+    font-weight: 600;
+    border-bottom: 2px solid rgba(180, 180, 180);
+}
+
+#admin-wrapper .my-point.active {
+    font-weight: 600;
+}
+
+#adminpage-wrapper .adminpage-bottom {
+    width: 1154px;
+    height: 500px;
+}
+
+#adminpage-wrapper .table {
     width: 100%;
     margin: 0 auto;
     font-family: 'Arial', sans-serif;
     border-collapse: collapse;
 
     font-size: 14px;
-
 }
 
-#adminpage .th {
+#adminpage-wrapper .th {
     display: flex;
     flex-direction: row;
     text-align: center;
     font-weight: 700;
-
 }
 
-#adminpage .tr {
+#adminpage-wrapper .tr {
     display: flex;
     flex-direction: row;
     text-align: center;
     border-bottom: 1px solid #ccc;
-
 }
 
-.follow-table {
-    text-align: center;
-    margin: 5px 0px;
-}
+#adminpage-wrapper .td-report-reportid,
+#adminpage-wrapper .td-report-writer,
+#adminpage-wrapper .td-report-number,
+#adminpage-wrapper .td-report-content,
+#adminpage-wrapper .td-report-create-date,
+#adminpage-wrapper .td-report-delete,
+#adminpage-wrapper .td-active-reportid,
+#adminpage-wrapper .td-active-writer,
+#adminpage-wrapper .td-active-number,
+#adminpage-wrapper .td-active-content,
+#adminpage-wrapper .td-active-create-date,
+#adminpage-wrapper .td-user-userId,
+#adminpage-wrapper .td-user-address,
+#adminpage-wrapper .td-user-name,
+#adminpage-wrapper .td-user-TelNumber,
+#adminpage-wrapper .td-user-score,
+#adminpage-wrapper .td-user-mileage,
+#adminpage-wrapper .td-user-joinpath,
+#adminpage-wrapper .td-user-delete {
+    padding: 10px 20px;
+    font-size: 13px;
+    margin: 7px 0px;
 
-#adminpage .td-report-reportid {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100px;
 }
 
-#adminpage .td-report-number {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
+#adminpage-wrapper .td-report-content,
+#adminpage-wrapper .td-active-content {
+    max-width: 400px;
 }
 
-#adminpage .td-report-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
+#adminpage-wrapper .td-report-reportid {
+    width: 50px;
 }
 
-#adminpage .td-report-writer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-}
-
-#adminpage .td-report-create-date {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-    padding: 10px;
-
-}
-
-#adminpage .td-report-number {
-    width: 30px;
-}
-
-#adminpage .td-report-content {
-    flex: auto;
+#adminpage-wrapper .td-report-content,
+#adminpage-wrapper .td-active-content {
+    flex: 1;
     cursor: pointer;
-
 }
 
-#adminpage .td-report-delete {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-    padding: 10px;
+#adminpage-wrapper .td-user-address {
+    flex: 1;
 }
 
-#adminpage .td-report-writer,
-#adminpage .td-report-number,
-#adminpage .td-report-create-date {
-    width: 80px;
+#adminpage-wrapper .td-report-reportid,
+#adminpage-wrapper .td-active-reportid {
+    flex: 0.1;
 }
 
-#adminpage .td-active-reportid {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-}
-
-#adminpage .td-active-number {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-}
-
-#adminpage .td-active-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-}
-
-#adminpage .td-active-writer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-}
-
-#adminpage .td-active-create-date {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-    padding: 10px;
-
-}
-
-#adminpage .td-active-number {
-    width: 30px;
-}
-
-#adminpage .td-active-content {
-    flex: auto;
-    cursor: pointer;
-
-}
-
-#adminpage .td-active-writer,
-#adminpage .td-active-number,
-#adminpage .td-active-create-date {
-    width: 80px;
-}
-
-#adminpage .td-user-userId,
-#adminpage .td-user-name,
-#adminpage .td-user-TelNumber,
-#adminpage .td-user-address,
-#adminpage .td-user-score,
-#adminpage .td-user-mileage,
-#adminpage .td-user-joinpath,
-#adminpage .td-user-delete {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-
-    padding: 10px;
-}
-
-#adminpage .td-user-userId {
+#adminpage-wrapper .td-report-create-date,
+#adminpage-wrapper .td-active-create-date {
     width: 120px;
+    flex: 0.2;
+    min-width: 110px;
 }
 
-#adminpage .td-user-name {
-    width: 80px;
-}
-
-#adminpage .td-user-score,
-#adminpage .td-user-TelNumber {
-    width: 120px;
-}
-
-#adminpage .td-user-address {
-    flex: auto;
-    cursor: pointer;
-}
-
-#adminpage .pagination {
+#adminpage-wrapper .pagination {
     display: flex;
     justify-content: center;
     margin-top: 20px;
 
     gap: 15px;
-
 }
 
-#adminpage .user-delete {
-    color: gray;
-    text-align: center;
-    border-radius: 3px;
-}
-
-#adminpage .pagination .active {
+#adminpage-wrapper .pagination .active {
     color: black;
 
     font-weight: bold;
 
 }
 
-.report-message {
-    justify-content: center;
-    text-align: center;
-    color: #666;
+#adminpage-wrapper .td-report-writer,
+#adminpage-wrapper .td-active-writer {
+    flex: 0.15;
+}
+
+#adminpage-wrapper .td-report-number,
+#adminpage-wrapper .td-active-number {
+    flex: 0.1;
+}
+
+#adminpage-wrapper .td-report-delete {
+    flex: 0.15;
+}
+
+#adminpage-wrapper .td-report-create-date,
+#adminpage-wrapper .td-active-create-date {
+    flex: 0.2;
+}
+
+#adminpage-wrapper .td-user-userId {
+    flex: 0.2;
+}
+
+#adinpage-wrapper .td-user-address {
+    flex: 1;
+}
+
+#adminpage-wrapper .report-message {
     font-size: 30px;
-    padding-top: 170px;
+    text-align: center;
+    color: gray;
+    margin-top: 90px;
 }

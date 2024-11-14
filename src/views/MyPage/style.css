@@ -60,7 +60,8 @@
     border-right-style: dashed;
     align-content: center;
     justify-content: center;
-    gap: 10px
+    gap: 10px;
+    justify-items: center;
 }
 
 #mypage-wrapper .profile-name-box {
@@ -126,7 +127,10 @@
     width: 300px;
     height: 200px;
     margin-top: 50px;
-    gap: 0px
+
+    font-size: 30px;
+    justify-content: center;
+    font-weight: 600;
 }
 
 #mypage-wrapper .top-box {
@@ -139,6 +143,7 @@
 #mypage-wrapper .followee-box {
     display: flex;
     flex-direction: column;
+    align-items: center;
     width: 300px;
     height: 100px;
     gap: 15px;
@@ -165,17 +170,23 @@
     align-items: center;
     justify-content: space-around;
     gap: 20px
-
 }
 
 #mypage-wrapper .mileage-box {
     display: flex;
+    width: 150px;
+    height: 45px;
     align-content: center;
     justify-content: center;
+    gap: 10px;
 }
 
 #mypage-wrapper .mileage-score {
     font-size: 20px;
+    align-content: center;
+    height: auto;
+    width: 100px;
+    overflow: auto;
 }
 
 #mypage-wrapper .gift-button {
@@ -190,7 +201,7 @@
     border-radius: 8px;
     border: 0.1px solid rgb(103, 141, 129);
     color: rgba(0, 95, 65, 1);
-    background-color:white;
+    background-color: white;
     overflow: auto;
 }
 
@@ -390,10 +401,9 @@
     flex: 0.15;
 }
 
-#mypage-wrapper .td-recruit-end-date
-#mypage-wrapper .td-active-date,
+#mypage-wrapper .td-recruit-end-date #mypage-wrapper .td-active-date,
 #mypage-wrapper .td-mileage-date,
-#mypage-wrapper .td-scrap-date{
+#mypage-wrapper .td-scrap-date {
     flex: 0.2;
 }
 
@@ -401,7 +411,7 @@
     min-width: 110px;
 }
 
-#mypage-wrapper .td-recruit-create-date{
+#mypage-wrapper .td-recruit-create-date {
     flex: 0.2;
 }
 
@@ -458,7 +468,7 @@
 
     width: 100vw;
     height: 100vh;
-    
+
 
     background-color: rgba(0, 0, 0, 0.3);
 
@@ -481,7 +491,7 @@
     border-radius: 8px;
     border: 0.1px solid rgb(103, 141, 129);
     color: rgba(0, 95, 65, 1);
-    background-color:white;
+    background-color: white;
     overflow: auto;
 }
 
