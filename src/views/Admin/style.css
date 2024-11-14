@@ -115,29 +115,13 @@
     gap: 0px
 }
 
-#adminpage-wrapper .top-box {
-    display: flex;
-    gap: 30px;
-    margin-top: 20px;
-}
-
 #adminpage-wrapper .bottom-box {
     display: flex;
     width: 320px;
-    height: 100px;
+    height: 200px;
     align-items: center;
     justify-content: space-around;
     gap: 20px
-}
-
-#adminpage-wrapper .mileage-box {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-}
-
-#adminpage-wrapper .mileage-score {
-    font-size: 20px;
 }
 
 #adminpage-wrapper .gift-button {
@@ -159,6 +143,16 @@
 #adminpage-wrapper .gift-button:hover {
     background-color: rgba(0, 95, 65, 1);
     color: rgba(255, 255, 255, 1);
+}
+
+#adminpage-wrapper .mileage-box {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+#adminpage-wrapper .mileage-score {
+    font-size: 20px;
 }
 
 #adminpage-wrapper .adminpage-middle {
@@ -214,6 +208,7 @@
 #adminpage-wrapper .tr {
     display: flex;
     flex-direction: row;
+    justify-content: center;
     text-align: center;
     border-bottom: 1px solid #ccc;
 }
@@ -290,7 +285,6 @@
     color: black;
 
     font-weight: bold;
-
 }
 
 #adminpage-wrapper .td-report-writer,
@@ -313,7 +307,7 @@
 }
 
 #adminpage-wrapper .td-user-userId {
-    flex: 0.2;
+    flex: 0.3;
 }
 
 #adinpage-wrapper .td-user-address {

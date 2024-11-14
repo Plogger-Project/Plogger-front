@@ -73,7 +73,7 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background-image: url(/public/images/3point.png);
+
     background-position: 50% 50%;
     background-size: cover;
     cursor: pointer;
@@ -340,6 +340,7 @@
     border-radius: 8px;
     margin-right: 10px;
     box-sizing: border-box;
+    resize: none;
     
     
 }

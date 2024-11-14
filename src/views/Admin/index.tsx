@@ -3,9 +3,9 @@ import './style.css'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
-import { ActiveReportList, Follow, RecruitPostList, User } from 'src/types';
-import { deleteActiveReportRequest, deleteRecruitReportRequest, deleteUserRequest, GetActiveReportListRequest, getRecruitPostListRequest, GetRecruitReportListRequest, getUserListRequest, patchCommentRequest } from 'src/apis';
-import { GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from 'src/apis/dto/response/recruit';
+import { ActiveReportList,  User } from 'src/types';
+import { deleteActiveReportRequest, deleteRecruitReportRequest, deleteUserRequest, GetActiveReportListRequest, GetRecruitReportListRequest, getUserListRequest, patchCommentRequest } from 'src/apis';
+import {  GetRecruitReportListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
 import { ACCESS_TOKEN, ACTIVE_DETAIL_ABSOLUTE_PATE, ADMIN, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';
@@ -481,21 +481,8 @@ export default function Admin() {
               </div>
             </div>
             <div className='score-container'>
-              <div className='top-box'>
-              </div>
               <div className='bottom-box'>
-                {
-                  signInUser?.userId === user?.userId
-                    ? <div className='mileage-box'>
-                      <SavingsTwoTone sx={{ fontSize: 45 }} />
-                      <div className='mileage-score'>{isOwner?.mileage}</div>
-                    </div>
-                    : <></>
-                }
-                {
-                  signInUser?.userId === user?.userId
-                    ? <div className='gift-button' onClick={onGiftClickHandler}>기프티콘 바로가기</div> : ''
-                }
+                <div className='gift-button' onClick={onGiftClickHandler}>기프티콘 바로가기</div>
               </div>
             </div>
 
@@ -505,94 +492,94 @@ export default function Admin() {
             <div className='admin-recruit'><span className={`my-point ${isRecruit ? 'active' : ''}`} onClick={onRecruitReportClickHandler}>구인 신고글</span></div>
             <div className='admin-active'><span className={`my-point ${isActive ? 'active' : ''}`} onClick={onActiveReportClickHandler}>활동 신고글</span></div>
             <div className='admin-user'><span className={`my-point ${isUser ? 'active' : ''}`} onClick={onUserListClickHandler}>유저 리스트</span></div>
-        </div>
+          </div>
 
-        <div className='adminpage-bottom'>
-          <div className='table'>
-            {isRecruit && showRecruitReports.length === 0 && (
-              <div className='report-message'>해당 데이터가 없습니다.</div>)}
-            {isRecruit && showRecruitReports.length > 0 &&
-              (
-                <div className="main">
-                  <div className="table">
-                    <div className="th">
-                      <div className="td-report-reportid">신고 번호</div>
-                      <div className="td-report-writer">작성자</div>
-                      <div className="td-report-number">글 번호</div>
-                      <div className="td-report-content">신고내역</div>
-                      <div className="td-report-create-date">신고한 날짜</div>
-                      <div className="td-report-delete">내역 관리</div>
+          <div className='adminpage-bottom'>
+            <div className='table'>
+              {isRecruit && showRecruitReports.length === 0 && (
+                <div className='report-message'>해당 데이터가 없습니다.</div>)}
+              {isRecruit && showRecruitReports.length > 0 &&
+                (
+                  <div className="main">
+                    <div className="table">
+                      <div className="th">
+                        <div className="td-report-reportid">신고 번호</div>
+                        <div className="td-report-writer">작성자</div>
+                        <div className="td-report-number">글 번호</div>
+                        <div className="td-report-content">신고내역</div>
+                        <div className="td-report-create-date">신고한 날짜</div>
+                        <div className="td-report-delete">내역 관리</div>
+                      </div>
+                      {
+                        viewList.map((recruitPostId, index) => (
+                          <RecruitTableRow key={index} recruitPostId={recruitPostId} getRecruitReportList={getRecruitReportPostList} />
+                        ))}
                     </div>
-                    {
-                      viewList.map((recruitPostId, index) => (
-                        <RecruitTableRow key={index} recruitPostId={recruitPostId} getRecruitReportList={getRecruitReportPostList} />
-                      ))}
-                  </div>
 
-                  <div className="pagination">
-                    <Pagination currentPage={currentPage} {...recruitpaginationProps} />
-                  </div>
-                </div>
-              )}
-
-            {isActive && showActiveReports.length === 0 && (
-              <div className='report-message'>해당 데이터가 없습니다.</div>)}
-            {isActive && showActiveReports.length > 0 &&
-              (
-                <div className="main">
-                  <div className="table">
-                    <div className="th">
-                      <div className="td-active-reportid">신고 번호</div>
-                      <div className="td-active-writer">작성자</div>
-                      <div className="td-active-number">글 번호</div>
-                      <div className="td-active-content">신고내역</div>
-                      <div className="td-active-create-date">신고한 날짜</div>
-                      <div className="td-report-delete">내역 관리</div>
+                    <div className="pagination">
+                      <Pagination currentPage={currentPage} {...recruitpaginationProps} />
                     </div>
-                    {
-                      viewList2.map((activePostId, index) => (
-                        <ActiveTableRow key={index} activePostId={activePostId} getActiveReportList={getActiveReportPostList} />
-                      ))}
                   </div>
+                )}
 
-                  <div className='pagination'>
-                    <Pagination currentPage={currentPage2} {...activePaginationProps} />
-                  </div>
-                </div>
-              )}
-
-            {isUser && showUserList.length === 0 && (
-              <div className='report-message'>가입한 사용자가 없습니다.</div>)}
-            {isUser && showUserList.length > 0 &&
-              (
-                <div className="main">
-                  <div className="table">
-                    <div className="th">
-                      <div className="td-user-userId">아이디</div>
-                      <div className="td-user-address">주소</div>
-                      <div className="td-user-name">이름</div>
-                      <div className="td-user-TelNumber">전화번호</div>
-                      <div className="td-user-score">에코 스코어</div>
-                      <div className="td-user-mileage">마일리지</div>
-                      <div className="td-user-joinpath">가입 경로</div>
-                      <div className="td-user-delete">유저 관리</div>
+              {isActive && showActiveReports.length === 0 && (
+                <div className='report-message'>해당 데이터가 없습니다.</div>)}
+              {isActive && showActiveReports.length > 0 &&
+                (
+                  <div className="main">
+                    <div className="table">
+                      <div className="th">
+                        <div className="td-active-reportid">신고 번호</div>
+                        <div className="td-active-writer">작성자</div>
+                        <div className="td-active-number">글 번호</div>
+                        <div className="td-active-content">신고내역</div>
+                        <div className="td-active-create-date">신고한 날짜</div>
+                        <div className="td-report-delete">내역 관리</div>
+                      </div>
+                      {
+                        viewList2.map((activePostId, index) => (
+                          <ActiveTableRow key={index} activePostId={activePostId} getActiveReportList={getActiveReportPostList} />
+                        ))}
                     </div>
-                    {
-                      viewList3.map((userId, index) => (
-                        <UserTableRow key={index} userListId={userId} getUserList={getUserList} />
-                      ))}
-                  </div>
 
-                  <div className='pagination'>
-                    <Pagination currentPage={currentPage3} {...userPaginationProps} />
+                    <div className='pagination'>
+                      <Pagination currentPage={currentPage2} {...activePaginationProps} />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+
+              {isUser && showUserList.length === 0 && (
+                <div className='report-message'>가입한 사용자가 없습니다.</div>)}
+              {isUser && showUserList.length > 0 &&
+                (
+                  <div className="main">
+                    <div className="table">
+                      <div className="th">
+                        <div className="td-user-userId">아이디</div>
+                        <div className="td-user-address">주소</div>
+                        <div className="td-user-name">이름</div>
+                        <div className="td-user-TelNumber">전화번호</div>
+                        <div className="td-user-score">에코 스코어</div>
+                        <div className="td-user-mileage">마일리지</div>
+                        <div className="td-user-joinpath">가입 경로</div>
+                        <div className="td-user-delete">유저 관리</div>
+                      </div>
+                      {
+                        viewList3.map((userId, index) => (
+                          <UserTableRow key={index} userListId={userId} getUserList={getUserList} />
+                        ))}
+                    </div>
+
+                    <div className='pagination'>
+                      <Pagination currentPage={currentPage3} {...userPaginationProps} />
+                    </div>
+                  </div>
+                )}
+            </div>
           </div>
         </div>
       </div>
     </div>
-    </div >
   )
 }
 

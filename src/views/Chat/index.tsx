@@ -49,6 +49,7 @@ export default function Chat() {
     const accessToken = cookies[ACCESS_TOKEN];
 
     const postChatRoomResponse = (responseBody: ResponseDto | null) => {
+        
         const message = 
             !responseBody ? '서버에 문제가 있습니다.' : 
             responseBody.code === 'VF' ? '잘못된 접근입니다.' : 
@@ -60,7 +61,6 @@ export default function Chat() {
             alert(message);
             return;
         }
-
         getMyChatRoomListRequest(accessToken).then(getChatRoomListResponse);
     }
 
@@ -75,7 +75,7 @@ export default function Chat() {
     
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
-            alert(message);
+            alert("message");
             return;
         }
     

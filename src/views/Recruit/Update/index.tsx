@@ -3,21 +3,17 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
 import "react-datepicker/dist/react-datepicker.css";
-
 import { FaCalendarAlt } from 'react-icons/fa'; // 캘린더 아이콘을 위한 라이브러리
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { useKakaoLoader } from "src/hooks";
 import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH, RECRUIT_DETAIL_PATH, RECRUIT_PATH } from "src/constants";
 import { useSignInUserStore } from "src/stores";
-import { fileUploadRequest, getRecruitPostRequest, getRecruitUserInfoRequest, patchRecruitPostRequest, postRecruitPostRequest } from "src/apis";
+import { fileUploadRequest, getRecruitPostRequest, getRecruitUserInfoRequest, patchRecruitPostRequest } from "src/apis";
 import { ResponseDto } from "src/apis/dto/response";
-import { PatchRecruitRequestDto, PostRecruitRequestDto } from "src/apis/dto/request/recruit";
-import useGeolocation from "src/hooks/useGeolocation.hook";
+import { PatchRecruitRequestDto } from "src/apis/dto/request/recruit";
 import DatePicker from "react-datepicker";
-import { MYPAGE_PATH } from "src/constants";
 import GetRecruitPostResponseDto from "src/apis/dto/response/recruit/get-recruit.response.dto";
 import { GetSignInResponseDto } from "src/apis/dto/response/auth";
-import { isMap } from "util/types";
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
@@ -28,18 +24,8 @@ declare global {
 // variable : 카카오 맵 키 //
 // const appkey = process.env.REACT_APP_KAKAO_MAP_KEY;
 
-
-
-// variable: 기본 프로필 이미지 URL //
-const defaultImageUrl = 'https://cdn.icon-icons.com/icons2/2348/PNG/512/add_icon_143118.png';
-
-
-
 // component: 구인 게시판 작성 컴포넌트 //
 export default function RecruitUpdate() {
-
-  // state: 로그인 유저 상태 //
-  const { signInUser } = useSignInUserStore();
 
   // state: 게시글 번호 경로 변수 상태 //
   const { recruitPostId } = useParams();
@@ -66,17 +52,7 @@ export default function RecruitUpdate() {
   const [view, setView] = useState<number>(0);
   const [lat, setLat] = useState<number>(0);
   const [lng, setLng] = useState<number>(0);
-  const [center, setCenter] = useState<{ lat: number; lng: number }>({
-    lat: 35.152170407376424, // 기본 값 설정
-    lng: 129.05979624585217,
-  });
   const [isMapLoaded, setIsMapLoaded] = useState(false);
-
-  
-  const [position, setPosition] = useState<{
-    lat: number
-    lng: number
-  }>();
 
   // state: 이미지 미리보기 url 상태 //
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -138,23 +114,6 @@ export default function RecruitUpdate() {
     getRecruitUserInfoRequest(recruitPostWriter).then(getRecruitPostUserResponse);
   };
   
-
-  // function: post recruit post response 처리 함수 //
-  const postRecruitPostResponse = (responseBody: ResponseDto | null) => {
-    console.log(responseBody);
-    const message = !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'VF' ? '모두 입력해주세요.' :
-        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-
-    const isSucceeded = responseBody !== null && responseBody.code === 'SU';
-    if (!isSucceeded) {
-      alert(message);
-      return;
-    }
-    navigator(RECRUIT_ABSOLUTE_PATH);
-
-  }
 
   // function : get recruit post user response 처리 함수 //
   const getRecruitPostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
@@ -315,6 +274,7 @@ export default function RecruitUpdate() {
   const onDeleteImageClickHandler = (e: any) => {
     e.stopPropagation();
     setImage('');
+    setImageFile(null);
   }
 
   // effect: 구인 게시글 정보 가져오기 //

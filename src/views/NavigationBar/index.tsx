@@ -6,7 +6,7 @@ import { GetSignInResponseDto, SignInResponseDto } from '../../apis/dto/response
 import { ResponseDto } from '../../apis/dto/response';
 import { ACCESS_TOKEN, ACTIVE_DETAIL_PATH, FIND_ID, FIND_PASSWORD, MYPAGE_PATH, QNA_DETAIL_PATH, RECRUIT_DETAIL_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH } from '../../constants';
 import SignInRequestDto from '../../apis/dto/request/auth/sign-in.request.dto';
-import { deleteAlertListRequest, getAlertListRequest, getSignInRequest, postAlertRequest, signInRequest } from '../../apis';
+import { deleteAlertListRequest, getAlertListRequest, getSignInRequest, signInRequest } from '../../apis';
 import { ACTIVE_PATH, QNA_PATH, RECRUIT_PATH } from '../../constants';
 import { useCookies } from 'react-cookie';
 import { useSearchStore, useSignInUserStore } from 'src/stores';

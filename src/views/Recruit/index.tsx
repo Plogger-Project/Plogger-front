@@ -1,20 +1,17 @@
-import React, { MouseEvent, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./style.css";
 import { useNavigate } from "react-router-dom";
 import { RECRUIT_DETAIL_ABSOLUTE_PATH, RECRUIT_WRITE_ABSOLUTE_PATH } from "../../constants";
 import { CustomOverlayMap, Map, MapMarker, MarkerClusterer } from "react-kakao-maps-sdk";
 import { useKakaoLoader } from "src/hooks";
-import { url } from "inspector";
 import { RecruitPostList } from "src/types";
 import { useSearchStore, useSignInUserStore } from "src/stores";
-import { useCookies } from "react-cookie";
 import { ResponseDto } from "src/apis/dto/response";
 import { GetRecruitPostListResponseDto } from "src/apis/dto/response/recruit";
 import { getRecruitPostListRequest } from "src/apis";
 import useGeolocation from "src/hooks/useGeolocation.hook";
 import useRecruitPagination from "src/hooks/recruit.pagination.hook";
 import Pagination from "src/components/pagination";
-import SignInUser from './../../types/sign-in-user.interface';
 import { differenceInDays, parseISO } from "date-fns";
 import RecruitPostMarkerOverlay from "src/types/recruitpost-markeroverlay";
 
@@ -68,9 +65,6 @@ function MarkerOverlay({ recruitPostId, getRecruitList }: recruitPostTableRow) {
 function TableRow({ recruitPostId, getRecruitList }: TableRowProps) {
 
   const [dday, setDday] = useState<string>('');
-
-  // state: 검색어 상태 가져오기 //
-  const { searchWord } = useSearchStore();
 
   //function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -167,24 +161,12 @@ export default function RecruitPost() {
     currentPeople: number; // 추가
     isCompleted: boolean;
 }[]>([]);
-  const [lat, setLat] = useState<string | null>(null);
-  const [lng, setLng] = useState<string | null>(null);
   const [center, setCenter] = useState({
     lat: 0,
     lng: 0,
     isPanto: false,
   });
   const [isOpen, setIsOpen] = useState<number | null>(null);
-
-  const [state, setState] = useState({
-    // 지도의 초기 위치
-    center: { lat: 33.450701, lng: 126.570667 },
-    // 지도 위치 변경시 panto를 이용할지에 대해서 정의
-    isPanto: false,
-  })
-
-
-  
 
   // state: 페이징 관련 상태 //
   const { currentPage, totalPage, totalCount, viewList, setTotalList, initViewList, ...paginationProps } = useRecruitPagination<RecruitPostList>();

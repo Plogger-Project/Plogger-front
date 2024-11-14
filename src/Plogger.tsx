@@ -17,6 +17,7 @@ import { useCookies } from 'react-cookie';
 import { GetSignInResponseDto } from './apis/dto/response/auth';
 import { ResponseDto } from './apis/dto/response';
 import { getMyChatRoomListRequest, getSignInRequest, getTotalChatMessageListRequest } from './apis';
+
 import RecruitPost from './views/Recruit';
 import FindPassword from './views/FindPassword';
 import RecruitDetail from './views/Recruit/Detail';
@@ -34,8 +35,7 @@ import { ChatMessage, ChatRoom, RoomInvite } from './types';
 import { GetMessageListResponseDto, GetRoomListResponseDto } from './apis/dto/response/chat';
 
 function SocketInit() {
-
-  
+        
   const { socket, initSocket } = useSocketStore();
   const { roomList, setRoomList } = useRoomListStore();
   const { messageList, setMessageList } = useMessageListStore();
@@ -135,7 +135,6 @@ function SnsSuccess() {
 // component: plogger 컴포넌트 //
 function Plogger() {
 
-  const [originalList, setOriginalList] = useState<(ChatMessage | RoomInvite | ChatRoom)[]>([]); 
 
   // state: 로그인 유저 정보 상태 //
   const { setSignInUser } = useSignInUserStore();
