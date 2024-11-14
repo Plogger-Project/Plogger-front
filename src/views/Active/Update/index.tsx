@@ -309,14 +309,14 @@ export default function ActiveUpdate() {
 
     if (!activePostId) return;
 
-    let url: string | null = '';
+    let url: string | null = image;
     if (imageFile) {
       const formData = new FormData();
       formData.append('file', imageFile);
       url = await fileUploadRequest(formData);
     }
 
-    url = url ? url : '';
+    url = url ? url : image;
 
     const requestBody: PatchActivePostRequestDto = {
       activePostTitle: title, activePostContent: content, activePostImage: url,

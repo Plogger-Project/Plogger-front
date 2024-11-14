@@ -37,7 +37,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
     border-bottom: 1px solid #000000;
 
     padding: 10px;
@@ -76,7 +75,8 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background-image: url(/public/images/3point.png);
+
+    font-size: small;
     background-position: 50% 50%;
     background-size: cover;
     cursor: pointer;
