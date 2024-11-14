@@ -93,6 +93,14 @@
     width: 1;
 }
 
+#active-write-wrapper .kakaomap .marker-info{
+    min-width: 10px;
+    color: rgb(0, 0, 0);
+    width: 150px;
+    text-align: center;
+    font-size: 18px;
+}
+
 #active-write-wrapper .react-datepicker{
     width: auto;
     height: auto;
@@ -163,11 +171,11 @@
 
 }
 
-.image {
+#active-write-wrapper .image {
     position: relative; 
 }
 
-.deleteImageButton {
+#active-write-wrapper .deleteImageButton {
     position: absolute; 
     top: 5px; 
     right: 5px;

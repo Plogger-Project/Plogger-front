@@ -568,7 +568,7 @@ export default function ActiveDetail() {
         navigator(ACTIVE_PATH);
     }
 
-    const onCommentContentChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const onCommentContentChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
         const { value } = event.target;
         setCommentContent(value);
     }
@@ -844,7 +844,7 @@ export default function ActiveDetail() {
                                     <div className='activeCommentWriter'>{signInUser?.userId}</div>
                                 </div>
                                 <div className='commentUserInfo-right'>
-                                    <input className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
+                                    <textarea className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></textarea>
                                 </div>
                                 <div className="commentButton" onClick={onCommentPostButtonClick}>
                                     <SendIcon />

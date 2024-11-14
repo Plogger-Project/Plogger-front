@@ -90,6 +90,15 @@
     width: 1;
 }
 
+#active-update-wrapper .marker-info{
+    min-width: 10px;
+    color: rgb(0, 0, 0);
+    width: 150px;
+    text-align: center;
+    font-size: 18px;
+
+}
+
 #active-update-wrapper .react-datepicker {
     width: auto;
     height: auto;
@@ -180,4 +189,26 @@
     gap: 10px;
     justify-content: right;
 
+}
+#active-update-wrapper .bottom .button {
+    cursor: pointer;
+    width: 100px;
+    height: 40px;
+    
+    text-align: center;
+    border-radius: 8px;
+
+    font-size: 15px;
+    justify-content: center;
+    align-content: center;
+    margin-right: 5px;
+}
+
+#active-update-wrapper .bottom .primary:hover {
+    background-color: var(--primary-10-color);
+    color: var(--primary-color);
+}
+#active-update-wrapper .bottom .disable:hover {
+    background-color: var(--dark-gray-color);
+    color: rgba(255, 255, 255, 1);
 }

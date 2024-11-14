@@ -452,7 +452,12 @@ export default function RecruitUpdate() {
 
             >
               <MapMarker position={{ lat, lng }}>
-                <div style={{ color: "#000" }}>장소</div>
+                  { }
+                  {
+                    <div className='marker-info' >
+                      여기서 모여요!
+                    </div>
+                  }
               </MapMarker>
             </Map>
           

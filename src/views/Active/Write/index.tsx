@@ -266,6 +266,7 @@ export default function ActiveWrite() {
   const onDeleteImageClickHandler = (e: any) => {
     e.stopPropagation();
     setImage('');
+    setImageFile(null);
   }
 
   // event handler: 등록 버튼 이벤트 처리 함수 //
@@ -470,12 +471,16 @@ export default function ActiveWrite() {
                 level={3}
               >
                 <MapMarker position={{ lat, lng }}>
-                  <div style={{ color: "#000" }}>장소</div>
+                  { }
+                  {
+                    <div className='marker-info' >
+                      활동 장소
+                    </div>
+                  }
                 </MapMarker>
               </Map>
             </div>
           }
-          <div className="kakaomap">{address}</div>
         </div>
         <div className="bottom">
           <div className='button primary' onClick={onPostButtonClickHandler}>등록</div>

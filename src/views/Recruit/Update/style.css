@@ -110,6 +110,14 @@
     width: 1;
 }
 
+#recruit-update-wrapper .kakaomap .marker-info{
+    min-width: 10px;
+    color: rgb(0, 0, 0);
+        width: 150px;
+        text-align: center;
+        font-size: 18px;
+}
+
 #recruit-update-wrapper .react-datepicker {
     width: auto;
     height: auto;

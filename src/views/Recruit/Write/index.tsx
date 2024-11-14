@@ -45,6 +45,7 @@ export default function RecruitWrite() {
   const [contents, setContents] = useState<string>('');
   const [people, setPeople] = useState<string>('');
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [image, setImage] = useState<string>(''); // 이미지 미리보기
   const [endDate, setEndDate] = useState<string>('');
   const [location, setLocation] = useState<string>('');
   const [address, setAddress] = useState<string>('');
@@ -59,7 +60,7 @@ export default function RecruitWrite() {
   }>();
 
   // state: 이미지 미리보기 url 상태 //
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>();
 
   // state: 이미지 입력 참조 //
   const imageInputRef = useRef<HTMLInputElement | null>(null);
@@ -196,7 +197,7 @@ export default function RecruitWrite() {
     const fileReader = new FileReader();
     fileReader.readAsDataURL(file);
     fileReader.onloadend = () => {
-      setPreviewUrl(fileReader.result as string);
+    setPreviewUrl(fileReader.result as string);
     }
   }
 
@@ -219,6 +220,13 @@ export default function RecruitWrite() {
   const toggleDatePicker = () => {
     setIsDatePickerOpen((prev) => !prev); // 달력 열기/닫기 상태 변경
   };
+
+  // event handler: 사진 삭제하는 이벤트 핸들러 //
+  const onDeleteImageClickHandler = (e: any) => {
+    e.stopPropagation();
+    setPreviewUrl('');
+    setImageFile(null);
+  }
 
   // event handler: 등록 버튼 이벤트 처리 함수 //
   const onPostButtonClickHandler = async () => {
@@ -255,6 +263,8 @@ export default function RecruitWrite() {
 
     navigator(RECRUIT_PATH);
   }
+
+  
 
   // render: 구인 게시판 작성 컴포넌트 렌더링 //
   return (
@@ -316,7 +326,12 @@ export default function RecruitWrite() {
 
           <div className={`image ${previewUrl ? 'uploaded' : 'preview'}`} onClick={onImageClickHandler}>
             {previewUrl ? (
-              <img src={previewUrl} alt='미리보기 이미지' />
+              <div className='image-box'>
+                <img src={previewUrl} alt='미리보기 이미지' />
+                <button className='deleteImageButton' onClick={onDeleteImageClickHandler}>
+                  <span>X</span>
+                </button>
+              </div>
             ) : (
               <div></div>
             )}
@@ -342,8 +357,14 @@ export default function RecruitWrite() {
 
             >
               <MapMarker position={position ?? center}>
-                <div style={{ color: "#000" }}>선택한 위치</div>
+                { }
+                {
+                  <div className='marker-info' >
+                    여기서 모여요!
+                  </div>
+                }
               </MapMarker>
+              
             </Map>
           </div>
         </div>
