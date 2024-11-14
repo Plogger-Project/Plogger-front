@@ -56,7 +56,6 @@ function TableRow({ qnaPostId, getQnaList }: TableRowProps) {
 // component: QnA 게시글 리스트 컴포넌트 //
 export default function QnaPost() {
 
-  const [showPosts, setShowPosts] = useState(false); // 게시글 표시 상태
   const [originalList, setOriginalList] = useState<QnaPostList[]>([]);
   const [filter, setFilter] = useState<'all' | 'qna' | 'notice'>('all');
 

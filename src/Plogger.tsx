@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Plogger.css';
-import { Routes, Route, useLocation, Navigate, Router, useSearchParams, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 
 
 import SignUp from './views/Auth';
@@ -9,7 +9,7 @@ import ActivePost from './views/Active';
 import NavigationBar from './views/NavigationBar';
 import Main from './views/Main';
 import QnaPost from './views/QNA';
-import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD, RECRUIT_DETAIL_ABSOLUTE_PATH, MYPAGE_PATH, ACTIVE_DETAIL_PATH, ACTIVE_UPDATE_PATH, ACTIVE_WRITE_PATH, CHAT_PATH, CHAT_DETAIL_PATH, QNA_DETAIL_PATH, QNA_WRITE_PATH, QNA_UPDATE_PATH } from './constants';
+import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD,  MYPAGE_PATH, ACTIVE_DETAIL_PATH, ACTIVE_UPDATE_PATH, ACTIVE_WRITE_PATH, CHAT_PATH, CHAT_DETAIL_PATH, QNA_DETAIL_PATH, QNA_WRITE_PATH, QNA_UPDATE_PATH } from './constants';
 
 import Mileage from './views/Gifticon';
 
@@ -21,7 +21,7 @@ import { useMessageListStore, useRoomListStore, useSignInUserStore, useSocketSto
 import { useCookies } from 'react-cookie';
 import { GetSignInResponseDto } from './apis/dto/response/auth';
 import { ResponseDto } from './apis/dto/response';
-import { getChatMessageListRequest, getMyChatRoomListRequest, getSignInRequest, getTotalChatMessageListRequest } from './apis';
+import { getMyChatRoomListRequest, getSignInRequest, getTotalChatMessageListRequest } from './apis';
 
 import RecruitPost from './views/Recruit';
 
@@ -80,7 +80,6 @@ function SnsSuccess() {
 // component: plogger 컴포넌트 //
 function Plogger() {
 
-  const [originalList, setOriginalList] = useState<(ChatMessage | RoomInvite | ChatRoom)[]>([]); 
 
   const { socket, initSocket } = useSocketStore();
   const { roomList, setRoomList } = useRoomListStore();

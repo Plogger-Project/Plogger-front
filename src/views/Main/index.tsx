@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
@@ -43,7 +43,6 @@ function KoreaMap() {
       !responseBody ? '서버에 문제가 있습니다.' :
       responseBody.code === 'AF' ? '잘못된 접근입니다.' :
       responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-      responseBody.code === 'DT' ? 'dfdfdf' :
       responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
   
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
