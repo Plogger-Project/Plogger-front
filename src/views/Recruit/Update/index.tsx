@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FaCalendarAlt } from 'react-icons/fa'; // 캘린더 아이콘을 위한 라이브러리
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { useKakaoLoader } from "src/hooks";
-import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH, RECRUIT_DETAIL_PATH, RECRUIT_MYPAGE_PATH, RECRUIT_PATH } from "src/constants";
+import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH, RECRUIT_DETAIL_PATH, RECRUIT_PATH } from "src/constants";
 import { useSignInUserStore } from "src/stores";
 import { fileUploadRequest, getRecruitPostRequest, getRecruitUserInfoRequest, patchRecruitPostRequest, postRecruitPostRequest } from "src/apis";
 import { ResponseDto } from "src/apis/dto/response";

@@ -74,6 +74,7 @@
     background-image: url(/public/images/3point.png);
     background-position: 50% 50%;
     background-size: cover;
+    cursor: pointer;
 }
 
 #active-detail-wrapper .postTop .postBox {
@@ -390,12 +391,12 @@ border: 0.1px solid rgb(141, 103, 103);
 
 #active-detail-wrapper .options {
     position: absolute;
+
     z-index: 9000;
     width: 80px;
 
     display: flex;
     flex-direction: column;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     gap: 10px;
 
@@ -412,18 +413,45 @@ border: 0.1px solid rgb(141, 103, 103);
 }
 
 #active-detail-wrapper .editButton {
-    background-color: #4caf50;
-    color: white;
+    color: #729473;
+    font-weight: 700;
+    border: 1px solid #729473;
+    background-color: white;
 }
 
 #active-detail-wrapper .deleteButton {
-    background-color: #f44336;
-    color: white;
+    color: #ff685e;
+    font-weight: 700;
+    border: 1px solid #ff685e;
+    background-color: white;
 }
 
 #active-detail-wrapper .reportButton {
-    background-color: #f44336;
+    color: #ff685e;
+    font-weight: 700;
+    border: 1px solid #ff685e;
+    background-color: white;
+}
+
+#active-detail-wrapper .editButton:hover {
     color: white;
+    font-weight: 700;
+    border: 1px solid #729473;
+    background-color: #729473;
+}
+
+#active-detail-wrapper .deleteButton:hover {
+    color: white;
+    font-weight: 700;
+    border: 1px solid #ff685e;
+    background-color: #ff685e;
+}
+
+#active-detail-wrapper .reportButton:hover {
+    color: white;
+    font-weight: 700;
+    border: 1px solid #ff685e;
+    background-color: #ff685e;
 }
 
 #active-detail-wrapper .report-modal {

@@ -479,14 +479,12 @@ useEffect(() => {
             <div className="pagination">
               <Pagination currentPage={currentPage} {...paginationProps} />
             </div>
-            <div className="button">
               {signInUser == null ? 
-                <div className="button" onClick={onWriteButtonClickHandler} style={{visibility:"hidden"}}>글쓰기</div>
+                <></>
                 : <div className="button" onClick={onWriteButtonClickHandler}>글쓰기</div>}
             </div>
           </div>
         </div>
       </div>
-    </div>
   );
 }

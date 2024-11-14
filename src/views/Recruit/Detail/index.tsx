@@ -930,13 +930,12 @@ console.log(joinList);
   // effect: recruit 변경 시 recruit comment 함수 //
   useEffect(() => {
     if (!recruitPostId) return;
+    getRecruitCommentList();
     getRecruitScrapRequest(recruitPostId).then(getRecruitScrapResponse);
     getRecruitLikeRequest(recruitPostId).then(getRecruitLikeResponse);
     getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
     getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
-
-    
-  }, [recruitPostId]);
+  }, [recruitPostId, signInUser]);
 
 
   // effect: dday //
@@ -944,12 +943,12 @@ console.log(joinList);
     setDday(calculateDday(endDate));
   }, [endDate]);
 
+
   // effect: 댓글 리스트 불러오기
   useEffect(() => {
     getRecruitCommentList();
 
   }, [recruitPostId]);
-
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -1015,8 +1014,8 @@ console.log(joinList);
               >
                 {signInUser?.userId === writer || signInUser?.isAdmin ?
                   <>
-                    <button className="editButton" onClick={onEditButtonClickHandler}>수정하기</button>
-                    <button className="deleteButton" onClick={onDeleteButtonClickHandler}>삭제하기</button>
+                    <button className="editButton" onClick={onEditButtonClickHandler}>수정</button>
+                    <button className="deleteButton" onClick={onDeleteButtonClickHandler}>삭제</button>
                   </>
                   : ''}
 
@@ -1111,7 +1110,7 @@ console.log(joinList);
               <div className='commentUserInfoWrite'>
                 <div className='commentUserInfo-left'>
                   <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
-                  <div className='recruitCommentWriter'>{signInUser?.userId}</div>
+                  <div className='recruitCommentWriter' style={ { textAlign: "center" } }>{signInUser?.userId}</div>
                 </div>
                 <div className='commentUserInfo-right'>
                   <textarea className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></textarea>

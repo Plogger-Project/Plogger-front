@@ -503,7 +503,7 @@ export default function ActiveDetail() {
         if (!activePostId) return;
         getActivePostRequest(activePostId).then(getActivePostResponse);
         getActiveLikeRequest(activePostId).then(getActiveLikeResponse);
-    }, [activePostId]);
+    }, [activePostId, signInUser]);
 
     // effect: 좌표로 주소 정보 요청 함수 //
     useEffect(() => {
@@ -757,15 +757,14 @@ export default function ActiveDetail() {
                             >
                                 {signInUser?.userId === writer || signInUser?.isAdmin?
                                     <>
-                                        <button className="editButton" onClick={onPostUpdateButtonClick}>수정하기</button>
-                                        <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제하기</button>
+                                        <button className="editButton" onClick={onPostUpdateButtonClick}>수정</button>
+                                        <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제</button>
                                     </>
                                 : ''}
-                                {(!isAuthor || !signInUser) && (
-                                    <>
-                                        <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
-                                    </>
-                                )}
+                                {(signInUser?.userId === writer) || !signInUser ?
+                                    <></>
+                                    : <button className='reportButton' onClick={openReportModalHandler}>신고</button>
+                                }
                             </div>
                         )}
                     </div>
@@ -841,7 +840,7 @@ export default function ActiveDetail() {
                             <div className='commentUserInfoWrite'>
                                 <div className='commentUserInfo-left'>
                                     <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
-                                    <div className='activeCommentWriter'>{signInUser?.userId}</div>
+                                    <div className='activeCommentWriter' style={ { textAlign: "center" } }>{signInUser?.userId}</div>
                                 </div>
                                 <div className='commentUserInfo-right'>
                                     <textarea className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></textarea>

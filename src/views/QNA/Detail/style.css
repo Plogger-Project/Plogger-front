@@ -27,6 +27,11 @@
     border-radius: 16px;
 }
 
+#qna-post-wrapper .td-qna-title {
+    align-content: center;
+}
+
+
 /* 상단 사용자 정보 및 게시글 옵션 */
 #qna-detail-wrapper .postTop {
     display: flex;
@@ -74,6 +79,7 @@
     background-image: url(/public/images/3point.png);
     background-position: 50% 50%;
     background-size: cover;
+    cursor: pointer;
 }
 
 #qna-detail-wrapper .postTop .postBox {

@@ -523,7 +523,7 @@ export default function QnADetail() {
                         <div className='commentUserInfoWrite'>
                             <div className='commentUserInfo-left'>
                             <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
-                                <div className='qnaCommentWriter'>{signInUser?.userId}</div>
+                                <div className='qnaCommentWriter' style={ { textAlign: "center" } }>{signInUser?.userId}</div>
                             </div>
                             <div className='commentUserInfo-right'>
                                 {isAdmin ? (

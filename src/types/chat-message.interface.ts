@@ -4,4 +4,5 @@ export default interface ChatMessage {
     roomId: number | string;
     message: string;
     sentAt: string;
+    isRead: boolean;
 }

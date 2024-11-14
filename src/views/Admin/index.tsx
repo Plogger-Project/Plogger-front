@@ -1,6 +1,6 @@
 import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react'
 import './style.css'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
 import { ActiveReportList, Follow, RecruitPostList, User } from 'src/types';
@@ -17,6 +17,21 @@ import { GetUserListResponseDto } from 'src/apis/dto/response/mypage';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import SavingsTwoTone from '@mui/icons-material/SavingsTwoTone';
+
+// interface: another user 정보 //
+interface AnotherUser {
+  userId: string;
+  password: string;
+  name: string;
+  telNumber: string;
+  address: string;
+  profileImage: string;
+  isAdmin: boolean;
+  ecoScore: number;
+  mileage: number;
+  comment: string;
+}
 
 export default function Admin() {
   // state: 페이징 관련 상태 //
@@ -34,6 +49,8 @@ export default function Admin() {
 
   // state: 로그인 유저 정보 //
   const { signInUser, setSignInUser } = useSignInUserStore();
+  const [user, setUser] = useState<AnotherUser | null>(null);
+  const { userId } = useParams<{ userId: string }>();
 
   // state: cookie 상태 //
   const [cookies] = useCookies();
@@ -57,6 +74,10 @@ export default function Admin() {
   const [isRecruit, setIsRecruit] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [isUser, setIsUser] = useState<boolean>(false);
+
+  // variable: 작성자 여부 //
+  const isOwner = (signInUser?.userId === userId) ? signInUser : user;
+  let followId = (signInUser?.userId === userId) ? signInUser?.userId : user?.userId;
 
   // effect: 유저 정보가 변경되면 state에 반영 // 
   useEffect(() => {
@@ -164,24 +185,6 @@ export default function Admin() {
     setShowUserList(lists);
   }
 
-  // function: patch comment post list response 처리 함수 //
-  const patchCommentResponse = (responseBody: ResponseDto | null) => {
-    const message =
-      !responseBody ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'NU' ? '존재하지 않는 사용자입니다.' :
-          responseBody.code === 'VF' ? '잘못된 입력입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-              responseBody.code === 'NP' ? '권한이 없습니다.' :
-                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-                  responseBody.code === 'SU' ? '수정이 완료되었습니다.' : '';
-
-    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    if (!isSuccessed) {
-      alert(message);
-      return;
-    }
-  }
-
   // function: 유저 삭제 함수 //
   const deleteUserResponse = (responseBody: ResponseDto | null) => {
     const message =
@@ -199,6 +202,24 @@ export default function Admin() {
     }
 
     getUserList();
+  }
+
+  // function: patch comment post list response 처리 함수 //
+  const patchCommentResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'NU' ? '존재하지 않는 사용자입니다.' :
+          responseBody.code === 'VF' ? '잘못된 입력입니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+              responseBody.code === 'NP' ? '권한이 없습니다.' :
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+                  responseBody.code === 'SU' ? '수정이 완료되었습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
   }
 
   // interface: 구인 신고글 리스트 컴포넌트 Properties //
@@ -227,7 +248,7 @@ export default function Admin() {
       navigator(RECRUIT_DETAIL_ABSOLUTE_PATH(recruitPostId.recruitId));
     }
 
-    // event handler: 유저 삭제 버튼 클릭 함수 //
+    // event handler: 구인 신고 내역 삭제 버튼 클릭 함수 //
     const onReportDeleteClickHandler = (recruitId: number) => {
       const isConfirm = window.confirm('해당 신고내역을 삭제하시겠습니까?');
       if (!isConfirm) return;
@@ -280,7 +301,7 @@ export default function Admin() {
       navigator(ACTIVE_DETAIL_ABSOLUTE_PATE(activePostId.activeId));
     }
 
-    // event handler: 유저 삭제 버튼 클릭 함수 //
+    // event handler: 활동 신고 내역 삭제 버튼 클릭 함수 //
     const onReportDeleteClickHandler = (activeId: number) => {
       const isConfirm = window.confirm('해당 신고내역을 삭제하시겠습니까?');
       if (!isConfirm) return;
@@ -436,51 +457,66 @@ export default function Admin() {
   }
 
   return (
-    <>
-      <div id='adminpage'>
-        <div className='top'>
-          <div className='admin-profile-container'>
-            <div className='image' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
-            <div className='profile-box'>
-              <div className='name-box'>
-                <div className='name'>{signInUser?.name}</div>
+    <div id='adminpage-wrapper'>
+      <div className='adminpage'>
+        <div className='adminpage-container'>
+
+          <div className='adminpage-top'>
+            <div className='admin-profile-container'>
+              <div className='profile-image' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
+              <div className='profile-box'>
+                <div className='profile-name-box'>
+                  <div className='profile-name'>{signInUser?.name}</div>
+                </div>
+                <div className='profile-address'>{signInUser?.address}</div>
+                <div className='profile-comment-box'>
+                  {input ?
+                    <input className='comment-input' type='text' value={comment} onChange={onCommentChangeHandler} placeholder='30글자 내로 입력하세요.' onKeyDown={onCommentKeydownHandler}
+                      autoFocus />
+                    : <div className='profile-comment'>{comment}</div>
+                  }
+                  <div className='comment-change' onClick={onCommentButtonClickHandler}></div>
+                </div>
+
               </div>
-              <div className='address'>{signInUser?.address}</div>
-              <div className='sentence-box'>
-                {input ?
-                  <input className='input' type='text' value={comment} onChange={onCommentChangeHandler} placeholder='30글자 내로 입력하세요.' onKeyDown={onCommentKeydownHandler}
-                    autoFocus />
-                  : <div className='sentence'>{comment}</div>
+            </div>
+            <div className='score-container'>
+              <div className='top-box'>
+              </div>
+              <div className='bottom-box'>
+                {
+                  signInUser?.userId === user?.userId
+                    ? <div className='mileage-box'>
+                      <SavingsTwoTone sx={{ fontSize: 45 }} />
+                      <div className='mileage-score'>{isOwner?.mileage}</div>
+                    </div>
+                    : <></>
                 }
-                <div className='sentence-change' onClick={onCommentButtonClickHandler}></div>
+                {
+                  signInUser?.userId === user?.userId
+                    ? <div className='gift-button' onClick={onGiftClickHandler}>기프티콘 바로가기</div> : ''
+                }
               </div>
             </div>
+
           </div>
-          <div className='activity-container'>
-            <div className='mileage-container'>
-              <div className='button-mileage' onClick={onGiftClickHandler}>기프티콘 바로가기</div>
-            </div>
-          </div>
+
+          <div className='adminpage-middle'>
+            <div className='admin-recruit'><span className={`my-point ${isRecruit ? 'active' : ''}`} onClick={onRecruitReportClickHandler}>구인 신고글</span></div>
+            <div className='admin-active'><span className={`my-point ${isActive ? 'active' : ''}`} onClick={onActiveReportClickHandler}>활동 신고글</span></div>
+            <div className='admin-user'><span className={`my-point ${isUser ? 'active' : ''}`} onClick={onUserListClickHandler}>유저 리스트</span></div>
         </div>
+
         <div className='adminpage-bottom'>
-          <div className='table-contents'>
-            <div className={`recruit-report ${isRecruit ? 'active' : ''}`} onClick={onRecruitReportClickHandler}><span>구인 신고글</span></div>
-            <div className='line'>
-              <div className={`active-report ${isActive ? 'active' : ''}`} onClick={onActiveReportClickHandler}><span>활동 신고글</span></div>
-            </div>
-            <div className={`user-list ${isUser ? 'active' : ''}`} onClick={onUserListClickHandler}><span>유저 리스트</span></div>
-          </div>
           <div className='table'>
             {isRecruit && showRecruitReports.length === 0 && (
               <div className='report-message'>해당 데이터가 없습니다.</div>)}
             {isRecruit && showRecruitReports.length > 0 &&
               (
                 <div className="main">
-                  <div className="middle-top">
-                  </div>
                   <div className="table">
                     <div className="th">
-                      <div className="td-report-reportid">신고글 번호</div>
+                      <div className="td-report-reportid">신고 번호</div>
                       <div className="td-report-writer">작성자</div>
                       <div className="td-report-number">글 번호</div>
                       <div className="td-report-content">신고내역</div>
@@ -492,19 +528,21 @@ export default function Admin() {
                         <RecruitTableRow key={index} recruitPostId={recruitPostId} getRecruitReportList={getRecruitReportPostList} />
                       ))}
                   </div>
+
                   <div className="pagination">
                     <Pagination currentPage={currentPage} {...recruitpaginationProps} />
                   </div>
                 </div>
               )}
+
             {isActive && showActiveReports.length === 0 && (
               <div className='report-message'>해당 데이터가 없습니다.</div>)}
             {isActive && showActiveReports.length > 0 &&
               (
-                <div className='active-main'>
-                  <div className='active-table'>
-                    <div className='th'>
-                      <div className="td-active-reportid">신고글 번호</div>
+                <div className="main">
+                  <div className="table">
+                    <div className="th">
+                      <div className="td-active-reportid">신고 번호</div>
                       <div className="td-active-writer">작성자</div>
                       <div className="td-active-number">글 번호</div>
                       <div className="td-active-content">신고내역</div>
@@ -522,13 +560,14 @@ export default function Admin() {
                   </div>
                 </div>
               )}
+
             {isUser && showUserList.length === 0 && (
               <div className='report-message'>가입한 사용자가 없습니다.</div>)}
             {isUser && showUserList.length > 0 &&
               (
-                <div className='list-main'>
-                  <div className='list-table'>
-                    <div className='th'>
+                <div className="main">
+                  <div className="table">
+                    <div className="th">
                       <div className="td-user-userId">아이디</div>
                       <div className="td-user-address">주소</div>
                       <div className="td-user-name">이름</div>
@@ -552,7 +591,8 @@ export default function Admin() {
           </div>
         </div>
       </div>
-    </>
+    </div>
+    </div >
   )
 }
 

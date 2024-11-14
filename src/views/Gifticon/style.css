@@ -43,10 +43,12 @@ background-color: var(--primary-color);
 
 .top {
     display: flex;
-    justify-content: end;
+    width: 856px;
+    justify-content: space-between;
     margin-top: 50px;
     margin-bottom: 50px;
-    margin-right: 145px;
+    margin-left: 130px;
+    /* margin-right: 145px; */
 }
 
 .top .button {
@@ -188,4 +190,8 @@ background-color: var(--primary-color);
     display: flex;
     justify-content: center;
     margin-top: 30px;
+}
+
+.back-arrow {
+    display: flex;
 }
