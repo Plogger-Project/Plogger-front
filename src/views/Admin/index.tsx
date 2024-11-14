@@ -18,6 +18,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import SavingsTwoTone from '@mui/icons-material/SavingsTwoTone';
+import useAdminPagination from 'src/hooks/admin.pagination.hook ';
 
 // interface: another user 정보 //
 interface AnotherUser {
@@ -41,7 +42,7 @@ export default function Admin() {
   const { currentPage: currentPage2, totalPage: totalPage2, totalCount: totalCount2, viewList: viewList2, setTotalList: setTotalList2, initViewList: initViewList2, ...activePaginationProps } = useRecruitPagination<ActiveReportList>();
 
   // state: 페이징 관련 상태 //
-  const { currentPage: currentPage3, totalPage: totalPage3, totalCount: totalCoutn3, viewList: viewList3, setTotalList: setTotalList3, initViewList: initiViewList3, ...userPaginationProps } = useRecruitPagination<User>();
+  const { currentPage: currentPage3, totalPage: totalPage3, totalCount: totalCoutn3, viewList: viewList3, setTotalList: setTotalList3, initViewList: initiViewList3, ...userPaginationProps } = useAdminPagination<User>();
 
   // state: 프로필 상태 //
   const [input, onInput] = useState<boolean>(false);
