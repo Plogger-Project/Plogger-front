@@ -76,6 +76,7 @@
     background-image: url(/public/images/3point.png);
     background-position: 50% 50%;
     background-size: cover;
+    cursor: pointer;
 }
 
 #recruit-detail-wrapper .postTop .postBox {
