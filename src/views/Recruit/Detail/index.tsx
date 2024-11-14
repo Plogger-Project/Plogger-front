@@ -1014,8 +1014,8 @@ console.log(joinList);
               >
                 {signInUser?.userId === writer || signInUser?.isAdmin ?
                   <>
-                    <button className="editButton" onClick={onEditButtonClickHandler}>수정하기</button>
-                    <button className="deleteButton" onClick={onDeleteButtonClickHandler}>삭제하기</button>
+                    <button className="editButton" onClick={onEditButtonClickHandler}>수정</button>
+                    <button className="deleteButton" onClick={onDeleteButtonClickHandler}>삭제</button>
                   </>
                   : ''}
 
@@ -1110,7 +1110,7 @@ console.log(joinList);
               <div className='commentUserInfoWrite'>
                 <div className='commentUserInfo-left'>
                   <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
-                  <div className='recruitCommentWriter'>{signInUser?.userId}</div>
+                  <div className='recruitCommentWriter' style={ { textAlign: "center" } }>{signInUser?.userId}</div>
                 </div>
                 <div className='commentUserInfo-right'>
                   <input className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>

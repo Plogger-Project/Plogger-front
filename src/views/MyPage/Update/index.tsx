@@ -251,14 +251,16 @@ export default function MyPageUpdate() {
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
 
-    let url: string | null = defaultProfileImageUrl;
+    let url: string | null = previewUrl;
     if (profileImage) {
       const formData = new FormData();
       formData.append('file', profileImage);
       url = await fileUploadRequest(formData);
     }
 
-    url = url ? url : defaultProfileImageUrl;
+    url = url ? url : previewUrl;
+
+    if(!signInUser) return;
 
     const requestBody: PatchUserRequestDto = {
       profileImage: url,
@@ -266,8 +268,11 @@ export default function MyPageUpdate() {
       telNumber,
       address
     }
+      
 
-    patchUserRequest(requestBody, accessToken).then(patchUserResponse);
+    await patchUserRequest(requestBody, accessToken).then(patchUserResponse);
+    navigator(MYPAGE_PATH(signInUser?.userId));
+
   }
   
   const onAuthNumberCheckClickHandler = () => {
