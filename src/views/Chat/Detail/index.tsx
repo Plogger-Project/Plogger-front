@@ -4,14 +4,14 @@ import { useCookies } from 'react-cookie';
 import { GetMessageListResponseDto } from 'src/apis/dto/response/chat';
 import { ResponseDto } from 'src/apis/dto/response';
 import { getChatMessageListRequest, getUserListRequest, postChatMessageRequest } from 'src/apis';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ACCESS_TOKEN } from 'src/constants';
-import PostChatMessageRequestDto from 'src/apis/dto/request/chat/post-chat-message.request.dto';
 import { useMessageListStore, useSignInUserStore, useSocketStore } from 'src/stores';
 import { ChatMessage, RoomInvite, User } from 'src/types';
-import { socket } from 'src/utils';
 import { GetUserListResponseDto } from 'src/apis/dto/response/mypage';
 import { PersonAddAlt1 } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 export default function ChatDetail() {
 
@@ -21,8 +21,10 @@ export default function ChatDetail() {
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
     const { socket, initSocket } = useSocketStore();
-    const [roomMessageList, setRoomMessageList] = useState<(ChatMessage | RoomInvite)[]>([]);
+    const [roomMessageList, setRoomMessageList] = useState<ChatMessage[]>([]);
     const { messageList , setMessageList } = useMessageListStore();
+
+    const navigator = useNavigate();
 
     const { signInUser } = useSignInUserStore();
     const [cookies] = useCookies();
@@ -93,11 +95,19 @@ export default function ChatDetail() {
         setMessage(value);
     }
 
+    const onBackClickHandler = () => {
+        navigator(-1);
+    };
+
+    let isJoin = false;
+
     useEffect(() => {
         if (!roomId || !socket) return () => {};
-        socket.emit('join_room', { roomId });
-
-    }, [roomId]);
+        if (!isJoin) {
+            socket.emit('join_room', { roomId });
+            isJoin = true;
+        }
+    }, [roomId, socket]);
 
     useEffect(() => {
         endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -113,6 +123,11 @@ export default function ChatDetail() {
         <>
             <div className='chat-blank'></div>
             <div id="chat-detail">
+            <div className='back-arrow'>
+                <IconButton className="back-button" onClick={() => onBackClickHandler()}>
+                    <ArrowBackIcon />
+                </IconButton>
+            </div>
                 <div className="chat-messages">
                     {roomMessageList.map((chatMessage, index) => (
                         <div 
@@ -121,18 +136,18 @@ export default function ChatDetail() {
                         >
                             {chatMessage.senderId === 'system' ? (
                                 <div className="system-message-content">
-                                    {(chatMessage as ChatMessage).message}
+                                    {chatMessage.message}
                                 </div>
                             ) : 
                             chatMessage.senderId === 'system-invite' ? (
                                 <div className="system-message-content">
-                                    {signInUser?.userId}님이 {(chatMessage as RoomInvite).inviteUsers.join(', ')} 를 초대했습니다.
+                                    {chatMessage.message}
                                 </div>
                             ) :
                             (
                                 <div>
-                                    <div>{chatMessage.senderId}: {(chatMessage as ChatMessage).message}</div>
-                                    <div>{(chatMessage as ChatMessage).sentAt}</div>
+                                    <div>{chatMessage.senderId}: {chatMessage.message}</div>
+                                    <div>{chatMessage.sentAt}</div>
                                 </div>
                             )}
                         </div>
