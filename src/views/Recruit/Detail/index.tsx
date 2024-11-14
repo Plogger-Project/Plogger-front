@@ -26,9 +26,8 @@ import { PatchRecruitCommentRequestDto, PatchRecruitIsCompletedRequestDto, PostR
 import { differenceInDays, parseISO } from 'date-fns';
 import { Avatar, Box, Popover, Typography} from '@mui/material';
 import { PostAlertRequestDto } from 'src/apis/dto/request/alert';
-
-
-import {  IconButton,  Tooltip } from '@mui/material';
+import AvatarGroup from '@mui/material/AvatarGroup';
+import { IconButton, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
@@ -37,6 +36,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { red, yellow } from '@mui/material/colors';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 // interface: recruit comment list 아이템 컴포넌트 Properties //
 interface TableRowProps {
@@ -60,7 +60,7 @@ function TableRow({ recruitComment, getRecruitCommentList }: TableRowProps) {
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
   // 댓글 작성자와 로그인한 유저가 같은지 확인 //
-  const isAuthor = recruitComment.recruitCommentWriter === signInUser?.userId; 
+  const isAuthor = recruitComment.recruitCommentWriter === signInUser?.userId;
 
   const isAdmin = signInUser?.isAdmin;
 
@@ -149,21 +149,21 @@ function TableRow({ recruitComment, getRecruitCommentList }: TableRowProps) {
   // render: recruit comment list 아이템 컴포넌트 렌더링 //
   return (
     <div className='tableCommentUserInfo'>
-        <div className='recruitComment-Left'>
-            <div className='recruitCommentWriter'>{recruitComment.recruitCommentWriter}</div>
-            <div className='recruitCommentCreatedAt'>{recruitComment.recruitCommentCreatedAt}</div>
-        </div>
+      <div className='recruitComment-Left'>
+        <div className='recruitCommentWriter'>{recruitComment.recruitCommentWriter}</div>
+        <div className='recruitCommentCreatedAt'>{recruitComment.recruitCommentCreatedAt}</div>
+      </div>
       <div className='commentUserInfo-right'>
-      {isEdit ? (
+        {isEdit ? (
           <div className='editCommentWrapper'>
-          <textarea className='editCommentContent' value={content} onChange={onContentChangeHandler} />
-          <button className='save' onClick={onUpdateButtonClickHandler}>저장</button>
-          <button className='cancel' onClick={onCancelButtonClickHandler}>취소</button>
-        </div>
-      ) : (
-            <div className='viewCommentWrapper'>
-              <div className='recruitCommentContent'>{recruitComment.recruitCommentContent}</div>
-            </div>
+            <textarea className='editCommentContent' value={content} onChange={onContentChangeHandler} />
+            <button className='save' onClick={onUpdateButtonClickHandler}>저장</button>
+            <button className='cancel' onClick={onCancelButtonClickHandler}>취소</button>
+          </div>
+        ) : (
+          <div className='viewCommentWrapper'>
+            <div className='recruitCommentContent'>{recruitComment.recruitCommentContent}</div>
+          </div>
 
         )}
       </div>
@@ -399,18 +399,18 @@ export default function RecruitDetail() {
 
   // function : get recruit like response 처리 함수 //
   const getRecruitLikeResponse = (responseBody: GetRecruitLikeResponseDto | ResponseDto | null) => {
-    
+
     const message = !responseBody ? '서버에 문제가 있습니다.' :
       responseBody.code === 'VF' ? '잘못된 접근입니다.' :
         responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
       alert(message);
       return;
     }
-    
+
     const { userIds } = responseBody as GetRecruitLikeResponseDto;
 
     if (Array.isArray(userIds)) {
@@ -544,7 +544,7 @@ export default function RecruitDetail() {
     const { profileImage } = responseBody as GetSignInResponseDto;
     setCommentProfileImage(prev => ({ ...prev, [commentId]: profileImage }));
   };
-  
+
   // function : post recruit join response 처리 함수 //
   const postRecruitJoinResponse = (responseBody: ResponseDto | null) => {
     const message =
@@ -616,22 +616,22 @@ export default function RecruitDetail() {
     window.location.href = RECRUIT_DETAIL_PATH(recruitPostId);
   }
 
-    // function: post alert response 처리 함수 //
-    const postAlertResponse = (responseBody: ResponseDto | null) => {
-      const message =
-        !responseBody ? '서버에 문제가 있습니다.' :
+  // function: post alert response 처리 함수 //
+  const postAlertResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
         responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
-        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-        responseBody.code === 'NP' ? '권한이 없습니다.' :
-        responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
-        responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
-        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-      const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-      if (!isSuccessed) {
-        alert(message);
-        return;
-      }
-    };
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NP' ? '권한이 없습니다.' :
+              responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+                responseBody.code === 'NRP' ? '해당 모집 게시글이 없습니다.' :
+                  responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+  };
 
 
   // event handler: 목록 버튼 클릭 이벤트 처리 //
@@ -738,9 +738,9 @@ export default function RecruitDetail() {
       recruitPostId
     }
 
-    if(signInUser?.userId !== writer)
+    if (signInUser?.userId !== writer)
       postAlertRequest(message, accessToken).then(postAlertResponse);
-    
+
     postRecruitLikeRequest(recruitPostId, accessToken).then(postRecruitLikeResponse);
 
   }
@@ -781,20 +781,20 @@ export default function RecruitDetail() {
     if (!recruitPostId) return;
     postRecruitJoinRequest(recruitPostId, accessToken).then(postRecruitJoinResponse);
 
-    if(signInUser && joinList.some(user => user.userId === signInUser.userId)) {
+    if (signInUser && joinList.some(user => user.userId === signInUser.userId)) {
       return;
-      
-  } else if(!(signInUser && joinList.some(user => user.userId === signInUser.userId))) {
-    const message: PostAlertRequestDto = {
-      userId: writer,
-      message: signInUser.userId + "(이)가 회원님의 글에 참가신청을 누르셨습니다.",
-      recruitPostId
-    };
 
-  postAlertRequest(message, accessToken).then(postAlertResponse);
+    } else if (!(signInUser && joinList.some(user => user.userId === signInUser.userId))) {
+      const message: PostAlertRequestDto = {
+        userId: writer,
+        message: signInUser.userId + "(이)가 회원님의 글에 참가신청을 누르셨습니다.",
+        recruitPostId
+      };
+
+      postAlertRequest(message, accessToken).then(postAlertResponse);
+    }
   }
-  }
-console.log(joinList);
+  console.log(joinList);
 
   // event handler : 모집종료 버튼 클릭 이벤트 처리
   const onEndButtonClickHandler = () => {
@@ -815,38 +815,38 @@ console.log(joinList);
     const requestBody: PatchRecruitIsCompletedRequestDto = {
       isCompleted: !isCompleted
     };
-    if(!isCompleted) {
-    for (let i = 0; i < joinList.length; i++) {
-      const message: PostAlertRequestDto = {
-        userId: joinList[i].userId,
-        message: "회원님이 참가신청 하신 공고가 모집종료 되었습니다.",
-        recruitPostId
-      };
-    postAlertRequest(message, accessToken).then(postAlertResponse);
-    }
+    if (!isCompleted) {
+      for (let i = 0; i < joinList.length; i++) {
+        const message: PostAlertRequestDto = {
+          userId: joinList[i].userId,
+          message: "회원님이 참가신청 하신 공고가 모집종료 되었습니다.",
+          recruitPostId
+        };
+        postAlertRequest(message, accessToken).then(postAlertResponse);
+      }
       const message: PostAlertRequestDto = {
         userId: writer,
         message: "게시글을 모집종료하셨습니다.",
         recruitPostId
       };
-    postAlertRequest(message, accessToken).then(postAlertResponse);
+      postAlertRequest(message, accessToken).then(postAlertResponse);
     }
-    else if(isCompleted) {
+    else if (isCompleted) {
       for (let i = 0; i < joinList.length; i++) {
         const message: PostAlertRequestDto = {
           userId: joinList[i].userId,
           message: "회원님이 참가신청 하신 공고가 재모집 중입니다.",
           recruitPostId
         };
-      postAlertRequest(message, accessToken).then(postAlertResponse);
+        postAlertRequest(message, accessToken).then(postAlertResponse);
       }
-        const message: PostAlertRequestDto = {
-          userId: writer,
-          message: "게시글을 재모집 하셨습니다.",
-          recruitPostId
-        };
+      const message: PostAlertRequestDto = {
+        userId: writer,
+        message: "게시글을 재모집 하셨습니다.",
+        recruitPostId
+      };
       postAlertRequest(message, accessToken).then(postAlertResponse);
-      }
+    }
 
     patchRecruitRequest(requestBody, recruitPostId, accessToken)
       .then(PatchRecruitResponse)
@@ -887,18 +887,18 @@ console.log(joinList);
     const requestBody: PostRecruitCommentRequestDto = {
       recruitCommentContent: commentContent
     }
-    
+
     const message: PostAlertRequestDto = {
       userId: writer,
       message: signInUser?.userId + "(이)가 고객님의 글에 댓글을 달았습니다.",
       recruitPostId
     }
 
-    if(signInUser?.userId !== writer)
-    postAlertRequest(message, accessToken).then(postAlertResponse);
+    if (signInUser?.userId !== writer)
+      postAlertRequest(message, accessToken).then(postAlertResponse);
 
     postRecruitCommentRequest(requestBody, recruitPostId, accessToken).then(postRecruitCommentResponse);
-    
+
   }
 
   const onProfileImageClick = (commentWriter: string) => {
@@ -987,7 +987,11 @@ console.log(joinList);
             <div className='detailCount'>좋아요 : {like}</div>
             |
             <div className='detailCount'>조회수 : {view}</div>
-            <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}></div>
+            <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}>
+              <IconButton>
+                <MoreVertIcon />
+              </IconButton>
+            </div>
             {showOptions && (
               <div
                 className="options"
@@ -1077,13 +1081,13 @@ console.log(joinList);
               {signInUser &&
                 // <div className={`like ${isLiked ? 'liked' : ''}`} onClick={onLikeButtonClickHandler}></div>
                 <div>
-                  {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{color: red[500], fontSize: 30}}/> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{fontSize: 30}}/>}
-                </div>    
+                  {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{ color: red[500], fontSize: 30 }} /> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{ fontSize: 30 }} />}
+                </div>
               }
               {signInUser &&
                 // <div className={`scrap ${isScraped ? 'scraped' : ''}`} onClick={onScrapButtonClickHandler}></div>
                 <div>
-                  { isScraped ? <BookmarkIcon onClick={onScrapButtonClickHandler} sx={{color: yellow[600], fontSize: 30}}/> : <BookmarkBorderIcon onClick={onScrapButtonClickHandler} sx={{fontSize: 30}}/> }
+                  {isScraped ? <BookmarkIcon onClick={onScrapButtonClickHandler} sx={{ color: yellow[600], fontSize: 30 }} /> : <BookmarkBorderIcon onClick={onScrapButtonClickHandler} sx={{ fontSize: 30 }} />}
                 </div>
               }
             </div>
@@ -1095,7 +1099,7 @@ console.log(joinList);
               <div className='commentUserInfoWrite'>
                 <div className='commentUserInfo-left'>
                   <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
-                  <div className='recruitCommentWriter' style={ { textAlign: "center" } }>{signInUser?.userId}</div>
+                  <div className='recruitCommentWriter' style={{ textAlign: "center" }}>{signInUser?.userId}</div>
                 </div>
                 <div className='commentUserInfo-right'>
                   <textarea className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></textarea>

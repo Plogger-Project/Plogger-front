@@ -145,13 +145,13 @@ export default function QnaUpdate() {
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) return;
 
-    let url: string | null = '';
+    let url: string | null = image;
     if (imageFile) {
       const formData = new FormData();
       formData.append('file', imageFile);
       url = await fileUploadRequest(formData);
     }
-    url = url ? url : '';
+    url = url ? url : image;
 
     if (!qnaPostId) return;
 

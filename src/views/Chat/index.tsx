@@ -57,7 +57,6 @@ export default function Chat() {
             alert(message);
             return;
         }
-
         getMyChatRoomListRequest(accessToken).then(getChatRoomListResponse);
     }
 
