@@ -218,7 +218,7 @@ export default function ActiveUpdate() {
     const fileReader = new FileReader();
     fileReader.readAsDataURL(file);
     fileReader.onloadend = () => {
-      setImage(fileReader.result as string);
+    setImage(fileReader.result as string);
     };
   };
 
@@ -383,9 +383,9 @@ export default function ActiveUpdate() {
 
   // render : 활동 게시판 수정 컴포넌트 렌더링 //
   return (
-    <div id='active-write-wrapper'>
+    <div id='active-update-wrapper'>
       <div className='navi'></div>
-      <div id='active-write-input-container'>
+      <div id='active-update-input-container'>
         <div className='userInfo'>
           <div className='userInfo-left'>
             <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }}></div>
@@ -521,12 +521,16 @@ export default function ActiveUpdate() {
                 level={3}
               >
                 <MapMarker position={{ lat, lng }}>
-                  <div style={{ color: "#000" }}>장소</div>
+                  { }
+                  {
+                    <div className='marker-info' >
+                      활동 장소
+                    </div>
+                  }
                 </MapMarker>
               </Map>
             </div>
           }
-          <div className="kakaomap">{address}</div>
         </div>
         <div className="bottom">
           <div className='button primary' onClick={onPostButtonClickHandler}>수정</div>

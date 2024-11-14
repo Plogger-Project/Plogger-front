@@ -151,7 +151,7 @@ export default function MyPageUpdate() {
     const fileReader = new FileReader();
     fileReader.readAsDataURL(file);
     fileReader.onloadend = () => {
-      setPreviewUrl(fileReader.result as string);
+    setPreviewUrl(fileReader.result as string);
     };
   };
 

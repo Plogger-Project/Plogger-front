@@ -76,6 +76,7 @@ export default function Mypage() {
 
   // state: cookie 상태 //
   const [cookies] = useCookies();
+  
 
   // state: 이미지 상태 //
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -572,6 +573,8 @@ export default function Mypage() {
       navigator(ACTIVE_DETAIL_ABSOLUTE_PATE(mileageId.activeId));
     };
 
+    
+
     // render : 게시글 리스트 렌더링 //
     return (
       <div className="tr" key={mileageId.mileageId}>
@@ -845,7 +848,7 @@ export default function Mypage() {
   if (!accessToken) {
     return null; 
   }
-  
+
   return (
     <div id='mypage-wrapper'>
       <div className='mypage'>

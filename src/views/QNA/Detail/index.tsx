@@ -454,7 +454,7 @@ export default function QnADetail() {
     };
 
     // event handler: 댓글 수정 이벤트 처리 //
-    const onCommentContentChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const onCommentContentChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
         const { value } = event.target;
         setCommentContent(value);
     }
@@ -527,7 +527,7 @@ export default function QnADetail() {
                             </div>
                             <div className='commentUserInfo-right'>
                                 {isAdmin ? (
-                                    <input className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler} />
+                                    <textarea className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler} />
                                 ) : (
                                     <div className='disabledCommentInput'>관리자만 댓글 작성이 가능합니다.</div>
                                 )}

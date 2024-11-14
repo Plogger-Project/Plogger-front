@@ -112,8 +112,10 @@
 
 #active-detail-wrapper .postContents {
     border-bottom: 1px solid rgba(25, 25, 25, 0.3);
-    height: 300px;
+    min-height: 300px;
     padding: 15px;
+    white-space: pre-wrap;
+    word-wrap: break-word; /* 긴 단어가 잘리거나 줄바꿈이 될 수 있도록 처리 */
 }
 
 #active-detail-wrapper .postImage {

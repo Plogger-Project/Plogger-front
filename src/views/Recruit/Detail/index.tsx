@@ -883,7 +883,7 @@ console.log(joinList);
 
   }
   // event handler: 댓글 내용 변경 이벤트 처리 //
-  const onCommentContentChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+  const onCommentContentChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = event.target;
     setCommentContent(value);
   }
@@ -942,6 +942,13 @@ console.log(joinList);
   useEffect(() => {
     setDday(calculateDday(endDate));
   }, [endDate]);
+
+
+  // effect: 댓글 리스트 불러오기
+  useEffect(() => {
+    getRecruitCommentList();
+
+  }, [recruitPostId]);
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -1106,7 +1113,7 @@ console.log(joinList);
                   <div className='recruitCommentWriter' style={ { textAlign: "center" } }>{signInUser?.userId}</div>
                 </div>
                 <div className='commentUserInfo-right'>
-                  <input className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></input>
+                  <textarea className='commentInput' placeholder='댓글을 입력해주세요.' onKeyDown={onCommentEnterHandler} onChange={onCommentContentChangeHandler}></textarea>
                 </div>
                 <div className="commentButton" onClick={onCommentPostButtonClick}>
                   <SendIcon />
