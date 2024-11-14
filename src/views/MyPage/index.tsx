@@ -838,7 +838,7 @@ export default function Mypage() {
   useEffect(() => {
     if (!accessToken) {
       alert("로그인이 필요합니다.");
-      navigator('/sign-up'); 
+      navigator('/'); 
     }
   }, []);
 

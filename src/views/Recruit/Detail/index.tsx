@@ -930,25 +930,18 @@ console.log(joinList);
   // effect: recruit 변경 시 recruit comment 함수 //
   useEffect(() => {
     if (!recruitPostId) return;
+    getRecruitCommentList();
     getRecruitScrapRequest(recruitPostId).then(getRecruitScrapResponse);
     getRecruitLikeRequest(recruitPostId).then(getRecruitLikeResponse);
     getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
     getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
-
-    
-  }, [recruitPostId]);
+  }, [recruitPostId, signInUser]);
 
 
   // effect: dday //
   useEffect(() => {
     setDday(calculateDday(endDate));
   }, [endDate]);
-
-  // effect: 댓글 리스트 불러오기
-  useEffect(() => {
-    getRecruitCommentList();
-
-  }, [recruitPostId]);
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
