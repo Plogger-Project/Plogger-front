@@ -173,8 +173,10 @@ const CHAT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/chat`;
 
 const POST_CHAT_ROOM_API_URL = `${CHAT_MODULE_URL}/rooms`;
 const GET_CHAT_ROOM_LIST_API_URL = `${CHAT_MODULE_URL}/rooms`;
+const DELETE_CHAT_ROOM_API_URL = (roomId: string | number) => `${CHAT_MODULE_URL}/rooms/${roomId}`;
 const POST_CHAT_MESSAGE_API_URL = (roomId: string | number) => `${CHAT_MODULE_URL}/rooms/${roomId}/messages`;
 const GET_CHAT_MESSAGE_LIST_API_URL = (roomId: string | number) => `${CHAT_MODULE_URL}/rooms/${roomId}/messages`;
+const GET_TOTAL_CHAT_MESSAGE_LIST_API_URL = `${CHAT_MODULE_URL}/messages`;
 
 // function: Authorizarion Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({ headers: { 'Authorization': `Bearer ${accessToken}` } })
@@ -923,10 +925,25 @@ export const getChatMessageListRequest = async (roomId: string | number, accessT
         .catch(responseErrorHandler);
     return responseBody;
 }
+// function: 채팅 가져오기 함수 //
+export const getTotalChatMessageListRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_TOTAL_CHAT_MESSAGE_LIST_API_URL, bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetMessageListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
 
 // function: 채팅 쓰기 요청 함수 //
 export const postChatMessageRequest = async (requestBody: PostChatMessageRequestDto, roomId: string | number, accessToken: string) => {
     const responseBody = await axios.post(POST_CHAT_MESSAGE_API_URL(roomId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 채팅방 나가기 요청 함수 //
+export const deleteChatRoomRequest = async (roomId: number | string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_CHAT_ROOM_API_URL(roomId), bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;

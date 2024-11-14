@@ -7,7 +7,7 @@ import { getChatMessageListRequest, getUserListRequest, postChatMessageRequest }
 import { useParams } from 'react-router-dom';
 import { ACCESS_TOKEN } from 'src/constants';
 import PostChatMessageRequestDto from 'src/apis/dto/request/chat/post-chat-message.request.dto';
-import { useSignInUserStore } from 'src/stores';
+import { useMessageListStore, useSignInUserStore, useSocketStore } from 'src/stores';
 import { ChatMessage, RoomInvite, User } from 'src/types';
 import { socket } from 'src/utils';
 import { GetUserListResponseDto } from 'src/apis/dto/response/mypage';
@@ -16,50 +16,20 @@ import { PersonAddAlt1 } from '@mui/icons-material';
 export default function ChatDetail() {
 
     const { roomId } = useParams();
-    const [originalList, setOriginalList] = useState<(ChatMessage | RoomInvite)[]>([]); 
     const [message, setMessage] = useState<string>(''); 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+    const { socket, initSocket } = useSocketStore();
+    const [roomMessageList, setRoomMessageList] = useState<(ChatMessage | RoomInvite)[]>([]);
+    const { messageList , setMessageList } = useMessageListStore();
 
     const { signInUser } = useSignInUserStore();
     const [cookies] = useCookies();
 
     const accessToken = cookies[ACCESS_TOKEN];
-    const io = socket(accessToken);
 
     const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
-
-    const getChatMessageListResponse = (responseBody: GetMessageListResponseDto | ResponseDto | null) => {
-        const message  = 
-            !responseBody ? '서버에 문제가 있습니다.' : 
-            responseBody.code === 'NCR' ? '존재하지 않는 채팅방입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-        
-        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-        if (!isSuccessed) {
-            alert(message);
-            return;
-        }
-
-        const { messages } = responseBody as GetMessageListResponseDto;
-        setOriginalList(messages);
-    }
-
-    const postChatMessageResponse = (responseBody: ResponseDto | null) => {
-        const message  = 
-        !responseBody ? '서버에 문제가 있습니다.' : 
-        responseBody.code === 'VF' ? '잘못된 접근입니다.' : 
-        responseBody.code === 'AF' ? '잘못된 접근입니다.' : 
-        responseBody.code === 'NCR' ? '존재하지 않는 채팅방입니다.' :
-        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-
-        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-        if (!isSuccessed) {
-            alert(message);
-            return;
-        }
-    }
 
     const getUserListResponse = (responseBody: GetUserListResponseDto | ResponseDto | null) => {
         const message = 
@@ -81,12 +51,9 @@ export default function ChatDetail() {
 
     const onChatMessageSendClickHandler = () => {
         const accessToken = cookies[ACCESS_TOKEN];
-        if (!accessToken || !roomId || !message) return;
+        if (!accessToken || !roomId || !message || !socket) return;
 
-        const requestBody: PostChatMessageRequestDto = { message };
-        postChatMessageRequest(requestBody, roomId, accessToken).then(postChatMessageResponse);
-
-        io.emit('send_message', {
+        socket.emit('send_message', {
             roomId,
             senderId: signInUser?.userId,
             message
@@ -101,13 +68,15 @@ export default function ChatDetail() {
         getUserListRequest(accessToken).then(getUserListResponse);
     }
 
+    // event handler: 유저 초대 리스트 버튼 클릭 //
     const onInviteUsersButtonClick = () => {
         if (selectedUsers.length === 0) {
             alert('초대할 유저를 선택해주세요.');
             return;
         }
 
-        socket(accessToken).emit('invite_users', { roomId, invitedPeople: selectedUsers})
+        if (!socket) return;
+        socket.emit('invite_users', { roomId, invitedPeople: selectedUsers})
 
         alert('유저들이 초대되었습니다.');
         setSelectedUsers([]);
@@ -119,48 +88,33 @@ export default function ChatDetail() {
         setIsModalOpen(false);
     };
 
-    const onUserSelectToggle = (userId: string) => {
-        setSelectedUsers((prevSelected) => 
-            prevSelected.includes(userId) ? prevSelected.filter(id => id !== userId)
-            : [...prevSelected, userId])
-    }
-
     const onMessageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
         setMessage(value);
     }
 
     useEffect(() => {
-        if (!accessToken || !roomId) return;
+        if (!roomId || !socket) return () => {};
+        socket.emit('join_room', { roomId });
 
-        if (io.connected) return;
-        io.on('connect', () => console.log('connect'));
-
-        io.emit('join_room', { roomId });
-
-        io.on('receive_message', (chatMessage) => {
-            console.log(selectedUsers);
-            setOriginalList(prevMessages => [...prevMessages, chatMessage]);
-        });
-
-        getChatMessageListRequest(roomId, accessToken).then(getChatMessageListResponse);
-        
-        return () => {
-            io.off('receive_message');
-            console.log('disconnect');
-        }
-    }, []);
+    }, [roomId]);
 
     useEffect(() => {
         endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [originalList]);
+        const roomMessageList = messageList.filter(message => message.roomId == roomId);
+        setRoomMessageList(roomMessageList);
+    }, [messageList]);
+
+    useEffect(() => {
+        endOfMessagesRef.current?.scrollIntoView();
+    }, [roomMessageList]);
 
     return (
         <>
             <div className='chat-blank'></div>
             <div id="chat-detail">
                 <div className="chat-messages">
-                    {originalList.map((chatMessage, index) => (
+                    {roomMessageList.map((chatMessage, index) => (
                         <div 
                             key={index} 
                             className={`message ${(chatMessage.senderId === 'system' || chatMessage.senderId === 'system-invite') ? 'system-message' : chatMessage.senderId === signInUser?.userId ? 'sent' : 'received'}`}

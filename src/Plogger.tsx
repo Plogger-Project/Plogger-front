@@ -17,11 +17,11 @@ import RecruitUpdate from './views/Recruit/Update';
 import RecruitWrite from './views/Recruit/Write';
 import MyPageUpdate from './views/MyPage/Update';
 import FindId from './views/FindId';
-import { useSignInUserStore } from './stores';
+import { useMessageListStore, useRoomListStore, useSignInUserStore, useSocketStore } from './stores';
 import { useCookies } from 'react-cookie';
 import { GetSignInResponseDto } from './apis/dto/response/auth';
 import { ResponseDto } from './apis/dto/response';
-import { getSignInRequest } from './apis';
+import { getChatMessageListRequest, getMyChatRoomListRequest, getSignInRequest, getTotalChatMessageListRequest } from './apis';
 
 import RecruitPost from './views/Recruit';
 
@@ -41,6 +41,8 @@ import ChatDetail from './views/Chat/Detail';
 import QnaWrite from './views/QNA/Write';
 import QnaUpdate from './views/QNA/Update';
 import Mypage from './views/MyPage';
+import { ChatMessage, ChatRoom, RoomInvite } from './types';
+import { GetMessageListResponseDto, GetRoomListResponseDto } from './apis/dto/response/chat';
 
 
 
@@ -78,11 +80,20 @@ function SnsSuccess() {
 // component: plogger 컴포넌트 //
 function Plogger() {
 
+  const [originalList, setOriginalList] = useState<(ChatMessage | RoomInvite | ChatRoom)[]>([]); 
+
+  const { socket, initSocket } = useSocketStore();
+  const { roomList, setRoomList } = useRoomListStore();
+  const { messageList, setMessageList } = useMessageListStore();
+
   // state: 로그인 유저 정보 상태 //
   const { signInUser, setSignInUser } = useSignInUserStore();
 
   // state: cookie 상태 //
   const [cookies, setCookie, removeCookie] = useCookies();
+
+
+  const accessToken = cookies[ACCESS_TOKEN];
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -111,14 +122,64 @@ function Plogger() {
 
   };
 
+  const getChatRoomList = () => {
+    getMyChatRoomListRequest(accessToken).then(getChatRoomListResponse);
+  }
 
+  const getChatRoomListResponse = (responseBody: GetRoomListResponseDto | ResponseDto | null) => {
+    const message = !responseBody
+        ? '서버에 문제가 있습니다.'
+        : responseBody.code === 'AF'
+        ? '잘못된 접근입니다.'
+        : responseBody.code === 'DBE'
+        ? '서버에 문제가 있습니다.'
+        : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+        alert(message);
+        return;
+    }
+
+    const { rooms } = responseBody as GetRoomListResponseDto;
+    setRoomList(rooms);
+  }
+
+  const getChatMessageListResponse = (responseBody: GetMessageListResponseDto | ResponseDto | null) => {
+    const message  = 
+        !responseBody ? '서버에 문제가 있습니다.' : 
+        responseBody.code === 'NCR' ? '존재하지 않는 채팅방입니다.' :
+        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+    
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+        alert(message);
+        return;
+    }
+
+    const { messages } = responseBody as GetMessageListResponseDto;
+    setMessageList(messages);
+  }
 
   // effect: cookie의 accessToken 값이 변경될 때마다 로그인 유저 정보를 요청하는 함수 //
   useEffect(()=>{
-    const accessToken = cookies[ACCESS_TOKEN];
     if(accessToken) getSignInRequest(accessToken).then(getSignInResponse);
     else setSignInUser(null); 
   }, [cookies[ACCESS_TOKEN]]);
+
+  useEffect(() => {
+    if (accessToken && !socket) {
+      initSocket(accessToken);
+    } else if (socket) {
+      socket.on('receive_message', (chatMessage) => {
+        getTotalChatMessageListRequest(accessToken).then(getChatMessageListResponse);
+        setMessageList([...messageList, chatMessage]);
+      });
+      socket.on('leave_anyone', () => { getChatRoomList(); });
+      getChatRoomList();
+
+    }
+  }, [accessToken, socket]);
   
   const location = useLocation();
 
