@@ -340,6 +340,7 @@
     border-radius: 8px;
     margin-right: 10px;
     box-sizing: border-box;
+    resize: none;
     
 }
 

@@ -59,15 +59,7 @@ export default function Mypage() {
   // state: 프로필 상태 //
   const [input, onInput] = useState<boolean>(false);
   const [comment, setComment] = useState<string>('');
-  const [profileImage, setProfileImage] = useState<string>('');
 
-  // state: 회원가입 상태 //
-  const [name, setName] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [chkpassword, setChkPassword] = useState<string>('');
-  const [telNumber, setTelNumber] = useState<string>('');
-  const [authNumber, setAuthNumber] = useState<string>('');
-  const [address, setAddress] = useState<string>('');
 
   // state: 로그인 유저 정보 //
   const { signInUser, setSignInUser } = useSignInUserStore();
@@ -80,7 +72,6 @@ export default function Mypage() {
 
   // state: 이미지 상태 //
   const imageInputRef = useRef<HTMLInputElement>(null);
-  const [imageUrl, setImageUrl] = useState<string>('');
 
   // state: 내 구인 게시판 목록 상태 //
   const [recruitContents, setRecruitContents] = useState<RecruitPostList[]>([]);
@@ -450,8 +441,6 @@ export default function Mypage() {
   // component: 활동 게시글 리스트 아이템 컴포넌트 //
   function TableActiveRow({ activePostId, getActiveList }: ActiveTableRowProps) {
 
-    // state: 활동 게시판 위치 정보 상태 //
-    const [location, setLocation ] = useState<string>('');
 
     //function: 네비게이터 함수 //
     const navigator = useNavigate();
@@ -638,37 +627,6 @@ export default function Mypage() {
       </div>
     )
 
-  }
-
-  // event handler: 정보 수정 관련 이벤트 처리//
-  const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setName(value);
-  }
-
-  const onPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setPassword(value);
-  }
-
-  const onChkPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setChkPassword(value);
-  }
-
-  const onTelNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setTelNumber(value);
-  }
-
-  const onAuthNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setAuthNumber(value);
-  }
-
-  const onAddressChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setAddress(value);
   }
 
   // event handler: comment 변경 이벤트 처리 //

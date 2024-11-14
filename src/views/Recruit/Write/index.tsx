@@ -3,18 +3,16 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import "react-datepicker/dist/react-datepicker.css";
-
 import { FaCalendarAlt } from 'react-icons/fa'; // 캘린더 아이콘을 위한 라이브러리
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { useKakaoLoader } from "src/hooks";
-import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH, RECRUIT_MYPAGE_PATH, RECRUIT_PATH } from "src/constants";
+import { ACCESS_TOKEN, RECRUIT_ABSOLUTE_PATH,  RECRUIT_PATH } from "src/constants";
 import { useSignInUserStore } from "src/stores";
 import { fileUploadRequest, postRecruitPostRequest } from "src/apis";
 import { ResponseDto } from "src/apis/dto/response";
 import { PostRecruitRequestDto } from "src/apis/dto/request/recruit";
 import useGeolocation from "src/hooks/useGeolocation.hook";
 import DatePicker from "react-datepicker";
-import { MYPAGE_PATH } from "src/constants";
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
@@ -22,13 +20,6 @@ declare global {
     kakao: any;
   }
 }
-
-
-
-// variable: 기본 프로필 이미지 URL //
-const defaultImageUrl = 'https://cdn.icon-icons.com/icons2/2348/PNG/512/add_icon_143118.png';
-
-
 
 // component: 구인 게시판 작성 컴포넌트 //
 export default function RecruitWrite() {
@@ -45,7 +36,6 @@ export default function RecruitWrite() {
   const [contents, setContents] = useState<string>('');
   const [people, setPeople] = useState<string>('');
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [image, setImage] = useState<string>(''); // 이미지 미리보기
   const [endDate, setEndDate] = useState<string>('');
   const [location, setLocation] = useState<string>('');
   const [address, setAddress] = useState<string>('');

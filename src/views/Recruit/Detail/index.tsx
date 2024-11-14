@@ -9,12 +9,10 @@ import { useCookies } from 'react-cookie';
 import { ResponseDto } from 'src/apis/dto/response';
 import GetRecruitPostResponseDto from 'src/apis/dto/response/recruit/get-recruit.response.dto';
 import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
-import RecruitWrite from './../Write/index';
 
-import { RecruitComment, RecruitPostList, SimpleUser } from 'src/types';
+import { RecruitComment,  SimpleUser } from 'src/types';
 import { getRecruitCommentListRequest, getRecruitJoinListRequest, patchRecruitRequest, postRecruitJoinRequest, getRecruitScrapRequest, postRecruitScrapRequest, postRecruitCommentRequest, patchRecruitCommentRequest, deleteRecruitCommentRequest, getRecruitCommentUserInfoRequest, postRecruitLikeRequest, getRecruitLikeRequest, getRecruitJoinUserInfoRequest, postAlertRequest } from 'src/apis';
 
-import axios from 'axios';
 import { deleteRecruitPostRequest, getRecruitPostRequest, getRecruitUserInfoRequest } from 'src/apis';
 
 import { PostRecruitReportRequest } from 'src/apis';
@@ -23,13 +21,11 @@ import PostRecruitReportRequestDto from 'src/apis/dto/request/recruit/post-recru
 import RecruitCommentList from 'src/types/recruit-comment-list.interface';
 
 import useRecruitCommentPagination from 'src/hooks/recruit-comment.pagination.hook';
-import { GetRecruitCommentListResponseDto, GetRecruitPostListResponseDto, GetRecruitScrapResponseDto, GetRecruitJoinListResponseDto, GetRecruitLikeResponseDto } from 'src/apis/dto/response/recruit';
+import { GetRecruitCommentListResponseDto,  GetRecruitScrapResponseDto, GetRecruitJoinListResponseDto, GetRecruitLikeResponseDto } from 'src/apis/dto/response/recruit';
 import { PatchRecruitCommentRequestDto, PatchRecruitIsCompletedRequestDto, PostRecruitCommentRequestDto } from 'src/apis/dto/request/recruit';
 import { differenceInDays, parseISO } from 'date-fns';
-import { Avatar, Box, Popover, Typography, useRadioGroup } from '@mui/material';
+import { Avatar, Box, Popover, Typography} from '@mui/material';
 import { PostAlertRequestDto } from 'src/apis/dto/request/alert';
-
-
 import AvatarGroup from '@mui/material/AvatarGroup';
 import { IconButton, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -58,9 +54,6 @@ function TableRow({ recruitComment, getRecruitCommentList }: TableRowProps) {
 
   // state: cookie 상태 //
   const [cookies] = useCookies();
-
-  // function: 네비게이터 함수 //
-  const navigator = useNavigate();
 
   // state: 댓글 상태 //
   const [content, setContent] = useState<string>('');
@@ -208,9 +201,6 @@ export default function RecruitDetail() {
   // state: 게시글 번호 경로 변수 상태 //
   const { recruitPostId } = useParams();
 
-  // state: 고객 번호 경로 변수 상태 //
-  const { customerNumber } = useParams();
-
   // state: 로그인 유저 상태 //
   const { signInUser } = useSignInUserStore();
 
@@ -225,12 +215,9 @@ export default function RecruitDetail() {
   const [title, setTitle] = useState<string>('');
   const [contents, setContents] = useState<string>('');
   const [image, setImage] = useState<string | null>('');
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [writer, setWriter] = useState<string>('');
   const [createdAt, setCreatedAt] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
-  const [location, setLocation] = useState<string>('');
   const [like, setLike] = useState<number>(0);
   const [view, setView] = useState<number>(0);
   const [dday, setDday] = useState<string>('');
@@ -255,7 +242,6 @@ export default function RecruitDetail() {
   const [commentContent, setCommentContent] = useState<string>('');
   const [anchorEl, setAnchorEl] = useState(null);
   const [commentProfileImage, setCommentProfileImage] = useState<{ [key: number]: string | null }>({});
-  const [joinProfileImage, setJoinProfileImage] = useState<{ [key: string]: string | undefined }>({});
 
   const open = Boolean(anchorEl);
   const id = open ? 'tag-list-popover' : undefined;
@@ -275,8 +261,6 @@ export default function RecruitDetail() {
   const [originalList, setOriginalList] = useState<RecruitCommentList[]>([]);
 
   // variable: 작성자 여부 //
-  const isAuthor = Author === signInUser?.userId;
-
   const isAdmin = signInUser?.isAdmin;
 
   // function: 네비게이터 함수 //

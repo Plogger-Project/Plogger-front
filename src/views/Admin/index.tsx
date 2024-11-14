@@ -3,9 +3,9 @@ import './style.css'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useSignInUserStore } from 'src/stores';
 import useRecruitPagination from 'src/hooks/recruit.pagination.hook';
-import { ActiveReportList, Follow, RecruitPostList, User } from 'src/types';
-import { deleteActiveReportRequest, deleteRecruitReportRequest, deleteUserRequest, GetActiveReportListRequest, getRecruitPostListRequest, GetRecruitReportListRequest, getUserListRequest, patchCommentRequest } from 'src/apis';
-import { GetRecruitPostListResponseDto, GetRecruitReportListResponseDto } from 'src/apis/dto/response/recruit';
+import { ActiveReportList,  User } from 'src/types';
+import { deleteActiveReportRequest, deleteRecruitReportRequest, deleteUserRequest, GetActiveReportListRequest, GetRecruitReportListRequest, getUserListRequest, patchCommentRequest } from 'src/apis';
+import {  GetRecruitReportListResponseDto } from 'src/apis/dto/response/recruit';
 import { ResponseDto } from 'src/apis/dto/response';
 import Pagination from 'src/components/pagination';
 import { ACCESS_TOKEN, ACTIVE_DETAIL_ABSOLUTE_PATE, ADMIN, RECRUIT_DETAIL_ABSOLUTE_PATH } from 'src/constants';

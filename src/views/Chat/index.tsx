@@ -45,6 +45,7 @@ export default function Chat() {
     const accessToken = cookies[ACCESS_TOKEN];
 
     const postChatRoomResponse = (responseBody: ResponseDto | null) => {
+        
         const message = 
             !responseBody ? '서버에 문제가 있습니다.' : 
             responseBody.code === 'VF' ? '잘못된 접근입니다.' : 
@@ -56,6 +57,26 @@ export default function Chat() {
             alert(message);
             return;
         }
+        getMyChatRoomListRequest(accessToken).then(getChatRoomListResponse);
+    }
+
+    const getChatRoomListResponse = (responseBody: GetRoomListResponseDto | ResponseDto | null) => {
+        const message = !responseBody
+            ? '서버에 문제가 있습니다.'
+            : responseBody.code === 'AF'
+            ? '잘못된 접근입니다.'
+            : responseBody.code === 'DBE'
+            ? '서버에 문제가 있습니다.'
+            : '';
+    
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert("message");
+            return;
+        }
+    
+        const { rooms } = responseBody as GetRoomListResponseDto;
+        setRoomList(rooms);
     }
 
     const handleCreateChatRoom = async () => {
