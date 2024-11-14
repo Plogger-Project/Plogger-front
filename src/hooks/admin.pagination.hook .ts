@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
 // variable: 페이지 당 아이템 수 //
-const ITEMS_PER_PAGE = 7;
+const ITEMS_PER_PAGE = 5;
 // variable: 섹션 당 페이지 수 //
 const PAGES_PER_SECTION = 5;
 
-const useRecruitPagination = <T>() => {
+const useAdminPagination = <T>() => {
     // state: 페이징 관련 상태 //
     const [totalList, setTotalList] = useState<T[]>([]);
     const [totalCount, setTotalCount] = useState<number>(0);
@@ -111,4 +111,4 @@ const useRecruitPagination = <T>() => {
     };
 };
 
-export default useRecruitPagination;
+export default useAdminPagination;
