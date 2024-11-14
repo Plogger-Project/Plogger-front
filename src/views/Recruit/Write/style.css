@@ -52,7 +52,7 @@
 #recruit-write-wrapper .userInfo-right .listButton{
     width: 90px;
     height: 30px;
-    background-color: rgba(156, 153, 153, 0.2);
+    background-color: var(--gray-color);
     color: white;
     border-radius: 8px;
     border: none;
@@ -64,7 +64,7 @@
 }
 
 #recruit-write-wrapper .userInfo-right .listButton:hover {
-    border: 1px solid rgba(156, 153, 153, 0.2);
+    border: 1px solid var(--gray-color);
 }
 
 #recruit-write-wrapper .profileImage {

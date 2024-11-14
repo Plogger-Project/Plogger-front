@@ -544,13 +544,20 @@ export default function Mypage() {
 
     // function: get gifticon response 처리 함수 //
     const getGifticonResponse = (responseBody: GetGifticonResponseDto | ResponseDto | null) => {
-      console.log("Response Body:", responseBody);
       const message = !responseBody ? '서버에 문제가 있습니다.' :
         responseBody.code === 'VF' ? '잘못된 접근입니다.' :
           responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+              responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
       const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+
+      const isNG = responseBody !== null && responseBody.code === 'NG';
+
+      if(isNG) {
+        setGifticonName('삭제된 ');
+        return;
+      }
+
       if (!isSuccessed) {
         alert(message);
         return;

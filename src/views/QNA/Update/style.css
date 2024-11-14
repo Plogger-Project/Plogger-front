@@ -48,7 +48,21 @@
 }
 
 #qna-update-wrapper .userInfo-right .listButton {
+    width: 90px;
+    height: 30px;
     background-color: var(--gray-color);
+    color: white;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    text-align: center;
+}
+
+#qna-update-wrapper .userInfo-right .listButton:hover {
+    border: 1px solid var(--gray-color);
 }
 
 #qna-update-wrapper .profileImage {
