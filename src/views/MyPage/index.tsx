@@ -59,6 +59,7 @@ export default function Mypage() {
   // state: 프로필 상태 //
   const [input, onInput] = useState<boolean>(false);
   const [comment, setComment] = useState<string>('');
+  const [profileImage, setProfileImage] = useState<string>('');
 
   // state: 회원가입 상태 //
   const [name, setName] = useState<string>('');
@@ -183,6 +184,7 @@ export default function Mypage() {
       console.error("사용자 데이터 로드 실패", error);
     }
   };
+
   useEffect(() => {
     if (userId) {
       console.log("현재 userId:", userId); // 유저 ID 출력
@@ -266,7 +268,6 @@ export default function Mypage() {
     const myPosts = recruitPosts.filter(post => post.recruitPostWriter === isOwner?.userId);
     setTotalList(myPosts);
     setRecruitContents(myPosts);
-
   };
 
   // function: get active post list response 처리 함수 //
@@ -823,7 +824,7 @@ export default function Mypage() {
     setFolloweeModalOpen(!followeeModalOpen);
   };
 
-  // effect: 컴포넌트 로드 시 팔로워, 팔로이 리스트 불러오기 함수 //
+  // effect: 컴포넌트 로드 시 팔로워, 팔로위 리스트 불러오기 함수 //
   useEffect(() => {
     getFollowerList();
     getFolloweeList();
@@ -835,16 +836,16 @@ export default function Mypage() {
   }, [isFollowing]);
 
   useEffect(() => {
-    if (!signInUser) {
+    if (!accessToken) {
       alert("로그인이 필요합니다.");
       navigator('/sign-up'); 
     }
   }, []);
 
-  if (!signInUser) {
+  if (!accessToken) {
     return null; 
   }
-
+  
   return (
     <div id='mypage-wrapper'>
       <div className='mypage'>
@@ -856,7 +857,9 @@ export default function Mypage() {
               <div className='profile-box'>
                 <div className='profile-name-box'>
                   <div className='profile-name'>{isOwner?.name}</div>
-                  <div className='change' onClick={onMypageUpdateOpenHandler}></div>
+                  { signInUser?.userId === userId ?
+                  <div className='change' onClick={onMypageUpdateOpenHandler}></div> : <></>
+                  }
                 </div>
                 <div className='profile-address'>{isOwner?.address}</div>
                 <div className='profile-comment-box'>
@@ -865,7 +868,9 @@ export default function Mypage() {
                     autoFocus />
                   : <div className='profile-comment'>{comment}</div>
                 }
-                  <div className='comment-change' onClick={onCommentButtonClickHandler}></div>
+                  { signInUser?.userId === userId ?
+                  <div className='comment-change' onClick={onCommentButtonClickHandler}></div> : <></>
+                  }
                 </div>
 
               </div>

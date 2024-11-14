@@ -264,9 +264,6 @@ function TableRow({gifticon, getGifticonList}: TableRowProps) {
     }
     url = url || finalGifticonImage;
 
-    console.log(url)
-    console.log(gifticonButtonId);
-
     const requestBody: PatchGifticonRequestDto = {
       image: url,
       name: finalGifticonName,
