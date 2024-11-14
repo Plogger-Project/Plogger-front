@@ -9,6 +9,8 @@ import { PostQnaPostRequestDto } from 'src/apis/dto/request/qna';
 import { ResponseDto } from 'src/apis/dto/response';
 import { User } from 'src/types';
 
+import AddAPhotoSharpIcon from '@mui/icons-material/AddAPhotoSharp';
+
 const defaultImageUrl = 'https://cdn.icon-icons.com/icons2/2348/PNG/512/add_icon_143118.png';
 
 export default function QnaWrite() {
@@ -170,7 +172,7 @@ export default function QnaWrite() {
 
         <div className='input-box'>
           <div className='input-label'>이미지</div>
-          <div className={`image ${image ? 'uploaded' : 'preview'}`} onClick={onImageClickHandler}>
+          <div className={`image ${image ? 'uploaded' : ''}`} onClick={onImageClickHandler}>
             {image ? (
               <div className='image-box'>
                 <img src={image} alt='미리보기 이미지' />
@@ -179,14 +181,14 @@ export default function QnaWrite() {
                 </button>
               </div>
             ) : (
-              <div></div>
+              <AddAPhotoSharpIcon style={{ fontSize: 40, cursor: "pointer" }} />
             )}
             <input ref={imageInputRef} style={{ display: 'none' }} type='file' accept='image/*' onChange={onImageInputChangeHandler} />
           </div>
         </div>
         <div className="bottom">
-          <div className='button primary' onClick={onPostButtonClickHandler}>등록</div>
-          <div className='button disable' onClick={onCancleButtonClickHandler}>취소</div>
+          <div className='button-upload' onClick={onPostButtonClickHandler}>등록</div>
+          <div className='button-cancle' onClick={onCancleButtonClickHandler}>취소</div>
         </div>
       </div>
     </div>

@@ -16,6 +16,8 @@ import useGeolocation from "src/hooks/useGeolocation.hook";
 import DatePicker from "react-datepicker";
 import { MYPAGE_PATH } from "src/constants";
 
+import AddAPhotoSharpIcon from '@mui/icons-material/AddAPhotoSharp';
+
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
   interface Window {
@@ -324,7 +326,7 @@ export default function RecruitWrite() {
         <div className='input-box'>
           <div className='input-label'>이미지</div>
 
-          <div className={`image ${previewUrl ? 'uploaded' : 'preview'}`} onClick={onImageClickHandler}>
+          <div className={`image ${previewUrl ? 'uploaded' : ''}`} onClick={onImageClickHandler}>
             {previewUrl ? (
               <div className='image-box'>
                 <img src={previewUrl} alt='미리보기 이미지' />
@@ -333,7 +335,7 @@ export default function RecruitWrite() {
                 </button>
               </div>
             ) : (
-              <div></div>
+              <AddAPhotoSharpIcon style={{ fontSize: 40, cursor: "pointer" }} />
             )}
             <input ref={imageInputRef} style={{ display: 'none' }} type='file' accept='image/*' onChange={onImageInputChangeHandler} />
           </div>
@@ -370,8 +372,8 @@ export default function RecruitWrite() {
         </div>
 
         <div className="bottom">
-          <div className='button primary' onClick={onPostButtonClickHandler}>등록</div>
-          <div className='button disable' onClick={onCancelButtonClickHandler}>취소</div>
+          <div className='button-upload' onClick={onPostButtonClickHandler}>등록</div>
+          <div className='button-cancle' onClick={onCancelButtonClickHandler}>취소</div>
         </div>
       </div>
 

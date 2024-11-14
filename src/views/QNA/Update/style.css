@@ -47,8 +47,22 @@
     padding: 10px;
 }
 
-#qna-update-wrapper .userInfo-right .listButton {
-    background-color: var(--gray-color);
+#qna-update-wrapper .userInfo-right .listButton{
+    width: 90px;
+    height: 30px;
+    background-color: rgba(156, 153, 153, 0.2);
+    color: white;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    text-align: center;
+}
+
+#qna-update-wrapper .userInfo-right .listButton:hover {
+    border: 1px solid rgba(156, 153, 153, 0.2);
 }
 
 #qna-update-wrapper .profileImage {
@@ -525,4 +539,44 @@
     gap: 10px;
     justify-content: right;
 
+}
+
+#qna-update-wrapper .button-update {
+    cursor: pointer;
+    width: 100px;
+    min-width: 70px;
+    height: 40px;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 18px;
+    justify-content: center;
+    align-content: center;
+    margin-right: 5px;
+    color: rgba(0, 95, 65, 1);
+    border: 0.1px solid rgb(103, 141, 129);
+}
+
+#qna-update-wrapper .button-update:hover {
+    background-color: rgba(0, 95, 65, 1);
+    color: rgba(255, 255, 255, 1);
+}
+
+#qna-update-wrapper .button-cancle {
+    cursor: pointer;
+    width: 100px;
+    min-width: 70px;
+    height: 40px;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 18px;
+    justify-content: center;
+    align-content: center;
+    margin-right: 5px;
+    color: rgb(255, 0, 0);
+    border: 0.1px solid rgba(221, 114, 114, 0.8);
+}
+
+#qna-update-wrapper .button-cancle:hover {
+    background-color: #da3e3e;
+    color: rgba(255, 255, 255, 1);
 }

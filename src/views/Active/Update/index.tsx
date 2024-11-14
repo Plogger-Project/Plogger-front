@@ -16,6 +16,9 @@ import DatePicker from 'react-datepicker';
 import { FaCalendarAlt } from 'react-icons/fa';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
+import AddAPhotoSharpIcon from '@mui/icons-material/AddAPhotoSharp';
+
+
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
   interface Window {
@@ -497,7 +500,7 @@ export default function ActiveUpdate() {
         </div>
         <div className='input-box'>
           <div className='input-label'>이미지</div>
-          <div className={`image ${image ? 'uploaded' : 'preview'}`} onClick={onImageClickHandler}>
+          <div className={`image ${image ? 'uploaded' : ''}`} onClick={onImageClickHandler}>
             {image ? (
               <div className='image-box'>
                 <img src={image} alt='미리보기 이미지' />
@@ -506,7 +509,7 @@ export default function ActiveUpdate() {
                 </button>
               </div>
             ) : (
-              <div></div>
+              <AddAPhotoSharpIcon style={{ fontSize: 40, cursor: "pointer" }} />
             )}
             <input ref={imageInputRef} style={{ display: 'none' }} type='file' accept='image/*' onChange={onImageInputChangeHandler} />
           </div>
@@ -533,8 +536,8 @@ export default function ActiveUpdate() {
           }
         </div>
         <div className="bottom">
-          <div className='button primary' onClick={onPostButtonClickHandler}>수정</div>
-          <div className='button disable' onClick={onCancleButtonClickHandler}>취소</div>
+          <div className='button-update' onClick={onPostButtonClickHandler}>수정</div>
+          <div className='button-cancle' onClick={onCancleButtonClickHandler}>취소</div>
         </div>
       </div>
     </div>
