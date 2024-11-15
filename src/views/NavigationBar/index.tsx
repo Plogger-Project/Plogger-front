@@ -1,7 +1,6 @@
 import { ChangeEvent, useState, useEffect } from 'react';
 import './style.css';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-
 import { GetSignInResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
 import { ACCESS_TOKEN, ACTIVE_DETAIL_PATH, FIND_ID, FIND_PASSWORD, MYPAGE_PATH, QNA_DETAIL_PATH, RECRUIT_DETAIL_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH } from '../../constants';
@@ -11,12 +10,11 @@ import { ACTIVE_PATH, QNA_PATH, RECRUIT_PATH } from '../../constants';
 import { useCookies } from 'react-cookie';
 import { useSearchStore, useSignInUserStore } from 'src/stores';
 import { AlertList } from 'src/types';
-
 import GetAlertListResponseDto from 'src/apis/dto/response/alert/get-alert-list.response.dto';
 import useAlertPagination from 'src/hooks/alert.pagination.hook';
 import { Badge } from '@mui/material';
 import MailIcon from '@mui/icons-material/Mail';
-
+import MessageIcon from '@mui/icons-material/Message';
 
 type AuthPath = '회원가입';
 
