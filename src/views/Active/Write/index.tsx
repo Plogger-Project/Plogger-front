@@ -17,6 +17,7 @@ import { GetUserListResponseDto } from 'src/apis/dto/response/mypage';
 import { Mention, MentionsInput, SuggestionDataItem } from 'react-mentions';
 
 import AddAPhotoSharpIcon from '@mui/icons-material/AddAPhotoSharp';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
@@ -338,7 +339,7 @@ export default function ActiveWrite() {
           </div>
         </div>
         <div className='input-box'>
-          <div className='input-label'>내가 쓴 구인 글 불러오기</div>
+          <div className='input-label'>구인 글 불러오기</div>
           <select id="activePostSelect" className="mentions-input" onChange={onMyRecruitPostChangeHandler}>
             <option value="">선택하세요</option>
             {selectedMyRecruit.map((myRecruitPost, index) => (
@@ -358,7 +359,7 @@ export default function ActiveWrite() {
             {(activePeople.map((tagUser, index) => (
               <span key={index} className='tagUser'>
                 {tagUser}
-                <button onClick={() => onTagUserRemoveHandler(tagUser)}>X</button>
+                <HighlightOffIcon onClick={() => onTagUserRemoveHandler(tagUser)} style={{width: "20px", marginRight:"5px", cursor: "pointer"}}/>
               </span>))
             )}
           </div>

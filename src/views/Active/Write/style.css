@@ -156,15 +156,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
     transition: border-color 0.3s, box-shadow 0.3s; /* 부드러운 애니메이션 */
     font: inherit;
-}
-
-.tagUser button {
-    margin-left: '8px';
-    color: 'red';
-    cursor: 'pointer';
-    border: 'none';
-    background: 'none';
-    font-weight: 'bold';
+    resize: none;
 }
 
 #active-write-wrapper .image.preview {
