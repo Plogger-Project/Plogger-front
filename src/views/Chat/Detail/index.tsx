@@ -1,13 +1,12 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import './style.css';
 import { useCookies } from 'react-cookie';
-import { GetMessageListResponseDto } from 'src/apis/dto/response/chat';
 import { ResponseDto } from 'src/apis/dto/response';
-import { getChatMessageListRequest, getUserListRequest, postChatMessageRequest } from 'src/apis';
+import { getUserListRequest } from 'src/apis';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ACCESS_TOKEN } from 'src/constants';
-import { useMessageListStore, useSignInUserStore, useSocketStore } from 'src/stores';
-import { ChatMessage, RoomInvite, User } from 'src/types';
+import { ACCESS_TOKEN, CHAT_PATH } from 'src/constants';
+import { useMessageListStore, useSearchStore, useSignInUserStore, useSocketStore } from 'src/stores';
+import { ChatMessage, User } from 'src/types';
 import { GetUserListResponseDto } from 'src/apis/dto/response/mypage';
 import { PersonAddAlt1 } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
@@ -27,7 +26,10 @@ export default function ChatDetail() {
     const navigator = useNavigate();
 
     const { signInUser } = useSignInUserStore();
+    const { searchWord, setSearchWord } = useSearchStore();
     const [cookies] = useCookies();
+
+    const [originalList, setOriginalList] = useState<User[]>([]);
 
     const accessToken = cookies[ACCESS_TOKEN];
 
@@ -49,6 +51,7 @@ export default function ChatDetail() {
 
         const { users }  = responseBody as GetUserListResponseDto;
         setUsers(users);
+        setOriginalList(users);
     }
 
     const onChatMessageSendClickHandler = () => {
@@ -82,11 +85,13 @@ export default function ChatDetail() {
 
         alert('유저들이 초대되었습니다.');
         setSelectedUsers([]);
+        setSearchWord('');
         setIsModalOpen(false);
     }
 
     const closeModal = () => {
         setSelectedUsers([]);
+        setSearchWord('');
         setIsModalOpen(false);
     };
 
@@ -96,8 +101,20 @@ export default function ChatDetail() {
     }
 
     const onBackClickHandler = () => {
-        navigator(-1);
+        navigator(CHAT_PATH);
     };
+
+    const onSendEnterHandler = (e: any) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            onChatMessageSendClickHandler();
+        }
+    }
+
+    const onSearchWordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+        setSearchWord(value);
+    }
 
     let isJoin = false;
 
@@ -113,11 +130,18 @@ export default function ChatDetail() {
         endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
         const roomMessageList = messageList.filter(message => message.roomId == roomId);
         setRoomMessageList(roomMessageList);
+        if (socket) socket.emit('read_message', roomId);
     }, [messageList]);
 
     useEffect(() => {
         endOfMessagesRef.current?.scrollIntoView();
     }, [roomMessageList]);
+
+    // effect: 검색어가 바뀔 시 새 리스트 불러오기 함수 //
+    useEffect(() => {
+        const searchedUser = originalList.filter(user => user.userId.includes(searchWord));
+        setUsers(searchedUser);
+    }, [searchWord]);
 
     return (
         <>
@@ -160,6 +184,7 @@ export default function ChatDetail() {
                         type="text"
                         value={message}
                         placeholder="메시지 입력"
+                        onKeyDown={onSendEnterHandler}
                         onChange={onMessageChangeHandler}
                         className="message-input"
                     />
@@ -175,6 +200,7 @@ export default function ChatDetail() {
                                     X
                                 </button>
                                 <h3>유저 초대</h3>
+                                <input className='invite-search-box' value={searchWord} placeholder='초대할 유저를 검색하세요.' onChange={onSearchWordChangeHandler} />
                                 <div className="user-list-dropdown">
                                     {users.map(user => (
                                         <label key={user.userId}>
