@@ -1,5 +1,6 @@
 /* 전체 레이아웃 */
 #recruit-detail-wrapper {
+    user-select: none;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -574,7 +575,7 @@ border: 0.1px solid rgb(141, 103, 103);
     font-weight: bolder;
     letter-spacing: 2px;
     margin-bottom: 9px;
-    text-align: left;
+    text-align: center;
 
     margin-top: 0px;
 }
@@ -621,17 +622,17 @@ border: 0.1px solid rgb(141, 103, 103);
 }
 
 .report-write {
-    padding: 5px 30px;
+    padding: 5px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 
-    background-color: #4caf50;
+    background-color: #729473;
     color: white;
 }
 
 .report-cancel {
-    padding: 5px 30px;
+    padding: 5px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;

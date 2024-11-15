@@ -1,10 +1,11 @@
 #qna-post-wrapper {
+    user-select: none;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     overflow: hidden;
     margin: 0 auto;
     background-image: url(../../../public/images/qna바탕화면.png);
@@ -16,7 +17,7 @@
 
 #qna-post-wrapper .main {
     min-width: 1134px;
-    height: 750px;
+    height: 700px;
     margin: 0 auto;
 
 }
@@ -27,7 +28,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     margin-top: 100px;
     
 }
@@ -161,6 +161,7 @@
     flex-direction: row;
     text-align: center;
     font-weight: 700;
+    border-bottom: 2px solid black;
 
 }
 

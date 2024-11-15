@@ -339,7 +339,7 @@ export default function ActiveWrite() {
           </div>
         </div>
         <div className='input-box'>
-          <div className='input-label'>구인 글 불러오기</div>
+          <div className='input-label'>구인 게시글 선택</div>
           <select id="activePostSelect" className="mentions-input" onChange={onMyRecruitPostChangeHandler}>
             <option value="">선택하세요</option>
             {selectedMyRecruit.map((myRecruitPost, index) => (

@@ -1,7 +1,6 @@
 import { ChangeEvent, useState, useEffect } from 'react';
 import './style.css';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-
 import { GetSignInResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
 import { ACCESS_TOKEN, ACTIVE_DETAIL_PATH, FIND_ID, FIND_PASSWORD, MYPAGE_PATH, QNA_DETAIL_PATH, RECRUIT_DETAIL_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH } from '../../constants';
@@ -11,11 +10,13 @@ import { ACTIVE_PATH, QNA_PATH, RECRUIT_PATH } from '../../constants';
 import { useCookies } from 'react-cookie';
 import { useSearchStore, useSignInUserStore } from 'src/stores';
 import { AlertList } from 'src/types';
-
 import GetAlertListResponseDto from 'src/apis/dto/response/alert/get-alert-list.response.dto';
 import useAlertPagination from 'src/hooks/alert.pagination.hook';
 import { Badge } from '@mui/material';
 import MailIcon from '@mui/icons-material/Mail';
+
+import TelegramIcon from '@mui/icons-material/Telegram';
+import MessageIcon from '@mui/icons-material/Message';
 
 
 type AuthPath = '회원가입';
@@ -45,7 +46,7 @@ function TableRow({ alerts, getAlertList }: TableRowProps) {
     const [activePostId, setActivePostId] = useState<number>(0);
     const [qnaPostId, setQnaPostId] = useState<number>(0);
 
-    
+
 
 
     // effect: 알람이 변경되면 state에 반영 // 
@@ -99,7 +100,7 @@ function TableRow({ alerts, getAlertList }: TableRowProps) {
             const path = QNA_DETAIL_PATH(qnaPostId);
 
             navigator(path);
-        } 
+        }
         else if (signInUser) {
             navigator(MYPAGE_PATH(signInUser?.userId));
         }
@@ -415,6 +416,10 @@ export default function NavigationBar() {
         removeCookie('accessToken', { path: ROOT_PATH });
 
         navigator(ROOT_ABSOLUTE_PATH);
+        
+        setId('');       
+        setPassword(''); 
+        setMessage('');  
     }
 
     // event handler: 스크롤 이벤트 핸들러 //
@@ -445,10 +450,10 @@ export default function NavigationBar() {
 
     // render: Navigation Bar 컴포넌트 렌더링 //
     return (
-        <div id='navigation-bar'  className={isScrolled ? 'scrolled' : ''}>
+        <div id='navigation-bar' className={isScrolled ? 'scrolled' : ''}>
             <div className='title'>
-            <div className='logo' onClick={onLogoClickHandler}></div>
-            <div className='logo-name' onClick={onLogoClickHandler}>plogger</div>
+                <div className='logo' onClick={onLogoClickHandler}></div>
+                <div className='logo-name' onClick={onLogoClickHandler}>plogger</div>
             </div>
             <div className='manu'>
                 <div className={`manu-recruit ${isReruit ? 'active' : ''}`} onClick={onRecruitClickHandler}>구인게시판</div>
@@ -533,6 +538,21 @@ export default function NavigationBar() {
                     )}
                 </div>
             )}
+            <Badge color="secondary"  overlap="circular" badgeContent={viewList.length > 0 ? viewList.length : 0}
+                style={{
+                    position: 'fixed',
+                    bottom: '30px',
+                    right: '30px',
+                }}>
+                <TelegramIcon
+                    style={{
+                        bottom: '30px',
+                        right: '30px',
+                        fontSize: '4rem',
+                        color: 'rgba(0,0,0,1)',
+                        cursor: 'pointer',
+                    }} />
+            </Badge>
         </div>
     );
 }
