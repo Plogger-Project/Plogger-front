@@ -17,6 +17,7 @@ import { FaCalendarAlt } from 'react-icons/fa';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import AddAPhotoSharpIcon from '@mui/icons-material/AddAPhotoSharp';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
@@ -409,11 +410,11 @@ export default function ActiveUpdate() {
             {(activePeople.map((tagUser) => (
               <span className='tagUser'>
                 {tagUser}
-                <button onClick={() => onTagUserRemoveHandler(tagUser)}>X</button>
+                <HighlightOffIcon onClick={() => onTagUserRemoveHandler(tagUser)} style={{width: "20px", marginRight:"5px", cursor: "pointer"}}/>
               </span>))
             )}
           </div>
-          <MentionsInput value={inputValue} onChange={(e) => handleChange(e.target.value)} placeholder='@유저아이디를 입력해주세요'>
+          <MentionsInput value={inputValue} className="mentions-input" onChange={(e) => handleChange(e.target.value)} placeholder='@유저아이디를 입력해주세요'>
             <Mention trigger="@" data={userList.map(user => ({
               id: user.userId,
               display: user.userId,

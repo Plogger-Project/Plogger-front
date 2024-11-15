@@ -17,6 +17,7 @@ import { GetUserListResponseDto } from 'src/apis/dto/response/mypage';
 import { Mention, MentionsInput, SuggestionDataItem } from 'react-mentions';
 
 import AddAPhotoSharpIcon from '@mui/icons-material/AddAPhotoSharp';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
@@ -358,7 +359,7 @@ export default function ActiveWrite() {
             {(activePeople.map((tagUser, index) => (
               <span key={index} className='tagUser'>
                 {tagUser}
-                <button onClick={() => onTagUserRemoveHandler(tagUser)}>X</button>
+                <HighlightOffIcon onClick={() => onTagUserRemoveHandler(tagUser)} style={{width: "20px", marginRight:"5px", cursor: "pointer"}}/>
               </span>))
             )}
           </div>
