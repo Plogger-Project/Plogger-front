@@ -834,7 +834,7 @@ export default function ActiveDetail() {
                         <div className='right'>
                             {signInUser &&
                                 <div>
-                                    {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{ color: red[500], fontSize: 30 }} /> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{ fontSize: 30 }} />}
+                                    {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{ color: red[500], fontSize: 30, marginTop: '22px' }} /> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{ fontSize: 30, marginTop: '22px' }} />}
                                 </div>
                             }
                         </div>
