@@ -1,4 +1,4 @@
-import React, { MouseEvent, useEffect, useState } from 'react';
+import React, { MouseEvent, useEffect } from 'react';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
 import { ACCESS_TOKEN, CHAT_DETAIL_PATH } from 'src/constants';
@@ -10,7 +10,7 @@ import { ResponseDto } from 'src/apis/dto/response';
 import PostChatRoomRequestDto from 'src/apis/dto/request/chat/post-chat-room.request.dto';
 import { IconButton, Tooltip } from '@mui/material';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { useMessageListStore, useRoomListStore, useSearchStore, useSignInUserStore, useSocketStore } from 'src/stores';
+import { useMessageListStore, useRoomListStore, useSignInUserStore, useSocketStore } from 'src/stores';
 import AddCommentIcon from '@mui/icons-material/AddComment';
 
 interface ChatRoomListProps {
@@ -20,6 +20,8 @@ interface ChatRoomListProps {
 
 function ChatRoomList({ chatRoom, onDelete }: ChatRoomListProps) {
     const { messageList } = useMessageListStore();
+    
+    const navigator = useNavigate();
 
     const noReadCount = messageList.filter(
         message => message.roomId === chatRoom.roomId && 
@@ -27,8 +29,6 @@ function ChatRoomList({ chatRoom, onDelete }: ChatRoomListProps) {
         message.senderId !== 'system' && 
         message.senderId !== 'system-invite'
     ).length;
-
-    const navigator = useNavigate();
 
     const onDetailButtonClickHandler = () => {
         navigator(CHAT_DETAIL_PATH(chatRoom.roomId));
@@ -49,7 +49,6 @@ function ChatRoomList({ chatRoom, onDelete }: ChatRoomListProps) {
                         <ExitToAppIcon />
                     </IconButton>
                 </Tooltip>
-
             </div>
         </div>
     );
