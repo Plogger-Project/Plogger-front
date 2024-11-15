@@ -337,6 +337,8 @@ useEffect(() => {
 
   // render : 구인 게시판 컴포넌트 렌더링 //
   return (
+    <div id="recruit-post-body">
+    <div className="left"></div>
     <div id="recruit-post-wrapper">
       <div className="kakaomap" style={{ opacity: showPosts ? 0 : 1 }} ref={mapRef}>
         <Map
@@ -465,5 +467,7 @@ useEffect(() => {
           </div>
         </div>
       </div>
+      <div className="right"></div>
+    </div>
   );
 }

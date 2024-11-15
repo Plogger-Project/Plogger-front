@@ -28,7 +28,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     margin-top: 100px;
     
 }
@@ -162,6 +161,7 @@
     flex-direction: row;
     text-align: center;
     font-weight: 700;
+    border-bottom: 2px solid black;
 
 }
 

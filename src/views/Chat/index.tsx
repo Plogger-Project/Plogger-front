@@ -2,15 +2,16 @@ import React, { MouseEvent, useEffect, useState } from 'react';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
 import { ACCESS_TOKEN, CHAT_DETAIL_PATH } from 'src/constants';
-import { getMyChatRoomListRequest, postChatRoomRequest } from 'src/apis';
+import { getMyChatRoomListRequest, getTotalChatMessageListRequest, postChatRoomRequest } from 'src/apis';
 import { ChatMessage, ChatRoom, LeaveRoom } from 'src/types';
 import { useCookies } from 'react-cookie';
-import { GetRoomListResponseDto } from 'src/apis/dto/response/chat';
+import { GetMessageListResponseDto, GetRoomListResponseDto } from 'src/apis/dto/response/chat';
 import { ResponseDto } from 'src/apis/dto/response';
 import PostChatRoomRequestDto from 'src/apis/dto/request/chat/post-chat-room.request.dto';
-import { IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { useMessageListStore, useRoomListStore, useSignInUserStore, useSocketStore } from 'src/stores';
+import { useMessageListStore, useRoomListStore, useSearchStore, useSignInUserStore, useSocketStore } from 'src/stores';
+import AddCommentIcon from '@mui/icons-material/AddComment';
 
 interface ChatRoomListProps {
     chatRoom: ChatRoom;
@@ -20,21 +21,36 @@ interface ChatRoomListProps {
 function ChatRoomList({ chatRoom, onDelete }: ChatRoomListProps) {
     const { messageList } = useMessageListStore();
 
-    const noReadCount = messageList.filter(message => message.roomId === chatRoom.roomId && !message.isRead && message.senderId !== 'system' && message.senderId !== 'system-invite').length;
+    const noReadCount = messageList.filter(
+        message => message.roomId === chatRoom.roomId && 
+        !message.isRead && 
+        message.senderId !== 'system' && 
+        message.senderId !== 'system-invite'
+    ).length;
 
     const navigator = useNavigate();
 
     const onDetailButtonClickHandler = () => {
         navigator(CHAT_DETAIL_PATH(chatRoom.roomId));
-    }
+    };
 
     return (
         <div className="chat-room-container" onClick={onDetailButtonClickHandler}>
-            <h4>{chatRoom.roomName} <span>{noReadCount !== 0 && noReadCount}</span></h4>
-            <span>{chatRoom.createdAt}</span>
-            <IconButton onClick={(event) => onDelete(event, chatRoom.roomId)} className='leave-chat-room-btn'>
-                <ExitToAppIcon />
-            </IconButton>
+            <div className="room-info">
+                <h4>{chatRoom.roomName}</h4>
+                <span>{chatRoom.createdAt}</span>
+            </div>
+            <div>
+                {noReadCount !== 0 && (
+                    <span className="no-read-count">{noReadCount}</span>
+                )}
+                <Tooltip title="나가기">
+                    <IconButton onClick={(event) => onDelete(event, chatRoom.roomId)} className="leave-chat-room-btn">
+                        <ExitToAppIcon />
+                    </IconButton>
+                </Tooltip>
+
+            </div>
         </div>
     );
 }
@@ -45,6 +61,7 @@ export default function Chat() {
     const { socket } = useSocketStore();
 
     const { roomList, setRoomList } = useRoomListStore();
+    const { setMessageList } = useMessageListStore();
 
     const accessToken = cookies[ACCESS_TOKEN];
 
@@ -75,12 +92,28 @@ export default function Chat() {
     
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
-            alert("message");
+            alert(message);
             return;
         }
     
         const { rooms } = responseBody as GetRoomListResponseDto;
         setRoomList(rooms);
+    }
+
+    const getChatMessageListResponse = (responseBody: GetMessageListResponseDto | ResponseDto | null) => {
+        const message  = 
+            !responseBody ? '서버에 문제가 있습니다.' : 
+            responseBody.code === 'NCR' ? '존재하지 않는 채팅방입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+    
+        const { messages } = responseBody as GetMessageListResponseDto;
+        setMessageList(messages);
     }
 
     const handleCreateChatRoom = async () => {
@@ -103,22 +136,29 @@ export default function Chat() {
         })
     }
 
+    useEffect(() => {
+        if (!accessToken) return;
+        getTotalChatMessageListRequest(accessToken).then(getChatMessageListResponse);
+    }, [accessToken]);
+
     return (
         <>
-        <div className='chat-blank'></div>
-        <div className="chat-room-list">
-            <h2>채팅방 목록</h2>
-            <button onClick={handleCreateChatRoom} className="create-chat-room-btn">
-                채팅방 만들기
-            </button>
-            {roomList.length === 0 ? (
-                <div>생성된 채팅방이 없습니다.</div>
-            ) : (
-                roomList.map((chatRoom, index) => (
-                    <ChatRoomList key={index} chatRoom={chatRoom} onDelete={onLeaveButtonClickHandler} />
-                ))
-            )}
-        </div>
+            <div className='chat-blank'></div>
+            <div className="chat-room-list">
+                <div className='chat-room-title'>
+                    <h2>채팅방 목록</h2>
+                    <IconButton onClick={handleCreateChatRoom} className="create-chat-room-btn" style={{ color: '#007bff' }}>
+                        <AddCommentIcon fontSize="large" style={{width: '40px'}} />
+                    </IconButton>
+                </div>
+                {roomList.length === 0 ? (
+                    <div>생성된 채팅방이 없습니다.</div>
+                ) : (
+                    roomList.map((chatRoom, index) => (
+                        <ChatRoomList key={index} chatRoom={chatRoom} onDelete={onLeaveButtonClickHandler} />
+                    ))
+                )}
+            </div>
         </>
     );
 }
