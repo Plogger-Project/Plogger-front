@@ -24,6 +24,8 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { red } from '@mui/material/colors';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 
 interface TableRowProps {
@@ -712,11 +714,7 @@ export default function ActiveDetail() {
                             <div className='profileImage' style={{ backgroundImage: `url(${profileImage})`, cursor: 'pointer' }} onClick={() => onProfileImageClick(writer)}></div>
                             <div className='userInfo-right'>
                                 <div className='name'>{writer}</div>
-                                <div className='location'>{address}</div>
                                 <div className='date'>{createdAt}</div>
-                                <div className='activity-period'>
-                                    <span>활동 날짜: {startDate} ~ {endDate}</span>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -800,41 +798,57 @@ export default function ActiveDetail() {
                 </div>
                 <div className='postBottom'>
                     <div className='postInfo'>
-                        <div className='tag'>
-                            <AvatarGroup max={4} onClick={handleClick}>
-                                {activePeople.map((tagUser, index) =>
-                                    <Avatar key={index} src={tagProfileImage[tagUser]} />
-                                )}
-                            </AvatarGroup>
-                            <Popover
-                                id={id}
-                                open={open}
-                                anchorEl={anchorEl}
-                                onClose={handleClose}
-                                anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'center',
-                                }}
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'center',
-                                }}
-                            >
-                                <Box sx={{ padding: 2 }}>
-                                    <Typography variant="subtitle1">함께 활동한 유저들</Typography>
-                                    {activePeople.map((tagUser, index) => (
-                                        <Box key={index} display="flex" alignItems="center" mb={1}>
-                                            <Avatar src={tagProfileImage[tagUser]} sx={{ width: 24, height: 24, mr: 1 }} onClick={() => onProfileImageClick(tagUser)} style={{ cursor: 'pointer' }} />
-                                            <Typography variant="body2">{tagUser}</Typography>
-                                        </Box>
-                                    ))}
-                                </Box>
-                            </Popover>
+                        <div className='left'>
+                            <div className='tag'>
+                                <AvatarGroup max={4} onClick={handleClick}>
+                                    {activePeople.map((tagUser, index) =>
+                                        <Avatar key={index} src={tagProfileImage[tagUser]} />
+                                    )}
+                                </AvatarGroup>
+                                <Popover
+                                    id={id}
+                                    open={open}
+                                    anchorEl={anchorEl}
+                                    onClose={handleClose}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'center',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'center',
+                                    }}
+                                >
+                                    <Box sx={{ padding: 2 }}>
+                                        <Typography variant="subtitle1">함께 활동한 유저들</Typography>
+                                        {activePeople.map((tagUser, index) => (
+                                            <Box key={index} display="flex" alignItems="center" mb={1}>
+                                                <Avatar src={tagProfileImage[tagUser]} sx={{ width: 24, height: 24, mr: 1 }} onClick={() => onProfileImageClick(tagUser)} style={{ cursor: 'pointer' }} />
+                                                <Typography variant="body2">{tagUser}</Typography>
+                                            </Box>
+                                        ))}
+                                    </Box>
+                                </Popover>
+                            </div>
+                            <div className='activity-inform'>
+                                <div className='active-icon'>
+                                    <Tooltip title='활동날짜'>
+                                        <CalendarMonthIcon style={{ marginRight: '5px', verticalAlign: 'middle', marginBottom: '5px' }} />
+                                    </Tooltip>
+                                    <span style={{ marginTop: '3px' }}>{startDate} ~ {endDate}</span>
+                                </div>
+                                <div className='active-icon'>
+                                    <Tooltip title='활동장소'>
+                                        <LocationOnIcon style={{ marginRight: '5px', verticalAlign: 'middle', marginBottom: '5px' }} />
+                                    </Tooltip>
+                                    <span style={{ marginTop: '3px' }}>{address}</span>
+                                </div>
+                            </div>
                         </div>
                         <div className='right'>
                             {signInUser &&
                                 <div>
-                                    {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{ color: red[500], fontSize: 30, marginTop: '22px' }} /> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{ fontSize: 30, marginTop: '22px' }} />}
+                                    {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{ color: red[500], fontSize: 30, marginTop: '40px' }} /> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{ fontSize: 30, marginTop: '40px' }} />}
                                 </div>
                             }
                         </div>

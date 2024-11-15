@@ -150,8 +150,17 @@
 #active-detail-wrapper .postInfo .left {
     display: flex;
     flex-direction: row;
-    gap: 20px;
-    font-weight: 700;
+    gap: 30px;
+}
+
+#active-detail-wrapper .postInfo .activity-inform {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+#active-detail-wrapper .postInfo .active-icon {
+    display: flex;
 }
 
 #active-detail-wrapper .tag {
