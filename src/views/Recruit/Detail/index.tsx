@@ -1009,7 +1009,7 @@ export default function RecruitDetail() {
                   : ''}
 
                 {(signInUser?.userId === writer) || !signInUser ? '' :
-                  <button className='reportButton' onClick={openReportModalHandler}>신고하기</button>
+                  <button className='reportButton' onClick={openReportModalHandler}>신고</button>
                 }
               </div>
             )}

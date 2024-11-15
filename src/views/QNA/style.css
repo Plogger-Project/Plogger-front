@@ -161,6 +161,7 @@
     flex-direction: row;
     text-align: center;
     font-weight: 700;
+    border-bottom: 2px solid black;
 
 }
 

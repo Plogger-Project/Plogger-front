@@ -505,7 +505,7 @@ export default function Admin() {
                     <div className="table">
                       <div className="th">
                         <div className="td-report-reportid">신고 번호</div>
-                        <div className="td-report-writer">작성자</div>
+                        <div className="td-report-writer">신고자</div>
                         <div className="td-report-number">글 번호</div>
                         <div className="td-report-content">신고내역</div>
                         <div className="td-report-create-date">신고한 날짜</div>
@@ -531,7 +531,7 @@ export default function Admin() {
                     <div className="table">
                       <div className="th">
                         <div className="td-active-reportid">신고 번호</div>
-                        <div className="td-active-writer">작성자</div>
+                        <div className="td-active-writer">신고자</div>
                         <div className="td-active-number">글 번호</div>
                         <div className="td-active-content">신고내역</div>
                         <div className="td-active-create-date">신고한 날짜</div>
