@@ -246,9 +246,6 @@ export default function RecruitPost() {
     }
   };
 
-  
-
-
   // effect: scrollY 상태가 바뀔 때 showPosts 상태 업데이트
   useEffect(() => {
     setShowPosts(scrollY >= 100);

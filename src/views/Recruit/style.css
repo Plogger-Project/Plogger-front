@@ -13,6 +13,7 @@ width: 393px;
 } */
 
 #recruit-post-wrapper {
+    user-select: none;
     display: flex;
     flex-direction: column;
     justify-content: center;

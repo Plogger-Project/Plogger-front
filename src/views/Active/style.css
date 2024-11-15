@@ -1,14 +1,25 @@
 #active-post-wrapper {
+    user-select: none;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: 1134px;
+    height: 100%;
     overflow: hidden;
     margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f8f0;
+    background-image: url(../../../public/images/active\ 배경화면.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+
+#active-post-wrapper .active-main {
+    width: 1134px;
+    height: 100%;
+    margin: 80px 0px;
 }
 
 #active-post-wrapper .active-blank {

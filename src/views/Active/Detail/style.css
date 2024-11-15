@@ -1,5 +1,6 @@
 /* 전체 레이아웃 */
 #active-detail-wrapper {
+    user-select: none;
     display: flex;
     justify-content: center;
     align-items: center;
