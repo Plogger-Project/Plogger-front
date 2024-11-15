@@ -35,6 +35,7 @@ function TableRow({ activePost, profileImage, getActiveList }: TableRowProps) {
 
   return (
     <Box sx={{ margin: "10px" }}>
+      <div style={ {cursor:'pointer'} }>
       <Card onClick={onDetailButtonClickHandler} sx={{ minWidth: 330, padding: '16px 12px', paddingBottom: '0px', marginBottom: '15px' }}> {/* 카드 내부 밑 여백 제거 */}
         <CardMedia
           component="img"
@@ -42,7 +43,7 @@ function TableRow({ activePost, profileImage, getActiveList }: TableRowProps) {
             height: 180,
             width: '100%', 
             objectFit: 'contain',
-            marginBottom: 2
+            marginBottom: 2,
           }}
           image={activePost.activePostImage || defaultImage}
           alt="게시물 썸네일"
@@ -71,6 +72,8 @@ function TableRow({ activePost, profileImage, getActiveList }: TableRowProps) {
           </Box>
         </CardContent>
       </Card>
+      </div>
+
       <Box display="flex" alignItems="center" mt={1} pl={2}>
         <div className="profile-image" style={{ 
           width: 32, height: 32, borderRadius: '50%', 
@@ -164,14 +167,8 @@ export default function Active() {
   // render //
   return (
     <>
-    <div className="active-top-blank"></div>
-    <div className="active-post-header">
-      <Typography variant="h5" component="div" className="header-text">
-        활동 게시판
-      </Typography>
-    </div>
     <div id="active-post-wrapper">
-      <div className="active-blank"></div>
+      <div className="active-main">
       <Box display="flex" justifyContent="space-between" width="100%" alignItems="center" mt={2}>
         <span className="active-post-page-number">
           전체 {totalCount}건 | 페이지 {currentPage}/{totalPage}
@@ -192,10 +189,10 @@ export default function Active() {
           </Grid>
         ))}
       </Grid>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+      <Box display="flex" justifyContent="center"  alignItems="center" mt={2}>
         <Pagination currentPage={currentPage} {...paginationProps} />
       </Box>
-      <div className="active-blank"></div>
+    </div>
     </div>
     </>
   );

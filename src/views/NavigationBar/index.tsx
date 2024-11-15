@@ -16,6 +16,7 @@ import GetAlertListResponseDto from 'src/apis/dto/response/alert/get-alert-list.
 import useAlertPagination from 'src/hooks/alert.pagination.hook';
 import { Badge } from '@mui/material';
 import MailIcon from '@mui/icons-material/Mail';
+import TelegramIcon from '@mui/icons-material/Telegram';
 
 
 type AuthPath = '회원가입';
@@ -533,6 +534,21 @@ export default function NavigationBar() {
                     )}
                 </div>
             )}
+            <Badge color="secondary"  overlap="circular" badgeContent={viewList.length > 0 ? viewList.length : 0}
+                style={{
+                    position: 'fixed',
+                    bottom: '30px',
+                    right: '30px',
+                }}>
+                <TelegramIcon
+                    style={{
+                        bottom: '30px',
+                        right: '30px',
+                        fontSize: '4rem',
+                        color: 'rgba(0,0,0,1)',
+                        cursor: 'pointer',
+                    }} />
+            </Badge>
         </div>
     );
 }
