@@ -45,7 +45,7 @@ function TableRow({ alerts, getAlertList }: TableRowProps) {
     const [activePostId, setActivePostId] = useState<number>(0);
     const [qnaPostId, setQnaPostId] = useState<number>(0);
 
-    
+
 
 
     // effect: 알람이 변경되면 state에 반영 // 
@@ -99,7 +99,7 @@ function TableRow({ alerts, getAlertList }: TableRowProps) {
             const path = QNA_DETAIL_PATH(qnaPostId);
 
             navigator(path);
-        } 
+        }
         else if (signInUser) {
             navigator(MYPAGE_PATH(signInUser?.userId));
         }
@@ -415,6 +415,10 @@ export default function NavigationBar() {
         removeCookie('accessToken', { path: ROOT_PATH });
 
         navigator(ROOT_ABSOLUTE_PATH);
+        
+        setId('');       
+        setPassword(''); 
+        setMessage('');  
     }
 
     // event handler: 스크롤 이벤트 핸들러 //
@@ -445,10 +449,10 @@ export default function NavigationBar() {
 
     // render: Navigation Bar 컴포넌트 렌더링 //
     return (
-        <div id='navigation-bar'  className={isScrolled ? 'scrolled' : ''}>
+        <div id='navigation-bar' className={isScrolled ? 'scrolled' : ''}>
             <div className='title'>
-            <div className='logo' onClick={onLogoClickHandler}></div>
-            <div className='logo-name' onClick={onLogoClickHandler}>plogger</div>
+                <div className='logo' onClick={onLogoClickHandler}></div>
+                <div className='logo-name' onClick={onLogoClickHandler}>plogger</div>
             </div>
             <div className='manu'>
                 <div className={`manu-recruit ${isReruit ? 'active' : ''}`} onClick={onRecruitClickHandler}>구인게시판</div>

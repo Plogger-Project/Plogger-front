@@ -180,7 +180,7 @@
     border-bottom: 2px solid rgba(180, 180, 180);
 }
 
-#admin-wrapper .my-point.active {
+#adminpage-wrapper .my-point.active {
     font-weight: 600;
 }
 
@@ -203,6 +203,7 @@
     flex-direction: row;
     text-align: center;
     font-weight: 700;
+    border-bottom: 2px solid black;
 }
 
 #adminpage-wrapper .tr {
@@ -310,7 +311,7 @@
     flex: 0.3;
 }
 
-#adinpage-wrapper .td-user-address {
+#adminpage-wrapper .td-user-address {
     flex: 1;
 }
 
