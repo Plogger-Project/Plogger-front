@@ -320,6 +320,7 @@
     justify-content: center; /* 가로 중앙 정렬 */
     text-align: center;
     margin-right: 20px;
+    margin-top: 15px;
 }
 
 #qna-detail-wrapper .commentUserInfo-left {
