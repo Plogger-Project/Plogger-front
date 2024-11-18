@@ -81,6 +81,8 @@
     background-position: 50% 50%;
     background-size: cover;
     cursor: pointer;
+
+    margin-bottom: 11px;
 }
 
 #qna-detail-wrapper .postTop .postBox {
@@ -444,6 +446,7 @@ border: 0.1px solid rgb(141, 103, 103);
     display: flex;
     flex-direction: column;
 
+    margin-top: 8px;
     border-radius: 5px;
     gap: 10px;
 

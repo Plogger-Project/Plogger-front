@@ -75,6 +75,7 @@
     height: 30px;
     border-radius: 50%;
 
+    margin-bottom: 11px;
     background-position: 50% 50%;
     background-size: cover;
     cursor: pointer;
@@ -516,6 +517,7 @@ border: 0.1px solid rgb(141, 103, 103);
     border-radius: 5px;
     gap: 10px;
 
+    margin-top: 8px;
     overflow-y: auto;
 }
 
