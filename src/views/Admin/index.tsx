@@ -457,6 +457,20 @@ export default function Admin() {
     getUserList();
   }
 
+
+  // effect : 로그인 필요 //
+  useEffect(() => {
+    if (!isOwner || !accessToken) {
+      alert("관리자 전용입니다.");
+      navigator(-1);
+      return;
+    }
+  }, []);
+
+  if (!isOwner) {
+    return null;
+  }
+
   return (
     <div id='adminpage-wrapper'>
       <div className='adminpage'>

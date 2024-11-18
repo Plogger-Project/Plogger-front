@@ -72,6 +72,8 @@
     background-position: 50% 50%;
     background-size: cover;
     cursor: pointer;
+
+    margin-bottom: 11px;
 }
 
 #active-detail-wrapper .postTop .postBox {
@@ -161,7 +163,8 @@
     padding: 5px;               
     background-color: #f2f2f2; 
     border-radius: 8px;        
-    border: 1px solid #ccc;    
+    border: 1px solid #ccc;
+    cursor: pointer;    
 }
 
 #active-detail-wrapper .tagUser {
@@ -409,6 +412,7 @@ border: 0.1px solid rgb(141, 103, 103);
     z-index: 9000;
     width: 80px;
 
+    margin-top: 8px;
     display: flex;
     flex-direction: column;
     border-radius: 5px;

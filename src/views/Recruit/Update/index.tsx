@@ -32,6 +32,9 @@ export default function RecruitUpdate() {
   // state: 게시글 번호 경로 변수 상태 //
   const { recruitPostId } = useParams();
 
+  // state: 로그인 유저 상태 //
+  const { signInUser } = useSignInUserStore();
+
   // state: cookie 상태 //
   const [cookies] = useCookies();
 
@@ -319,6 +322,21 @@ export default function RecruitUpdate() {
     // 좌표에 따른 주소 요청 함수 호출
     displayAddressInfo(lat, lng);
   }, [lat, lng]);
+
+  const accessToken = cookies[ACCESS_TOKEN];
+
+  // effect : 로그인 필요 //
+  useEffect(() => {
+    if (!accessToken) {
+      alert("로그인이 필요합니다.");
+      navigator(-1);
+      return;
+    }
+  }, []);
+
+  if (!accessToken) {
+    return null;
+  }
 
 
   // render: 구인 게시판 작성 컴포넌트 렌더링 //
