@@ -388,3 +388,20 @@
 #navigation-bar .alert-close {
     cursor: pointer;
 }
+
+#navigation-bar .message-count-bedge {
+    position: fixed;
+    bottom: 80px;
+    right: 25px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50% 50%;
+    width: 24px;
+    height: 24px;
+
+    background-color: #da3e3e;
+    color: #ccc;
+}

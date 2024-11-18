@@ -33,7 +33,7 @@ import { PostFollowRequestDto } from "./dto/request/follow";
 import GetRecruitAddressCountResponseDto from "./dto/response/recruit/get-recruit-address-count.response.dto";
 import { PostAlertRequestDto } from "./dto/request/alert";
 
-// variable: API URL 상수 //
+
 const PLOGGER_API_DOMAIN = "http://localhost:4000"
 
 const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
