@@ -171,6 +171,8 @@ export default function NavigationBar() {
     // state:
     const { messageList } = useMessageListStore();
 
+    const noReadMessageCount = messageList.filter(message => message.senderId !== 'system' && message.senderId !== 'system-invite' && !message.isRead).length;
+
 
     // function: alert list 불러오기 함수 //
     const getAlertList = () => {
@@ -553,12 +555,8 @@ export default function NavigationBar() {
                     )}
                 </div>
             )}
-            <Badge color="secondary"  overlap="circular" badgeContent={unreadRoomCount > 0 ? unreadRoomCount : 0}
-                style={{
-                    position: 'fixed',
-                    bottom: '30px',
-                    right: '30px',
-                }}>
+            {signInUser &&
+                <>
                 <TelegramIcon
                     onClick={() => navigator(CHAT_PATH)}
                     sx={{
@@ -577,7 +575,9 @@ export default function NavigationBar() {
                         },
                     }}
                 />
-            </Badge>
+                <div className='message-count-bedge'>{noReadMessageCount > 99 ? '99+' : noReadMessageCount}</div>
+                </>
+            }
         </div>
     );
 }

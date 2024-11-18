@@ -32,9 +32,7 @@
 #active-detail-wrapper .postTop {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     border-bottom: 1px solid #000000;
-
     padding: 10px;
 }
 
@@ -78,24 +76,17 @@
 
 #active-detail-wrapper .postTop .postBox {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+#active-detail-wrapper .postTop .postBox-bottom{
+    display: flex;
+    flex-direction: row;
     gap: 10px;
 }
 
-#active-detail-wrapper .postTop .postBox .listButton {
-    width: 65px;
-    height: 30px;
-    background-color: var(--gray-color);
-    color: white;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    text-align: center;
-    
-}
+
 
 #active-detail-wrapper .postDetail {
     display: flex;
@@ -185,13 +176,12 @@
 
 #active-detail-wrapper .postInfo .right {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 10px
 }
 
 #active-detail-wrapper .postInfo .right .like {
     width: 25px;
-    height: 25px;
     background-size: contain;
     background-image: url(/public/images/empty-heart.png);
     background-position: 50% 50%;
@@ -200,6 +190,21 @@
 
 #active-detail-wrapper .postInfo .right .like.liked {
     background-image: url(/public/images/full-heart.png);
+}
+
+#active-detail-wrapper .postInfo .right .listButton {
+    width: 65px;
+    height: 30px;
+    background-color: var(--gray-color);
+    color: white;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    text-align: center;
+    
 }
 
 #active-detail-wrapper .postBottom {

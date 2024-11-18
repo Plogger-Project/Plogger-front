@@ -714,7 +714,7 @@ export default function ActiveDetail() {
                             <div className='profileImage' style={{ backgroundImage: `url(${profileImage})`, cursor: 'pointer' }} onClick={() => onProfileImageClick(writer)}></div>
                             <div className='userInfo-right'>
                                 <div className='name'>{writer}</div>
-                                <div className='date'>{createdAt}</div>
+                                
                             </div>
                         </div>
                     </div>
@@ -740,7 +740,8 @@ export default function ActiveDetail() {
                             </div>
                         </div>}
                     <div className='postBox'>
-                        <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
+                    
+                        <div className='postBox-bottom'>
                         <div className='detailCount'>조회수 : {view}</div>
                         |
                         <div className='detailCount'>좋아요 : {like}</div>
@@ -770,6 +771,8 @@ export default function ActiveDetail() {
                                 }
                             </div>
                         )}
+                    </div>
+                    <div className='date'>작성일 : {createdAt}</div>
                     </div>
                 </div>
                 <div className='postDetail'>
@@ -846,9 +849,10 @@ export default function ActiveDetail() {
                             </div>
                         </div>
                         <div className='right'>
+                        <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
                             {signInUser &&
-                                <div>
-                                    {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{ color: red[500], fontSize: 30, marginTop: '40px' }} /> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{ fontSize: 30, marginTop: '40px' }} />}
+                                <div style={{textAlign:"right"}}>
+                                    {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{ color: red[500], fontSize: 30 }} /> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{ fontSize: 30 }} />}
                                 </div>
                             }
                         </div>

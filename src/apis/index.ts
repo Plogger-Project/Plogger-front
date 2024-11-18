@@ -34,7 +34,7 @@ import GetRecruitAddressCountResponseDto from "./dto/response/recruit/get-recrui
 import { PostAlertRequestDto } from "./dto/request/alert";
 
 // variable: API URL 상수 //
-const PLOGGER_API_DOMAIN = "http://192.168.7.27:4000"
+const PLOGGER_API_DOMAIN = "http://192.168.7.27:4000";
 
 const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
 const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`
