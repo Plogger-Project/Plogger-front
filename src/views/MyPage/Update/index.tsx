@@ -338,6 +338,21 @@ export default function MyPageUpdate() {
     }
   }, [signInUser]);
 
+  const accessToken = cookies[ACCESS_TOKEN];
+
+  // effect : 로그인 필요 //
+  useEffect(() => {
+    if (!accessToken) {
+      alert("로그인이 필요합니다.");
+      navigator(-1);
+      return;
+    }
+  }, []);
+
+  if (!accessToken) {
+    return null;
+  }
+
   return (
     <div>
       <div className='mypage-update-container'>

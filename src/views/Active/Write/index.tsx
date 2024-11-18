@@ -324,6 +324,21 @@ export default function ActiveWrite() {
     getMyRecruitPosts();
   }, [recruitId]);
 
+  const accessToken = cookies[ACCESS_TOKEN];
+
+  // effect : 로그인 필요 //
+  useEffect(() => {
+    if (!accessToken) {
+      alert("로그인이 필요합니다.");
+      navigator(-1);
+      return;
+    }
+  }, []);
+
+  if (!accessToken) {
+    return null;
+  }
+
   // render: 활동 게시판 작성 컴포넌트 렌더링 //
   return (
     <div id='active-write-wrapper'>

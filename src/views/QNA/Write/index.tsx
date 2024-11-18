@@ -131,6 +131,20 @@ export default function QnaWrite() {
     setProfileImage(signInUser?.profileImage || null);
   }, []);
 
+  const accessToken = cookies[ACCESS_TOKEN];
+
+  // effect : 로그인 필요 //
+  useEffect(() => {
+    if (!accessToken) {
+      alert("로그인이 필요합니다.");
+      navigator(-1);
+    }
+  }, []);
+
+  if (!accessToken) {
+    return null;
+  }
+
   // render: Qna 게시판 작성 컴포넌트 렌더링 //
   return (
     <div id='qna-write-wrapper'>

@@ -37,6 +37,11 @@ import { red, yellow } from '@mui/material/colors';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { LocationOn } from '@mui/icons-material';
+import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
+import GroupsIcon from '@mui/icons-material/Groups';
 
 // interface: recruit comment list 아이템 컴포넌트 Properties //
 interface TableRowProps {
@@ -564,7 +569,7 @@ export default function RecruitDetail() {
 
     if (!recruitPostId) return;
 
-    getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
+    getRecruitJoinListRequest(recruitPostId).then(getRecruitJoinResponse);
   }
 
 
@@ -919,7 +924,7 @@ export default function RecruitDetail() {
     getRecruitScrapRequest(recruitPostId).then(getRecruitScrapResponse);
     getRecruitLikeRequest(recruitPostId).then(getRecruitLikeResponse);
     getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
-    getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
+    getRecruitJoinListRequest(recruitPostId).then(getRecruitJoinResponse);
   }, [recruitPostId, signInUser]);
 
 
@@ -955,9 +960,9 @@ export default function RecruitDetail() {
             <div className='userInfo-left'>
               <div className='profileImage' onClick={onProfileImageClickButtonHandler} style={{ backgroundImage: `url(${writerProfileImage})` }} ></div>
               <div className='userInfo-right'>
-                <div className='name'>작성자 : {writer}</div>
-                <div className='location'>장소 : {address}</div>
-                <div className='date'>작성일 : {createdAt}</div>
+                <div className='name'>{writer}</div>
+                
+                <div className='date'>{createdAt}</div>
               </div>
             </div>
             {isReportModalOpen &&
@@ -983,7 +988,7 @@ export default function RecruitDetail() {
               </div>}
           </div>
           <div className='postBox'>
-            <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
+            
             <div className='detailCount'>좋아요 : {like}</div>
             |
             <div className='detailCount'>조회수 : {view}</div>
@@ -1041,10 +1046,32 @@ export default function RecruitDetail() {
         </div>
         <div className='postBottom'>
           <div className='postInfo'>
+            <div className='topInfo'>
+              <div className='topInfo-left'>
+              <Tooltip title='모집 장소'>
+                <LocationOn style={{}}/>
+              </Tooltip>
+            <div className='location'>{address}</div>
+            
+            </div>
+            <div className='topInfo-right'>
+              <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
+            </div>
+            </div>
+            <div className='middleInfo'>
             <div className='left'>
-              <div className='endDate'>모집 종료일 : {endDate}</div>
-              <div className='members' onClick={handleClick}>모집 인원 : {(joinList.length) + 1}/{people}</div>
-
+              <div className='recruitend'>
+              <Tooltip title='모집 종료일'>
+              <AccessAlarmIcon />
+              </Tooltip>
+              <div className='endDate'>{endDate}</div>
+              </div>
+              <div className='recruitpeople'>
+                <div className='recruitpeople-left'>
+                <Tooltip title='모집 인원'>
+                  <GroupsIcon></GroupsIcon>
+                </Tooltip>
+              <div className='members' onClick={handleClick}>{(joinList.length) + 1}/{people}</div>
               <Popover
                 id={id}
                 open={open}
@@ -1069,27 +1096,40 @@ export default function RecruitDetail() {
                   ))}
                 </Box>
               </Popover>
-              <div className='isCompleted'>{isCompleted ? "마감됨" : "모집중"}</div>
+              <div className='isCompleted' style={{ color: isCompleted ? '#6c757d' : '#2e7d32' }}>{isCompleted ? "마감됨" : "모집중"}</div>
               {signInUser?.userId === writer ? '' :
                 <div className='accession' onClick={onAccessionButtonClickHandler}>{isCompleted ? "모집 완료" : (signInUser && joinList.some(user => user.userId === signInUser.userId)) ? "참여 취소" : "참여"}</div>
               }
               {signInUser?.userId === writer ?
                 <div className='end' onClick={onEndButtonClickHandler}>{isCompleted ? "종료 취소" : "모집 종료"}</div>
                 : ''}
+                
+
+              
             </div>
-            <div className='right'>
+            <div className='recruitpeople-right'>
+              
+              <div className='right'>
               {signInUser &&
                 // <div className={`like ${isLiked ? 'liked' : ''}`} onClick={onLikeButtonClickHandler}></div>
                 <div>
-                  {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{ color: red[500], fontSize: 30 }} /> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{ fontSize: 30 }} />}
+                  {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{ color: red[500], fontSize: 30,cursor:"pointer" }} /> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{ fontSize: 30,cursor:"pointer"  }} />}
                 </div>
               }
               {signInUser &&
                 // <div className={`scrap ${isScraped ? 'scraped' : ''}`} onClick={onScrapButtonClickHandler}></div>
                 <div>
-                  {isScraped ? <BookmarkIcon onClick={onScrapButtonClickHandler} sx={{ color: yellow[600], fontSize: 30 }} /> : <BookmarkBorderIcon onClick={onScrapButtonClickHandler} sx={{ fontSize: 30 }} />}
+                  {isScraped ? <BookmarkIcon onClick={onScrapButtonClickHandler} sx={{ color: yellow[600], fontSize: 30,cursor:"pointer"  }} /> : <BookmarkBorderIcon onClick={onScrapButtonClickHandler} sx={{ fontSize: 30,cursor:"pointer"  }} />}
                 </div>
               }
+            </div>
+            </div>
+            </div>
+              
+              </div>
+
+              
+            
             </div>
           </div>
 

@@ -143,6 +143,21 @@ export default function ChatDetail() {
         setUsers(searchedUser);
     }, [searchWord]);
 
+
+
+    // effect : 로그인 필요 //
+    useEffect(() => {
+        if (!accessToken) {
+            alert("로그인이 필요합니다.");
+            navigator(-1);
+            return;
+        }
+    }, []);
+
+    if (!accessToken) {
+        return null;
+    }
+
     return (
         <>
             <div className='chat-blank'></div>

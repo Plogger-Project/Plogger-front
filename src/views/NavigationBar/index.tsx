@@ -3,12 +3,12 @@ import './style.css';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { GetSignInResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
-import { ACCESS_TOKEN, ACTIVE_DETAIL_PATH, FIND_ID, FIND_PASSWORD, MYPAGE_PATH, QNA_DETAIL_PATH, RECRUIT_DETAIL_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH } from '../../constants';
+import { ACCESS_TOKEN, ACTIVE_DETAIL_PATH, CHAT_PATH, FIND_ID, FIND_PASSWORD, MYPAGE_PATH, QNA_DETAIL_PATH, RECRUIT_DETAIL_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH } from '../../constants';
 import SignInRequestDto from '../../apis/dto/request/auth/sign-in.request.dto';
 import { deleteAlertListRequest, getAlertListRequest, getSignInRequest, signInRequest } from '../../apis';
 import { ACTIVE_PATH, QNA_PATH, RECRUIT_PATH } from '../../constants';
 import { useCookies } from 'react-cookie';
-import { useSearchStore, useSignInUserStore } from 'src/stores';
+import { useMessageListStore, useSearchStore, useSignInUserStore } from 'src/stores';
 import { AlertList } from 'src/types';
 import GetAlertListResponseDto from 'src/apis/dto/response/alert/get-alert-list.response.dto';
 import useAlertPagination from 'src/hooks/alert.pagination.hook';
@@ -168,6 +168,11 @@ export default function NavigationBar() {
     // state: scroll 상태 //
     const [isScrolled, setIsScrolled] = useState(false);
 
+    // state:
+    const { messageList } = useMessageListStore();
+
+    const noReadMessageCount = messageList.filter(message => message.senderId !== 'system' && message.senderId !== 'system-invite' && !message.isRead).length;
+
 
     // function: alert list 불러오기 함수 //
     const getAlertList = () => {
@@ -270,6 +275,17 @@ export default function NavigationBar() {
         const { userId, password, name, telNumber, address, profileImage, isAdmin, ecoScore, mileage, comment } = responseBody as GetSignInResponseDto;
         setSignInUser({ userId, password, name, telNumber, address, profileImage, isAdmin, ecoScore, mileage, comment });
     };
+
+        // function: 새 메시지 표시 함수 //
+        const unreadRoomCount = messageList
+        .filter(
+            message => 
+            !message.isRead && 
+            message.senderId !== 'system' && 
+            message.senderId !== 'system-invite'
+        )
+        .map(message => message.roomId)
+        .filter((value, index, self) => self.indexOf(value) === index).length;
 
 
     // effect: Sns Success 컴포넌트 로드시 accessToken과 expiration을 확인하여 로그인 처리 함수 //
@@ -448,6 +464,7 @@ export default function NavigationBar() {
         };
     }, []);
 
+
     // render: Navigation Bar 컴포넌트 렌더링 //
     return (
         <div id='navigation-bar' className={isScrolled ? 'scrolled' : ''}>
@@ -538,21 +555,29 @@ export default function NavigationBar() {
                     )}
                 </div>
             )}
-            <Badge color="secondary"  overlap="circular" badgeContent={viewList.length > 0 ? viewList.length : 0}
-                style={{
-                    position: 'fixed',
-                    bottom: '30px',
-                    right: '30px',
-                }}>
+            {signInUser &&
+                <>
                 <TelegramIcon
-                    style={{
+                    onClick={() => navigator(CHAT_PATH)}
+                    sx={{
+                        position: 'fixed',
                         bottom: '30px',
                         right: '30px',
                         fontSize: '4rem',
-                        color: 'rgba(0,0,0,1)',
+                        backgroundColor: 'rgb(10, 100, 180)',
+                        borderRadius: '50%',
+                        padding: '2px',
+                        color: 'white',
                         cursor: 'pointer',
-                    }} />
-            </Badge>
+                        transition: 'background-color 0.3s ease',
+                        '&:hover': {
+                            backgroundColor: 'rgb(60, 140, 220)',
+                        },
+                    }}
+                />
+                <div className='message-count-bedge'>{noReadMessageCount > 99 ? '99+' : noReadMessageCount}</div>
+                </>
+            }
         </div>
     );
 }

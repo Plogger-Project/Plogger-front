@@ -32,9 +32,7 @@
 #active-detail-wrapper .postTop {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     border-bottom: 1px solid #000000;
-
     padding: 10px;
 }
 
@@ -74,28 +72,23 @@
     background-position: 50% 50%;
     background-size: cover;
     cursor: pointer;
+
+    margin-bottom: 11px;
 }
 
 #active-detail-wrapper .postTop .postBox {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+#active-detail-wrapper .postTop .postBox-bottom{
+    display: flex;
+    flex-direction: row;
     gap: 10px;
 }
 
-#active-detail-wrapper .postTop .postBox .listButton {
-    width: 65px;
-    height: 30px;
-    background-color: var(--gray-color);
-    color: white;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    text-align: center;
-    
-}
+
 
 #active-detail-wrapper .postDetail {
     display: flex;
@@ -150,8 +143,17 @@
 #active-detail-wrapper .postInfo .left {
     display: flex;
     flex-direction: row;
-    gap: 20px;
-    font-weight: 700;
+    gap: 30px;
+}
+
+#active-detail-wrapper .postInfo .activity-inform {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+#active-detail-wrapper .postInfo .active-icon {
+    display: flex;
 }
 
 #active-detail-wrapper .tag {
@@ -161,7 +163,8 @@
     padding: 5px;               
     background-color: #f2f2f2; 
     border-radius: 8px;        
-    border: 1px solid #ccc;    
+    border: 1px solid #ccc;
+    cursor: pointer;    
 }
 
 #active-detail-wrapper .tagUser {
@@ -176,13 +179,12 @@
 
 #active-detail-wrapper .postInfo .right {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 10px
 }
 
 #active-detail-wrapper .postInfo .right .like {
     width: 25px;
-    height: 25px;
     background-size: contain;
     background-image: url(/public/images/empty-heart.png);
     background-position: 50% 50%;
@@ -191,6 +193,21 @@
 
 #active-detail-wrapper .postInfo .right .like.liked {
     background-image: url(/public/images/full-heart.png);
+}
+
+#active-detail-wrapper .postInfo .right .listButton {
+    width: 65px;
+    height: 30px;
+    background-color: var(--gray-color);
+    color: white;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    text-align: center;
+    
 }
 
 #active-detail-wrapper .postBottom {
@@ -395,6 +412,7 @@ border: 0.1px solid rgb(141, 103, 103);
     z-index: 9000;
     width: 80px;
 
+    margin-top: 8px;
     display: flex;
     flex-direction: column;
     border-radius: 5px;

@@ -6,7 +6,7 @@ import ActivePost from './views/Active';
 import NavigationBar from './views/NavigationBar';
 import Main from './views/Main';
 import QnaPost from './views/QNA';
-import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD, RECRUIT_DETAIL_ABSOLUTE_PATH, MYPAGE_PATH, ACTIVE_DETAIL_PATH, ACTIVE_UPDATE_PATH, ACTIVE_WRITE_PATH, CHAT_PATH, CHAT_DETAIL_PATH, QNA_DETAIL_PATH, QNA_WRITE_PATH, QNA_UPDATE_PATH } from './constants';
+import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD,  MYPAGE_PATH, ACTIVE_DETAIL_PATH, ACTIVE_UPDATE_PATH, ACTIVE_WRITE_PATH, CHAT_PATH, CHAT_DETAIL_PATH, QNA_DETAIL_PATH, QNA_WRITE_PATH, QNA_UPDATE_PATH, SIGN_UP_PATH, ACTIVE_PATH, QNA_PATH, GIFTICON_PATH, MYPAGE_UPDATE_PATH, ADMIN } from './constants';
 import Mileage from './views/Gifticon';
 import RecruitUpdate from './views/Recruit/Update';
 import RecruitWrite from './views/Recruit/Write';
@@ -31,7 +31,6 @@ import ChatDetail from './views/Chat/Detail';
 import QnaWrite from './views/QNA/Write';
 import QnaUpdate from './views/QNA/Update';
 import Mypage from './views/MyPage';
-import { ChatMessage, ChatRoom, RoomInvite } from './types';
 import { GetMessageListResponseDto, GetRoomListResponseDto } from './apis/dto/response/chat';
 
 function SocketInit() {
@@ -126,7 +125,23 @@ function SnsSuccess() {
       navigator(ROOT_ABSOLUTE_PATH);
     }
     else navigator(AUTH_ABSOLUTE_PATH);
+
+    
   }, []);
+
+
+
+  // effect : 로그인 필요 //
+  useEffect(() => {
+    if (!accessToken) {
+      alert("로그인이 필요합니다.");
+      navigator(-1);
+    }
+  }, []);
+
+  if (!accessToken) {
+    return null;
+  }
 
   // render: Sns Success 컴포넌트 렌더링 //
   return <></>;
@@ -183,7 +198,7 @@ function Plogger() {
   const location = useLocation();
 
 
-  const showNavigationBar = location.pathname !== '/sign-up' && location.pathname !== FIND_ID && location.pathname !== '/mypage/update' && location.pathname !== FIND_PASSWORD && location.pathname !== FIND_PASSWORD;
+  const showNavigationBar = location.pathname !== SIGN_UP_PATH && location.pathname !== FIND_ID && location.pathname !== MYPAGE_UPDATE_PATH && location.pathname !== FIND_PASSWORD && location.pathname !== FIND_PASSWORD;
 
   // render: Plogger 컴포넌트 렌더링 //
   return (
@@ -191,28 +206,28 @@ function Plogger() {
       {showNavigationBar && <NavigationBar />}
       <Routes>
         <Route index element={<Main />} />
-        <Route path='/sign-up' element={<SignUp />} />
+        <Route path={SIGN_UP_PATH} element={<SignUp />} />
         <Route path={RECRUIT_PATH} element={<RecruitPost/> } />
         <Route path={RECRUIT_WRITE_PATH} element={<RecruitWrite />} />
         <Route path={RECRUIT_DETAIL_PATH(':recruitPostId')} element={<RecruitDetail />} />
         <Route path={RECRUIT_UPDATE_PATH(':recruitPostId')} element={<RecruitUpdate />} />
-        <Route path='/active' element={<ActivePost />} />
+        <Route path={ACTIVE_PATH} element={<ActivePost />} />
         <Route path={ACTIVE_WRITE_PATH} element={<ActiveWrite />} />
         <Route path={ACTIVE_DETAIL_PATH(':activePostId')} element={<ActiveDetail />} />
         <Route path={ACTIVE_UPDATE_PATH(':activePostId')} element={<ActiveUpdate />} />
-        <Route path="/qna" element={<QnaPost />} />
+        <Route path={QNA_PATH} element={<QnaPost />} />
         <Route path={QNA_WRITE_PATH} element={<QnaWrite />} />
         <Route path={QNA_DETAIL_PATH(':qnaPostId')} element={<QnADetail />} />
         <Route path={QNA_UPDATE_PATH(':qnaPostId')} element={<QnaUpdate /> }/>
-        <Route path='/mileage' element={<Mileage/>} />
+        <Route path={GIFTICON_PATH} element={<Mileage/>} />
         <Route path={MYPAGE_PATH(':userId')} element={<Mypage />} />
         <Route path={CHAT_PATH} element={<Chat />} />
         <Route path={CHAT_DETAIL_PATH(':roomId')} element={<ChatDetail />} />
-        <Route path='/mypage/update' element={<MyPageUpdate />} />
+        <Route path={MYPAGE_UPDATE_PATH} element={<MyPageUpdate />} />
         <Route path={FIND_ID} element={<FindId />} />
         <Route path={FIND_PASSWORD} element={<FindPassword />} />
         <Route path={SNS_SUCCESS_PATH} element={<SnsSuccess />} />
-        <Route path='/admin' element={<Admin />} />
+        <Route path={ADMIN} element={<Admin />} />
       </Routes>
       <SocketInit />
     </>

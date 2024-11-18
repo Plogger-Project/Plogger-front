@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import './style.css'
 import { findPasswordRequest,  sendPasswordAuthRequest, telAuthCheckRequest } from 'src/apis';
 import { ResponseDto } from 'src/apis/dto/response';
@@ -9,6 +9,8 @@ import { FindPasswordRequestDto, SendPasswordAuthRequestDto, TelAuthCheckRequest
 import { useNavigate } from 'react-router-dom';
 
 export default function FindId() {
+
+    const [cookies] = useCookies();
 
     // state: 인증 상태 //
     const [userId, setUserId] = useState<string>('');
@@ -191,6 +193,7 @@ export default function FindId() {
             setLoading(false);
         }
     };
+
 
     return (
         <div id='find-password-wrapper'>
