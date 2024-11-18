@@ -794,6 +794,11 @@ export default function Mypage() {
 
   // effect: 컴포넌트 로드 시 팔로워, 팔로위 리스트 불러오기 함수 //
   useEffect(() => {
+    if (!accessToken) {
+      alert("로그인이 필요합니다.");
+      navigator(-1);
+      return;
+    }
     getFollowerList();
     getFolloweeList();
   }, [userId]);
@@ -803,12 +808,7 @@ export default function Mypage() {
 
   }, [isFollowing]);
 
-  useEffect(() => {
-    if (!accessToken) {
-      alert("로그인이 필요합니다.");
-      navigator('/'); 
-    }
-  }, []);
+
 
   if (!accessToken) {
     return null; 

@@ -569,7 +569,7 @@ export default function RecruitDetail() {
 
     if (!recruitPostId) return;
 
-    getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
+    getRecruitJoinListRequest(recruitPostId).then(getRecruitJoinResponse);
   }
 
 
@@ -924,7 +924,7 @@ export default function RecruitDetail() {
     getRecruitScrapRequest(recruitPostId).then(getRecruitScrapResponse);
     getRecruitLikeRequest(recruitPostId).then(getRecruitLikeResponse);
     getRecruitPostRequest(recruitPostId).then(getRecruitPostResponse);
-    getRecruitJoinListRequest(recruitPostId, accessToken).then(getRecruitJoinResponse);
+    getRecruitJoinListRequest(recruitPostId).then(getRecruitJoinResponse);
   }, [recruitPostId, signInUser]);
 
 
@@ -960,9 +960,9 @@ export default function RecruitDetail() {
             <div className='userInfo-left'>
               <div className='profileImage' onClick={onProfileImageClickButtonHandler} style={{ backgroundImage: `url(${writerProfileImage})` }} ></div>
               <div className='userInfo-right'>
-                <div className='name'>작성자 : {writer}</div>
+                <div className='name'>{writer}</div>
                 
-                <div className='date'>작성일 : {createdAt}</div>
+                <div className='date'>{createdAt}</div>
               </div>
             </div>
             {isReportModalOpen &&
