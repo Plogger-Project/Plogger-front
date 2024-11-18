@@ -9,34 +9,62 @@
 }
 
 #mg-wrapper .button {
+    cursor: pointer;
     border-radius: 6px;
-    padding: 8px 24px;
+    padding: 10px 30px;
+    margin-top: 10px;
 
-    font-size: 16px;
     font-weight: 400;
-    line-height: 175%;
+    line-height: 15px;
     text-align: center;
 
-    color: rgba(255, 255, 255, 1);
+    background-color: rgba(255, 255, 255, 1);
 }
 
-#mg-wrapper .button.primary {
-    background-color: rgba(0, 95, 65, 1);
+#mg-wrapper .button.primary,
+#mg-wrapper .modify-modal-bottom .button.primary {
     border: 0.1px solid rgb(103, 141, 129);
+    font-size: 16px;
+    color: rgba(0, 95, 65, 1);
+    min-width: 30px;
+    justify-content: center;
+    align-content: center;
 }
 
-#mg-wrapper .button.primary:hover {
-    background-color: rgba(0,95,65,1);
+#mg-wrapper .button.primary:hover,
+#mg-wrapper .modify-modal-bottom .button.primary:hover {
+    background-color: rgba(0, 95, 65, 1);
     color: rgba(255, 255, 255, 1);
 }
 
-#mg-wrapper .button.second {
-    background-color: var(--primary-10-color);
-    color: var(--primary-color);
+#mg-wrapper .button.second,
+#mg-wrapper .modify-modal-bottom .button.second {
+    border: 0.1px solid rgb(105, 103, 141);
+    font-size: 16px;
+    color: rgb(5, 0, 95);
+    min-width: 30px;
+    justify-content: center;
+    align-content: center;
 }
 
-#mg-wrapper .button.error {
-    background-color: var(--error-color);
+#mg-wrapper .button.second:hover,
+#mg-wrapper .modify-modal-bottom .button.second:hover {
+    background-color: rgb(5, 0, 95);
+    color: rgba(255, 255, 255, 1);
+}
+
+#mg-wrapper .modify-modal-bottom .button.error {
+    border: 0.1px solid rgba(221, 114, 114, 0.8);
+    font-size: 16px;
+    color: rgb(255, 0, 0);
+    min-width: 30px;
+    justify-content: center;
+    align-content: center;
+}
+
+#mg-wrapper .modify-modal-bottom .button.error:hover {
+    background-color: rgb(255, 0, 0);
+    color: rgba(255, 255, 255, 1);
 }
 
 #mg-wrapper {
