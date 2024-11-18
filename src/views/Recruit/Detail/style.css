@@ -196,6 +196,10 @@
 
 }
 
+#recruit-detail-wrapper .postInfo .middleInfo .members{
+cursor: pointer;
+}
+
 #recruit-detail-wrapper .postInfo .left {
     display: flex;
     flex-direction: column;

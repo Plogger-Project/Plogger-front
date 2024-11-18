@@ -182,6 +182,21 @@ export default function QnaUpdate() {
     getQnaPostRequest(qnaPostId).then(getQnaPostResponse);
   }, [qnaPostId])
 
+  const accessToken = cookies[ACCESS_TOKEN];
+
+  // effect : 로그인 필요 //
+  useEffect(() => {
+    if (!accessToken) {
+      alert("로그인이 필요합니다.");
+      navigator(-1);
+      return;
+    }
+  }, []);
+
+  if (!accessToken) {
+    return null;
+  }
+
   // render: QNA 게시판 수정 컴포넌트 렌더링 //
   return (
     <div id='qna-update-wrapper'>

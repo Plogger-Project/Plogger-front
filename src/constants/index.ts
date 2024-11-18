@@ -2,6 +2,9 @@
 export const ROOT_PATH = '/';
 export const AUTH_PATH = '/auth';
 
+// 회원가입 //
+export const SIGN_UP_PATH = '/sign-up';
+
 export const RECRUIT_PATH = '/recruit';
 export const RECRUIT_DETAIL_PATH = (recruitPostId: string | number) => `${RECRUIT_PATH}/${recruitPostId}`;
 // export const RECRUIT_DETAIL_PATH = `${RECRUIT_PATH}/detail`;
@@ -28,7 +31,7 @@ export const FIND_ID = '/find-id';
 export const FIND_PASSWORD = '/find-password';
 
 export const MYPAGE_PATH = (userId: string) => `/mypage/${userId}`;
-
+export const MYPAGE_UPDATE_PATH = `${MYPAGE_PATH} / update`;
 export const GIFTICON_PATH = '/mileage';
 
 export const ADMIN = '/admin';

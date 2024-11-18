@@ -15,6 +15,7 @@ import useGeolocation from "src/hooks/useGeolocation.hook";
 import DatePicker from "react-datepicker";
 
 import AddAPhotoSharpIcon from '@mui/icons-material/AddAPhotoSharp';
+import { sign } from "crypto";
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
@@ -256,6 +257,21 @@ export default function RecruitWrite() {
     navigator(RECRUIT_PATH);
   }
 
+
+  const accessToken = cookies[ACCESS_TOKEN];
+
+  // effect : 로그인 필요 //
+  useEffect(() => {
+    if (!accessToken) {
+      alert("로그인이 필요합니다.");
+      navigator(-1);
+      return;
+    }
+  }, []);
+
+  if (!accessToken) {
+    return null;
+  }
   
 
   // render: 구인 게시판 작성 컴포넌트 렌더링 //

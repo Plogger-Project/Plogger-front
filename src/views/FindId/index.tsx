@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import './style.css'
 import FindIdRequestDto from 'src/apis/dto/request/auth/find-id-request.dto';
 import { findIdRequest, sendAuthRequest } from 'src/apis';
@@ -10,6 +10,10 @@ import { SendAuthRequestDto, TelAuthCheckRequestDto } from 'src/apis/dto/request
 import { useNavigate } from 'react-router-dom';
 
 export default function FindId() {
+
+
+    // state: cookie 상태 //
+    const [cookies] = useCookies();
 
     // state: 인증 상태 //
     const [message, setMessage] = useState<string>('');
