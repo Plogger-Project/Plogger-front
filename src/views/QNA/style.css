@@ -213,3 +213,7 @@
     width: 80px;
 }
 
+#qna-post-wrapper .td-qna-writer,
+#qna-post-wrapper .td-qna-create-date {
+    align-content: center;
+}
