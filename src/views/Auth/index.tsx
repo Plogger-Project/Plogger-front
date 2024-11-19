@@ -261,7 +261,10 @@ export default function SignUp() {
     // 회원가입 버튼 클릭 핸들러
     const onSignUpButtonClickHandler = () => {
 
-        if (!isComplete) return;
+        if (!isComplete) {
+            alert("항목 기입과 인증 완료햊쉐요.")   
+            return;
+        }
 
         const requestBody: SignUpRequestDto = {
             userId: id,

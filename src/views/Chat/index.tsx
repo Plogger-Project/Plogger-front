@@ -1,9 +1,9 @@
-import React, { MouseEvent, useEffect } from 'react';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
 import { ACCESS_TOKEN, CHAT_DETAIL_PATH } from 'src/constants';
 import { getMyChatRoomListRequest, getTotalChatMessageListRequest, postChatRoomRequest } from 'src/apis';
-import { ChatMessage, ChatRoom, LeaveRoom } from 'src/types';
+import { ChatRoom } from 'src/types';
 import { useCookies } from 'react-cookie';
 import { GetMessageListResponseDto, GetRoomListResponseDto } from 'src/apis/dto/response/chat';
 import { ResponseDto } from 'src/apis/dto/response';
@@ -59,6 +59,8 @@ export default function Chat() {
     const { signInUser } = useSignInUserStore();
     const { socket } = useSocketStore();
 
+    const [currentUsers, setCurrentUsers] = useState<string[]>([]);
+
     const { roomList, setRoomList } = useRoomListStore();
     const { setMessageList } = useMessageListStore();
 
@@ -67,7 +69,6 @@ export default function Chat() {
     const accessToken = cookies[ACCESS_TOKEN];
 
     const postChatRoomResponse = (responseBody: ResponseDto | null) => {
-        
         const message = 
             !responseBody ? '서버에 문제가 있습니다.' : 
             responseBody.code === 'VF' ? '잘못된 접근입니다.' : 
@@ -79,6 +80,7 @@ export default function Chat() {
             alert(message);
             return;
         }
+        
         getMyChatRoomListRequest(accessToken).then(getChatRoomListResponse);
     }
 
@@ -135,10 +137,11 @@ export default function Chat() {
             roomId,
             userId: signInUser?.userId
         })
-    }
+    };
 
     useEffect(() => {
         if (!accessToken) return;
+        getMyChatRoomListRequest(accessToken).then(getChatRoomListResponse);
         getTotalChatMessageListRequest(accessToken).then(getChatMessageListResponse);
     }, [accessToken]);
 

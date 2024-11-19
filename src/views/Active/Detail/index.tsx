@@ -275,7 +275,7 @@ export default function ActiveDetail() {
 
         const { activePostId, activePostTitle, activePostContent, activePostWriterId, activeLocation,
             activePostCreatedAt, activeStartDate, activeEndDate, activeView, activePostLike,
-            activePostImage, activePeople
+            activePostImage, activePeople, activeAddress
         } = responseBody as GetActivePostResponseDto;
 
         setPostId(activePostId);
@@ -287,6 +287,7 @@ export default function ActiveDetail() {
         setEndDate(activeEndDate);
         setView(activeView);
         setLike(activePostLike);
+        setAddress(activeAddress);
         setImage(activePostImage);
         setActivePeople(activePeople);
 
@@ -508,29 +509,7 @@ export default function ActiveDetail() {
         getActiveLikeRequest(activePostId).then(getActiveLikeResponse);
     }, [activePostId, signInUser]);
 
-    // effect: 좌표로 주소 정보 요청 함수 //
-    useEffect(() => {
-        const { kakao } = window;
-        if (!kakao || !kakao.maps || !kakao.maps.services) return;
-        const geocoder = new kakao.maps.services.Geocoder();
 
-        // 지정된 좌표의 주소를 가져오는 함수
-        const displayAddressInfo = (lat: number, lng: number) => {
-            geocoder.coord2RegionCode(lng, lat, (result: string | any[], status: any) => {
-                if (status === kakao.maps.services.Status.OK) {
-                    for (let i = 0; i < result.length; i++) {
-                        if (result[i].region_type === 'H') {
-                            setAddress(result[i].address_name);  // address 주소 문자열 저장
-                            break;
-                        }
-                    }
-                }
-            });
-        };
-
-        // 좌표에 따른 주소 요청 함수 호출
-        displayAddressInfo(lat, lng);
-    }, [lat, lng]);
 
     // event handler: 좋아요 버튼 클릭 이벤트 처리 //
     const onLikeButtonClickHandler = () => {
@@ -702,6 +681,7 @@ export default function ActiveDetail() {
     useEffect(() => {
         getActiveCommentList();
     }, [activePostId]);
+
 
     // render: 활동 게시판 디테일 컴포넌트 렌더링 //
     return (
