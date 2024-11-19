@@ -51,6 +51,7 @@
 #active-detail-wrapper .postTop .userInfo-right {
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 
@@ -80,12 +81,23 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
+    
+}
+#active-detail-wrapper .postTop .postBox-right{
+display: flex;
+flex-direction: row;
 }
 
 #active-detail-wrapper .postTop .postBox-bottom{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 10px;
+}
+
+#active-detail-wrapper .postTop .postBox-bottom .view-like{
+display: flex;
+flex-direction: row;
+gap: 5px;
 }
 
 
@@ -407,7 +419,6 @@ border: 0.1px solid rgb(141, 103, 103);
 }
 
 #active-detail-wrapper .options {
-    position: absolute;
 
     z-index: 9000;
     width: 80px;

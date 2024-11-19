@@ -58,6 +58,7 @@
 #qna-detail-wrapper .postTop .userInfo-right {
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 

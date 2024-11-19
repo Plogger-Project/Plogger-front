@@ -224,7 +224,10 @@ export default function SignUp() {
 
     // 인증번호 전송 버튼 클릭 핸들러
     const onTelNumberSendClickHandler = () => {
-        if (!telNumber) return;
+        if (!telNumber) {
+            setTelNumberMessage('숫자 11자를 입력해주세요.');
+            return;
+        }
 
         const pattern = /^[0-9]{11}$/;
         const isMatched = pattern.test(telNumber);

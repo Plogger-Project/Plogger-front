@@ -51,11 +51,13 @@
     display: flex;
     flex-direction: row;
     gap: 15px;
+    
 }
 
 #recruit-detail-wrapper .postTop .userInfo-right {
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 
@@ -86,6 +88,31 @@
     align-items: center;
     gap: 10px;
 }
+
+
+#recruit-detail-wrapper .postTop .postBox {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    
+}
+#recruit-detail-wrapper .postTop .postBox-right{
+display: flex;
+flex-direction: row;
+}
+
+#recruit-detail-wrapper .postTop .postBox-bottom{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#recruit-detail-wrapper .postTop .postBox-bottom .view-like{
+display: flex;
+flex-direction: row;
+gap: 5px;
+}
+
 
 
 

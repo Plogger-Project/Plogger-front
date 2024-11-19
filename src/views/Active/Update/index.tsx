@@ -5,9 +5,9 @@ import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
 import { User } from 'src/types';
 import { useKakaoLoader } from 'src/hooks';
-import { ACCESS_TOKEN, ACTIVE_DETAIL_PATH, ACTIVE_PATH } from 'src/constants';
+import { ACCESS_TOKEN, ACTIVE_ABSOLUTE_PATH, ACTIVE_DETAIL_PATH, ACTIVE_PATH } from 'src/constants';
 import { ResponseDto } from 'src/apis/dto/response';
-import { deleteTagRequest, fileUploadRequest, getActivePostRequest, getUserListRequest, patchActivePostRequest, postTagRequest } from 'src/apis';
+import { deleteTagRequest, fileUploadRequest, getActivePostRequest, getActiveUserInfoRequest, getUserListRequest, patchActivePostRequest, postTagRequest } from 'src/apis';
 import { PatchActivePostRequestDto, PostActiveTagRequestDto } from 'src/apis/dto/request/active';
 import { GetActivePostResponseDto } from 'src/apis/dto/response/active';
 import { GetUserListResponseDto } from 'src/apis/dto/response/mypage';
@@ -18,6 +18,7 @@ import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import AddAPhotoSharpIcon from '@mui/icons-material/AddAPhotoSharp';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
@@ -53,12 +54,14 @@ export default function ActiveUpdate() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
-  const [address, setAddress] = useState<string>('');
+  const [address, setAddress] = useState<string>(''); 
+  const [writer, setWriter] = useState<string>(''); 
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(new Date());
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(new Date()); // 날짜 상태 추가
   const [isStartDatePickerOpen, setStartIsDatePickerOpen] = useState(false); // 달력 열기 상태 추가
   const [isEndDatePickerOpen, setEndIsDatePickerOpen] = useState(false); // 달력 열기 상태 추가
   const [recruitId, setRecruitId] = useState<number>(0);
+  const [writerProfileImage, setWriterProfileImage] = useState<string>('');
 
   const [lng, setLng] = useState<number>(0);
   const [lat, setLat] = useState<number>(0);
@@ -87,13 +90,14 @@ export default function ActiveUpdate() {
       return;
     }
 
-    const { activePostTitle, activePostContent, activeLocation,
+    const { activePostTitle, activePostContent, activeLocation, activePostWriterId,
       activeStartDate, activeEndDate, activePostImage, activePeople, recruitId
     } = responseBody as GetActivePostResponseDto;
 
     setTitle(activePostTitle);
     setContent(activePostContent);
     setStartDate(activeStartDate);
+    setWriter(activePostWriterId)
     setEndDate(activeEndDate);
     setImage(activePostImage);
     setActivePeople(activePeople);
@@ -102,6 +106,28 @@ export default function ActiveUpdate() {
     const [postLat, postLng] = activeLocation.split(', ').map(coord => (Math.floor(Number(coord.trim()) * 1000000) / 1000000));
     setLat(postLat);
     setLng(postLng);
+
+    getActiveUserInfoRequest(activePostWriterId).then(getActivePostUserResponse);
+  }
+
+  // function: get active post user info 함수 //
+  const getActivePostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
+    const message = !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+    
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      navigator(ACTIVE_ABSOLUTE_PATH);
+      return;
+    }
+
+    const { profileImage } = responseBody as GetSignInResponseDto;
+    setWriterProfileImage(profileImage);
+
+
   }
 
   // function: 활동 게시글 수정 함수 //
@@ -408,9 +434,9 @@ export default function ActiveUpdate() {
       <div id='active-update-input-container'>
         <div className='userInfo'>
           <div className='userInfo-left'>
-            <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }}></div>
+            <div className='profileImage' style={{ backgroundImage: `url(${writerProfileImage})` }}></div>
             <div className='userInfo-right'>
-              <div className='name'>{signInUser?.userId}</div>
+              <div className='name'>{writer}</div>
               <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
             </div>
           </div>
