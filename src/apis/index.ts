@@ -594,10 +594,10 @@ export const deleteUserRequest = async (userId: string, accessToken: string) => 
 
 const FILE_UPLOAD_URL = `${PLOGGER_API_DOMAIN}/file/upload`;
 
-const multipart = { headers: { 'Content-Type': 'multipart/form-data' } }
+const multipart = (accessToken: string) => ({ headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${accessToken}` } })
 
-export const fileUploadRequest = async (requestBody: FormData) => {
-    const url = await axios.post(FILE_UPLOAD_URL, requestBody, multipart)
+export const fileUploadRequest = async (requestBody: FormData, accessToken: string) => {
+    const url = await axios.post(FILE_UPLOAD_URL, requestBody, multipart(accessToken))
         .then(responseDataHandler<string>)
         .catch(error => null)
     return url;
