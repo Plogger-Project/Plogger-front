@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Plogger.css';
-import { Routes, Route, useLocation, useSearchParams, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import SignUp from './views/Auth';
 import ActivePost from './views/Active';
 import NavigationBar from './views/NavigationBar';
@@ -94,6 +94,10 @@ function SocketInit() {
       socket.on('leave_anyone', () => { 
         getChatRoomList(); 
       });
+      socket.on('joined_room', (roomId: number) => { // 방에 들어가자마자 join 됨
+        getChatRoomList(); 
+        socket.emit("join_room", { roomId })
+      });
       getChatRoomList();
       getTotalChatMessageListRequest(accessToken).then(getChatMessageListResponse);
     }
@@ -157,7 +161,6 @@ function Plogger() {
   // state: cookie 상태 //
   const [cookies, _, removeCookie] = useCookies();
 
-
   const accessToken = cookies[ACCESS_TOKEN];
 
   // function: 네비게이터 함수 //
@@ -187,8 +190,6 @@ function Plogger() {
 
   };
 
-  
-
   // effect: cookie의 accessToken 값이 변경될 때마다 로그인 유저 정보를 요청하는 함수 //
   useEffect(()=>{
     if(accessToken) getSignInRequest(accessToken).then(getSignInResponse);
@@ -197,8 +198,9 @@ function Plogger() {
   
   const location = useLocation();
 
+  const { roomId } = useParams();
 
-  const showNavigationBar = location.pathname !== SIGN_UP_PATH && location.pathname !== FIND_ID && location.pathname !== MYPAGE_UPDATE_PATH && location.pathname !== FIND_PASSWORD && location.pathname !== FIND_PASSWORD;
+  const showNavigationBar = location.pathname !== SIGN_UP_PATH && location.pathname !== FIND_ID && location.pathname !== MYPAGE_UPDATE_PATH && location.pathname !== FIND_PASSWORD && location.pathname !== FIND_PASSWORD && !location.pathname.includes(CHAT_DETAIL_PATH(''));
 
   // render: Plogger 컴포넌트 렌더링 //
   return (
