@@ -11,9 +11,9 @@ import { GetUserListResponseDto } from 'src/apis/dto/response/mypage';
 import { PersonAddAlt1 } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import MenuIcon from '@mui/icons-material/Menu';
 
 export default function ChatDetail() {
-
     const { roomId } = useParams();
     const [message, setMessage] = useState<string>(''); 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -181,6 +181,23 @@ export default function ChatDetail() {
                     <IconButton className="back-button" onClick={() => onBackClickHandler()}>
                         <ArrowBackIcon />
                     </IconButton>
+                    <div className="menu-icon-wrapper">
+                        <IconButton className="menu-button" onClick={() => setIsUsersModalOpen(prev => !prev)}>
+                            <MenuIcon />
+                        </IconButton>
+                        {isUsersModalOpen && (
+                            <div className="user-list-popup">
+                                <h3>유저 목록</h3>
+                                <div className="user-list">
+                                    {currentUsers.map((userId) => (
+                                        <div key={userId} className="user-item">
+                                            {userId}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 <div className="chat-messages">
@@ -222,11 +239,7 @@ export default function ChatDetail() {
                         전송
                     </button>
                 </div>
-
-                <div className="view-users-button">
-                    <button onClick={onUsersButtonClick}>현재 방 유저 목록 보기</button>
-                </div>
-
+                
                 {isModalOpen && (
                     <div className="modal-overlay">
                         <div className="modal-content">
@@ -263,24 +276,6 @@ export default function ChatDetail() {
                             <button onClick={onInviteUsersButtonClick} className="send-invite-button">
                                 초대
                             </button>
-                        </div>
-                    </div>
-                )}
-
-                {isUsersModalOpen && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
-                            <button onClick={closeUsersModal} className="modal-close-button">
-                                X
-                            </button>
-                            <h3>현재 방의 유저 목록</h3>
-                            <div className="user-list">
-                                {currentUsers.map((userId) => (
-                                    <div key={userId} className="user-item">
-                                        {userId}
-                                    </div>
-                                ))}
-                            </div>
                         </div>
                     </div>
                 )}

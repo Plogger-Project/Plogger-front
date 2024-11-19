@@ -213,6 +213,45 @@
 
 .back-arrow {
     display: flex;
+    justify-content: space-between;
+}
+
+.menu-icon-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.user-list-popup {
+    position: absolute;
+    top: 40px; /* Adjust based on icon size */
+    left: 50px; /* Position to the right of the icon */
+    width: 200px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 1000;
+    padding: 10px;
+}
+
+.user-list-popup h3 {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.user-item {
+    padding: 8px;
+    font-size: 14px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.user-item:last-child {
+    border-bottom: none;
+}
+
+.menu-button {
+    cursor: pointer;
 }
 
 @media (max-width: 500px) {
