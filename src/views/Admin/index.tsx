@@ -79,6 +79,7 @@ export default function Admin() {
   // variable: 작성자 여부 //
   const isOwner = (signInUser?.userId === userId) ? signInUser : user;
   let followId = (signInUser?.userId === userId) ? signInUser?.userId : user?.userId;
+  const isAdmin = signInUser?.isAdmin;
 
   // effect: 유저 정보가 변경되면 state에 반영 // 
   useEffect(() => {
@@ -460,14 +461,14 @@ export default function Admin() {
 
   // effect : 로그인 필요 //
   useEffect(() => {
-    if (!isOwner || !accessToken) {
+    if (!isAdmin || !accessToken) {
       alert("관리자 전용입니다.");
       navigator(-1);
       return;
     }
   }, []);
 
-  if (!isOwner) {
+  if (!isAdmin) {
     return null;
   }
 
