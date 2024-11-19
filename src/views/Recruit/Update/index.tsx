@@ -251,7 +251,7 @@ export default function RecruitUpdate() {
     if (imageFile) {
       const formData = new FormData();
       formData.append('file', imageFile);
-      url = await fileUploadRequest(formData);
+      url = await fileUploadRequest(formData,accessToken);
     }
     url = url ? url : image;
 

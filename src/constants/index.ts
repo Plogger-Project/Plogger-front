@@ -31,7 +31,7 @@ export const FIND_ID = '/find-id';
 export const FIND_PASSWORD = '/find-password';
 
 export const MYPAGE_PATH = (userId: string) => `/mypage/${userId}`;
-export const MYPAGE_UPDATE_PATH = `${MYPAGE_PATH} / update`;
+export const MYPAGE_UPDATE_PATH = '/mypage/update';
 export const GIFTICON_PATH = '/mileage';
 
 export const ADMIN = '/admin';

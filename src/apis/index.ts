@@ -25,14 +25,12 @@ import { GetUserListResponseDto } from "./dto/response/mypage";
 import { PatchQnaCommentRequestDto, PatchQnaPostRequestDto, PostQnaPostRequestDto } from "./dto/request/qna";
 import GetQnaPostResponseDto from "./dto/response/qna/get-qna-post.response.dto";
 import PostChatRoomRequestDto from "./dto/request/chat/post-chat-room.request.dto";
-import PostChatMessageRequestDto from "./dto/request/chat/post-chat-message.request.dto";
 import { GetMessageListResponseDto, GetRoomListResponseDto } from "./dto/response/chat";
 import PostQnaCommentRequestDto from "./dto/request/qna/post-qna-comment.request.dto";
 import GetQnaCommentListResponseDto from "./dto/response/qna/get-qna-comment-list.response.dto";
 import { PostFollowRequestDto } from "./dto/request/follow";
 import GetRecruitAddressCountResponseDto from "./dto/response/recruit/get-recruit-address-count.response.dto";
 import { PostAlertRequestDto } from "./dto/request/alert";
-
 
 const PLOGGER_API_DOMAIN = "http://192.168.7.27:4000"
 
@@ -172,9 +170,6 @@ const CHAT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/chat`;
 
 const POST_CHAT_ROOM_API_URL = `${CHAT_MODULE_URL}/rooms`;
 const GET_CHAT_ROOM_LIST_API_URL = `${CHAT_MODULE_URL}/rooms`;
-const DELETE_CHAT_ROOM_API_URL = (roomId: string | number) => `${CHAT_MODULE_URL}/rooms/${roomId}`;
-const POST_CHAT_MESSAGE_API_URL = (roomId: string | number) => `${CHAT_MODULE_URL}/rooms/${roomId}/messages`;
-const GET_CHAT_MESSAGE_LIST_API_URL = (roomId: string | number) => `${CHAT_MODULE_URL}/rooms/${roomId}/messages`;
 const GET_TOTAL_CHAT_MESSAGE_LIST_API_URL = `${CHAT_MODULE_URL}/messages`;
 
 // function: Authorizarion Bearer 헤더 //
@@ -594,10 +589,10 @@ export const deleteUserRequest = async (userId: string, accessToken: string) => 
 
 const FILE_UPLOAD_URL = `${PLOGGER_API_DOMAIN}/file/upload`;
 
-const multipart = { headers: { 'Content-Type': 'multipart/form-data' } }
+const multipart = (accessToken: string) => ({ headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${accessToken}` } })
 
-export const fileUploadRequest = async (requestBody: FormData) => {
-    const url = await axios.post(FILE_UPLOAD_URL, requestBody, multipart)
+export const fileUploadRequest = async (requestBody: FormData, accessToken: string) => {
+    const url = await axios.post(FILE_UPLOAD_URL, requestBody, multipart(accessToken))
         .then(responseDataHandler<string>)
         .catch(error => null)
     return url;
@@ -918,32 +913,9 @@ export const getMyChatRoomListRequest = async (accessToken: string) => {
 }
 
 // function: 채팅 가져오기 함수 //
-export const getChatMessageListRequest = async (roomId: string | number, accessToken: string) => {
-    const responseBody = await axios.get(GET_CHAT_MESSAGE_LIST_API_URL(roomId), bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetMessageListResponseDto>)
-        .catch(responseErrorHandler);
-    return responseBody;
-}
-// function: 채팅 가져오기 함수 //
 export const getTotalChatMessageListRequest = async (accessToken: string) => {
     const responseBody = await axios.get(GET_TOTAL_CHAT_MESSAGE_LIST_API_URL, bearerAuthorization(accessToken))
         .then(responseDataHandler<GetMessageListResponseDto>)
-        .catch(responseErrorHandler);
-    return responseBody;
-}
-
-// function: 채팅 쓰기 요청 함수 //
-export const postChatMessageRequest = async (requestBody: PostChatMessageRequestDto, roomId: string | number, accessToken: string) => {
-    const responseBody = await axios.post(POST_CHAT_MESSAGE_API_URL(roomId), requestBody, bearerAuthorization(accessToken))
-        .then(responseDataHandler<ResponseDto>)
-        .catch(responseErrorHandler);
-    return responseBody;
-}
-
-// function: 채팅방 나가기 요청 함수 //
-export const deleteChatRoomRequest = async (roomId: number | string, accessToken: string) => {
-    const responseBody = await axios.delete(DELETE_CHAT_ROOM_API_URL(roomId), bearerAuthorization(accessToken))
-        .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }

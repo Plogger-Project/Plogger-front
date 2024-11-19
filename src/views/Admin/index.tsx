@@ -461,7 +461,7 @@ export default function Admin() {
 
   // effect : 로그인 필요 //
   useEffect(() => {
-    if (!isAdmin || !accessToken) {
+    if (!isAdmin) {
       alert("관리자 전용입니다.");
       navigator(-1);
       return;

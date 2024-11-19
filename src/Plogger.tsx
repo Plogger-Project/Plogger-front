@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './Plogger.css';
-import { Routes, Route, useLocation, useSearchParams, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import SignUp from './views/Auth';
 import ActivePost from './views/Active';
 import NavigationBar from './views/NavigationBar';
 import Main from './views/Main';
 import QnaPost from './views/QNA';
-import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD,  MYPAGE_PATH, ACTIVE_DETAIL_PATH, ACTIVE_UPDATE_PATH, ACTIVE_WRITE_PATH, CHAT_PATH, CHAT_DETAIL_PATH, QNA_DETAIL_PATH, QNA_WRITE_PATH, QNA_UPDATE_PATH, SIGN_UP_PATH, ACTIVE_PATH, QNA_PATH, GIFTICON_PATH, MYPAGE_UPDATE_PATH, ADMIN } from './constants';
+import { RECRUIT_PATH, RECRUIT_DETAIL_PATH, RECRUIT_UPDATE_PATH, RECRUIT_WRITE_PATH, SNS_SUCCESS_PATH, ACCESS_TOKEN, ROOT_PATH, ROOT_ABSOLUTE_PATH, AUTH_ABSOLUTE_PATH, FIND_ID, FIND_PASSWORD,  MYPAGE_PATH, ACTIVE_DETAIL_PATH, ACTIVE_UPDATE_PATH, ACTIVE_WRITE_PATH, CHAT_PATH, CHAT_DETAIL_PATH, QNA_DETAIL_PATH, QNA_WRITE_PATH, QNA_UPDATE_PATH, SIGN_UP_PATH, ACTIVE_PATH, QNA_PATH, GIFTICON_PATH,  ADMIN } from './constants';
 import Mileage from './views/Gifticon';
 import RecruitUpdate from './views/Recruit/Update';
 import RecruitWrite from './views/Recruit/Write';
@@ -94,6 +94,10 @@ function SocketInit() {
       socket.on('leave_anyone', () => { 
         getChatRoomList(); 
       });
+      socket.on('joined_room', (roomId: number) => { // 방에 들어가자마자 join 됨
+        getChatRoomList(); 
+        socket.emit("join_room", { roomId })
+      });
       getChatRoomList();
       getTotalChatMessageListRequest(accessToken).then(getChatMessageListResponse);
     }
@@ -157,7 +161,6 @@ function Plogger() {
   // state: cookie 상태 //
   const [cookies, _, removeCookie] = useCookies();
 
-
   const accessToken = cookies[ACCESS_TOKEN];
 
   // function: 네비게이터 함수 //
@@ -187,8 +190,6 @@ function Plogger() {
 
   };
 
-  
-
   // effect: cookie의 accessToken 값이 변경될 때마다 로그인 유저 정보를 요청하는 함수 //
   useEffect(()=>{
     if(accessToken) getSignInRequest(accessToken).then(getSignInResponse);
@@ -197,8 +198,9 @@ function Plogger() {
   
   const location = useLocation();
 
+  const { roomId } = useParams();
 
-  const showNavigationBar = location.pathname !== SIGN_UP_PATH && location.pathname !== FIND_ID && location.pathname !== MYPAGE_UPDATE_PATH && location.pathname !== FIND_PASSWORD && location.pathname !== FIND_PASSWORD;
+  const showNavigationBar = location.pathname !== SIGN_UP_PATH && location.pathname !== FIND_ID && location.pathname !== MYPAGE_UPDATE_PATH && location.pathname !== FIND_PASSWORD && location.pathname !== FIND_PASSWORD && !location.pathname.includes(CHAT_DETAIL_PATH(''));
 
   // render: Plogger 컴포넌트 렌더링 //
   return (
@@ -223,7 +225,7 @@ function Plogger() {
         <Route path={MYPAGE_PATH(':userId')} element={<Mypage />} />
         <Route path={CHAT_PATH} element={<Chat />} />
         <Route path={CHAT_DETAIL_PATH(':roomId')} element={<ChatDetail />} />
-        <Route path={MYPAGE_UPDATE_PATH} element={<MyPageUpdate />} />
+        <Route path="/mypage/update" element={<MyPageUpdate />} />
         <Route path={FIND_ID} element={<FindId />} />
         <Route path={FIND_PASSWORD} element={<FindPassword />} />
         <Route path={SNS_SUCCESS_PATH} element={<SnsSuccess />} />
