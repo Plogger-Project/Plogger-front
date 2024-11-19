@@ -67,12 +67,11 @@ function TableRow({ alerts, getAlertList }: TableRowProps) {
     const deleteAlertListResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-                        responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
-                            responseBody.code === 'NG' ? '해당 기프티콘이 없습니다' :
-                                responseBody.code === 'NP' ? '해당 권한이 없습니다.' :
-                                    responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NI' ? '해당 사용자가 없습니다.' :
+            responseBody.code === 'NA' ? '해당 알람이 없습니다' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -185,8 +184,8 @@ export default function NavigationBar() {
     const getAlertListResponse = (responseBody: GetAlertListResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-                responseBody.code == 'AF' ? '잘못된 접근입니다.' :
-                    responseBody.code == 'DBE' ? '서버에 문제가 있습니다.' : '';
+            responseBody.code == 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code == 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
