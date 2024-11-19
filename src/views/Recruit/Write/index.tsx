@@ -232,9 +232,12 @@ export default function RecruitWrite() {
 
     let url: string | null = null;
     if (imageFile) {
+      
       const formData = new FormData();
       formData.append('file', imageFile);
-      url = await fileUploadRequest(formData);
+      url = await fileUploadRequest(formData, accessToken);
+
+      console.log("서버에서 반환된 URL:", url)
     }
     url = url ? url : '';
 
