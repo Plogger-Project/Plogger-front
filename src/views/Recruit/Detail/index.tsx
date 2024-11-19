@@ -962,7 +962,7 @@ export default function RecruitDetail() {
               <div className='userInfo-right'>
                 <div className='name'>{writer}</div>
                 
-                <div className='date'>{createdAt}</div>
+                
               </div>
             </div>
             {isReportModalOpen &&
@@ -987,11 +987,22 @@ export default function RecruitDetail() {
                 </div>
               </div>}
           </div>
-          <div className='postBox'>
-            
-            <div className='detailCount'>좋아요 : {like}</div>
-            |
-            <div className='detailCount'>조회수 : {view}</div>
+          <div className='postBox-right'>
+            <div className='postBox'>
+
+              <div className='postBox-bottom'>
+                <div className='view-like'>
+                  <div className='detailCount'>조회수 : {view}</div>
+                  |
+                  <div className='detailCount'>좋아요 : {like}</div>
+                </div>
+
+                <div className='date'>작성일 : {createdAt}</div>
+
+              </div>
+
+
+            </div>
             <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}>
               <IconButton>
                 <MoreVertIcon />
@@ -1012,9 +1023,9 @@ export default function RecruitDetail() {
                     <button className="deleteButton" onClick={onDeleteButtonClickHandler}>삭제</button>
                   </>
                   : ''}
-
-                {(signInUser?.userId === writer) || !signInUser ? '' :
-                  <button className='reportButton' onClick={openReportModalHandler}>신고</button>
+                {(signInUser?.userId === writer) || !signInUser ?
+                  <></>
+                  : <button className='reportButton' onClick={openReportModalHandler}>신고</button>
                 }
               </div>
             )}

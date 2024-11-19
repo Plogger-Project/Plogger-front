@@ -38,6 +38,7 @@ export const ADMIN = '/admin';
 
 // variable: 절대 경로 상수 //
 export const ROOT_ABSOLUTE_PATH = ROOT_PATH;
+export const ACTIVE_ABSOLUTE_PATH = ACTIVE_PATH;
 export const AUTH_ABSOLUTE_PATH = AUTH_PATH;
 
 export const RECRUIT_ABSOLUTE_PATH = RECRUIT_PATH;

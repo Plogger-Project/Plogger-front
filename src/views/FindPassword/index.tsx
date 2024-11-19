@@ -138,7 +138,10 @@ export default function FindId() {
 
     // event handler: 전화번호 인증 버튼 클릭 이벤트 처리 //
     const onTelNumberSendClickHandler = () => {
-        if (!telNumber) return;
+        if (!telNumber) {
+            alert("11자 숫자를 입력해주세요.")
+            return;
+        }
 
         const pattern = /^[0-9]{11}$/;
         const isMatched = pattern.test(telNumber);
@@ -154,7 +157,10 @@ export default function FindId() {
 
     // event handler: 인증 확인 버튼 클릭 이벤트 처리 //
     const onAuthNumberCheckClickHandler = () => {
-        if (!authNumber) return;
+        if (!authNumber) {
+            alert("4자 번호를 입력해주세요.")
+            return;
+        }
 
         const requestBody: TelAuthCheckRequestDto = {
             telNumber, authNumber

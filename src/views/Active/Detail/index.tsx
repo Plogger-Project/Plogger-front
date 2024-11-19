@@ -719,40 +719,48 @@ export default function ActiveDetail() {
                                 </div>
                             </div>
                         </div>}
+                    <div className='postBox-right'>
                     <div className='postBox'>
                     
                         <div className='postBox-bottom'>
-                        <div className='detailCount'>조회수 : {view}</div>
-                        |
-                        <div className='detailCount'>좋아요 : {like}</div>
-                        <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}>
-                            <IconButton>
-                                <MoreVertIcon />
-                            </IconButton>
-                        </div>
-                        {showOptions && (
-                            <div
-                                className="options"
-                                style={{
-                                    position: 'absolute',
-                                    top: optionPosition.top + 'px',
-                                    left: optionPosition.left + 'px'
-                                }}
-                            >
-                                {signInUser?.userId === writer || signInUser?.isAdmin ?
-                                    <>
-                                        <button className="editButton" onClick={onPostUpdateButtonClick}>수정</button>
-                                        <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제</button>
-                                    </>
-                                    : ''}
-                                {(signInUser?.userId === writer) || !signInUser ?
-                                    <></>
-                                    : <button className='reportButton' onClick={openReportModalHandler}>신고</button>
-                                }
+                            <div className='view-like'>
+                                <div className='detailCount'>조회수 : {view}</div>
+                                |
+                                <div className='detailCount'>좋아요 : {like}</div>
                             </div>
-                        )}
+                        
+                        <div className='date'>작성일 : {createdAt}</div>
+                        
+                        </div>
+                        
+                    
                     </div>
-                    <div className='date'>작성일 : {createdAt}</div>
+                    <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}>
+                        <IconButton>
+                            <MoreVertIcon />
+                        </IconButton>
+                    </div>
+                    {showOptions && (
+                        <div
+                            className="options"
+                            style={{
+                                position: 'absolute',
+                                top: optionPosition.top + 'px',
+                                left: optionPosition.left + 'px'
+                            }}
+                        >
+                            {signInUser?.userId === writer || signInUser?.isAdmin ?
+                                <>
+                                    <button className="editButton" onClick={onPostUpdateButtonClick}>수정</button>
+                                    <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제</button>
+                                </>
+                                : ''}
+                            {(signInUser?.userId === writer) || !signInUser ?
+                                <></>
+                                : <button className='reportButton' onClick={openReportModalHandler}>신고</button>
+                            }
+                        </div>
+                        )}
                     </div>
                 </div>
                 <div className='postDetail'>
@@ -832,7 +840,7 @@ export default function ActiveDetail() {
                         <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
                             {signInUser &&
                                 <div style={{textAlign:"right"}}>
-                                    {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{ color: red[500], fontSize: 30 }} /> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{ fontSize: 30 }} />}
+                                    {isLiked ? <FavoriteIcon onClick={onLikeButtonClickHandler} sx={{ color: red[500], fontSize: 30 ,cursor:"pointer"}} /> : <FavoriteBorderIcon onClick={onLikeButtonClickHandler} sx={{ fontSize: 30 }} />}
                                 </div>
                             }
                         </div>

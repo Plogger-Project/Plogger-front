@@ -5,13 +5,14 @@ import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
 import { User } from 'src/types';
 import { useKakaoLoader } from 'src/hooks';
-import { ACCESS_TOKEN, QNA_DETAIL_PATH, QNA_PATH } from 'src/constants';
+import { ACCESS_TOKEN, QNA_ABSOLUTE_PATH, QNA_DETAIL_PATH, QNA_PATH } from 'src/constants';
 import { ResponseDto } from 'src/apis/dto/response';
-import {  fileUploadRequest, getQnaPostRequest, patchQnaPostRequest} from 'src/apis';
+import {  fileUploadRequest, getQnaPostRequest, getQnaUserInfoRequest, patchQnaPostRequest} from 'src/apis';
 import { PatchQnaPostRequestDto } from 'src/apis/dto/request/qna';
 import { GetQnaPostResponseDto } from 'src/apis/dto/response/qna';
 
 import AddAPhotoSharpIcon from '@mui/icons-material/AddAPhotoSharp';
+import { GetSignInResponseDto } from 'src/apis/dto/response/auth';
 
 // kakao 객체가 window에 존재한다고 인식시켜주기 위함 //
 declare global {
@@ -20,7 +21,7 @@ declare global {
   }
 }
 
-// component: QNA 게시판 작성 컴포넌트 //
+// component: QNA 게시판 수정 컴포넌트 //
 export default function QnaUpdate() {
 
   // state: 로그인 유저 상태 //
@@ -40,6 +41,8 @@ export default function QnaUpdate() {
   const [image, setImage] = useState<string>(''); // 이미지 미리보기
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isPinned, setIsPinned] = useState<boolean>(false);
+  const [writerProfileImage, setWriterProfileImage] = useState<string>('');
+  const [writer, setWriter] = useState<string>('');
 
   const imageInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -64,14 +67,36 @@ export default function QnaUpdate() {
       return;
     }
 
-    const { qnaPostTitle, qnaPostContent, qnaPostImage, isPinned
+    const { qnaPostTitle, qnaPostContent, qnaPostImage, isPinned, qnaPostWriter
     } = responseBody as GetQnaPostResponseDto;
 
     setTitle(qnaPostTitle);
     setContent(qnaPostContent);
     setImage(qnaPostImage);
     setIsPinned(isPinned);
+    setWriter(qnaPostWriter);
+
+    getQnaUserInfoRequest(qnaPostWriter).then(getQnaPostUserResponse);
   }
+
+  // function : get recruit post user response 처리 함수 //
+  const getQnaPostUserResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
+
+    const message = !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      navigator(QNA_ABSOLUTE_PATH);
+      return;
+    }
+
+    const { profileImage } = responseBody as GetSignInResponseDto;
+    setWriterProfileImage(profileImage);
+  };
 
   // function: QNA 게시글 수정 함수 //
   const patchQnaPostResponse = (responseBody: ResponseDto | null) => {
@@ -204,9 +229,9 @@ export default function QnaUpdate() {
       <div id='qna-update-input-container'>
         <div className='userInfo'>
           <div className='userInfo-left'>
-            <div className='profileImage' style={{ backgroundImage: `url(${profileImage})` }}></div>
+            <div className='profileImage' style={{ backgroundImage: `url(${writerProfileImage})` }}></div>
             <div className='userInfo-right'>
-              <div className='name'>{signInUser?.userId}</div>
+              <div className='name'>{writer}</div>
               <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
             </div>
           </div>

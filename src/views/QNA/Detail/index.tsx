@@ -201,7 +201,6 @@ export default function QnADetail() {
     const [writer, setWriter] = useState<string>('');
     const [createdAt, setCreatedAt] = useState<string>('');
     const [commentConent, setCommentContent] = useState<string>('');
-
     const [showOptions, setShowOptions] = useState(false);  // 옵션 항목 표시 여부
     const [optionPosition, setOptionPosition] = useState({ top: 0, left: 0 });  // 옵션 항목 위치
 
@@ -397,15 +396,20 @@ export default function QnADetail() {
 
     // event handler: 게시글 수정 버튼 클릭 이벤트 처리 //
     const onPostUpdateButtonClick = () => {
-        if (!writer) return;
+        if(!isAdmin){
+            if (!writer) return;
+        }
         if (!qnaPostId) return;
         if (isAuthor) navigator(QNA_UPDATE_PATH(qnaPostId));
+        if (isAdmin) navigator(QNA_UPDATE_PATH(qnaPostId));
         navigator(QNA_UPDATE_PATH(qnaPostId));
     }
 
     // event handler: 게시글 삭제 버튼 클릭 이벤트 처리 //
     const onPostDeleteButtonClick = () => {
-        if (signInUser?.userId !== writer) return;
+        if (!isAdmin) {
+            if (signInUser?.userId !== writer) return;
+        }
 
         if (!qnaPostId) return;
 
@@ -486,11 +490,12 @@ export default function QnADetail() {
                             <div className='profileImage' onClick={onProfileImageClickButtonHandler} style={{ backgroundImage: `url(${profileImage})` }}></div>
                             <div className='userInfo-right'>
                                 <div className='name'>{writer}</div>
-                                <div className='date'>{createdAt}</div>
+                                
                             </div>
                         </div>
                     </div>
                     <div className='postBox'>
+                        <div className='date'>{createdAt}</div>
                         <div className='listButton' onClick={onListButtonClickHandler}>목록</div>
                         <div className='optionBox' ref={optionBoxRef} onClick={toggleOptionsHandler}>
                             <IconButton>
@@ -506,7 +511,7 @@ export default function QnADetail() {
                                     left: optionPosition.left + 'px'
                                 }}
                             >
-                                {isAuthor && (
+                                {(isAuthor || isAdmin) && (
                                     <>
                                         <button className="editButton" onClick={onPostUpdateButtonClick}>수정</button>
                                         <button className="deleteButton" onClick={onPostDeleteButtonClick}>삭제</button>
@@ -527,7 +532,9 @@ export default function QnADetail() {
                     <div className='comments'>
                         <div className='commentUserInfoWrite'>
                             <div className='commentUserInfo-left'>
+                            {signInUser &&
                             <div className='profileImage' style={{ backgroundImage: `url(${signInUser?.profileImage})` }}></div>
+                            }
                                 <div className='qnaCommentWriter' style={ { textAlign: "center" } }>{signInUser?.userId}</div>
                             </div>
                             <div className='commentUserInfo-right'>
