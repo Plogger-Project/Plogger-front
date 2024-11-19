@@ -117,7 +117,7 @@ export default function Admin() {
       !responseBody ? '서버에 문제가 있습니다.' :
         responseBody.code === 'VF' ? '잘못된 접근입니다.' :
           responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+            responseBody.code === 'NAR' ? '존재하지 않는 게시글입니다.' :
               responseBody.code === 'NP' ? '권한이 없습니다.' :
                 responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
@@ -154,7 +154,7 @@ export default function Admin() {
       !responseBody ? '서버에 문제가 있습니다.' :
         responseBody.code === 'VF' ? '잘못된 접근입니다.' :
           responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+            responseBody.code === 'NAR' ? '존재하지 않는 게시글입니다.' :
               responseBody.code === 'NP' ? '권한이 없습니다.' :
                 responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
