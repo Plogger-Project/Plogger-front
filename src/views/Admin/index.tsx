@@ -79,6 +79,7 @@ export default function Admin() {
   // variable: 작성자 여부 //
   const isOwner = (signInUser?.userId === userId) ? signInUser : user;
   let followId = (signInUser?.userId === userId) ? signInUser?.userId : user?.userId;
+  const isAdmin = signInUser?.isAdmin;
 
   const isAdmin = signInUser?.isAdmin;
 

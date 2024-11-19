@@ -18,8 +18,10 @@ export default function ChatDetail() {
     const [message, setMessage] = useState<string>(''); 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [users, setUsers] = useState<User[]>([]);
+    const [currentUsers, setCurrentUsers] = useState<string[]>([]);
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
     const { socket, initSocket } = useSocketStore();
+    const [isUsersModalOpen, setIsUsersModalOpen] = useState<boolean>(false);
     const [roomMessageList, setRoomMessageList] = useState<ChatMessage[]>([]);
     const { messageList , setMessageList } = useMessageListStore();
 
@@ -82,6 +84,9 @@ export default function ChatDetail() {
 
         if (!socket) return;
         socket.emit('invite_users', { roomId, invitedPeople: selectedUsers})
+        socket.on('invite_people', (data: { roomId: number; invitedPeople: string[] }) => {
+            setCurrentUsers((prev) => [...prev, ...data.invitedPeople]);
+        });
 
         alert('유저들이 초대되었습니다.');
         setSelectedUsers([]);
@@ -116,11 +121,20 @@ export default function ChatDetail() {
         setSearchWord(value);
     }
 
+    const onUsersButtonClick = () => {
+        setIsUsersModalOpen(true);
+    };
+
+    const closeUsersModal = () => {
+        setIsUsersModalOpen(false);
+    };
+
     let isJoin = false;
 
     useEffect(() => {
-        if (!roomId || !socket) return () => {};
+        if (!roomId || !socket || !signInUser) return () => {};
         if (!isJoin) {
+            setCurrentUsers(prev => [...prev, signInUser?.userId]);
             socket.emit('join_room', { roomId });
             isJoin = true;
         }
@@ -131,6 +145,9 @@ export default function ChatDetail() {
         const roomMessageList = messageList.filter(message => message.roomId == roomId);
         setRoomMessageList(roomMessageList);
         if (socket) socket.emit('read_message', roomId);
+        if (socket) socket.on('room_users', (userList: string[]) => {
+            setCurrentUsers(userList);
+        })
     }, [messageList]);
 
     useEffect(() => {
@@ -142,8 +159,6 @@ export default function ChatDetail() {
         const searchedUser = originalList.filter(user => user.userId.includes(searchWord));
         setUsers(searchedUser);
     }, [searchWord]);
-
-
 
     // effect : 로그인 필요 //
     useEffect(() => {
@@ -162,11 +177,12 @@ export default function ChatDetail() {
         <>
             <div className='chat-blank'></div>
             <div id="chat-detail">
-            <div className='back-arrow'>
-                <IconButton className="back-button" onClick={() => onBackClickHandler()}>
-                    <ArrowBackIcon />
-                </IconButton>
-            </div>
+                <div className='back-arrow'>
+                    <IconButton className="back-button" onClick={() => onBackClickHandler()}>
+                        <ArrowBackIcon />
+                    </IconButton>
+                </div>
+
                 <div className="chat-messages">
                     {roomMessageList.map((chatMessage, index) => (
                         <div 
@@ -177,13 +193,11 @@ export default function ChatDetail() {
                                 <div className="system-message-content">
                                     {chatMessage.message}
                                 </div>
-                            ) : 
-                            chatMessage.senderId === 'system-invite' ? (
+                            ) : chatMessage.senderId === 'system-invite' ? (
                                 <div className="system-message-content">
                                     {chatMessage.message}
                                 </div>
-                            ) :
-                            (
+                            ) : (
                                 <div>
                                     <div>{chatMessage.senderId}: {chatMessage.message}</div>
                                     <div>{chatMessage.sentAt}</div>
@@ -193,6 +207,7 @@ export default function ChatDetail() {
                     ))}
                     <div ref={endOfMessagesRef} />
                 </div>
+
                 <div className="chat-input">
                     <PersonAddAlt1 onClick={onInviteButtonClick} className="invite-button" style={{ cursor: 'pointer' }} />
                     <input
@@ -207,42 +222,68 @@ export default function ChatDetail() {
                         전송
                     </button>
                 </div>
-                <div className="invite-users">
-                    {isModalOpen && (
-                        <div className="modal-overlay">
-                            <div className="modal-content">
-                                <button onClick={closeModal} className="modal-close-button">
-                                    X
-                                </button>
-                                <h3>유저 초대</h3>
-                                <input className='invite-search-box' value={searchWord} placeholder='초대할 유저를 검색하세요.' onChange={onSearchWordChangeHandler} />
-                                <div className="user-list-dropdown">
-                                    {users.map(user => (
-                                        <label key={user.userId}>
-                                            <input 
-                                                type="checkbox" 
-                                                value={user.userId} 
-                                                checked={selectedUsers.includes(user.userId)}
-                                                onChange={(e) => {
-                                                    const userId = user.userId;
-                                                    setSelectedUsers(prev =>
-                                                        e.target.checked
-                                                        ? [...prev, userId]
-                                                        : prev.filter(id => id !== userId)
-                                                    );
-                                                }}
-                                            />
-                                            {user.userId}
-                                        </label>
-                                    ))}
-                                </div>
-                                <button onClick={onInviteUsersButtonClick} className="send-invite-button">
-                                    초대
-                                </button>
+
+                <div className="view-users-button">
+                    <button onClick={onUsersButtonClick}>현재 방 유저 목록 보기</button>
+                </div>
+
+                {isModalOpen && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <button onClick={closeModal} className="modal-close-button">
+                                X
+                            </button>
+                            <h3>유저 초대</h3>
+                            <input
+                                className="invite-search-box"
+                                value={searchWord}
+                                placeholder="초대할 유저를 검색하세요."
+                                onChange={onSearchWordChangeHandler}
+                            />
+                            <div className="user-list-dropdown">
+                                {users.filter(user => user.userId.includes(searchWord) && !currentUsers.includes(user.userId)).map(user => (
+                                    <label key={user.userId}>
+                                        <input 
+                                            type="checkbox" 
+                                            value={user.userId} 
+                                            checked={selectedUsers.includes(user.userId)}
+                                            onChange={(e) => {
+                                                const userId = user.userId;
+                                                setSelectedUsers(prev =>
+                                                    e.target.checked
+                                                    ? [...prev, userId]
+                                                    : prev.filter(id => id !== userId)
+                                                );
+                                            }}
+                                        />
+                                        {user.userId}
+                                    </label>
+                                ))}
+                            </div>
+                            <button onClick={onInviteUsersButtonClick} className="send-invite-button">
+                                초대
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {isUsersModalOpen && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <button onClick={closeUsersModal} className="modal-close-button">
+                                X
+                            </button>
+                            <h3>현재 방의 유저 목록</h3>
+                            <div className="user-list">
+                                {currentUsers.map((userId) => (
+                                    <div key={userId} className="user-item">
+                                        {userId}
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </>
     );
