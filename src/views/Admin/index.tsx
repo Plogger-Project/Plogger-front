@@ -81,8 +81,6 @@ export default function Admin() {
   let followId = (signInUser?.userId === userId) ? signInUser?.userId : user?.userId;
   const isAdmin = signInUser?.isAdmin;
 
-  const isAdmin = signInUser?.isAdmin;
-
   // effect: 유저 정보가 변경되면 state에 반영 // 
   useEffect(() => {
     if (signInUser) {
