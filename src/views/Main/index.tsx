@@ -53,8 +53,6 @@ function KoreaMap() {
 
   const {addressPostCounts} = responseBody as GetRecruitAddressCountResponseDto;
   setAddressPostCounts(addressPostCounts);
-
-  console.log("Fetched addressPostCounts:", addressPostCounts);
 };
 
 useEffect(() => {

@@ -361,8 +361,6 @@ export default function NavigationBar() {
                 return;
             }
 
-            console.log(response);
-
             handleSignInResponseHandler(response);
         } catch (error) {
             setMessage('로그인에 실패했습니다. 다시 시도해주세요.');

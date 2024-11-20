@@ -475,7 +475,6 @@ export default function ActiveDetail() {
         }
 
         const { userIds } = responseBody as GetActiveLikeResponseDto;
-        console.log(userIds);
 
         if (Array.isArray(userIds)) {
             const isUserLiked = userIds.some(userId => userId === signInUser?.userId);
@@ -661,7 +660,6 @@ export default function ActiveDetail() {
     }
 
     const onProfileImageClick = (commentWriter: string) => {
-        console.log(commentWriter);
         navigator(MYPAGE_PATH(commentWriter));
     }
 

@@ -799,7 +799,6 @@ export default function RecruitDetail() {
       postAlertRequest(message, accessToken).then(postAlertResponse);
     }
   }
-  console.log(joinList);
 
   // event handler : 모집종료 버튼 클릭 이벤트 처리
   const onEndButtonClickHandler = () => {

@@ -32,7 +32,7 @@ import { PostFollowRequestDto } from "./dto/request/follow";
 import GetRecruitAddressCountResponseDto from "./dto/response/recruit/get-recruit-address-count.response.dto";
 import { PostAlertRequestDto } from "./dto/request/alert";
 
-const PLOGGER_API_DOMAIN = "http://localhost:4000"
+const PLOGGER_API_DOMAIN = "http://192.168.7.27:4000"
 
 const AUTH_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/auth`
 const RECRUIT_MODULE_URL = `${PLOGGER_API_DOMAIN}/api/v1/recruit`
@@ -772,7 +772,6 @@ export const deleteFollowRequest = async (followeeId: string, accessToken: strin
     const responseBody = await axios.delete(DELETE_FOLLOWEE_API_URL(followeeId), bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
-        console.log("팔로위 아이디" + followeeId);
     return responseBody;
 }
 
