@@ -361,8 +361,6 @@ export default function NavigationBar() {
                 return;
             }
 
-            console.log(response);
-
             handleSignInResponseHandler(response);
         } catch (error) {
             setMessage('로그인에 실패했습니다. 다시 시도해주세요.');
@@ -543,7 +541,7 @@ export default function NavigationBar() {
                     </div>
                 </div>
             }
-            {alertModalOpen && (
+            {signInUser && alertModalOpen && (
                 <div className="alert-modal">
                     {viewList.length > 0 ? (
                         viewList.map((alerts, index) => (
@@ -574,7 +572,11 @@ export default function NavigationBar() {
                         },
                     }}
                 />
-                <div className='message-count-bedge'>{noReadMessageCount > 99 ? '99+' : noReadMessageCount}</div>
+                {noReadMessageCount !== 0 &&
+                <div className='message-count-bedge'>
+                    {noReadMessageCount !== 0 && (
+                    noReadMessageCount > 99 ? '99+' : noReadMessageCount)}
+                </div>}
                 </>
             }
         </div>

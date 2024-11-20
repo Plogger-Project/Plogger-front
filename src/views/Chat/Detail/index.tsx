@@ -16,7 +16,8 @@ import { GetRoomListResponseDto } from 'src/apis/dto/response/chat';
 
 export default function ChatDetail() {
     const { roomId } = useParams();
-    const [message, setMessage] = useState<string>('');
+    const [message, setMessage] = useState<string>(''); 
+    const [roomName, setRoomName] = useState<string>('');
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [users, setUsers] = useState<User[]>([]);
     const [currentUsers, setCurrentUsers] = useState<string[]>([]);
@@ -24,7 +25,7 @@ export default function ChatDetail() {
     const { socket, initSocket } = useSocketStore();
     const [isUsersModalOpen, setIsUsersModalOpen] = useState<boolean>(false);
     const [roomMessageList, setRoomMessageList] = useState<ChatMessage[]>([]);
-    const { messageList, setMessageList } = useMessageListStore();
+    const { messageList , setMessageList } = useMessageListStore();
     const { roomList, setRoomList } = useRoomListStore();
 
     const navigator = useNavigate();
@@ -120,7 +121,7 @@ export default function ChatDetail() {
         setIsModalOpen(false);
     };
 
-    const onMessageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const onMessageChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
         const { value } = event.target;
         setMessage(value);
     }
@@ -130,10 +131,21 @@ export default function ChatDetail() {
     };
 
     const onSendEnterHandler = (e: any) => {
-        if (e.key === 'Enter') {
+    if (e.key === 'Enter') {
+        if (e.shiftKey || e.ctrlKey) {
+            e.preventDefault(); 
+            const target = e.target as HTMLTextAreaElement;
+            const cursorPosition = target.selectionStart;
+            const textBefore = target.value.slice(0, cursorPosition);
+            const textAfter = target.value.slice(cursorPosition);
+
+            target.value = `${textBefore}\n${textAfter}`;
+            target.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
+        } else {
             e.preventDefault();
             onChatMessageSendClickHandler();
         }
+    }
     }
 
     const onSearchWordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -144,7 +156,11 @@ export default function ChatDetail() {
     let isJoin = false;
 
     useEffect(() => {
-        if (!roomId || !socket || !signInUser) return () => { };
+        if (!roomId || !socket || !signInUser) return () => {};
+        const matchedRoom = roomList.find((room) => room.roomId === parseInt(roomId));
+        if (matchedRoom) {
+            setRoomName(matchedRoom.roomName);
+        }
         if (!roomList.some(room => room.roomId === parseInt(roomId))) {
             alert('참여하지 않은 방입니다.');
             navigator(CHAT_PATH);
@@ -197,6 +213,9 @@ export default function ChatDetail() {
                     <IconButton className="back-button" onClick={() => onBackClickHandler()}>
                         <ArrowBackIcon />
                     </IconButton>
+                    <div className='room-name'>
+                        {roomName}
+                    </div>
                     <div className="menu-icon-wrapper">
                         <IconButton className="menu-button" onClick={() => setIsUsersModalOpen(prev => !prev)}>
                             <MenuIcon />
@@ -218,9 +237,9 @@ export default function ChatDetail() {
 
                 <div className="chat-messages">
                     {roomMessageList.map((chatMessage, index) => (
-                        <div
-                            key={index}
-                            className={`message ${(chatMessage.senderId === 'system' || chatMessage.senderId === 'system-invite') ? 'system-message' : chatMessage.senderId === signInUser?.userId ? 'sent' : 'received'}`}
+                        <div 
+                            key={index} 
+                            className={`message-row ${(chatMessage.senderId === 'system' || chatMessage.senderId === 'system-invite') ? 'system-message' : chatMessage.senderId === signInUser?.userId ? 'sent-row' : 'received-row'}`}
                         >
                             {chatMessage.senderId === 'system' ? (
                                 <div className="system-message-content">
@@ -230,10 +249,38 @@ export default function ChatDetail() {
                                 <div className="system-message-content">
                                     {chatMessage.message}
                                 </div>
+                            ) : chatMessage.senderId === signInUser?.userId ? (
+                                <div className='sent-message-box'>
+                                    <div className="message-time">
+                                        {chatMessage.sentAt}
+                                    </div>
+                                    <div className="message-content">
+                                        {chatMessage.message.split('\n').map((line, i) => (
+                                            <React.Fragment key={i}>
+                                                {line}
+                                                <br />
+                                            </React.Fragment>
+                                        ))}
+                                    </div>
+                                </div>
                             ) : (
-                                <div>
-                                    <div>{chatMessage.senderId}: {chatMessage.message}</div>
-                                    <div>{chatMessage.sentAt}</div>
+                                <div className='received-message-box'>
+                                    <div className='received-container'>
+                                        <div className='message-profile'>
+                                            {chatMessage.senderId}
+                                        </div>
+                                        <div className="message-content">
+                                            {chatMessage.message.split('\n').map((line, i) => (
+                                                <React.Fragment key={i}>
+                                                    {line}
+                                                    <br />
+                                                </React.Fragment>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="message-time">
+                                        {chatMessage.sentAt}
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -243,8 +290,7 @@ export default function ChatDetail() {
 
                 <div className="chat-input">
                     <PersonAddAlt1 onClick={onInviteButtonClick} className="invite-button" style={{ cursor: 'pointer' }} />
-                    <input
-                        type="text"
+                    <textarea
                         value={message}
                         placeholder="메시지 입력"
                         onKeyDown={onSendEnterHandler}

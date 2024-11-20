@@ -179,18 +179,15 @@ export default function Mypage() {
 
   useEffect(() => {
     if (userId) {
-      console.log("현재 userId:", userId); // 유저 ID 출력
       const fetchUserDataFromApi = async () => {
         try {
           const response = await fetch(`http://localhost:4000/api/v1/auth/sign-in/${userId}`);
-          console.log("API 응답 상태:", response.status);  // 응답 상태 확인
           if (!response.ok) {
             const errorText = await response.text();  // 응답이 HTML일 경우
             console.error("서버 응답 내용:", errorText);
             return;
           }
           const data = await response.json();
-          console.log("받은 데이터:", data); // 받은 데이터 확인
           setUser(data);
         } catch (error) {
           console.error("사용자 데이터를 가져오는 데 실패했습니다.", error);
@@ -224,7 +221,6 @@ export default function Mypage() {
               console.error("사용자 데이터를 가져오는 데 실패했습니다.", error);
             }
           };
-          console.log("API 호출 준비 중:", userId);
           fetchUserDataFromApi();
         }
       }
