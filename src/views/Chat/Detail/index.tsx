@@ -5,17 +5,18 @@ import { ResponseDto } from 'src/apis/dto/response';
 import { getUserListRequest } from 'src/apis';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ACCESS_TOKEN, CHAT_PATH } from 'src/constants';
-import { useMessageListStore, useSearchStore, useSignInUserStore, useSocketStore } from 'src/stores';
+import { useMessageListStore, useRoomListStore, useSearchStore, useSignInUserStore, useSocketStore } from 'src/stores';
 import { ChatMessage, User } from 'src/types';
 import { GetUserListResponseDto } from 'src/apis/dto/response/mypage';
 import { PersonAddAlt1 } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MenuIcon from '@mui/icons-material/Menu';
+import { GetRoomListResponseDto } from 'src/apis/dto/response/chat';
 
 export default function ChatDetail() {
     const { roomId } = useParams();
-    const [message, setMessage] = useState<string>(''); 
+    const [message, setMessage] = useState<string>('');
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [users, setUsers] = useState<User[]>([]);
     const [currentUsers, setCurrentUsers] = useState<string[]>([]);
@@ -23,7 +24,8 @@ export default function ChatDetail() {
     const { socket, initSocket } = useSocketStore();
     const [isUsersModalOpen, setIsUsersModalOpen] = useState<boolean>(false);
     const [roomMessageList, setRoomMessageList] = useState<ChatMessage[]>([]);
-    const { messageList , setMessageList } = useMessageListStore();
+    const { messageList, setMessageList } = useMessageListStore();
+    const { roomList, setRoomList } = useRoomListStore();
 
     const navigator = useNavigate();
 
@@ -37,21 +39,39 @@ export default function ChatDetail() {
 
     const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
 
+    const getChatRoomListResponse = (responseBody: GetRoomListResponseDto | ResponseDto | null) => {
+        const message = !responseBody
+            ? '서버에 문제가 있습니다.'
+            : responseBody.code === 'AF'
+                ? '잘못된 접근입니다.'
+                : responseBody.code === 'DBE'
+                    ? '서버에 문제가 있습니다.'
+                    : '';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+        const { rooms } = responseBody as GetRoomListResponseDto;
+        setRoomList(rooms);
+    }
+
     const getUserListResponse = (responseBody: GetUserListResponseDto | ResponseDto | null) => {
-        const message = 
-            !responseBody ? '서버에 문제가 있습니다.' : 
-            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-        
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
             alert(message);
             return;
         }
 
-        const { users }  = responseBody as GetUserListResponseDto;
+        const { users } = responseBody as GetUserListResponseDto;
         setUsers(users);
         setOriginalList(users);
     }
@@ -83,7 +103,7 @@ export default function ChatDetail() {
         }
 
         if (!socket) return;
-        socket.emit('invite_users', { roomId, invitedPeople: selectedUsers})
+        socket.emit('invite_users', { roomId, invitedPeople: selectedUsers })
         socket.on('invite_people', (data: { roomId: number; invitedPeople: string[] }) => {
             setCurrentUsers((prev) => [...prev, ...data.invitedPeople]);
         });
@@ -121,24 +141,20 @@ export default function ChatDetail() {
         setSearchWord(value);
     }
 
-    const onUsersButtonClick = () => {
-        setIsUsersModalOpen(true);
-    };
-
-    const closeUsersModal = () => {
-        setIsUsersModalOpen(false);
-    };
-
     let isJoin = false;
 
     useEffect(() => {
-        if (!roomId || !socket || !signInUser) return () => {};
+        if (!roomId || !socket || !signInUser) return () => { };
+        if (!roomList.some(room => room.roomId === parseInt(roomId))) {
+            alert('참여하지 않은 방입니다.');
+            navigator(CHAT_PATH);
+        }
         if (!isJoin) {
             setCurrentUsers(prev => [...prev, signInUser?.userId]);
             socket.emit('join_room', { roomId });
             isJoin = true;
         }
-    }, [roomId, socket]);
+    }, [roomList, roomId, socket]);
 
     useEffect(() => {
         endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -202,8 +218,8 @@ export default function ChatDetail() {
 
                 <div className="chat-messages">
                     {roomMessageList.map((chatMessage, index) => (
-                        <div 
-                            key={index} 
+                        <div
+                            key={index}
                             className={`message ${(chatMessage.senderId === 'system' || chatMessage.senderId === 'system-invite') ? 'system-message' : chatMessage.senderId === signInUser?.userId ? 'sent' : 'received'}`}
                         >
                             {chatMessage.senderId === 'system' ? (
@@ -239,7 +255,7 @@ export default function ChatDetail() {
                         전송
                     </button>
                 </div>
-                
+
                 {isModalOpen && (
                     <div className="modal-overlay">
                         <div className="modal-content">
@@ -256,16 +272,16 @@ export default function ChatDetail() {
                             <div className="user-list-dropdown">
                                 {users.filter(user => user.userId.includes(searchWord) && !currentUsers.includes(user.userId)).map(user => (
                                     <label key={user.userId}>
-                                        <input 
-                                            type="checkbox" 
-                                            value={user.userId} 
+                                        <input
+                                            type="checkbox"
+                                            value={user.userId}
                                             checked={selectedUsers.includes(user.userId)}
                                             onChange={(e) => {
                                                 const userId = user.userId;
                                                 setSelectedUsers(prev =>
                                                     e.target.checked
-                                                    ? [...prev, userId]
-                                                    : prev.filter(id => id !== userId)
+                                                        ? [...prev, userId]
+                                                        : prev.filter(id => id !== userId)
                                                 );
                                             }}
                                         />

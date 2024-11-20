@@ -24,6 +24,8 @@
     "date-fns": "^4.1.0",
     "firebase": "^11.0.1",
     "framer-motion": "^11.11.11",
+    "geoip-lite": "^1.4.10",
+    "mkcert": "^3.2.0",
     "next-themes": "^0.3.0",
     "plogger-front": "file:",
     "react": "^18.3.1",
@@ -69,6 +71,7 @@
     ]
   },
   "devDependencies": {
+    "@types/geoip-lite": "^1.4.4",
     "@types/react-datepicker": "^6.2.0"
   }
 }
