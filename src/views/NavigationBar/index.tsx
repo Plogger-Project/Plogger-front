@@ -541,7 +541,7 @@ export default function NavigationBar() {
                     </div>
                 </div>
             }
-            {alertModalOpen && (
+            {signInUser && alertModalOpen && (
                 <div className="alert-modal">
                     {viewList.length > 0 ? (
                         viewList.map((alerts, index) => (
