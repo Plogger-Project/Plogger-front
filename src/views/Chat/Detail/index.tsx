@@ -5,13 +5,14 @@ import { ResponseDto } from 'src/apis/dto/response';
 import { getUserListRequest } from 'src/apis';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ACCESS_TOKEN, CHAT_PATH } from 'src/constants';
-import { useMessageListStore, useSearchStore, useSignInUserStore, useSocketStore } from 'src/stores';
+import { useMessageListStore, useRoomListStore, useSearchStore, useSignInUserStore, useSocketStore } from 'src/stores';
 import { ChatMessage, User } from 'src/types';
 import { GetUserListResponseDto } from 'src/apis/dto/response/mypage';
 import { PersonAddAlt1 } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MenuIcon from '@mui/icons-material/Menu';
+import { GetRoomListResponseDto } from 'src/apis/dto/response/chat';
 
 export default function ChatDetail() {
     const { roomId } = useParams();
@@ -24,6 +25,7 @@ export default function ChatDetail() {
     const [isUsersModalOpen, setIsUsersModalOpen] = useState<boolean>(false);
     const [roomMessageList, setRoomMessageList] = useState<ChatMessage[]>([]);
     const { messageList , setMessageList } = useMessageListStore();
+    const { roomList, setRoomList } = useRoomListStore();
 
     const navigator = useNavigate();
 
@@ -36,6 +38,24 @@ export default function ChatDetail() {
     const accessToken = cookies[ACCESS_TOKEN];
 
     const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
+
+    const getChatRoomListResponse = (responseBody: GetRoomListResponseDto | ResponseDto | null) => {
+        const message = !responseBody
+            ? '서버에 문제가 있습니다.'
+            : responseBody.code === 'AF'
+            ? '잘못된 접근입니다.'
+            : responseBody.code === 'DBE'
+            ? '서버에 문제가 있습니다.'
+            : '';
+    
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+        const { rooms } = responseBody as GetRoomListResponseDto;
+        setRoomList(rooms);
+    }
 
     const getUserListResponse = (responseBody: GetUserListResponseDto | ResponseDto | null) => {
         const message = 
@@ -121,24 +141,20 @@ export default function ChatDetail() {
         setSearchWord(value);
     }
 
-    const onUsersButtonClick = () => {
-        setIsUsersModalOpen(true);
-    };
-
-    const closeUsersModal = () => {
-        setIsUsersModalOpen(false);
-    };
-
     let isJoin = false;
 
     useEffect(() => {
         if (!roomId || !socket || !signInUser) return () => {};
+        if (!roomList.some(room => room.roomId === parseInt(roomId))) {
+            alert('참여하지 않은 방입니다.');
+            navigator(CHAT_PATH);
+        }
         if (!isJoin) {
             setCurrentUsers(prev => [...prev, signInUser?.userId]);
             socket.emit('join_room', { roomId });
             isJoin = true;
         }
-    }, [roomId, socket]);
+    }, [roomList, roomId, socket]);
 
     useEffect(() => {
         endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
