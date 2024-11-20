@@ -15,6 +15,9 @@ import Pagination from "src/components/pagination";
 import { differenceInDays, parseISO } from "date-fns";
 import RecruitPostMarkerOverlay from "src/types/recruitpost-markeroverlay";
 
+import geoip from 'geoip-lite';
+import axios from "axios";
+
 
 
 
@@ -274,6 +277,7 @@ export default function RecruitPost() {
 
   // effect : geolocation //
   useEffect(() => {
+
     if (geoLocation.loaded && geoLocation.coordinates) {
       const lat = geoLocation.coordinates.lat.toString();
       const lng = geoLocation.coordinates.lng.toString();
@@ -283,9 +287,20 @@ export default function RecruitPost() {
         lng: geoLocation.coordinates.lng,
         isPanto: false
       });
+      console.log(lat,lng)
 
 
     }
+
+    // axios.get('https://ipinfo.io/json').then(response => {
+    //   const location = (response.data.loc as string).split(',');
+    //   setCenter({
+    //     lat: +location[0],
+    //     lng: +location[1],
+    //     isPanto: false
+    //   });
+    // })
+
   }, [geoLocation]);
 
   // effect : //
@@ -340,84 +355,85 @@ useEffect(() => {
     <div id="recruit-post-body">
     <div className="left"></div>
     <div id="recruit-post-wrapper">
-      <div className="kakaomap" style={{ opacity: showPosts ? 0 : 1 }} ref={mapRef}>
-        <Map
-          isPanto={center.isPanto}
-          className="kakao-map"
-          center={ center }
-          style={{ width: "100%" }}
-          level={6}
-          onMouseEnter={() => setIsMapHovered(true)}  // 마우스 진입 시 isMapHovered 설정
-          onMouseLeave={() => setIsMapHovered(false)} // 마우스 나갈 시 isMapHovered 해제
-        >
-          <MarkerClusterer
-            averageCenter={true} minLevel={6}
-          >
-            {positions
-              .filter(pos => !pos.isCompleted)
-              .map((pos) => (
-              <div key={`${pos.id}-${pos.lat}-${pos.lng}`}>
-                <MapMarker
-                  key={`${pos.id}-marker`}
-                  position={{ lat: pos.lat, lng: pos.lng }}
-                  onClick={() => {
-                    setIsOpen(pos.id)
-                    setCenter({ lat: pos.lat, lng: pos.lng, isPanto:true },
+        <div className="kakaomap" style={{ opacity: showPosts ? 0 : 1 }} ref={mapRef}>
+         
+            <Map
+              isPanto={center.isPanto}
+              className="kakao-map"
+              center={center}
+              style={{ width: "100%" }}
+              level={6}
+              onMouseEnter={() => setIsMapHovered(true)}  // 마우스 진입 시 isMapHovered 설정
+              onMouseLeave={() => setIsMapHovered(false)} // 마우스 나갈 시 isMapHovered 해제
+            >
+              <MarkerClusterer
+                averageCenter={true} minLevel={6}
+              >
+                {positions
+                  .filter(pos => !pos.isCompleted)
+                  .map((pos) => (
+                    <div key={`${pos.id}-${pos.lat}-${pos.lng}`}>
+                      <MapMarker
+                        key={`${pos.id}-marker`}
+                        position={{ lat: pos.lat, lng: pos.lng }}
+                        onClick={() => {
+                          setIsOpen(pos.id)
+                          setCenter({ lat: pos.lat, lng: pos.lng, isPanto: true },
                       
-                  )
-                  }
-                  }
+                          )
+                        }
+                        }
                   
                 
                   
-              />
-              </div> 
-            ))}
-          </MarkerClusterer>
-          {positions.map(pos =>
-            <React.Fragment key={`${pos.id}-overlay` }>
-              {isOpen === pos.id && (
-                <CustomOverlayMap
-                  position={{ lat: pos.lat, lng: pos.lng }}
-                  yAnchor={1.2}
-                  zIndex={5000}
-                  clickable={true}
+                      />
+                    </div>
+                  ))}
+              </MarkerClusterer>
+              {positions.map(pos =>
+                <React.Fragment key={`${pos.id}-overlay`}>
+                  {isOpen === pos.id && (
+                    <CustomOverlayMap
+                      position={{ lat: pos.lat, lng: pos.lng }}
+                      yAnchor={1.2}
+                      zIndex={5000}
+                      clickable={true}
 
-                >
-                  <div className="marker-info" >
-                    <MarkerOverlay
-                      recruitPostId={{
-                        recruitPostId: pos.recruitPostId, // 각 pos에서 가져오는 ID
-                        recruitPostTitle: pos.recruitPostTitle, // 제목
-                        recruitPostContent: pos.recruitPostContent, // 내용
-                        recruitPostImage: pos.recruitPostImage, // 이미지
-                        recruitEndDate: pos.recruitEndDate, // 종료일
-                        minPeople: pos.minPeople, // 최소 인원
-                        currentPeople: pos.currentPeople, // 현재 인원
-                        isCompleted: pos.isCompleted // 모집 상태
+                    >
+                      <div className="marker-info" >
+                        <MarkerOverlay
+                          recruitPostId={{
+                            recruitPostId: pos.recruitPostId, // 각 pos에서 가져오는 ID
+                            recruitPostTitle: pos.recruitPostTitle, // 제목
+                            recruitPostContent: pos.recruitPostContent, // 내용
+                            recruitPostImage: pos.recruitPostImage, // 이미지
+                            recruitEndDate: pos.recruitEndDate, // 종료일
+                            minPeople: pos.minPeople, // 최소 인원
+                            currentPeople: pos.currentPeople, // 현재 인원
+                            isCompleted: pos.isCompleted // 모집 상태
 
-                      }} getRecruitList={getRecruitPostList} />
-                    <img
-                      alt="close"
-                      width="14"
-                      height="13"
-                      src="https://t1.daumcdn.net/localimg/localimages/07/mapjsapi/2x/bt_close.gif"
-                      style={{
-                        position: "absolute",
-                        right: "5px",
-                        top: "5px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => setIsOpen(null)}
-                    />
-                  </div>
-                </CustomOverlayMap>
+                          }} getRecruitList={getRecruitPostList} />
+                        <img
+                          alt="close"
+                          width="14"
+                          height="13"
+                          src="https://t1.daumcdn.net/localimg/localimages/07/mapjsapi/2x/bt_close.gif"
+                          style={{
+                            position: "absolute",
+                            right: "5px",
+                            top: "5px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => setIsOpen(null)}
+                        />
+                      </div>
+                    </CustomOverlayMap>
 
+                  )}
+                </React.Fragment>
               )}
-            </React.Fragment>
-          )}
-        </Map>
-        
+            </Map>
+ 
         <div className="arrow"></div>
       </div>
       

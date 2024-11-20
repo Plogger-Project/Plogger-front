@@ -40,21 +40,39 @@ export default function ChatDetail() {
 
     const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
 
+    const getChatRoomListResponse = (responseBody: GetRoomListResponseDto | ResponseDto | null) => {
+        const message = !responseBody
+            ? '서버에 문제가 있습니다.'
+            : responseBody.code === 'AF'
+                ? '잘못된 접근입니다.'
+                : responseBody.code === 'DBE'
+                    ? '서버에 문제가 있습니다.'
+                    : '';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+        const { rooms } = responseBody as GetRoomListResponseDto;
+        setRoomList(rooms);
+    }
+
     const getUserListResponse = (responseBody: GetUserListResponseDto | ResponseDto | null) => {
-        const message = 
-            !responseBody ? '서버에 문제가 있습니다.' : 
-            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-        
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NI' ? '존재하지 않는 유저입니다.' :
+                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
             alert(message);
             return;
         }
 
-        const { users }  = responseBody as GetUserListResponseDto;
+        const { users } = responseBody as GetUserListResponseDto;
         setUsers(users);
         setOriginalList(users);
     }
@@ -86,7 +104,7 @@ export default function ChatDetail() {
         }
 
         if (!socket) return;
-        socket.emit('invite_users', { roomId, invitedPeople: selectedUsers})
+        socket.emit('invite_users', { roomId, invitedPeople: selectedUsers })
         socket.on('invite_people', (data: { roomId: number; invitedPeople: string[] }) => {
             setCurrentUsers((prev) => [...prev, ...data.invitedPeople]);
         });
@@ -283,7 +301,7 @@ export default function ChatDetail() {
                         전송
                     </button>
                 </div>
-                
+
                 {isModalOpen && (
                     <div className="modal-overlay">
                         <div className="modal-content">
@@ -300,16 +318,16 @@ export default function ChatDetail() {
                             <div className="user-list-dropdown">
                                 {users.filter(user => user.userId.includes(searchWord) && !currentUsers.includes(user.userId)).map(user => (
                                     <label key={user.userId}>
-                                        <input 
-                                            type="checkbox" 
-                                            value={user.userId} 
+                                        <input
+                                            type="checkbox"
+                                            value={user.userId}
                                             checked={selectedUsers.includes(user.userId)}
                                             onChange={(e) => {
                                                 const userId = user.userId;
                                                 setSelectedUsers(prev =>
                                                     e.target.checked
-                                                    ? [...prev, userId]
-                                                    : prev.filter(id => id !== userId)
+                                                        ? [...prev, userId]
+                                                        : prev.filter(id => id !== userId)
                                                 );
                                             }}
                                         />
