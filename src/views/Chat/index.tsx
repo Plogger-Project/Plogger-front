@@ -42,7 +42,7 @@ function ChatRoomList({ chatRoom, onDelete }: ChatRoomListProps) {
             </div>
             <div>
                 {noReadCount !== 0 && (
-                    <span className="no-read-count">{noReadCount}</span>
+                    <span className="no-read-count">{noReadCount > 99 ? '99+' : noReadCount}</span>
                 )}
                 <Tooltip title="나가기">
                     <IconButton onClick={(event) => onDelete(event, chatRoom.roomId)} className="leave-chat-room-btn">

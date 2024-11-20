@@ -572,7 +572,11 @@ export default function NavigationBar() {
                         },
                     }}
                 />
-                <div className='message-count-bedge'>{noReadMessageCount > 99 ? '99+' : noReadMessageCount}</div>
+                {noReadMessageCount !== 0 &&
+                <div className='message-count-bedge'>
+                    {noReadMessageCount !== 0 && (
+                    noReadMessageCount > 99 ? '99+' : noReadMessageCount)}
+                </div>}
                 </>
             }
         </div>
