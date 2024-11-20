@@ -1,7 +1,7 @@
 import React, { MouseEvent, useEffect, useState } from 'react';
 import './style.css';
-import { useNavigate } from 'react-router-dom';
-import { ACCESS_TOKEN, CHAT_DETAIL_PATH } from 'src/constants';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ACCESS_TOKEN, CHAT_DETAIL_PATH, CHAT_PATH } from 'src/constants';
 import { getMyChatRoomListRequest, getTotalChatMessageListRequest, postChatRoomRequest } from 'src/apis';
 import { ChatRoom } from 'src/types';
 import { useCookies } from 'react-cookie';
@@ -55,11 +55,10 @@ function ChatRoomList({ chatRoom, onDelete }: ChatRoomListProps) {
 }
 
 export default function Chat() {
+    const { roomId } = useParams();
     const [cookies] = useCookies();
     const { signInUser } = useSignInUserStore();
     const { socket } = useSocketStore();
-
-    const [currentUsers, setCurrentUsers] = useState<string[]>([]);
 
     const { roomList, setRoomList } = useRoomListStore();
     const { setMessageList } = useMessageListStore();
@@ -144,8 +143,6 @@ export default function Chat() {
         getMyChatRoomListRequest(accessToken).then(getChatRoomListResponse);
         getTotalChatMessageListRequest(accessToken).then(getChatMessageListResponse);
     }, [accessToken]);
-
-    
 
     // effect : 로그인 필요 //
     useEffect(() => {
