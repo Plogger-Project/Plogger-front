@@ -894,10 +894,6 @@ src
 <img width="100%" alt="코드 컨벤션" src="/public/images/qna-목록.png">
 <img width="100%" alt="코드 컨벤션" src="/public/images/qna-상세.png">
 
-## 활동 페이지
-<img width="100%" alt="코드 컨벤션" src="/public/images/활동-목록.png">
-<img width="100%" alt="코드 컨벤션" src="/public/images/활동-작성.png">
-
 ## 마이페이지
 <img width="100%" alt="코드 컨벤션" src="/public/images/마이페이지.png">
 <img width="100%" alt="코드 컨벤션" src="/public/images/마이-타인.png">
