@@ -269,18 +269,21 @@ export default function ChatDetail() {
                                         <div className='message-profile'>
                                             {chatMessage.senderId}
                                         </div>
-                                        <div className="message-content">
-                                            {chatMessage.message.split('\n').map((line, i) => (
-                                                <React.Fragment key={i}>
-                                                    {line}
-                                                    <br />
-                                                </React.Fragment>
-                                            ))}
+                                        <div className='message-why'>
+                                            <div className="message-content" >
+                                                {chatMessage.message.split('\n').map((line, i) => (
+                                                    <React.Fragment key={i}>
+                                                        {line}
+                                                        <br />
+                                                    </React.Fragment>
+                                                ))}
+                                            </div>
+                                            <div className="message-time">
+                                                {chatMessage.sentAt}
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="message-time">
-                                        {chatMessage.sentAt}
-                                    </div>
+
                                 </div>
                             )}
                         </div>
