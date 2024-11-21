@@ -54,9 +54,15 @@
     margin-left: 5px;
 }
 
+.received-message-box .message-why {
+    display: flex;
+    gap: 5px;
+}
+
 .sent-message-box {
     display: flex;
     margin-bottom: 5px;
+    gap: 2px;
 }
 
 .message-profile {
