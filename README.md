@@ -1,4 +1,4 @@
-
+```
 src
 ├── @types
 │   └── react-spring-carousel
@@ -254,3 +254,5 @@ src
         │   └── style.css
         ├── index.tsx
         └── style.css
+
+```
