@@ -1,5 +1,5 @@
 <a href="https://club-project-one.vercel.app/" target="_blank">
-<img src="plogger/file/Banner.jpg" alt="배너" width="100%"/>
+<img src="/public/images/Banner.jpg" alt="배너" width="100%"/>
 </a>
 
 
@@ -866,50 +866,50 @@ src
 
 
 # 9. ERD
-<img width="100%" alt="코드 컨벤션" src="plogger/file/PLOGGER_ERD.PNG">
+<img width="100%" alt="코드 컨벤션" src="/public/images/PLOGGER_ERD.PNG">
 
 # 10. 화면 구성
 ## 로그인
-<img width="100%" alt="코드 컨벤션" src="plogger/file/로그인.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/로그인.png">
 
 ## 회원 가입
-<img width="100%" alt="코드 컨벤션" src="plogger/file/회원가입.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/회원가입.png">
 
 ## 회원 정보 수정
-<img width="100%" alt="코드 컨벤션" src="plogger/file/회원수정.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/회원수정.png">
 
 ## 메인 페이지
-<img width="100%" alt="코드 컨벤션" src="plogger/file/메인-지역활성도.png">
-<img width="100%" alt="코드 컨벤션" src="plogger/file/메인-슬라이드.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/메인-지역활성도.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/메인-슬라이드.png">
 
 ## 구인 페이지
-<img width="100%" alt="코드 컨벤션" src="plogger/file/구인-지도.png">
-<img width="100%" alt="코드 컨벤션" src="plogger/file/구인-상세.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/구인-지도.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/구인-상세.png">
 
 ## 활동 페이지
-<img width="100%" alt="코드 컨벤션" src="plogger/file/활동-목록.png">
-<img width="100%" alt="코드 컨벤션" src="plogger/file/활동-작성.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/활동-목록.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/활동-작성.png">
 
 ## Q&A 페이지
-<img width="100%" alt="코드 컨벤션" src="plogger/file/qna-목록.png">
-<img width="100%" alt="코드 컨벤션" src="plogger/file/qna-상세.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/qna-목록.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/qna-상세.png">
 
 ## 활동 페이지
-<img width="100%" alt="코드 컨벤션" src="plogger/file/활동-목록.png">
-<img width="100%" alt="코드 컨벤션" src="plogger/file/활동-작성.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/활동-목록.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/활동-작성.png">
 
 ## 마이페이지
-<img width="100%" alt="코드 컨벤션" src="plogger/file/마이페이지.png">
-<img width="100%" alt="코드 컨벤션" src="plogger/file/마이-타인.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/마이페이지.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/마이-타인.png">
 
 ## 관리자 페이지
-<img width="100%" alt="코드 컨벤션" src="plogger/file/관리자.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/관리자.png">
 
 ## 기프티콘
-<img width="100%" alt="코드 컨벤션" src="plogger/file/기프티콘-유저.png">
-<img width="100%" alt="코드 컨벤션" src="plogger/file/기프티콘-관리자.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/기프티콘-유저.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/기프티콘-관리자.png">
 
 ## 채팅
-<img width="100%" alt="코드 컨벤션" src="plogger/file/채팅방목록.png">
-<img width="100%" alt="코드 컨벤션" src="plogger/file/채팅방초대.png">
-<img width="100%" alt="코드 컨벤션" src="plogger/file/채팅방유저.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/채팅방목록.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/채팅방초대.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/채팅방유저.png">
