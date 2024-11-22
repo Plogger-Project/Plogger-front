@@ -261,7 +261,7 @@ function TableRow({ gifticon, getGifticonList }: TableRowProps) {
     if (gifticonImageFile) {
       const formData = new FormData();
       formData.append('file', gifticonImageFile);
-      url = await fileUploadRequest(formData);
+      url = await fileUploadRequest(formData,accessToken);
     }
     url = url || finalGifticonImage;
 
@@ -497,7 +497,7 @@ export default function Mileage() {
     if (gifticonImage) {
       const formData = new FormData();
       formData.append('file', gifticonImage);
-      url = await fileUploadRequest(formData);
+      url = await fileUploadRequest(formData, accessToken);
     }
     url = url ? url : defaultImageUrl;
 
