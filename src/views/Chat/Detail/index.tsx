@@ -276,11 +276,12 @@ export default function ChatDetail() {
                                                     <br />
                                                 </React.Fragment>
                                             ))}
-                                        </div>
+                                                    </div>
+                                                    <div className="message-time">
+                                                        {chatMessage.sentAt}
+                                                    </div>
                                     </div>
-                                    <div className="message-time">
-                                        {chatMessage.sentAt}
-                                    </div>
+                                    
                                 </div>
                             )}
                         </div>
