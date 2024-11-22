@@ -352,12 +352,15 @@ width: 393px;
 #recruit-post-wrapper .td-recruit-title {
     flex: 1;
     cursor: pointer;
+    white-space:nowrap;
+    overflow:hidden;  
+    text-overflow: ellipsis;
 }
 
 #recruit-post-wrapper .td-recruit-writer,
 #recruit-post-wrapper .td-recruit-people
 {
-    width: 60px;
+    width: 110px;
 }
 #recruit-post-wrapper .td-recruit-like-count,
 #recruit-post-wrapper .td-recruit-view-count{
