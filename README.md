@@ -876,11 +876,11 @@ src
 <img width="100%" alt="코드 컨벤션" src="/public/images/회원가입.png">
 
 ## 회원 정보 수정
-<img width="100%" alt="코드 컨벤션" src="/public/images/회원수정.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/화면수정.png">
 
 ## 메인 페이지
 <img width="100%" alt="코드 컨벤션" src="/public/images/메인-지역활성도.png">
-<img width="100%" alt="코드 컨벤션" src="/public/images/메인-슬라이드.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/메인슬라이드.png">
 
 ## 구인 페이지
 <img width="100%" alt="코드 컨벤션" src="/public/images/구인-지도.png">
@@ -891,8 +891,8 @@ src
 <img width="100%" alt="코드 컨벤션" src="/public/images/활동-작성.png">
 
 ## Q&A 페이지
-<img width="100%" alt="코드 컨벤션" src="/public/images/qna-목록.png">
-<img width="100%" alt="코드 컨벤션" src="/public/images/qna-상세.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/큐엔에이게시판.png">
+<img width="100%" alt="코드 컨벤션" src="/public/images/큐엔에이-상세.png">
 
 ## 마이페이지
 <img width="100%" alt="코드 컨벤션" src="/public/images/마이페이지.png">
