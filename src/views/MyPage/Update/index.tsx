@@ -12,6 +12,7 @@ import { ResponseDto } from 'src/apis/dto/response';
 import PatchTelAuthRequestDto from 'src/apis/dto/request/user/patch-tel-auth.request.dto';
 import PatchTelAuthCheckRequestDto from 'src/apis/dto/request/user/patch-tel-auth-check.request.dto';
 import PatchPasswordRequestDto from 'src/apis/dto/request/user/patch-password.request.dto';
+import { access } from 'fs';
 
 const defaultProfileImageUrl = 'https://blog.kakaocdn.net/dn/4CElL/btrQw18lZMc/Q0oOxqQNdL6kZp0iSKLbV1/img.png';
 
@@ -255,7 +256,7 @@ export default function MyPageUpdate() {
     if (profileImage) {
       const formData = new FormData();
       formData.append('file', profileImage);
-      url = await fileUploadRequest(formData);
+      url = await fileUploadRequest(formData, accessToken);
     }
 
     url = url ? url : previewUrl;
